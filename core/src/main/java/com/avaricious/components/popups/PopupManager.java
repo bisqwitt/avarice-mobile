@@ -2,8 +2,8 @@ package com.avaricious.components.popups;
 
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import java.util.List;
 public class PopupManager {
 
     private static PopupManager instance;
+
     public static PopupManager I() {
         return instance == null ? instance = new PopupManager() : instance;
     }
@@ -26,7 +27,7 @@ public class PopupManager {
     private boolean renderTooltip;
 
     public void showTooltip(Upgrade upgrade, float x, float y) {
-        if(upgrade == null) return;
+        if (upgrade == null) return;
         renderTooltip = true;
         tooltipPopup = new TooltipPopup(upgrade.description(), new Vector2(x, y));
     }
@@ -46,10 +47,10 @@ public class PopupManager {
     }
 
     public void transformLastNumber(int newValue) {
-        numberPopups.get(numberPopups.size() -1).transform(newValue);
+        numberPopups.get(numberPopups.size() - 1).transform(newValue);
     }
 
-    public void spawnStatisticHit(Texture texture, float x, float y) {
+    public void spawnStatisticHit(TextureRegion texture, float x, float y) {
         statisticPopups.add(new StatisticPopup(texture, x, y));
     }
 
@@ -76,7 +77,7 @@ public class PopupManager {
             p.render(batch);
         }
 
-        if(renderTooltip) tooltipPopup.render(batch);
+        if (renderTooltip) tooltipPopup.render(batch);
         renderTooltip = false;
     }
 }

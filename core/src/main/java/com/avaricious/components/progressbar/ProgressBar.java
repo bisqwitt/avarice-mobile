@@ -1,6 +1,7 @@
 package com.avaricious.components.progressbar;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -26,25 +27,25 @@ public class ProgressBar {
     }
 
     public ProgressBar(int steps) {
-        border = new TextureRegion(Assets.I().getProgressBarBorder());
-        lit = new TextureRegion(Assets.I().getProgressLit());
-        unlit = new TextureRegion(Assets.I().getProgressUnlit());
+        border = Assets.I().get(AssetKey.PROGRESS_BAR_BORDER);
+        lit = Assets.I().get(AssetKey.PROGRESS_BAR_LIT);
+        unlit = Assets.I().get(AssetKey.PROGRESS_BAR_UNLIT);
 
         setSteps(steps);
     }
 
-    protected ProgressBar(int steps, Texture litTexture) {
-        border = new TextureRegion(Assets.I().getProgressBarBorder());
-        lit = new TextureRegion(litTexture);
-        unlit = new TextureRegion(Assets.I().getProgressUnlit());
+    protected ProgressBar(int steps, TextureRegion litTexture) {
+        border = Assets.I().get(AssetKey.PROGRESS_BAR_BORDER);
+        lit = litTexture;
+        unlit = Assets.I().get(AssetKey.PROGRESS_BAR_UNLIT);
 
         setSteps(steps);
     }
 
-    protected ProgressBar(int steps, Texture litTexture, Texture unlitTexture) {
-        border = new TextureRegion(Assets.I().getProgressBarBorder());
-        lit = new TextureRegion(litTexture);
-        unlit = new TextureRegion(unlitTexture);
+    protected ProgressBar(int steps, TextureRegion litTexture, TextureRegion unlitTexture) {
+        border = Assets.I().get(AssetKey.PROGRESS_BAR_BORDER);
+        lit = litTexture;
+        unlit = unlitTexture;
 
         setSteps(steps);
     }

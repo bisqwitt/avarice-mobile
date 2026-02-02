@@ -1,5 +1,6 @@
 package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 
+import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.UpgradeRarity;
 import com.avaricious.upgrades.pointAdditions.PointAdditionUpgrade;

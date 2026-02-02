@@ -1,18 +1,22 @@
 package com.avaricious.components.progressbar;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.DevTools;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 public class HealthBar extends ProgressBar {
 
-    private final Texture heart = Assets.I().getHeart();
-    private final Texture box = Assets.I().getJokerCardShadow();
+    private final float X = 1.3f;
+    private final float Y = 5f;
+
+    private final TextureRegion heart = Assets.I().get(AssetKey.HEART);
     private float currentValue;
 
     public HealthBar(float maxHealth) {
-        super(120, Assets.I().getHealthRedPixel());
+        super(160, Assets.I().get(AssetKey.HEALTH_RED_PIXEL));
         setMaxValue(maxHealth);
     }
 
@@ -32,10 +36,10 @@ public class HealthBar extends ProgressBar {
 //        batch.setColor(1f, 1f, 1f, 1f);
 
         for (int i = 0; i < progress.length; i++) {
-            batch.draw(progress[i], 13.325f, 1.5f + (i * 0.04325f), 3 / 22f, 2 / 22f);
+            batch.draw(progress[i], X + (i * 0.04325f), Y, 2 / 22f, 6 / 22f);
         }
 //        batch.draw(border, 14.8f, 3.7f, 14 / 70f, 310 / 70f);
-        batch.draw(heart, 13.15f, 0.9f, 12 / 25f, 11 / 25f);
+        batch.draw(heart, X - 1f, Y - 0.2f, 12 / 20f, 11 / 20f);
     }
 
     public float getMaxHealth() {

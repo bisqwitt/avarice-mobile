@@ -1,4 +1,4 @@
-package com.avaricious.upgrades.bars;
+package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
@@ -49,15 +49,15 @@ public abstract class UpgradeBar {
             cardSlot.updateHoverWobble(hovered, delta);
             cardSlot.tickScale(delta);
 
-            if(hovered) hoveringKey = upgrade;
-            if(selected) clickedUpgrade[0] = hoveringKey;
+            if (hovered) hoveringKey = upgrade;
+            if (selected) clickedUpgrade[0] = hoveringKey;
         }));
 
-        if(hoveringKey != null)
+        if (hoveringKey != null)
             PopupManager.I().showTooltip(hoveringKey,
                 getHoveringRectangle().x - 1f, getHoveringRectangle().y + (tooltipOnTopOfCard ? 2 : -2));
 
-        if(clickedUpgrade[0] != null) {
+        if (clickedUpgrade[0] != null) {
             onCardClicked(clickedUpgrade[0]);
         }
     }
@@ -73,7 +73,7 @@ public abstract class UpgradeBar {
                 * cardSlot.pulseScale()
                 * cardSlot.wobbleScale();
 
-            float drawW = rectangle.width  * s;
+            float drawW = rectangle.width * s;
             float drawH = rectangle.height * s;
 
             // center scaling around the original x/y
@@ -114,7 +114,7 @@ public abstract class UpgradeBar {
         cardBounds.clear();
         cardAnimationManagers.clear();
 
-        for(int i = 0; i < upgrades.size(); i++) {
+        for (int i = 0; i < upgrades.size(); i++) {
             Upgrade upgrade = upgrades.get(i);
             cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
             cardAnimationManagers.put(upgrade, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));

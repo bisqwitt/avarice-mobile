@@ -1,5 +1,7 @@
 package com.avaricious.upgrades;
 
+import com.avaricious.Assets;
+
 public class CriticalHitDamageUpgrade extends Upgrade {
     public CriticalHitDamageUpgrade(UpgradeRarity rarity) {
         super(rarity);

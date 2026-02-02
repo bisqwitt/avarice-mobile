@@ -1,6 +1,6 @@
 package com.avaricious.stats.statupgrades;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.math.BigDecimal;
@@ -9,9 +9,9 @@ public abstract class Stat {
 
     private BigDecimal percentageChance = new BigDecimal("0.01");
 
-    public abstract Texture getTexture();
+    public abstract TextureRegion getTexture();
 
-    public abstract Texture getShadowTexture();
+    public abstract TextureRegion getShadowTexture();
 
     public boolean rollChance() {
         float rng = MathUtils.random();

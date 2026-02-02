@@ -1,5 +1,7 @@
-package com.avaricious.upgrades.bars;
+package com.avaricious.components.bars;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
@@ -27,8 +29,8 @@ public class JokerDeck {
 
     private final float EPS = 0.001f;
 
-    private final TextureRegion jokerTexture = new TextureRegion(Assets.I().getJokerCard());
-    private final TextureRegion jokerShadowTexture = new TextureRegion(Assets.I().getJokerCardShadow());
+    private final TextureRegion jokerTexture = new TextureRegion(Assets.I().get(AssetKey.JOKER_CARD));
+    private final TextureRegion jokerShadowTexture = new TextureRegion(Assets.I().get(AssetKey.JOKER_CARD_SHADOW));
 
     private final Map<Upgrade, Rectangle> jokerBounds = new LinkedHashMap<>();
     private final Map<Upgrade, Slot> jokerAnimationManagers = new LinkedHashMap<>();

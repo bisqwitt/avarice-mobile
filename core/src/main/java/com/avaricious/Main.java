@@ -21,7 +21,7 @@ public class Main extends Game {
         Assets.I().load();
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(16, 9);
+        viewport = new FitViewport(9, 16);
         uiViewport = new ScreenViewport();
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);

@@ -1,11 +1,13 @@
 package com.avaricious.components.popups;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
@@ -14,15 +16,15 @@ public class TooltipPopup {
     private final GlyphLayout jokerTxt = new GlyphLayout();
     private final GlyphLayout description = new GlyphLayout();
     private final Vector2 pos;
-    private final Texture box;
-    private final Texture boxShadow;
+    private final TextureRegion box;
+    private final TextureRegion boxShadow;
     private final BitmapFont bigFont;
     private final BitmapFont smallFont;
 
     public TooltipPopup(String txt, Vector2 pos) {
         this.pos = pos;
-        box = Assets.I().getTooltipBox();
-        boxShadow = Assets.I().getTooltipBoxShadow();
+        box = Assets.I().get(AssetKey.TOOLTIP_BOX);
+        boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
         jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250, Align.center, true);

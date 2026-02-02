@@ -1,14 +1,16 @@
 package com.avaricious.components;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
+import com.avaricious.components.bars.JokerUpgradeBarWithPrices;
+import com.avaricious.components.bars.UpgradeBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.UpgradesManager;
-import com.avaricious.upgrades.bars.JokerUpgradeBarWithPrices;
-import com.avaricious.upgrades.bars.UpgradeBar;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -16,7 +18,7 @@ public class Shop {
 
     private final float WINDOW_Y = 0f;
 
-    private final Texture window;
+    private final TextureRegion window;
     private final Button returnButton;
     private final Button rerollButton;
 
@@ -26,7 +28,7 @@ public class Shop {
     private boolean show = false;
 
     public Shop() {
-        window = Assets.I().getShopWindow();
+        window = Assets.I().get(AssetKey.SHOP_WINDOW);
 
         creditScore = new CreditScore(0,
             new Rectangle(3.2f, 3.5f + WINDOW_Y, 0.32f, 0.56f), 0.35f);
@@ -38,12 +40,12 @@ public class Shop {
             shopCardsBar.loadUpgrades(UpgradesManager.I().randomUpgrades());
             CreditManager.I().pay(3);
         },
-            Assets.I().getRerollButton(), Assets.I().getRerollButtonPressed(), Assets.I().getRerollButtonHovered(),
+            Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON_HOVERED),
             new Rectangle(10f, 3.5f + WINDOW_Y, 79 / 35f, 25 / 35f), Input.Keys.SPACE);
         returnButton = new Button(() -> {
             show = false;
         },
-            Assets.I().getReturnButton(), Assets.I().getReturnButtonPressed(), Assets.I().getReturnButtonHovered(),
+            Assets.I().get(AssetKey.RETURN_BUTTON), Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED), Assets.I().get(AssetKey.RETURN_BUTTON_HOVERED),
             new Rectangle(10f, 2.25f + WINDOW_Y, 79 / 35f, 25 / 35f), Input.Keys.ENTER);
     }
 

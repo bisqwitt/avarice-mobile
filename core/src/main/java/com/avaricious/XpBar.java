@@ -1,7 +1,6 @@
 package com.avaricious;
 
 import com.avaricious.components.progressbar.ProgressBar;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.stream.IntStream;
@@ -15,7 +14,6 @@ public class XpBar extends ProgressBar {
     private final float Y = 0f;
     private final float OFFSET = 0.04325f;
 
-    private final Texture xpOrb = Assets.I().getXpOrb();
     private final Runnable onLevelUp;
 
     private float xp;
@@ -23,7 +21,7 @@ public class XpBar extends ProgressBar {
     private int furthestLitCellIndex = 0;
 
     public XpBar(Runnable onLevelUp) {
-        super(369, Assets.I().getXpPixel(), Assets.I().emptyPixel());
+        super(369, Assets.I().get(AssetKey.XP_PIXEL), Assets.I().get(AssetKey.EMPTY_PIXEL));
         setMaxValue(xpPerLevel(level));
 
         this.onLevelUp = onLevelUp;

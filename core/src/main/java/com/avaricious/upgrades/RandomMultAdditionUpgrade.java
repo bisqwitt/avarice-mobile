@@ -1,5 +1,6 @@
 package com.avaricious.upgrades;
 
+import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
 import com.badlogic.gdx.math.MathUtils;

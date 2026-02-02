@@ -1,5 +1,7 @@
-package com.avaricious.upgrades.bars;
+package com.avaricious.components.bars;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.UpgradesManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,8 +17,8 @@ public class JokerUpgradeBar extends UpgradeBar {
     public JokerUpgradeBar(List<? extends Upgrade> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
         super(upgrades, cardRectangle, offset, tooltipOnTop);
 
-        jokerCard = new TextureRegion(Assets.I().getJokerCard());
-        jokerCardShadow = new TextureRegion(Assets.I().getJokerCardShadow());
+        jokerCard = new TextureRegion(Assets.I().get(AssetKey.JOKER_CARD));
+        jokerCardShadow = new TextureRegion(Assets.I().get(AssetKey.JOKER_CARD_SHADOW));
     }
 
     @Override

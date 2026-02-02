@@ -1,6 +1,5 @@
 package com.avaricious.components.popups;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -13,15 +12,15 @@ public class StatisticPopup {
     private final float lifetime = 1f;
     private float timeAlive = 0f;
 
-    public StatisticPopup(Texture texture, float x, float y) {
-        this.texture = new TextureRegion(texture);
+    public StatisticPopup(TextureRegion texture, float x, float y) {
+        this.texture = texture;
         this.x = x;
         this.y = y;
     }
 
     public void update(float delta) {
         timeAlive += delta;
-        if(timeAlive > lifetime) {
+        if (timeAlive > lifetime) {
             timeAlive = lifetime;
         }
     }

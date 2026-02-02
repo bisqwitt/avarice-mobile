@@ -1,15 +1,15 @@
 package com.avaricious.stats.statupgrades;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class Omnivamp extends Stat {
     @Override
-    public Texture getTexture() {
+    public TextureRegion getTexture() {
         return null;
     }
 
     @Override
-    public Texture getShadowTexture() {
+    public TextureRegion getShadowTexture() {
         return null;
     }
 }

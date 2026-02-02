@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -30,9 +31,7 @@ public class Slot {
 
     public TextureRegion getFrame(Symbol symbol, boolean selected, float delta) {
         if (selected) stateTime += delta;
-        return selected
-            ? Assets.I().getBorderAnimation(symbol).getKeyFrame(stateTime, true)
-            : Assets.I().getBase(symbol);
+        return Assets.I().getSymbol(symbol);
     }
 
     public void tickScale(float delta) {

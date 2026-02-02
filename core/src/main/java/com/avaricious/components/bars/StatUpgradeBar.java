@@ -1,5 +1,6 @@
-package com.avaricious.upgrades.bars;
+package com.avaricious.components.bars;
 
+import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.stats.statupgrades.StatUpgrade;
 import com.avaricious.upgrades.Upgrade;
@@ -23,7 +24,7 @@ public class StatUpgradeBar extends UpgradeBar {
 
         PopupManager.I().spawnPercentage(
             ((StatUpgrade) clickedUpgrade).getAdditionalPercentage(),
-            Assets.I().colorGreen(),
+            Assets.I().green(),
             cardBounds.get(clickedUpgrade).getX() + 1f,
             cardBounds.get(clickedUpgrade).getY()).setOnFinished(() -> onUpgradeClicked.run());
         clickedUpgrade.apply();
@@ -31,11 +32,11 @@ public class StatUpgradeBar extends UpgradeBar {
 
     @Override
     protected TextureRegion getTexture(Upgrade upgrade) {
-        return new TextureRegion(((StatUpgrade) upgrade).getStat().getTexture());
+        return ((StatUpgrade) upgrade).getStat().getTexture();
     }
 
     @Override
     protected TextureRegion getShadow(Upgrade upgrade) {
-        return new TextureRegion(((StatUpgrade) upgrade).getStat().getShadowTexture());
+        return ((StatUpgrade) upgrade).getStat().getShadowTexture();
     }
 }

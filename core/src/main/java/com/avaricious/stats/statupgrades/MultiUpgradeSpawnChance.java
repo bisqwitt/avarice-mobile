@@ -1,15 +1,17 @@
 package com.avaricious.stats.statupgrades;
 
-import com.badlogic.gdx.graphics.Texture;
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class MultiUpgradeSpawnChance extends Stat {
     @Override
-    public Texture getTexture() {
-        return Assets.I().getMultiStat();
+    public TextureRegion getTexture() {
+        return Assets.I().get(AssetKey.MULTI);
     }
 
     @Override
-    public Texture getShadowTexture() {
-        return Assets.I().getMultiStatShadow();
+    public TextureRegion getShadowTexture() {
+        return Assets.I().get(AssetKey.MULTI_SHADOW);
     }
 }

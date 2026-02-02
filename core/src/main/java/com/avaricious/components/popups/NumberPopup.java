@@ -1,5 +1,7 @@
 package com.avaricious.components.popups;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,8 +17,8 @@ public class NumberPopup {
     private final List<TextureRegion> digitalNumberTextures = new ArrayList<>();
     private final List<TextureRegion> digitalNumberShadowTextures = new ArrayList<>();
 
-    private final TextureRegion plusTexture = new TextureRegion(Assets.I().getPlusSymbol());
-    private final TextureRegion percentageTexture = new TextureRegion(Assets.I().getPercentageSymbol());
+    private final TextureRegion plusTexture = Assets.I().get(AssetKey.PLUS_SYMBOL);
+    private final TextureRegion percentageTexture = Assets.I().get(AssetKey.PERCENTAGE_SYMBOL);
 
     private final Rectangle bounds;
     private final Color color;
@@ -133,15 +135,15 @@ public class NumberPopup {
 
         for (int i = 0; i < digitalNumberTextures.size(); i++) {
             // Shadow
-            batch.setColor(1f, 1f, 1f, 0.25f);
-            batch.draw(
-                digitalNumberShadowTextures.get(i),
-                bounds.x + (0.5f * i) + 0.1f, bounds.y - 0.1f,
-                originX, originY,
-                bounds.width, bounds.height,
-                scale, scale,
-                rotation
-            );
+//            batch.setColor(1f, 1f, 1f, 0.25f);
+//            batch.draw(
+//                digitalNumberShadowTextures.get(i),
+//                bounds.x + (0.5f * i) + 0.1f, bounds.y - 0.1f,
+//                originX, originY,
+//                bounds.width, bounds.height,
+//                scale, scale,
+//                rotation
+//            );
 
             // Foreground digit
             batch.setColor(color.r, color.g, color.b, alpha);
@@ -228,8 +230,8 @@ public class NumberPopup {
 
         for (char c : String.valueOf(number).toCharArray()) {
             int digit = c - '0';
-            digitalNumberTextures.add(new TextureRegion(Assets.I().getDigitalNumber(digit)));
-            digitalNumberShadowTextures.add(new TextureRegion(Assets.I().getDigitalNumberShadow(digit)));
+            digitalNumberTextures.add(Assets.I().getDigitalNumber(digit));
+//            digitalNumberShadowTextures.add(new TextureRegion(Assets.I().getDigitalNumberShadow(digit)));
         }
     }
 }

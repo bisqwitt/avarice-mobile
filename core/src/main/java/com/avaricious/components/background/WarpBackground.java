@@ -1,10 +1,12 @@
 package com.avaricious.components.background;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -13,12 +15,12 @@ public class WarpBackground {
     private final ShaderProgram shader;
     private float time;
 
-    private final Texture whiteTexture;
+    private final TextureRegion whiteTexture;
 
     public WarpBackground() {
         ShaderProgram.pedantic = false;
 
-        whiteTexture = Assets.I().getWhiteTexture();
+        whiteTexture = Assets.I().get(AssetKey.WHITE_PIXEL);
         shader = new ShaderProgram(
             Gdx.files.internal("shader/warp.vert"),
             Gdx.files.internal("shader/warp.frag")

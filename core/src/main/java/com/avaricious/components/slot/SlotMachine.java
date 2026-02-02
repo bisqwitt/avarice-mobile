@@ -1,5 +1,7 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.TextureGlow;
@@ -7,7 +9,6 @@ import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.components.slot.pattern.SlotMatch;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -37,13 +38,11 @@ public class SlotMachine {
     // Visual cells (for selection pulse/scale)
     private final Slot[][] grid = new Slot[cols][rows];
 
-    private final TextureRegion slotBox = new TextureRegion(Assets.I().getSlotBox());
-    ;
-    private final TextureRegion slotBoxShadow = new TextureRegion(Assets.I().getSlotBoxShadow());
-    ;
+    private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
+    private final TextureRegion slotBoxShadow = Assets.I().get(AssetKey.SLOT_BOX_SHADOW);
 
-    private final Texture darkGreenTexture = Assets.I().getDarkGreenTexture();
-    private final Texture blackGreenTexture = Assets.I().getBlackGreenTexture();
+    private final TextureRegion darkGreenTexture = Assets.I().get(AssetKey.DARK_GREEN_PIXEL);
+    private final TextureRegion blackGreenTexture = Assets.I().get(AssetKey.BLACK_GREEN_PIXEL);
 
     // Reels (one per column)
     private final List<Reel> reels = new ArrayList<>();
@@ -54,8 +53,8 @@ public class SlotMachine {
 
     public SlotMachine(float worldWidth, float worldHeight) {
         // center the 5x3 grid within the world
-        originX = ((worldWidth - cols * (CELL_W + spacingX)) / 2f);
-        originY = ((worldHeight - rows * (CELL_H + spacingY)) / 2f) - 1f + 0.5f;
+        originX = ((worldWidth - cols * (CELL_W + spacingX)) / 2f) + 0.15f;
+        originY = ((worldHeight - rows * (CELL_H + spacingY)) / 2f) + 1.4f;
 
         // build visual cells
         for (int c = 0; c < cols; c++) {
@@ -109,7 +108,7 @@ public class SlotMachine {
         }
 
         if (desiredAlpha != alpha) {
-            float speed = 6f; // higher = faster convergence
+            float speed = 10f; // higher = faster convergence
             alpha = MathUtils.lerp(alpha, desiredAlpha, speed * delta);
         }
 
@@ -123,9 +122,9 @@ public class SlotMachine {
         area.setY(area.y - 0.3f);
         area.setHeight(area.height + 0.30f);
 
-        drawBorder(batch, area, blackGreenTexture, 0.25f);
-        drawBorder(batch, area, darkGreenTexture, 0.2f);
-        drawBorder(batch, area, blackGreenTexture, 0.075f);
+//        drawBorder(batch, area, blackGreenTexture, 0.25f);
+//        drawBorder(batch, area, darkGreenTexture, 0.2f);
+//        drawBorder(batch, area, blackGreenTexture, 0.075f);
 
         Rectangle scissors = new Rectangle();
         ScissorStack.calculateScissors(cam, batch.getTransformMatrix(), area, scissors);
@@ -133,7 +132,7 @@ public class SlotMachine {
         batch.flush();
         ScissorStack.pushScissors(scissors);
 
-        batch.draw(Assets.I().getWhiteTexture(), 0f, 0f, 16f, 9f);
+//        batch.draw(Assets.I().get(AssetKey.WHITE_PIXEL), 0f, 0f, 16f, 9f);
 
         drawBoxes(batch);
         TextureGlow.draw(batch, delta, "slot");
@@ -147,7 +146,7 @@ public class SlotMachine {
         ScissorStack.popScissors();
     }
 
-    private void drawBorder(SpriteBatch batch, Rectangle area, Texture texture, float size) {
+    private void drawBorder(SpriteBatch batch, Rectangle area, TextureRegion texture, float size) {
         batch.draw(texture, area.x - size, area.y + area.height,
             area.width + size * 2, size);
         batch.draw(texture, area.x - size, area.y - size,
@@ -252,16 +251,14 @@ public class SlotMachine {
                 float adjY = drawY - (drawH - CELL_H) / 2f;
 
                 // choose frame (keeps your animated border when selected)
-                region = isInGrid
-                    ? grid[c][k].getFrame(symbolSlot.getSymbol(), selected, delta)
-                    : Assets.I().getBase(symbolSlot.getSymbol());
+                region = Assets.I().getSymbol(symbolSlot.getSymbol());
 
                 // NEW: rotate around center using current wobble angle
                 float rotation = isInGrid ? grid[c][k].wobbleAngleDeg() : 0f;
 
                 batch.setColor(1f, 1f, 1f, 0.25f);
                 batch.draw(
-                    Assets.I().getSymbolShadow(symbolSlot.getSymbol()),
+                    Assets.I().getSymbol(symbolSlot.getSymbol()),
                     adjX + 0.05f, adjY - 0.05f,
                     drawW / 2f, drawH / 2f,
                     drawW, drawH,

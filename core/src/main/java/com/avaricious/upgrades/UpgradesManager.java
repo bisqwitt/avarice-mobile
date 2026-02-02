@@ -18,10 +18,12 @@ import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SevenValueStack
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UpgradesManager {
@@ -33,7 +35,7 @@ public class UpgradesManager {
     }
 
     private UpgradesManager() {
-        allUpgrades.addAll(List.of(
+        allUpgrades.addAll(Arrays.asList(
             CriticalHitDamageUpgrade.class,
             DeptUpgrade.class,
             RandomMultAdditionUpgrade.class,
@@ -52,8 +54,8 @@ public class UpgradesManager {
             SevenValueStackUpgrade.class)
         );
 
-        randomUpgrades().forEach(this::addUpgrade);
-        randomUpgrades().forEach(this::addUpgrade);
+//        randomUpgrades().forEach(this::addUpgrade);
+//        randomUpgrades().forEach(this::addUpgrade);
     }
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();
@@ -79,7 +81,7 @@ public class UpgradesManager {
     }
 
     public List<? extends Upgrade> randomUpgrades() {
-        List<Class<? extends Upgrade>> randomUpgrades = List.of(
+        List<Class<? extends Upgrade>> randomUpgrades = Arrays.asList(
             allUpgrades.get((int) (Math.random() * allUpgrades.size())),
             allUpgrades.get((int) (Math.random() * allUpgrades.size())),
             allUpgrades.get((int) (Math.random() * allUpgrades.size()))
@@ -91,7 +93,7 @@ public class UpgradesManager {
                      NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
-        }).toList();
+        }).collect(Collectors.toList());
     }
 
     public <T> Stream<T> getUpgradesOfClass(Class<T> clazz) {

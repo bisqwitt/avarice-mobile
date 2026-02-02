@@ -20,7 +20,10 @@ public final class Profiler {
                 Gdx.app.log("perf",
                     "fps=" + Gdx.graphics.getFramesPerSecond() +
                         " draws=" + profiler.getDrawCalls() +
-                        " texBinds=" + profiler.getTextureBindings());
+                        " texBinds=" + profiler.getTextureBindings() +
+                        " heap=" + Gdx.app.getJavaHeap() +
+                        " nativeHeap=" + Gdx.app.getNativeHeap() +
+                        " delta=" + Gdx.graphics.getDeltaTime());
 
                 profiler.reset();
             }
