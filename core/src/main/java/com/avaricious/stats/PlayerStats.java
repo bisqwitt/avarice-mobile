@@ -1,6 +1,11 @@
 package com.avaricious.stats;
 
-import com.avaricious.stats.statupgrades.*;
+import com.avaricious.stats.statupgrades.CreditSpawnChance;
+import com.avaricious.stats.statupgrades.CriticalHitChance;
+import com.avaricious.stats.statupgrades.DoubleHitChance;
+import com.avaricious.stats.statupgrades.EvadeChance;
+import com.avaricious.stats.statupgrades.LuckChance;
+import com.avaricious.stats.statupgrades.Stat;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
@@ -19,8 +24,7 @@ public class PlayerStats {
         CriticalHitChance.class, new CriticalHitChance(),
         DoubleHitChance.class, new DoubleHitChance(),
         EvadeChance.class, new EvadeChance(),
-        LuckChance.class, new LuckChance(),
-        Omnivamp.class, new Omnivamp()
+        LuckChance.class, new LuckChance()
     );
 
     private PlayerStats() {
@@ -30,13 +34,13 @@ public class PlayerStats {
         return stats.get(statClass).rollChance();
     }
 
-    public Stat getStat(Class<? extends Stat> statClass) {
-        return stats.get(statClass);
+    public <T extends Stat> T getStat(Class<T> statClass) {
+        return statClass.cast(stats.get(statClass));
     }
 
     public Stat getRandomStat() {
         List<Stat> values = stats.values().stream().toList();
-        return values.get(MathUtils.random(0, values.size() -1));
+        return values.get(MathUtils.random(0, values.size() - 1));
     }
 
 }

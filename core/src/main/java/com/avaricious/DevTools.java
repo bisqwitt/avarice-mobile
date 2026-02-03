@@ -16,4 +16,6 @@ public class DevTools {
 
     public static boolean fullscreen = true;
 
+    public static boolean enableProfiler = false;
+
 }

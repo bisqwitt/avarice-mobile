@@ -36,11 +36,11 @@ public class Assets {
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.size = 36;
+        param.size = 92;
         bigFont = generator.generateFont(param);
         bigFont.setUseIntegerPositions(false);
         bigFont.getData().markupEnabled = true;
-        param.size = 26;
+        param.size = 70;
         smallFont = generator.generateFont(param);
         smallFont.setUseIntegerPositions(false);
         smallFont.getData().markupEnabled = true;

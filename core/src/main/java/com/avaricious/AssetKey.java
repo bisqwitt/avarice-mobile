@@ -77,7 +77,8 @@ public enum AssetKey {
     LUCK_SHADOW("luck-shadow"),
     MULTI("multi"),
     MULTI_SHADOW("multi-shadow"),
-    GREY_PIXEL("grey-pixel");
+    GREY_PIXEL("grey-pixel"),
+    LIGHT_GREY_PIXEL("light-grey-pixel");
 
     private final String path;
 

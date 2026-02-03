@@ -54,7 +54,7 @@ public abstract class UpgradeBar {
         }));
 
         if (hoveringKey != null)
-            PopupManager.I().showTooltip(hoveringKey,
+            PopupManager.I().renderTooltip(hoveringKey,
                 getHoveringRectangle().x - 1f, getHoveringRectangle().y + (tooltipOnTopOfCard ? 2 : -2));
 
         if (clickedUpgrade[0] != null) {

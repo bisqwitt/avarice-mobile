@@ -27,13 +27,13 @@ public class TooltipPopup {
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
-        jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250, Align.center, true);
-        description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 250f, Align.top | Align.center, true);
+        jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250f, Align.center, true);
+        description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
     }
 
     public void render(SpriteBatch batch) {
-        float boxWidth = 82 / 25f;
-        float boxHeight = 41 / 25f;
+        float boxWidth = 82 / 15f;
+        float boxHeight = 41 / 15f;
         float boxX = pos.x;
         float boxY = pos.y;
 
@@ -57,7 +57,7 @@ public class TooltipPopup {
         float jokerW = jokerTxt.width;
         float jokerH = jokerTxt.height;
 
-        float jokerX = center.x - jokerW / 2f - 85f;
+        float jokerX = center.x - jokerW / 2f;
         float jokerY = center.y + 55 + jokerH;
         // adjust + (boxHeight * 10) to taste
 

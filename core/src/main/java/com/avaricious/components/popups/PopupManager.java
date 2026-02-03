@@ -26,7 +26,7 @@ public class PopupManager {
     private TooltipPopup tooltipPopup;
     private boolean renderTooltip;
 
-    public void showTooltip(Upgrade upgrade, float x, float y) {
+    public void renderTooltip(Upgrade upgrade, float x, float y) {
         if (upgrade == null) return;
         renderTooltip = true;
         tooltipPopup = new TooltipPopup(upgrade.description(), new Vector2(x, y));

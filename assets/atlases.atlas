@@ -438,6 +438,13 @@ levelup
   orig: 55, 13
   offset: 0, 0
   index: -1
+light-grey-pixel
+  rotate: false
+  xy: 1924, 312
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 luck
   rotate: false
   xy: 1578, 2
@@ -664,14 +671,14 @@ upgrade
   index: -1
 white
   rotate: false
-  xy: 1924, 312
+  xy: 1367, 30
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 xp-pixel
   rotate: false
-  xy: 1367, 30
+  xy: 1825, 77
   size: 2, 2
   orig: 2, 2
   offset: 0, 0

@@ -92,8 +92,8 @@ public class JokerDeck {
             deckBounds.x - 0.15f, deckBounds.y - 0.15f,
             deckBounds.width + 0.3f, deckBounds.height + 0.3f);
         batch.setColor(1f, 1f, 1f, 1f);
-        jokerBounds.forEach((upgrade, bounds) -> {
 
+        jokerBounds.forEach((upgrade, bounds) -> {
             float pickProgress = clamp01(this.pickProgress.get(upgrade));
             float shadowAlpha = 0.25f * pickProgress;
             float shadowXOffset = 0.15f * pickProgress;
@@ -120,7 +120,7 @@ public class JokerDeck {
             );
         });
 
-        if (hoveringUpgrade != null) PopupManager.I().showTooltip(hoveringUpgrade,
+        if (hoveringUpgrade != null) PopupManager.I().renderTooltip(hoveringUpgrade,
             getBoundsByUpgrade(hoveringUpgrade).x - 1f, getBoundsByUpgrade(hoveringUpgrade).y + 2.5f);
     }
 

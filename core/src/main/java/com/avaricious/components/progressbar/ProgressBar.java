@@ -5,6 +5,8 @@ import com.avaricious.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.stream.IntStream;
+
 public class ProgressBar {
 
     protected final TextureRegion border;
@@ -124,6 +126,13 @@ public class ProgressBar {
     public void setDisplayedValue(float displayedValue) {
         this.displayedValue = displayedValue;
         updateProgressTextures();
+    }
+
+    public int getFurthestCellIndex() {
+        return IntStream.range(0, progress.length)
+            .filter(i -> progress[i] == lit)
+            .max()
+            .orElse(-1);
     }
 
     public float getMaxValue() {

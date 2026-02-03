@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ButtonBoard {
 
     private final float BOARD_X = 0.7f;
-    private final float BOARD_Y = 2.5f;
+    private final float BOARD_Y = 6.5f;
 
     private final TextureRegion buttonBoard = Assets.I().get(AssetKey.BUTTON_BOARD);
     private final TextureRegion buttonBoardShadow = Assets.I().get(AssetKey.BUTTON_BOARD_SHADOW);

@@ -3,8 +3,6 @@ package com.avaricious;
 import com.avaricious.components.progressbar.ProgressBar;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.util.stream.IntStream;
-
 public class XpBar extends ProgressBar {
 
     private final float STEP_WIDTH = 2 / 22f;
@@ -21,7 +19,7 @@ public class XpBar extends ProgressBar {
     private int furthestLitCellIndex = 0;
 
     public XpBar(Runnable onLevelUp) {
-        super(369, Assets.I().get(AssetKey.XP_PIXEL), Assets.I().get(AssetKey.EMPTY_PIXEL));
+        super(207, Assets.I().get(AssetKey.XP_PIXEL), Assets.I().get(AssetKey.EMPTY_PIXEL));
         setMaxValue(xpPerLevel(level));
 
         this.onLevelUp = onLevelUp;
@@ -43,12 +41,9 @@ public class XpBar extends ProgressBar {
     @Override
     protected void updateProgressTextures() {
         super.updateProgressTextures();
-        int furthestLitCellIndex = IntStream.range(0, progress.length)
-            .filter(i -> progress[i] == lit)
-            .max()
-            .orElse(-1);
 
-//        if(this.furthestLitCellIndex != furthestLitCellIndex) {
+        int furthestCellIndex = getFurthestCellIndex();
+//        if(this.furthestLitCellIndex != furthestCellIndex) {
 //            ParticleManager.I().create(X + furthestLitCellIndex * OFFSET, Y, ParticleType.XP);
 //            this.furthestLitCellIndex = furthestLitCellIndex;
 //        }
