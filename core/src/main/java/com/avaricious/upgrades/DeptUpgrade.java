@@ -12,9 +12,4 @@ public class DeptUpgrade extends Upgrade {
     public String description() {
         return "Go up to " + Assets.I().yellowText("-20$") + " in dept";
     }
-
-    @Override
-    public void apply() {
-
-    }
 }

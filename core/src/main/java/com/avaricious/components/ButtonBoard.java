@@ -14,28 +14,26 @@ public class ButtonBoard {
     private final float BOARD_X = 0.7f;
     private final float BOARD_Y = 6.5f;
 
-    private final TextureRegion buttonBoard = Assets.I().get(AssetKey.BUTTON_BOARD);
-    private final TextureRegion buttonBoardShadow = Assets.I().get(AssetKey.BUTTON_BOARD_SHADOW);
+    private final float BUTTON_W = 79 / 25f;
+    private final float BUTTON_H = 25 / 25f;
 
     private final DisablableButton spinAgainButton;
     private final DisablableButton cashoutButton;
 
-    private boolean visible;
+    private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
     public ButtonBoard(Runnable onSpinButtonPressed, Runnable onCashoutButtonPressed) {
         spinAgainButton = new DisablableButton(onSpinButtonPressed,
             Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON),
             Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON_PRESSED),
             Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON),
-            Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON_DISABLED),
-            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, 79 / 25f, 25 / 25f), Input.Keys.SPACE);
+            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
         cashoutButton = new DisablableButton(onCashoutButtonPressed,
             Assets.I().get(AssetKey.CASHOUT_BUTTON),
             Assets.I().get(AssetKey.CASHOUT_BUTTON_PRESSED),
             Assets.I().get(AssetKey.CASHOUT_BUTTON),
-            Assets.I().get(AssetKey.CASHOUT_BUTTON_DISABLED),
-            new Rectangle(BOARD_X + 0.3f, BOARD_Y + 0.6f, 79 / 25f, 25 / 25f), Input.Keys.ENTER);
+            new Rectangle(BOARD_X + 0.3f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
     }
 
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
@@ -44,20 +42,18 @@ public class ButtonBoard {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        if (visible) {
-//            batch.setColor(1f, 1f, 1f, 0.25f);
-//            batch.draw(buttonBoardShadow, 5f, 1.05f, 206 / 35f, 53 / 35f);
-//            batch.setColor(1f, 1f, 1f, 1f);
-//            batch.draw(buttonBoard, BOARD_X, BOARD_Y, 206f / 30f, 53f / 30f);
-        }
+        spinAgainButton.update(delta);
+        cashoutButton.update(delta);
+
         spinAgainButton.draw(batch, delta);
         cashoutButton.draw(batch, delta);
     }
 
+
     public void setVisible(boolean visible) {
-        this.visible = visible;
-        spinAgainButton.setDisabled(!visible);
-        cashoutButton.setDisabled(!visible);
+        spinAgainButton.setVisibleAnimated(visible);
+        cashoutButton.setVisibleAnimated(visible);
     }
+
 
 }

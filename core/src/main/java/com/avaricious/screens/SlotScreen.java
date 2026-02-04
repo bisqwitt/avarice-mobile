@@ -31,8 +31,10 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
+import com.avaricious.upgrades.UpgradeWithActionAfterSpin;
 import com.avaricious.upgrades.UpgradesManager;
 import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
+import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackUpgrade;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -41,7 +43,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.crashinvaders.vfx.VfxManager;
@@ -67,9 +68,6 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
 
-    //    private final JokerDeck jokerDeck = new JokerDeck(
-//        new Rectangle(0.75f, 1f, 142 / 95f, 190 / 95f)
-//    );
     private final SlotScreenJokerBar jokerBar = new SlotScreenJokerBar();
 
     private final CreditScore creditScore = new CreditScore(0,
@@ -77,24 +75,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final Shop shop = new Shop();
 
-//    private final Button shopButton = new Button(shop::show,
-//        Assets.I().get(AssetKey.SHOP_BUTTON),
-//        Assets.I().get(AssetKey.SHOP_BUTTON_PRESSED),
-//        Assets.I().get(AssetKey.SHOP_BUTTON),
-//        new Rectangle(0.35f, 3.5f, 79f / 35f, 25f / 35f),
-//        Input.Keys.ESCAPE);
-
-
     private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
-    private final VfxManager bloomFxManager = new VfxManager(Pixmap.Format.RGBA8888);
-    private final FrameBuffer bloomLayer = new FrameBuffer(
-        Pixmap.Format.RGBA8888,
-        16,
-        9,
-        false
-    );
-
-
     private final CameraShaker cameraShaker;
 
     private final RoundsManager roundsManager = RoundsManager.I();
@@ -103,22 +84,11 @@ public class SlotScreen extends ScreenAdapter {
 
     public SlotScreen(Main app) {
         this.app = app;
-//        RayHandler.setGammaCorrection(true);
-//        RayHandler.useDiffuseLight(true);
-
         slotMachine = new SlotMachine(app.getViewport().getWorldWidth(), app.getViewport().getWorldHeight());
         xpBar = new XpBar(statusUpgradeWindow::show);
 
         cameraShaker = new CameraShaker(app);
-
         vfxManager.addEffect(new OldTvEffect());
-//        BloomEffect bloom = new BloomEffect();
-//        bloom.setBaseIntensity(1f);
-//        bloom.setBloomIntensity(10f);
-//        bloom.setThreshold(0.6f);
-//        bloom.setBlurAmount(2f);
-//        bloom.setBlurPasses(3);
-//        bloomFxManager.addEffect(bloom);
 
         if (DevTools.enableProfiler) Profiler.start();
     }
@@ -144,36 +114,35 @@ public class SlotScreen extends ScreenAdapter {
         SpriteBatch batch = app.getBatch();
         handleInput(delta);
         app.getViewport().apply();
-
-        vfxManager.cleanUpBuffers();
         cameraShaker.render(delta);
 
-        vfxManager.beginInputCapture();
-//        backgroundLayer.render(batch, delta);
         Camera camera = app.getViewport().getCamera();
         batch.setProjectionMatrix(camera.combined);
 
+        // Clear the actual screen once
         Gdx.gl.glClearColor(35 / 255f, 29 / 255f, 30 / 255f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        vfxManager.cleanUpBuffers();
+        vfxManager.beginInputCapture();
+
+        // Clear capture buffer to transparent
+        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
         TextureEcho.draw(batch, delta);
         ParticleManager.I().draw(batch, delta);
-        //upgradeBar.draw(batch);
-//        batch.draw(slotMachineBox, 6.75f, 3.0f, 175f / 20.75f, 118 / 20.75f);
+
         slotMachine.draw(app, delta);
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
-//        creditScore.draw(batch, delta);
         buttonBoard.draw(batch, delta);
         healthBar.draw(batch);
         xpBar.draw(batch);
         jokerBar.draw(batch);
-//        shopButton.draw(batch, delta);
 
-//        jokerDeck.draw(batch, delta);
         TextureGlow.draw(batch, delta, "number");
-
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);
         PopupManager.I().draw(batch, delta);
@@ -181,44 +150,14 @@ public class SlotScreen extends ScreenAdapter {
 
         vfxManager.endInputCapture();
         vfxManager.applyEffects();
-//        Gdx.gl.glEnable(GL20.GL_BLEND);
-//        Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
-        vfxManager.renderToScreen(app.getViewport().getScreenX(), app.getViewport().getScreenY(), app.getViewport().getScreenWidth(), app.getViewport().getScreenHeight());
-//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-//        renderBloomedLayer(batch, delta);
+        vfxManager.renderToScreen(
+            app.getViewport().getScreenX(),
+            app.getViewport().getScreenY(),
+            app.getViewport().getScreenWidth(),
+            app.getViewport().getScreenHeight()
+        );
     }
 
-//    private void renderBloomedLayer(SpriteBatch batch, float delta) {
-//
-//        // 1) Capture ONLY symbol echos into bloom manager (world coordinates)
-//        bloomFxManager.cleanUpBuffers();
-//        bloomFxManager.beginInputCapture();
-//
-//        batch.begin();
-//        symbolEchos.forEach(echo -> echo.draw(batch, delta));
-//        batch.end();
-//
-//        bloomFxManager.endInputCapture();
-
-    /// /        bloomFxManager.applyEffects();
-//
-//        Gdx.gl.glEnable(GL20.GL_BLEND);
-//        Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE); // additive glow
-//
-//        Texture bloomTex = bloomFxManager.getResultBuffer().getTexture();
-//
-//        batch.begin();
-//        batch.draw(
-//            bloomTex,
-//            0, 0,
-//            16, 9,
-//            0, 0, 1, 1 // typical FBO flip; if it appears upside down, use 0,0,1,1
-//        );
-//        batch.end();
-//
-//        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-//    }
     private void handleInput(float delta) {
         mouse.set(Gdx.input.getX(), Gdx.input.getY());
         app.getViewport().unproject(mouse);
@@ -232,9 +171,7 @@ public class SlotScreen extends ScreenAdapter {
         statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-//        shopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         backgroundLayer.handleInput();
-//        jokerDeck.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
@@ -326,6 +263,9 @@ public class SlotScreen extends ScreenAdapter {
 //            slotMachine.setAlpha(0.25f);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
+
+            UpgradesManager.I().getUpgradesOfClass(UpgradeWithActionAfterSpin.class)
+                .forEach(UpgradeWithActionAfterSpin::onSpinEnded);
         });
 
         if (DevTools.autoSpin) {
@@ -356,6 +296,17 @@ public class SlotScreen extends ScreenAdapter {
                     "slot", new Color(1f, 1f, 1f, 1f));
 
                 AudioManager.I().playHit(EffectManager.streak);
+
+                UpgradesManager.I().getUpgradesOfClass(PointsPerConsecutiveHit.class)
+                    .forEach(upgrade -> {
+                        int pointAddition = upgrade.getPoints();
+                        Slot jokerSlot = jokerBar.getSlotByUpgrade(upgrade);
+                        jokerSlot.pulse();
+                        jokerSlot.wobble();
+                        patternDisplay.addPoints(pointAddition);
+                        PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
+                            jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.6f, false);
+                    });
 
                 xpBar.addXp(points);
             });

@@ -256,7 +256,7 @@ public class SlotMachine {
                 // NEW: rotate around center using current wobble angle
                 float rotation = isInGrid ? grid[c][k].wobbleAngleDeg() : 0f;
 
-                batch.setColor(1f, 1f, 1f, 0.25f);
+                batch.setColor(Assets.I().shadowColor());
                 batch.draw(
                     Assets.I().getSymbol(symbolSlot.getSymbol()),
                     adjX + 0.05f, adjY - 0.05f,

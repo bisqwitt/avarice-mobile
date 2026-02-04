@@ -7,6 +7,7 @@ import com.avaricious.upgrades.multAdditions.pattern.FiveOfAKindMultAdditionUpgr
 import com.avaricious.upgrades.multAdditions.pattern.FourOfAKindMultAdditionUpgrade;
 import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionUpgrade;
 import com.avaricious.upgrades.pointAdditions.PointAdditionUpgrade;
+import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.PointsPerStreak;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.BellValueStackUpgrade;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackUpgrade;
@@ -51,11 +52,12 @@ public class UpgradesManager {
             BellValueStackUpgrade.class,
             IronValueStackUpgrade.class,
             DiamondValueStackUpgrade.class,
-            SevenValueStackUpgrade.class)
-        );
+            SevenValueStackUpgrade.class,
+            PointsPerConsecutiveHit.class
+        ));
 
         randomUpgrades().forEach(this::addUpgrade);
-        randomUpgrades().forEach(this::addUpgrade);
+//        randomUpgrades().forEach(this::addUpgrade);
     }
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();

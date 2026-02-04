@@ -1,5 +1,6 @@
 package com.avaricious.components.bars;
 
+import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
@@ -88,7 +89,7 @@ public abstract class UpgradeBar {
 
     protected void drawCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds, float scale, float rotation) {
         // draw shadow (also scaled and rotated)
-        batch.setColor(1f, 1f, 1f, 0.25f);
+        batch.setColor(Assets.I().shadowColor());
         batch.draw(
             getShadow(upgrade),
             bounds.x + 0.1f, bounds.y - 0.1f,

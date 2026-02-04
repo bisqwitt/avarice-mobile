@@ -1,23 +1,23 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.stats.statupgrades.StatUpgrade;
+import com.avaricious.stats.statupgrades.StatusUpgrade;
 
 public class SymbolInstance {
 
     private final Symbol symbol;
-    private final StatUpgrade statUpgrade;
+    private final StatusUpgrade statusUpgrade;
 
-    public SymbolInstance(Symbol symbol, StatUpgrade statUpgrade) {
+    public SymbolInstance(Symbol symbol, StatusUpgrade statusUpgrade) {
         this.symbol = symbol;
-        this.statUpgrade = statUpgrade;
+        this.statusUpgrade = statusUpgrade;
     }
 
     public Symbol getSymbol() {
         return symbol;
     }
 
-    public StatUpgrade getStatUpgrade() {
-        return statUpgrade;
+    public StatusUpgrade getStatUpgrade() {
+        return statusUpgrade;
     }
 
 }

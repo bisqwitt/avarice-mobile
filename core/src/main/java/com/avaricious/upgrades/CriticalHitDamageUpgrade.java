@@ -11,9 +11,4 @@ public class CriticalHitDamageUpgrade extends Upgrade {
     public String description() {
         return "Double " + Assets.I().greenText("Critical Hit") + " Multiplier";
     }
-
-    @Override
-    public void apply() {
-
-    }
 }

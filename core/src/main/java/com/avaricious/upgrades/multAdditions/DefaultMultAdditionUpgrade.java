@@ -34,8 +34,4 @@ public class DefaultMultAdditionUpgrade extends MultAdditionUpgrade {
     public String description() {
         return "Add " + getMulti() + " to multiplier";
     }
-
-    @Override
-    public void apply() {
-    }
 }

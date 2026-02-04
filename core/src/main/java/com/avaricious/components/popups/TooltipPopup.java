@@ -39,7 +39,7 @@ public class TooltipPopup {
 
         // WORLD SPACE
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
-        batch.setColor(1f, 1f, 1f, 0.25f);
+        batch.setColor(Assets.I().shadowColor());
         batch.draw(boxShadow, boxX + 0.1f, boxY - 0.1f, boxWidth, boxHeight);
         batch.setColor(1f, 1f, 1f, 1f);
         batch.draw(box, boxX, boxY, boxWidth, boxHeight);

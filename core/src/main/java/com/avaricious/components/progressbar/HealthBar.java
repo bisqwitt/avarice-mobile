@@ -41,7 +41,7 @@ public class HealthBar extends ProgressBar {
 //        batch.draw(box, 12.95f, 1.2f, 1.5f, 5.4f);
 //        batch.setColor(1f, 1f, 1f, 1f);
 
-        batch.draw(lightGreyPixel, X - 1.2f, Y - 0.25f, 8.7f, 0.75f);
+//        batch.draw(lightGreyPixel, X - 1.2f, Y - 0.25f, 8.7f, 0.75f);
 
         for (int i = 0; i < progress.length; i++) {
             batch.draw(progress[i], X + (i * CELL_OFFSET), Y, 2 / 22f, 6 / 22f);

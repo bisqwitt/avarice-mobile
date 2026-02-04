@@ -6,11 +6,6 @@ public class RetriggerUpgrade extends Upgrade {
     }
 
     @Override
-    public void apply() {
-
-    }
-
-    @Override
     public String description() {
         return "";
     }

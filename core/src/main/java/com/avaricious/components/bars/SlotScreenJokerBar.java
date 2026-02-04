@@ -67,13 +67,13 @@ public class SlotScreenJokerBar {
     }
 
     public void draw(SpriteBatch batch) {
-        batch.setColor(1f, 1f, 1f, 0.25f);
+        batch.setColor(Assets.I().shadowColor());
         jokerRectangles.forEach(rectangle -> batch.draw(jokerShadowTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height));
         batch.setColor(1f, 1f, 1f, 1f);
         jokerBounds.forEach(((upgrade, bounds) -> {
             float selectedScale = 1f;
             if (selectedUpgrade == upgrade) {
-                selectedScale = 1.25f;
+                selectedScale = 1.2f;
                 PopupManager.I().renderTooltip(selectedUpgrade, bounds.x - 2f, bounds.y + 2f);
             }
 

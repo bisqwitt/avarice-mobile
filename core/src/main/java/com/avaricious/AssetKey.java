@@ -78,7 +78,8 @@ public enum AssetKey {
     MULTI("multi"),
     MULTI_SHADOW("multi-shadow"),
     GREY_PIXEL("grey-pixel"),
-    LIGHT_GREY_PIXEL("light-grey-pixel");
+    LIGHT_GREY_PIXEL("light-grey-pixel"),
+    BUTTON_SHADOW("button-shadow");
 
     private final String path;
 

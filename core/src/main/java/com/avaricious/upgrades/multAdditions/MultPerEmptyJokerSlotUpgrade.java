@@ -29,8 +29,4 @@ public class MultPerEmptyJokerSlotUpgrade extends MultAdditionUpgrade {
         return Assets.I().redText("+5 mult") + " for each empty Joker slot\n"
             + Assets.I().greenText("(Currently +" + getMulti() + ")");
     }
-
-    @Override
-    public void apply() {
-    }
 }

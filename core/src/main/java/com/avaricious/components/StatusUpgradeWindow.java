@@ -2,9 +2,9 @@ package com.avaricious.components;
 
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
-import com.avaricious.components.bars.StatUpgradeBar;
+import com.avaricious.components.bars.StatusUpgradeBar;
 import com.avaricious.components.bars.UpgradeBar;
-import com.avaricious.stats.statupgrades.StatUpgrade;
+import com.avaricious.stats.statupgrades.StatusUpgrade;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,7 +28,7 @@ public class StatusUpgradeWindow {
     private float levelUpAnimTime = 0f;
     private float levelUpTxtScale = 1;
 
-    private final UpgradeBar upgradeBar = new StatUpgradeBar(randomStatUpgrades(),
+    private final UpgradeBar upgradeBar = new StatusUpgradeBar(randomStatUpgrades(),
         new Rectangle(WINDOW_X + 1.5f, WINDOW_Y + 1.6f, 1.25f, 1.25f));
 
     public StatusUpgradeWindow(Runnable onExit) {
@@ -38,8 +38,8 @@ public class StatusUpgradeWindow {
         });
     }
 
-    private List<StatUpgrade> randomStatUpgrades() {
-        return Arrays.asList(StatUpgrade.newRandom(), StatUpgrade.newRandom(), StatUpgrade.newRandom());
+    private List<StatusUpgrade> randomStatUpgrades() {
+        return Arrays.asList(StatusUpgrade.newRandom(), StatusUpgrade.newRandom(), StatusUpgrade.newRandom());
     }
 
     public void draw(SpriteBatch batch, float delta) {

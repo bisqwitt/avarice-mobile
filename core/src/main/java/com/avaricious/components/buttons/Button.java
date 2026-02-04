@@ -1,5 +1,7 @@
 package com.avaricious.components.buttons;
 
+import com.avaricious.AssetKey;
+import com.avaricious.Assets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,17 +10,19 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Button {
 
-    protected TextureRegion currentTexture;
-    private final Rectangle buttonRectangle;
+    protected final Rectangle buttonRectangle;
 
-    protected boolean wasHovered;
-    private boolean spaceWasPressed;
-
-    private final Runnable onButtonPressedRunnable;
     protected final TextureRegion defaultButtonTexture;
     private final TextureRegion pressedButtonTexture;
     private final TextureRegion hoveredButtonTexture;
+    private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
+
     private final int key;
+    private final Runnable onButtonPressedRunnable;
+
+    protected TextureRegion currentTexture;
+    protected boolean wasHovered;
+    private boolean spaceWasPressed;
 
     public Button(Runnable onButtonPressedRunnable,
                   TextureRegion defaultButtonTexture,
@@ -38,15 +42,7 @@ public class Button {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        float originX = buttonRectangle.width / 2f;
-        float originY = buttonRectangle.height / 2f;
-        batch.draw(currentTexture,
-            buttonRectangle.x + buttonRectangle.width / 2f - originX,
-            buttonRectangle.y + buttonRectangle.height / 2f - originY,
-            originX, originY,
-            buttonRectangle.width, buttonRectangle.height,
-            1, 1,
-            0);
+        drawAt(batch, buttonRectangle.x, buttonRectangle.y, buttonRectangle.width, buttonRectangle.height);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
@@ -72,6 +68,15 @@ public class Button {
         wasHovered = hovering;
         spaceWasPressed = spacePressed;
     }
+
+    protected void drawAt(SpriteBatch batch, float x, float y, float w, float h) {
+        batch.setColor(Assets.I().shadowColor());
+        batch.draw(buttonShadow, x + 0.1f, y - 0.1f, w, h);
+        batch.setColor(1f, 1f, 1f, 1f);
+
+        batch.draw(currentTexture, x, y, w, h);
+    }
+
 
     protected void onButtonPressed() {
         onButtonPressedRunnable.run();

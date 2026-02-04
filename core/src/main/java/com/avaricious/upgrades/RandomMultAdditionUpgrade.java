@@ -27,9 +27,4 @@ public class RandomMultAdditionUpgrade extends MultAdditionUpgrade {
         return Assets.I().redText("+0") + " - " + Assets.I().redText("23 Mult") + "\n"
             + "(Random each turn)";
     }
-
-    @Override
-    public void apply() {
-
-    }
 }

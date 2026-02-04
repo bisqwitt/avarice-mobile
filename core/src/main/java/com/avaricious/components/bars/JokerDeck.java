@@ -87,7 +87,7 @@ public class JokerDeck {
 
 
     public void draw(SpriteBatch batch, float delta) {
-        batch.setColor(1f, 1f, 1f, 0.25f);
+        batch.setColor(Assets.I().shadowColor());
         batch.draw(jokerShadowTexture,
             deckBounds.x - 0.15f, deckBounds.y - 0.15f,
             deckBounds.width + 0.3f, deckBounds.height + 0.3f);

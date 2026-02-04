@@ -25,6 +25,13 @@ public class Assets {
 
     private final AssetManager manager = new AssetManager();
 
+    private final Color blue = new Color(0.1647f, 0.5412f, 0.7843f, 1f);
+    private final Color red = new Color(0.7922f, 0.3765f, 0.3333f, 1f);
+    private final Color green = new Color(0.2980f, 0.7098f, 0.4470f, 1f);
+    private final Color yellow = new Color(218f / 255f, 172f / 255f, 83f / 255f, 1f);
+    private final Color light = new Color(0.992156f, 0.992156f, 0.992156f, 1f);
+    private final Color shadow = new Color(1f, 1f, 1f, 0.25f);
+
     private Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
     private BitmapFont bigFont;
     private BitmapFont smallFont;
@@ -88,7 +95,7 @@ public class Assets {
     }
 
     public Color blue() {
-        return new Color(0.1647f, 0.5412f, 0.7843f, 1f);
+        return blue;
     }
 
     public String blueText(String txt) {
@@ -96,7 +103,7 @@ public class Assets {
     }
 
     public Color red() {
-        return new Color(0.7922f, 0.3765f, 0.3333f, 1f);
+        return red;
     }
 
     public String redText(String txt) {
@@ -104,7 +111,7 @@ public class Assets {
     }
 
     public Color green() {
-        return new Color(0.2980f, 0.7098f, 0.4470f, 1f);
+        return green;
     }
 
     public String greenText(String txt) {
@@ -112,7 +119,7 @@ public class Assets {
     }
 
     public Color yellow() {
-        return new Color(218f / 255f, 172f / 255f, 83f / 255f, 1f);
+        return yellow;
     }
 
     public String yellowText(String txt) {
@@ -120,7 +127,11 @@ public class Assets {
     }
 
     public Color lightColor() {
-        return new Color(0.992156f, 0.992156f, 0.992156f, 1f);
+        return light;
+    }
+
+    public Color shadowColor() {
+        return shadow;
     }
 
 }

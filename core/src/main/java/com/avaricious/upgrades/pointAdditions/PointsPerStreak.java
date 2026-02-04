@@ -24,9 +24,4 @@ public class PointsPerStreak extends PointAdditionUpgrade {
     public String description() {
         return "";
     }
-
-    @Override
-    public void apply() {
-
-    }
 }

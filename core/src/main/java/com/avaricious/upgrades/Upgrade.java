@@ -13,6 +13,4 @@ public abstract class Upgrade {
     public UpgradeRarity getRarity() {
         return rarity;
     }
-
-    public abstract void apply();
 }

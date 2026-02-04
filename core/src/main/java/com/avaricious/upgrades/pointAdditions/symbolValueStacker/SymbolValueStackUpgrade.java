@@ -27,10 +27,6 @@ public abstract class SymbolValueStackUpgrade extends PointAdditionUpgrade {
     }
 
     @Override
-    public void apply() {
-    }
-
-    @Override
     public String description() {
         return "Increases value of " + getSymbol().toString()
             + Assets.I().blueText(" (" + getSymbol().baseValue() + ")") + " by 1 every 10 " + getSymbol().toString() + "'s scored\n"

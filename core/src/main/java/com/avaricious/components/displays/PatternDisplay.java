@@ -181,7 +181,7 @@ public class PatternDisplay {
 
         if (Objects.equals(DevTools.playMode, "asdf")) for (int i = 0; i < 2; i++) {
             float x = FIRST_MULTI_DIGIT_X + (i * DIGIT_OFFSET);
-            batch.setColor(1f, 1f, 1f, 0.25f);
+            batch.setColor(Assets.I().shadowColor());
 //            batch.draw(
 //                streakNumberShadows[i],
 //                x - originX + 0.05f, numberBaseY - originY + 1f,
@@ -205,7 +205,7 @@ public class PatternDisplay {
                 streakRotation
             );
         }
-        batch.setColor(1f, 1f, 1f, 0.25f);
+        batch.setColor(Assets.I().shadowColor());
         batch.draw(multSymbolShadow, 10.75f + 0.05f, numberBaseY - originY - 0.05f, 0.35f, 0.35f);
 //        batch.draw(multSymbolShadow, 4.21f, numberBaseY - originY - 0.05f, 0.35f, 0.35f);
         batch.setColor(1f, 1f, 1f, 1f);
