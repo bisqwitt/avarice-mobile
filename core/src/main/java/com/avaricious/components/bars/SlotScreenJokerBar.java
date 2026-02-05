@@ -4,6 +4,7 @@ import com.avaricious.AssetKey;
 import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
+import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.UpgradesManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class SlotScreenJokerBar {
 
@@ -71,39 +73,42 @@ public class SlotScreenJokerBar {
         batch.setColor(Assets.I().shadowColor());
         jokerRectangles.forEach(rectangle -> batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height));
         batch.setColor(1f, 1f, 1f, 1f);
-        jokerBounds.forEach(((upgrade, bounds) -> {
-            Slot slot = jokerAnimationManagers.get(upgrade);
-            float selectedScale = selectedUpgrade == upgrade ? 1.3f : 1f;
-            float s = slot.pulseScale() * slot.wobbleScale() * selectedScale;
-            float r = slot.wobbleAngleDeg();
 
-            float originX = bounds.width * 0.5f;
-            float originY = bounds.height * 0.5f;
+        jokerBounds.entrySet().stream()
+            .filter(entry -> entry.getKey() != selectedUpgrade)
+            .forEach((entry -> drawJokerCard(batch, entry.getKey(), entry.getValue())));
+        if(selectedUpgrade != null) drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
+    }
 
-            if (selectedUpgrade == upgrade) {
-                batch.setColor(Assets.I().shadowColor());
-                batch.draw(jokerShadowTexture,
-                    bounds.x + 0.2f, bounds.y - 0.2f,
-                    originX, originY,
-                    bounds.width, bounds.height,
-                    s, s,
-                    r);
-                batch.setColor(1f, 1f, 1f, 1f);
+    private void drawJokerCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds) {
+        Slot slot = jokerAnimationManagers.get(upgrade);
+        float selectedScale = selectedUpgrade == upgrade ? 1.3f : 1f;
+        float s = slot.pulseScale() * slot.wobbleScale() * selectedScale;
+        float r = slot.wobbleAngleDeg();
 
-                float popupX = bounds.x - 2f;
-                if (popupX < 0) popupX = 0.25f;
-//                else if(popupX)
-                PopupManager.I().renderTooltip(selectedUpgrade, popupX, bounds.y + 2.5f);
-            }
+        float originX = bounds.width * 0.5f;
+        float originY = bounds.height * 0.5f;
 
-            batch.draw(
-                jokerTexture,
-                bounds.x, bounds.y,
+        if (selectedUpgrade == upgrade) {
+            batch.setColor(Assets.I().shadowColor());
+            batch.draw(jokerShadowTexture,
+                bounds.x, bounds.y - 0.2f,
                 originX, originY,
                 bounds.width, bounds.height,
                 s, s,
                 r);
-        }));
+            batch.setColor(1f, 1f, 1f, 1f);
+
+            PopupManager.I().renderTooltip(selectedUpgrade, bounds.x - 2f, bounds.y + 2.65f);
+        }
+
+        batch.draw(
+            jokerTexture,
+            bounds.x, bounds.y,
+            originX, originY,
+            bounds.width, bounds.height,
+            s, s,
+            r);
     }
 
     private void loadJokers(List<? extends Upgrade> upgrades) {

@@ -37,10 +37,14 @@ public class TooltipPopup {
         float boxX = pos.x;
         float boxY = pos.y;
 
+        float worldWidth = ScreenManager.getViewport().getWorldWidth();
+        if(boxX < 0) boxX = 0.25f;
+        else if(boxX + boxWidth > worldWidth) boxX = worldWidth - boxWidth - 0.25f;
+
         // WORLD SPACE
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
         batch.setColor(Assets.I().shadowColor());
-        batch.draw(boxShadow, boxX + 0.1f, boxY - 0.1f, boxWidth, boxHeight);
+        batch.draw(boxShadow, boxX, boxY - 0.2f, boxWidth, boxHeight);
         batch.setColor(1f, 1f, 1f, 1f);
         batch.draw(box, boxX, boxY, boxWidth, boxHeight);
 

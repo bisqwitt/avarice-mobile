@@ -57,7 +57,7 @@ public class UpgradesManager {
         ));
 
         randomUpgrades().forEach(this::addUpgrade);
-//        randomUpgrades().forEach(this::addUpgrade);
+        randomUpgrades().forEach(this::addUpgrade);
     }
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();

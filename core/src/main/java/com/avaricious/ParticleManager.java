@@ -68,7 +68,7 @@ public class ParticleManager {
         ParticleEffect particle = new ParticleEffect();
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));
-        particle.scaleEffect(0.03f);
+        particle.scaleEffect(0.05f);
 
         particle.setPosition(x, y);
         particle.start();

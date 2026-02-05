@@ -380,6 +380,7 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().createTopLayer(9, 0, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(0, 16, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
+        scoreDisplay.resetScore();
         healthBar.fullHeal();
         shop.show();
     }

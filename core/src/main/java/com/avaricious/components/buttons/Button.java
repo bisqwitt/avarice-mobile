@@ -73,7 +73,7 @@ public class Button {
     protected void drawAt(SpriteBatch batch, float x, float y, float w, float h) {
         if (showShadow) {
             batch.setColor(Assets.I().shadowColor());
-            batch.draw(buttonShadow, x + 0.1f, y - 0.1f, w, h);
+            batch.draw(buttonShadow, x, y - 0.1f, w, h);
             batch.setColor(1f, 1f, 1f, 1f);
         }
 
