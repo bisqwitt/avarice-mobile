@@ -7,6 +7,7 @@ import com.avaricious.DevTools;
 import com.avaricious.EffectManager;
 import com.avaricious.Main;
 import com.avaricious.ParticleManager;
+import com.avaricious.ParticleType;
 import com.avaricious.Profiler;
 import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
@@ -45,6 +46,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.OldTvEffect;
 
@@ -61,7 +63,7 @@ public class SlotScreen extends ScreenAdapter {
     private final PatternDisplay patternDisplay = new PatternDisplay();
 
     private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
-        if (scoreDisplay.targetScoreReached()) onTargetScoreReached();
+//        if (scoreDisplay.targetScoreReached()) onTargetScoreReached();
     });
 
     private final BackgroundLayer backgroundLayer = new BackgroundLayer();
@@ -90,13 +92,17 @@ public class SlotScreen extends ScreenAdapter {
         cameraShaker = new CameraShaker(app);
         vfxManager.addEffect(new OldTvEffect());
 
+        scoreDisplay.setOnInternalScoreDisplayed(() -> {
+            AudioManager.I().endPayout();
+            if (scoreDisplay.targetScoreReached()) onTargetScoreReached();
+            else onSpinButtonPressed();
+        });
+
         if (DevTools.enableProfiler) Profiler.start();
     }
 
     @Override
     public void show() {
-        roundsManager.nextRound();
-        scoreDisplay.resetScore();
         buttonBoard.setVisible(false);
 
         backgroundLayer.init();
@@ -104,8 +110,15 @@ public class SlotScreen extends ScreenAdapter {
         healthBar.setCurrentHealth(healthBar.getMaxHealth());
         slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(this::runResult);
 
-//        shop.show();
-//        statusUpgradeWindow.show();
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                statusUpgradeWindow.show();
+//                shop.show();
+            }
+        }, 1);
+
         onSpinButtonPressed();
     }
 
@@ -146,6 +159,7 @@ public class SlotScreen extends ScreenAdapter {
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);
         PopupManager.I().draw(batch, delta);
+        ParticleManager.I().drawTopLayer(batch, delta);
         batch.end();
 
         vfxManager.endInputCapture();
@@ -356,15 +370,17 @@ public class SlotScreen extends ScreenAdapter {
 
         patternDisplay.spawnEcho();
         patternDisplay.reset();
-        onSpinButtonPressed();
+        buttonBoard.setVisible(false);
     }
 
     private void onTargetScoreReached() {
-//        RoundsManager.I().nextRound();
-//        CreditManager.I().roundEnd();
-//        patternDisplay.reset();
-//        scoreDisplay.nextRound();
-//        healthBar.fullHeal();
-//        shop.show();
+        RoundsManager.I().nextRound();
+        CreditManager.I().roundEnd();
+        ParticleManager.I().createTopLayer(0, 0, ParticleType.RAINBOW);
+        ParticleManager.I().createTopLayer(9, 0, ParticleType.RAINBOW);
+        ParticleManager.I().createTopLayer(0, 16, ParticleType.RAINBOW);
+        ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
+        healthBar.fullHeal();
+        shop.show();
     }
 }

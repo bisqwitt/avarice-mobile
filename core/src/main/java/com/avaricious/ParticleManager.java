@@ -21,7 +21,7 @@ public class ParticleManager {
     }
 
     private final List<ParticleEffect> emitters = new ArrayList<>();
-
+    private final List<ParticleEffect> topLayerEmitters = new ArrayList<>();
 
     public void draw(SpriteBatch batch, float delta) {
         emitters.forEach(emitter -> {
@@ -30,6 +30,15 @@ public class ParticleManager {
         });
         Set<ParticleEffect> dump = emitters.stream().filter(ParticleEffect::isComplete).collect(Collectors.toSet());
         emitters.remove(dump);
+    }
+
+    public void drawTopLayer(SpriteBatch batch, float delta) {
+        topLayerEmitters.forEach(emitter -> {
+            emitter.update(delta);
+            emitter.draw(batch);
+        });
+        Set<ParticleEffect> dump = topLayerEmitters.stream().filter(ParticleEffect::isComplete).collect(Collectors.toSet());
+        topLayerEmitters.remove(dump);
     }
 
     public void create(float x, float y, ParticleType type, float streak) {
@@ -48,11 +57,22 @@ public class ParticleManager {
         ParticleEffect particle = new ParticleEffect();
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));
-        particle.scaleEffect(0.01f);
+        particle.scaleEffect(0.03f);
 
         particle.setPosition(x, y);
         particle.start();
         emitters.add(particle);
+    }
+
+    public void createTopLayer(float x, float y, ParticleType type) {
+        ParticleEffect particle = new ParticleEffect();
+        particle.load(type.getFile(),
+            Gdx.files.internal("particles/pngs"));
+        particle.scaleEffect(0.03f);
+
+        particle.setPosition(x, y);
+        particle.start();
+        topLayerEmitters.add(particle);
     }
 
 }

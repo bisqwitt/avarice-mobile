@@ -36,6 +36,9 @@ public enum AssetKey {
     HEART("heart"),
     HEALTH_RED_PIXEL("health-red-pixel"),
     SHOP_WINDOW("ShopWindow"),
+    SHOP_WINDOW_SHADOW("ShopWindowShadow"),
+    SHOP_TXT("ShopTxt"),
+    SHOP_TXT_SHADOW("ShopTxt-shadow"),
     REROLL_BUTTON("reroll"),
     REROLL_BUTTON_HOVERED("reroll-hovered"),
     REROLL_BUTTON_PRESSED("reroll-pressed"),
@@ -79,7 +82,9 @@ public enum AssetKey {
     MULTI_SHADOW("multi-shadow"),
     GREY_PIXEL("grey-pixel"),
     LIGHT_GREY_PIXEL("light-grey-pixel"),
-    BUTTON_SHADOW("button-shadow");
+    BUTTON_SHADOW("button-shadow"),
+    DARK_BLUE_PIXEL("dark-blue-pixel"),
+    BLUE_GREEN_PIXEL("blue-green-pixel");
 
     private final String path;
 

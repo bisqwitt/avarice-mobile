@@ -23,6 +23,7 @@ public class SlotScreenJokerBar {
 
     private final TextureRegion jokerTexture = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerShadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
+    private final TextureRegion blueGreenTexture = Assets.I().get(AssetKey.BLUE_GREEN_PIXEL);
 
     private final Map<Upgrade, Rectangle> jokerBounds = new LinkedHashMap<>();
     private final Map<Upgrade, Slot> jokerAnimationManagers = new LinkedHashMap<>();
@@ -68,21 +69,32 @@ public class SlotScreenJokerBar {
 
     public void draw(SpriteBatch batch) {
         batch.setColor(Assets.I().shadowColor());
-        jokerRectangles.forEach(rectangle -> batch.draw(jokerShadowTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height));
+        jokerRectangles.forEach(rectangle -> batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height));
         batch.setColor(1f, 1f, 1f, 1f);
         jokerBounds.forEach(((upgrade, bounds) -> {
-            float selectedScale = 1f;
-            if (selectedUpgrade == upgrade) {
-                selectedScale = 1.2f;
-                PopupManager.I().renderTooltip(selectedUpgrade, bounds.x - 2f, bounds.y + 2f);
-            }
-
             Slot slot = jokerAnimationManagers.get(upgrade);
+            float selectedScale = selectedUpgrade == upgrade ? 1.3f : 1f;
             float s = slot.pulseScale() * slot.wobbleScale() * selectedScale;
             float r = slot.wobbleAngleDeg();
 
             float originX = bounds.width * 0.5f;
             float originY = bounds.height * 0.5f;
+
+            if (selectedUpgrade == upgrade) {
+                batch.setColor(Assets.I().shadowColor());
+                batch.draw(jokerShadowTexture,
+                    bounds.x + 0.2f, bounds.y - 0.2f,
+                    originX, originY,
+                    bounds.width, bounds.height,
+                    s, s,
+                    r);
+                batch.setColor(1f, 1f, 1f, 1f);
+
+                float popupX = bounds.x - 2f;
+                if (popupX < 0) popupX = 0.25f;
+//                else if(popupX)
+                PopupManager.I().renderTooltip(selectedUpgrade, popupX, bounds.y + 2.5f);
+            }
 
             batch.draw(
                 jokerTexture,

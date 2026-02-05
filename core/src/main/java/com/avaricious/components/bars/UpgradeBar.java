@@ -32,7 +32,12 @@ public abstract class UpgradeBar {
 
         this.cardRectangle = cardRectangle;
         this.offset = offset;
-        loadUpgrades(upgrades);
+
+        for (int i = 0; i < upgrades.size(); i++) {
+            Upgrade upgrade = upgrades.get(i);
+            cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
+            cardAnimationManagers.put(upgrade, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
+        }
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
@@ -146,5 +151,9 @@ public abstract class UpgradeBar {
 
     public void setOnUpgradeClickedAndAnimationEnded(Runnable onUpgradeClicked) {
         this.onUpgradeClicked = onUpgradeClicked;
+    }
+
+    protected Rectangle getCardRectangle() {
+        return cardRectangle;
     }
 }

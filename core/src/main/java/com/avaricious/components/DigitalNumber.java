@@ -38,14 +38,15 @@ public class DigitalNumber {
 
     public DigitalNumber(int initialScore, Color color, int setLength, Rectangle rectangle, float offset) {
         score = initialScore;
+        displayedScore = initialScore;
         this.color = color;
         this.rectangle = rectangle;
         this.offset = offset;
 
         for (int i = 0; i < setLength; i++) {
             numberTextures.add(Assets.I().getDigitalNumber(0));
-//            numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
+        updateDigitalNumbers(score);
     }
 
     public void draw(SpriteBatch batch, float delta) {

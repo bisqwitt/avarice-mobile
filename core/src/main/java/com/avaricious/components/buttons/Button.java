@@ -23,6 +23,7 @@ public class Button {
     protected TextureRegion currentTexture;
     protected boolean wasHovered;
     private boolean spaceWasPressed;
+    private boolean showShadow = true;
 
     public Button(Runnable onButtonPressedRunnable,
                   TextureRegion defaultButtonTexture,
@@ -70,16 +71,21 @@ public class Button {
     }
 
     protected void drawAt(SpriteBatch batch, float x, float y, float w, float h) {
-        batch.setColor(Assets.I().shadowColor());
-        batch.draw(buttonShadow, x + 0.1f, y - 0.1f, w, h);
-        batch.setColor(1f, 1f, 1f, 1f);
+        if (showShadow) {
+            batch.setColor(Assets.I().shadowColor());
+            batch.draw(buttonShadow, x + 0.1f, y - 0.1f, w, h);
+            batch.setColor(1f, 1f, 1f, 1f);
+        }
 
         batch.draw(currentTexture, x, y, w, h);
     }
 
-
     protected void onButtonPressed() {
         onButtonPressedRunnable.run();
+    }
+
+    public void setShowShadow(boolean showShadow) {
+        this.showShadow = showShadow;
     }
 
 }
