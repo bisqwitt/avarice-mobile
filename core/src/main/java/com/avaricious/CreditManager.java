@@ -1,5 +1,8 @@
 package com.avaricious;
 
+import com.avaricious.upgrades.DeptUpgrade;
+import com.avaricious.upgrades.UpgradesManager;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.IntConsumer;
@@ -46,6 +49,11 @@ public class CreditManager {
 
         listener.accept(credits);
         return () -> listeners.remove(listener);
+    }
+
+    public boolean enoughCredit(int value) {
+        int base = UpgradesManager.I().getUpgradesOfClass(DeptUpgrade.class).findAny().isPresent() ? -20 : 0;
+        return credits - value >= base;
     }
 
     private void notifyCreditChanged(int newValue) {

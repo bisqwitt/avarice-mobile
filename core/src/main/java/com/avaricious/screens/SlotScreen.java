@@ -114,7 +114,7 @@ public class SlotScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                statusUpgradeWindow.show();
+//                statusUpgradeWindow.show();
 //                shop.show();
             }
         }, 1);
@@ -236,7 +236,7 @@ public class SlotScreen extends ScreenAdapter {
                 });
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int mult = criticalHit ? slots.size() * 2 : slots.size();
+                int mult = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
 
                 PopupManager.I().spawnNumber(mult, Assets.I().red(),
                     middleSlot.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleSlot.getPos().y + 1f,
@@ -296,7 +296,7 @@ public class SlotScreen extends ScreenAdapter {
                 slot.pulse();
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int points = criticalHit ? slotMatch.getSymbol().baseValue() * 2 : slotMatch.getSymbol().baseValue();
+                int points = criticalHit ? slotMatch.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slotMatch.getSymbol().baseValue();
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
                     slot.getPos().x + 1.5f, slot.getPos().y + 1f, true);

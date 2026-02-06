@@ -25,4 +25,6 @@ public abstract class Stat {
     public void setPercentage(BigDecimal percentageChance) {
         this.percentageChance = percentageChance;
     }
+
+
 }

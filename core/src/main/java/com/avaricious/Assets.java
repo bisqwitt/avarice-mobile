@@ -47,7 +47,7 @@ public class Assets {
         bigFont = generator.generateFont(param);
         bigFont.setUseIntegerPositions(false);
         bigFont.getData().markupEnabled = true;
-        param.size = 70;
+        param.size = 62;
         smallFont = generator.generateFont(param);
         smallFont.setUseIntegerPositions(false);
         smallFont.getData().markupEnabled = true;

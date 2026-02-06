@@ -40,7 +40,6 @@ public class UpgradesManager {
             CriticalHitDamageUpgrade.class,
             DeptUpgrade.class,
             RandomMultAdditionUpgrade.class,
-            RetriggerUpgrade.class,
             MultPerEmptyJokerSlotUpgrade.class,
             ThreeOfAKindMultAdditionUpgrade.class,
             FourOfAKindMultAdditionUpgrade.class,

@@ -27,7 +27,7 @@ public class TooltipPopup {
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
-        jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250f, Align.center, true);
+        jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250f, Align.top | Align.center, true);
         description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
     }
 
@@ -38,8 +38,8 @@ public class TooltipPopup {
         float boxY = pos.y;
 
         float worldWidth = ScreenManager.getViewport().getWorldWidth();
-        if(boxX < 0) boxX = 0.25f;
-        else if(boxX + boxWidth > worldWidth) boxX = worldWidth - boxWidth - 0.25f;
+        if (boxX < 0) boxX = 0.25f;
+        else if (boxX + boxWidth > worldWidth) boxX = worldWidth - boxWidth - 0.25f;
 
         // WORLD SPACE
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
@@ -48,22 +48,13 @@ public class TooltipPopup {
         batch.setColor(1f, 1f, 1f, 1f);
         batch.draw(box, boxX, boxY, boxWidth, boxHeight);
 
-        // Center of the box in world coordinates
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
-
-        // Project to UI screen coordinates
         ScreenManager.getViewport().project(center);
 
-        // SWITCH TO UI SPACE
         batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
 
-        // --- JOKER ----
-        float jokerW = jokerTxt.width;
-        float jokerH = jokerTxt.height;
-
-        float jokerX = center.x - jokerW / 2f;
-        float jokerY = center.y + 55 + jokerH;
-        // adjust + (boxHeight * 10) to taste
+        float jokerX = center.x - jokerTxt.width / 2f - 30f;
+        float jokerY = center.y + 130f;
 
         bigFont.draw(batch, jokerTxt, jokerX, jokerY);
 
@@ -72,9 +63,9 @@ public class TooltipPopup {
         float textH = description.height;
 
         float textX = center.x - textW / 2f;
-        float textY = center.y + textH / 2f;
+        float textY = center.y;
 
-        smallFont.draw(batch, description, textX - 30f, textY);
+        smallFont.draw(batch, description, textX, textY);
 
         // restore world matrix
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);

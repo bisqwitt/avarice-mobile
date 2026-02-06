@@ -50,8 +50,10 @@ public class Shop {
             2f, false);
 
         rerollButton = new Button(() -> {
-            shopCardsBar.loadUpgrades(UpgradesManager.I().randomUpgrades());
-            CreditManager.I().pay(3);
+            if (CreditManager.I().enoughCredit(3)) {
+                shopCardsBar.loadUpgrades(UpgradesManager.I().randomUpgrades());
+                CreditManager.I().pay(3);
+            }
         },
             Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON),
             new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE);
