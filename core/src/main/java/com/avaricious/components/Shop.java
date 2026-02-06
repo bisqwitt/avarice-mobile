@@ -42,7 +42,7 @@ public class Shop {
     private float winAlpha = 1f;
     private float winYOffset = 0f;
 
-    public Shop() {
+    public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
             new Rectangle(WINDOW_X + 1.25f, WINDOW_Y + 2.2f, 0.32f, 0.56f), 0.35f);
         shopCardsBar = new JokerUpgradeBarWithPrices(UpgradesManager.I().randomUpgrades(), new Rectangle(
@@ -62,6 +62,7 @@ public class Shop {
         returnButton = new Button(() -> {
             state = State.EXITING;
             animT = 0f;
+            onReturnedFromShop.run();
         },
             Assets.I().get(AssetKey.RETURN_BUTTON), Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED), Assets.I().get(AssetKey.RETURN_BUTTON),
             new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER);

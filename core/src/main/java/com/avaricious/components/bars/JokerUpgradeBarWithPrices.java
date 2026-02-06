@@ -1,5 +1,6 @@
 package com.avaricious.components.bars;
 
+import com.avaricious.CreditManager;
 import com.avaricious.CreditNumber;
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,8 +27,11 @@ public class JokerUpgradeBarWithPrices extends JokerUpgradeBar {
 
     @Override
     protected void onCardClicked(Upgrade clickedUpgrade) {
-        super.onCardClicked(clickedUpgrade);
-        cardPrices.remove(clickedUpgrade);
+        if (CreditManager.I().enoughCredit(3)) {
+            super.onCardClicked(clickedUpgrade);
+            cardPrices.remove(clickedUpgrade);
+            CreditManager.I().pay(3);
+        }
     }
 
     private void loadCreditNumbers(List<? extends Upgrade> upgrades) {

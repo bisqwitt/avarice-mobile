@@ -56,7 +56,7 @@ public class UpgradesManager {
         ));
 
         randomUpgrades().forEach(this::addUpgrade);
-        randomUpgrades().forEach(this::addUpgrade);
+//        randomUpgrades().forEach(this::addUpgrade);
     }
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();
@@ -83,18 +83,25 @@ public class UpgradesManager {
 
     public List<? extends Upgrade> randomUpgrades() {
         List<Class<? extends Upgrade>> randomUpgrades = Arrays.asList(
-            allUpgrades.get((int) (Math.random() * allUpgrades.size())),
-            allUpgrades.get((int) (Math.random() * allUpgrades.size())),
-            allUpgrades.get((int) (Math.random() * allUpgrades.size()))
+            randomUpgradeClassNotOwned(),
+            randomUpgradeClassNotOwned(),
+            randomUpgradeClassNotOwned()
         );
-        return randomUpgrades.stream().map(upgradeClass -> {
-            try {
-                return upgradeClass.getDeclaredConstructor(UpgradeRarity.class).newInstance(UpgradeRarity.COMMON);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        }).collect(Collectors.toList());
+        return randomUpgrades.stream()
+            .map(upgradeClass -> {
+                try {
+                    return upgradeClass.getDeclaredConstructor(UpgradeRarity.class).newInstance(UpgradeRarity.COMMON);
+                } catch (InstantiationException | IllegalAccessException |
+                         InvocationTargetException |
+                         NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            }).collect(Collectors.toList());
+    }
+
+    private Class<? extends Upgrade> randomUpgradeClassNotOwned() {
+        Class<? extends Upgrade> upgradeClass = allUpgrades.get((int) (Math.random() * allUpgrades.size()));
+        return deck.stream().anyMatch(upgradeClass::isInstance) ? randomUpgradeClassNotOwned() : upgradeClass;
     }
 
     public <T> Stream<T> getUpgradesOfClass(Class<T> clazz) {

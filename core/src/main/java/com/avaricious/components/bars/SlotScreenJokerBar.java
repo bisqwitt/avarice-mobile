@@ -4,7 +4,6 @@ import com.avaricious.AssetKey;
 import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.UpgradesManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,7 +16,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class SlotScreenJokerBar {
 
@@ -77,7 +75,8 @@ public class SlotScreenJokerBar {
         jokerBounds.entrySet().stream()
             .filter(entry -> entry.getKey() != selectedUpgrade)
             .forEach((entry -> drawJokerCard(batch, entry.getKey(), entry.getValue())));
-        if(selectedUpgrade != null) drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
+        if (selectedUpgrade != null)
+            drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
     }
 
     private void drawJokerCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds) {
