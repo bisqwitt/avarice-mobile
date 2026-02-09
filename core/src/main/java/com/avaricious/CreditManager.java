@@ -2,10 +2,10 @@ package com.avaricious;
 
 import com.avaricious.upgrades.DeptUpgrade;
 import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.utility.Listener;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.IntConsumer;
 
 public class CreditManager {
 
@@ -21,7 +21,7 @@ public class CreditManager {
 
     private int credits;
 
-    private final List<IntConsumer> listeners = new CopyOnWriteArrayList<>();
+    private final List<Listener<Integer>> listeners = new CopyOnWriteArrayList<>();
 
     public void gain(int amount) {
         setCredits(credits + amount);
@@ -44,7 +44,7 @@ public class CreditManager {
         notifyCreditChanged(newValue);
     }
 
-    public AutoCloseable onCreditChange(IntConsumer listener) {
+    public AutoCloseable onCreditChange(Listener<Integer> listener) {
         listeners.add(listener);
 
         listener.accept(credits);
@@ -57,8 +57,8 @@ public class CreditManager {
     }
 
     private void notifyCreditChanged(int newValue) {
-        for(IntConsumer intConsumer : listeners) {
-            intConsumer.accept(newValue);
+        for(Listener<Integer> intListener : listeners) {
+            intListener.accept(newValue);
         }
     }
 }

@@ -13,6 +13,7 @@ import com.avaricious.upgrades.pointAdditions.symbolValueStacker.DiamondValueSta
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.IronValueStackUpgrade;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.LemonValueStackUpgrade;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SevenValueStackUpgrade;
+import com.avaricious.utility.Listener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 public class UpgradesManager {
 
@@ -57,7 +57,7 @@ public class UpgradesManager {
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();
     private final List<Upgrade> deck = new ArrayList<>();
-    private final List<Consumer<List<? extends Upgrade>>> listeners = new CopyOnWriteArrayList<>();
+    private final List<Listener<List<? extends Upgrade>>> listeners = new CopyOnWriteArrayList<>();
 
     public List<? extends Upgrade> randomUpgrades() {
         List<Class<? extends Upgrade>> randomUpgrades = Arrays.asList(
@@ -120,7 +120,7 @@ public class UpgradesManager {
         deck.remove(upgrade);
     }
 
-    public AutoCloseable onDeckChange(Consumer<List<? extends Upgrade>> listener) {
+    public AutoCloseable onDeckChange(Listener<List<? extends Upgrade>> listener) {
         listeners.add(listener);
 
         // immediate push of current state
@@ -132,7 +132,7 @@ public class UpgradesManager {
     private void notifyDeckChanged(List<? extends Upgrade> deck) {
         // publish an immutable snapshot to avoid external mutation
         List<? extends Upgrade> currentDeck = Collections.unmodifiableList(deck);
-        for(Consumer<List<? extends Upgrade>> listener : listeners) {
+        for(Listener<List<? extends Upgrade>> listener : listeners) {
             listener.accept(currentDeck);
         }
     }
