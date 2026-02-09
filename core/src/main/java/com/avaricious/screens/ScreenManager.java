@@ -4,6 +4,7 @@ import com.avaricious.Main;
 import com.avaricious.screens.mainscreen.MainScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -16,7 +17,7 @@ public class ScreenManager {
     private static ScreenManager instance;
 
     private static ScreenViewport uiViewport;
-    private static FitViewport viewport;
+    private static ExtendViewport viewport;
 
     public static ScreenManager create(Main app) {
         return (instance = new ScreenManager(app));
@@ -40,11 +41,11 @@ public class ScreenManager {
         app.setScreen(screens.get(screenClass));
     }
 
-    public static void setViewport(FitViewport fitViewport) {
+    public static void setViewport(ExtendViewport fitViewport) {
         viewport = fitViewport;
     }
 
-    public static FitViewport getViewport() {
+    public static ExtendViewport getViewport() {
         return viewport;
     }
 

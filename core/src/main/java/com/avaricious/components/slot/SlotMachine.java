@@ -54,8 +54,8 @@ public class SlotMachine {
 
     public SlotMachine(float worldWidth, float worldHeight) {
         // center the 5x3 grid within the world
-        originX = ((worldWidth - cols * (CELL_W + spacingX)) / 2f) + 0.15f;
-        originY = ((worldHeight - rows * (CELL_H + spacingY)) / 2f) + 1.4f;
+        originX = 0.1f;
+        originY = 6.75f;
 
         // build visual cells
         for (int c = 0; c < cols; c++) {
