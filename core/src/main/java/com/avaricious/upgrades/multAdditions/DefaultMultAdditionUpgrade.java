@@ -8,14 +8,6 @@ import java.util.Map;
 
 public class DefaultMultAdditionUpgrade extends MultAdditionUpgrade {
 
-    private final Map<UpgradeRarity, Integer> valuePerRarityMap = Map.of(
-        UpgradeRarity.COMMON, 2,
-        UpgradeRarity.UNCOMMON, 3,
-        UpgradeRarity.RARE, 4,
-        UpgradeRarity.EPIC, 5,
-        UpgradeRarity.LEGENDARY, 7
-    );
-
     public DefaultMultAdditionUpgrade(UpgradeRarity rarity) {
         super(rarity);
     }
@@ -27,7 +19,7 @@ public class DefaultMultAdditionUpgrade extends MultAdditionUpgrade {
 
     @Override
     public int getMulti() {
-        return valuePerRarityMap.get(getRarity());
+        return 2;
     }
 
     @Override

@@ -37,7 +37,9 @@ public class PopupManager {
     }
 
     public void releaseHoldingNumbers() {
-        numberPopups.stream().filter(NumberPopup::isManualHold).forEach(NumberPopup::release);
+        for(NumberPopup numberPopup : numberPopups) {
+            if(numberPopup.isManualHold()) numberPopup.release();
+        }
     }
 
     public NumberPopup spawnPercentage(int number, Color color, float x, float y) {

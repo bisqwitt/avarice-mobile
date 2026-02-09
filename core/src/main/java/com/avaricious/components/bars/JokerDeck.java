@@ -59,12 +59,9 @@ public class JokerDeck {
         boolean hoveringDeck = deckBounds.contains(mouse);
 
         if (unfolded()) {
-            jokerBounds.forEach((upgrade, bounds) -> {
-                if (bounds.contains(mouse)) {
-                    hoveringUpgrade = upgrade;
-                }
-            });
-
+            for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
+                if(entry.getValue().contains(mouse)) hoveringUpgrade = entry.getKey();
+            }
             if (getUnfoldedAllCardBounds().contains(mouse)) hoveringDeck = true;
         }
 
@@ -79,12 +76,11 @@ public class JokerDeck {
 
         // Recompute current animated bounds
         updateAnimatedBounds();
-        jokerAnimationManagers.forEach((upgrade, slot) -> {
+        for(Slot slot : jokerAnimationManagers.values()) {
             slot.updateHoverWobble(true, delta);
             slot.updatePulse(false, delta);
-        });
+        }
     }
-
 
     public void draw(SpriteBatch batch, float delta) {
         batch.setColor(Assets.I().shadowColor());
@@ -93,7 +89,10 @@ public class JokerDeck {
             deckBounds.width + 0.3f, deckBounds.height + 0.3f);
         batch.setColor(1f, 1f, 1f, 1f);
 
-        jokerBounds.forEach((upgrade, bounds) -> {
+        for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
+            Upgrade upgrade = entry.getKey();
+            Rectangle bounds = entry.getValue();
+
             float pickProgress = clamp01(this.pickProgress.get(upgrade));
             float shadowAlpha = 0.25f * pickProgress;
             float shadowXOffset = 0.15f * pickProgress;
@@ -118,7 +117,7 @@ public class JokerDeck {
                 s, s,
                 r
             );
-        });
+        }
 
         if (hoveringUpgrade != null) PopupManager.I().renderTooltip(hoveringUpgrade,
             getBoundsByUpgrade(hoveringUpgrade).x - 1f, getBoundsByUpgrade(hoveringUpgrade).y + 2.5f);

@@ -2,6 +2,7 @@ package com.avaricious.stats.statupgrades;
 
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
+import com.avaricious.upgrades.CriticalHitDamageUpgrade;
 import com.avaricious.upgrades.UpgradesManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -18,7 +19,7 @@ public class CriticalHitChance extends Stat {
     }
 
     public int criticalHitMultiplier() {
-        return UpgradesManager.I().getUpgradesOfClass(CriticalHitChance.class).findAny().isPresent() ? 4 : 2;
+        return UpgradesManager.I().upgradeIsOwned(CriticalHitDamageUpgrade.class)? 4 : 2;
     }
 
 }

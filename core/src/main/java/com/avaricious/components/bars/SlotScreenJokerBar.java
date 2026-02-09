@@ -49,7 +49,10 @@ public class SlotScreenJokerBar {
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
-        jokerBounds.forEach((upgrade, bounds) -> {
+        for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
+            Upgrade upgrade = entry.getKey();
+            Rectangle bounds = entry.getValue();
+
             if (pressed && !wasPressed) {
                 float x = bounds.x;
             }
@@ -59,22 +62,24 @@ public class SlotScreenJokerBar {
                 slot.wobble();
                 slot.pulse();
             }
-        });
+        }
 
-        jokerAnimationManagers.forEach(((upgrade, slot) -> {
+        for(Slot slot : jokerAnimationManagers.values()) {
             slot.updateHoverWobble(true, delta);
             slot.updatePulse(false, delta);
-        }));
+        }
     }
 
     public void draw(SpriteBatch batch) {
         batch.setColor(Assets.I().shadowColor());
-        jokerRectangles.forEach(rectangle -> batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height));
+        for(Rectangle rectangle : jokerRectangles) {
+            batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        }
         batch.setColor(1f, 1f, 1f, 1f);
 
-        jokerBounds.entrySet().stream()
-            .filter(entry -> entry.getKey() != selectedUpgrade)
-            .forEach((entry -> drawJokerCard(batch, entry.getKey(), entry.getValue())));
+        for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
+            if(entry.getKey() != selectedUpgrade) drawJokerCard(batch, entry.getKey(), entry.getValue());
+        }
         if (selectedUpgrade != null)
             drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
     }

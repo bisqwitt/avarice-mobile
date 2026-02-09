@@ -4,6 +4,7 @@ import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.UpgradesManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -43,7 +44,10 @@ public abstract class UpgradeBar {
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         hoveringKey = null;
         Upgrade[] clickedUpgrade = new Upgrade[1];
-        cardBounds.forEach(((upgrade, rectangle) -> {
+        for(Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
+            Upgrade upgrade = entry.getKey();
+            Rectangle rectangle = entry.getValue();
+
             boolean hovered = rectangle.contains(mouse);
             boolean selected = wasPressed && !pressed && rectangle.contains(mouse);
 
@@ -57,7 +61,7 @@ public abstract class UpgradeBar {
 
             if (hovered) hoveringKey = upgrade;
             if (selected) clickedUpgrade[0] = hoveringKey;
-        }));
+        }
 
         if (hoveringKey != null)
             PopupManager.I().renderTooltip(hoveringKey,
@@ -73,7 +77,10 @@ public abstract class UpgradeBar {
      */
     public void draw(SpriteBatch batch) {
         // combined scale (identical idea to SlotMachine)
-        cardBounds.forEach(((upgrade, rectangle) -> {
+        for(Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
+            Upgrade upgrade = entry.getKey();
+            Rectangle rectangle = entry.getValue();
+
             Slot cardSlot = cardAnimationManagers.get(upgrade);
             float s = cardSlot.scale
                 * cardSlot.pulseScale()
@@ -89,7 +96,7 @@ public abstract class UpgradeBar {
             float rotation = cardSlot.wobbleAngleDeg();
 
             drawCard(batch, upgrade, new Rectangle(adjX, adjY, drawW, drawH), s, rotation);
-        }));
+        }
     }
 
     protected void drawCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds, float scale, float rotation) {

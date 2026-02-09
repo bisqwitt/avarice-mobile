@@ -24,7 +24,9 @@ public class TextureEcho {
     }
 
     public static void draw(SpriteBatch batch, float delta) {
-        echos.forEach(echo -> echo._draw(batch, delta));
+        for(TextureEcho echo : echos) {
+            echo._draw(batch, delta);
+        }
         echos.removeIf(echo -> !echo.isAlive());
     }
 

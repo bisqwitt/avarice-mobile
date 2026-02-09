@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -54,9 +55,12 @@ public class Reel {
 
         this.strip = strip;
 
-        this.slots = strip.stream()
-            .map(symbol -> new SymbolInstance(symbol, null))
-            .toList();
+        ArrayList<SymbolInstance> slots = new ArrayList<>(strip.size());
+        for (int i = 0; i < strip.size(); i++) {
+            Symbol symbol = strip.get(i);
+            slots.add(new SymbolInstance(symbol, null));
+        }
+        this.slots = slots;
 
         this.rowsVisible = Math.max(1, rowsVisible);
         this.pos = rng.nextInt(this.strip.size()); // random starting offset
@@ -69,9 +73,11 @@ public class Reel {
         forceFracActive = false;   // <-- important
         forcedFrac = 0f;
 
-        this.slots = strip.stream()
-            .map(symbol -> new SymbolInstance(symbol, null))
-            .toList();
+        ArrayList<SymbolInstance> slots = new ArrayList<>(strip.size());
+        for (int i = 0; i < strip.size(); i++) {
+            slots.add(new SymbolInstance(strip.get(i), null));
+        }
+        this.slots = slots;
 
         // Slight randomness so reels don't look identical
         baseSpeed = speedSymbolsPerSec * (0.95f + rng.nextFloat() * 0.10f);

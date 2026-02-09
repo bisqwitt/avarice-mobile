@@ -8,6 +8,8 @@ import com.avaricious.stats.statupgrades.LuckChance;
 import com.avaricious.stats.statupgrades.Stat;
 import com.badlogic.gdx.math.MathUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,15 +21,14 @@ public class PlayerStats {
         return instance == null ? instance = new PlayerStats() : instance;
     }
 
-    private final Map<Class<? extends Stat>, Stat> stats = Map.of(
-        CreditSpawnChance.class, new CreditSpawnChance(),
-        CriticalHitChance.class, new CriticalHitChance(),
-        DoubleHitChance.class, new DoubleHitChance(),
-        EvadeChance.class, new EvadeChance(),
-        LuckChance.class, new LuckChance()
-    );
+    private final Map<Class<? extends Stat>, Stat> stats = new HashMap<>();
 
     private PlayerStats() {
+        stats.put(CreditSpawnChance.class, new CreditSpawnChance());
+        stats.put(CriticalHitChance.class, new CriticalHitChance());
+        stats.put(DoubleHitChance.class, new DoubleHitChance());
+        stats.put(EvadeChance.class, new EvadeChance());
+        stats.put(LuckChance.class, new LuckChance());
     }
 
     public boolean rollChance(Class<? extends Stat> statClass) {
@@ -39,7 +40,7 @@ public class PlayerStats {
     }
 
     public Stat getRandomStat() {
-        List<Stat> values = stats.values().stream().toList();
+        List<Stat> values = new ArrayList<>(stats.values());
         return values.get(MathUtils.random(0, values.size() - 1));
     }
 

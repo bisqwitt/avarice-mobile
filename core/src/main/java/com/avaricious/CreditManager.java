@@ -52,11 +52,13 @@ public class CreditManager {
     }
 
     public boolean enoughCredit(int value) {
-        int base = UpgradesManager.I().getUpgradesOfClass(DeptUpgrade.class).findAny().isPresent() ? -20 : 0;
+        int base = UpgradesManager.I().upgradeIsOwned(DeptUpgrade.class) ? -20 : 0;
         return credits - value >= base;
     }
 
     private void notifyCreditChanged(int newValue) {
-        listeners.forEach(listener -> listener.accept(newValue));
+        for(IntConsumer intConsumer : listeners) {
+            intConsumer.accept(newValue);
+        }
     }
 }

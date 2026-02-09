@@ -5,18 +5,11 @@ import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.UpgradeRarity;
 import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class PatternMultAdditionUpgrade extends MultAdditionUpgrade {
-
-    private final Map<UpgradeRarity, Integer> valuePerRarityMap = Map.of(
-        UpgradeRarity.COMMON, 4,
-        UpgradeRarity.UNCOMMON, 5,
-        UpgradeRarity.RARE, 6,
-        UpgradeRarity.EPIC, 7,
-        UpgradeRarity.LEGENDARY, 9
-    );
 
     private final double patternType;
 
@@ -32,7 +25,7 @@ public abstract class PatternMultAdditionUpgrade extends MultAdditionUpgrade {
 
     @Override
     public int getMulti() {
-        return valuePerRarityMap.get(getRarity());
+        return 4;
     }
 
     @Override

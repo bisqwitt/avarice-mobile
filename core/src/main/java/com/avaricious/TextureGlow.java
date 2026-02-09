@@ -28,9 +28,9 @@ public class TextureGlow {
     }
 
     public static void draw(SpriteBatch batch, float delta, String parentType) {
-        glows.stream()
-            .filter(glow -> glow.parentType.equals(parentType))
-            .forEach(glow -> glow._draw(batch, delta));
+        for(TextureGlow textureGlow : glows) {
+            if(textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
+        }
         glows.removeIf(TextureGlow::dead);
     }
 

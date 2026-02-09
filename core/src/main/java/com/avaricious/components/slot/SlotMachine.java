@@ -351,12 +351,6 @@ public class SlotMachine {
         return result;
     }
 
-    public List<Slot> getAllSlots() {
-        List<Slot> slots = new ArrayList<>();
-        Arrays.stream(grid).forEach(rows -> slots.addAll(Arrays.asList(rows)));
-        return slots;
-    }
-
     public Rectangle getBounds() {
         return new Rectangle(
             originX,

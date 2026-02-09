@@ -1,0 +1,5 @@
+./gradlew :ios:createIPA
+
+xcrun devicectl device install app --device A71683D0-930E-5D0F-8978-C2B591FFA360 ios/build/robovm/IOSLauncher.ipa
+
+xcrun devicectl device process launch --console --device A71683D0-930E-5D0F-8978-C2B591FFA360 com.yaschwanden.avarice
