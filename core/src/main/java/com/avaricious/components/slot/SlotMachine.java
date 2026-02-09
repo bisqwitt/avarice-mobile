@@ -136,7 +136,7 @@ public class SlotMachine {
 //        batch.draw(Assets.I().get(AssetKey.WHITE_PIXEL), 0f, 0f, 16f, 9f);
 
         drawBoxes(batch);
-        TextureGlow.draw(batch, delta, "slot");
+        TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
         drawSymbols(batch, delta);
 
 //        batch.setColor(1f, 1f, 1f, 0.25f);

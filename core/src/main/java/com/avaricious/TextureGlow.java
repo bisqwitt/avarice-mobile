@@ -12,7 +12,7 @@ import java.util.List;
 
 public class TextureGlow {
 
-    private final String parentType;
+    private final Type parentType;
     private final TextureRegion texture;
     private final Rectangle bounds;
 
@@ -23,11 +23,11 @@ public class TextureGlow {
 
     private static final List<TextureGlow> glows = new ArrayList<>();
 
-    public static void create(TextureRegion texture, Rectangle spawnPoint, String parentType, float streak) {
+    public static void create(TextureRegion texture, Rectangle spawnPoint, Type parentType, float streak) {
         glows.add(new TextureGlow(texture, spawnPoint, parentType, 1.5f + (0.4f * streak)));
     }
 
-    public static void draw(SpriteBatch batch, float delta, String parentType) {
+    public static void draw(SpriteBatch batch, float delta, Type parentType) {
         List<TextureGlow> dump = new ArrayList<>();
         for(TextureGlow textureGlow : glows) {
             if(textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
@@ -36,7 +36,7 @@ public class TextureGlow {
         glows.removeAll(dump);
     }
 
-    private TextureGlow(TextureRegion texture, Rectangle spawnPoint, String parentType, float maxScale) {
+    private TextureGlow(TextureRegion texture, Rectangle spawnPoint, Type parentType, float maxScale) {
         this.texture = texture;
         this.bounds = new Rectangle(spawnPoint);
         this.parentType = parentType;
@@ -77,6 +77,12 @@ public class TextureGlow {
 
     private boolean dead() {
         return age > duration;
+    }
+
+
+    public enum Type {
+        SLOT,
+        NUMBER
     }
 
 }

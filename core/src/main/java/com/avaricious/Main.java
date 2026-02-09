@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */
 public class Main extends Game {
     SpriteBatch batch;
-    ExtendViewport viewport;
+    FitViewport viewport;
     ScreenViewport uiViewport;
 
     @Override
@@ -22,14 +22,14 @@ public class Main extends Game {
         Assets.I().load();
 
         batch = new SpriteBatch();
-        viewport = new ExtendViewport(9, 16);
+        viewport = new FitViewport(9, 16);
         uiViewport = new ScreenViewport();
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);
         ScreenManager.create(this).setScreen(SlotScreen.class);
     }
 
-    public ExtendViewport getViewport() {
+    public FitViewport getViewport() {
         return viewport;
     }
 

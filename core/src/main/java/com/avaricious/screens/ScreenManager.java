@@ -17,7 +17,7 @@ public class ScreenManager {
     private static ScreenManager instance;
 
     private static ScreenViewport uiViewport;
-    private static ExtendViewport viewport;
+    private static FitViewport viewport;
 
     public static ScreenManager create(Main app) {
         return (instance = new ScreenManager(app));
@@ -41,11 +41,11 @@ public class ScreenManager {
         app.setScreen(screens.get(screenClass));
     }
 
-    public static void setViewport(ExtendViewport fitViewport) {
+    public static void setViewport(FitViewport fitViewport) {
         viewport = fitViewport;
     }
 
-    public static ExtendViewport getViewport() {
+    public static FitViewport getViewport() {
         return viewport;
     }
 

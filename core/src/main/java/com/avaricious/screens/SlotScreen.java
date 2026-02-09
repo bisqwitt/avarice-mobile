@@ -77,7 +77,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final Shop shop = new Shop(this::onReturnedFromShop);
 
-    private final VfxManager vfxManager;
+    private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
     private final CameraShaker cameraShaker;
 
     private final RoundsManager roundsManager = RoundsManager.I();
@@ -90,7 +90,6 @@ public class SlotScreen extends ScreenAdapter {
         xpBar = new XpBar(statusUpgradeWindow::show);
 
         cameraShaker = new CameraShaker(app);
-        vfxManager = new VfxManager(Pixmap.Format.RGBA8888, app.getViewport().getScreenWidth(), app.getViewport().getScreenHeight());
         vfxManager.addEffect(new OldTvEffect());
 
         scoreDisplay.setOnInternalScoreDisplayed(() -> {
@@ -156,7 +155,7 @@ public class SlotScreen extends ScreenAdapter {
         xpBar.draw(batch);
         jokerBar.draw(batch);
 
-        TextureGlow.draw(batch, delta, "number");
+        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);
         PopupManager.I().draw(batch, delta);
@@ -235,7 +234,7 @@ public class SlotScreen extends ScreenAdapter {
 
                     EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                         new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                        "slot", new Color(1f, 1f, 1f, 1f));
+                        TextureGlow.Type.SLOT, new Color(1f, 1f, 1f, 1f));
                 }
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
@@ -311,7 +310,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                    "slot", new Color(1f, 1f, 1f, 1f));
+                    TextureGlow.Type.SLOT, new Color(1f, 1f, 1f, 1f));
 
                 AudioManager.I().playHit(EffectManager.streak);
 
@@ -392,6 +391,12 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
         healthBar.fullHeal();
         shop.show();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        vfxManager.resize(width, height);
     }
 
     private void onReturnedFromShop() {
