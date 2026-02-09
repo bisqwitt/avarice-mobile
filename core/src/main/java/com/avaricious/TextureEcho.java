@@ -24,10 +24,12 @@ public class TextureEcho {
     }
 
     public static void draw(SpriteBatch batch, float delta) {
+        List<TextureEcho> dump = new ArrayList<>();
         for(TextureEcho echo : echos) {
             echo._draw(batch, delta);
+            if(!echo.isAlive()) dump.add(echo);
         }
-        echos.removeIf(echo -> !echo.isAlive());
+        echos.removeAll(dump);
     }
 
     private TextureEcho(TextureRegion textureEcho, Rectangle spawnPoint, Color color, float streak) {

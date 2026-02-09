@@ -28,10 +28,12 @@ public class TextureGlow {
     }
 
     public static void draw(SpriteBatch batch, float delta, String parentType) {
+        List<TextureGlow> dump = new ArrayList<>();
         for(TextureGlow textureGlow : glows) {
             if(textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
+            if(textureGlow.dead()) dump.add(textureGlow);
         }
-        glows.removeIf(TextureGlow::dead);
+        glows.removeAll(dump);
     }
 
     private TextureGlow(TextureRegion texture, Rectangle spawnPoint, String parentType, float maxScale) {

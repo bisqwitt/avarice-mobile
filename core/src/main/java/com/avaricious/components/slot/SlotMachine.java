@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -347,7 +348,12 @@ public class SlotMachine {
             result.add(new SlotMatch(match.getSymbol(), slots));
         }
 
-        result.sort(Comparator.comparingInt(m -> m.getSymbol().ordinal()));
+        Collections.sort(result, new Comparator<SlotMatch>() {
+            @Override
+            public int compare(SlotMatch o1, SlotMatch o2) {
+                return o1.getSymbol().ordinal() - o2.getSymbol().ordinal();
+            }
+        });
         return result;
     }
 
