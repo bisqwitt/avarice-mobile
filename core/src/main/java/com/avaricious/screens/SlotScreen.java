@@ -77,7 +77,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final Shop shop = new Shop(this::onReturnedFromShop);
 
-    private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+    private final VfxManager vfxManager;
     private final CameraShaker cameraShaker;
 
     private final RoundsManager roundsManager = RoundsManager.I();
@@ -90,6 +90,7 @@ public class SlotScreen extends ScreenAdapter {
         xpBar = new XpBar(statusUpgradeWindow::show);
 
         cameraShaker = new CameraShaker(app);
+        vfxManager = new VfxManager(Pixmap.Format.RGBA8888, app.getViewport().getScreenWidth(), app.getViewport().getScreenHeight());
         vfxManager.addEffect(new OldTvEffect());
 
         scoreDisplay.setOnInternalScoreDisplayed(() -> {
