@@ -86,7 +86,7 @@ public class SlotScreen extends ScreenAdapter {
 
     public SlotScreen(Main app) {
         this.app = app;
-        slotMachine = new SlotMachine(app.getViewport().getWorldWidth(), app.getViewport().getWorldHeight());
+        slotMachine = new SlotMachine();
         xpBar = new XpBar(statusUpgradeWindow::show);
 
         cameraShaker = new CameraShaker(app);

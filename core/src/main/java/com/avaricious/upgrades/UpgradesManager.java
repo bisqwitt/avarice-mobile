@@ -50,9 +50,9 @@ public class UpgradesManager {
             PointsPerConsecutiveHit.class
         ));
 
-        for(Upgrade upgrade : randomUpgrades()) {
-            addUpgrade(upgrade);
-        }
+//        for(Upgrade upgrade : randomUpgrades()) {
+//            addUpgrade(upgrade);
+//        }
     }
 
     private final List<Class<? extends Upgrade>> allUpgrades = new ArrayList<>();

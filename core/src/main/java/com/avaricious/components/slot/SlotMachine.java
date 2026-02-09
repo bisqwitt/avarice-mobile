@@ -52,7 +52,7 @@ public class SlotMachine {
     private float alpha = 1f;
     private float desiredAlpha = 1f;
 
-    public SlotMachine(float worldWidth, float worldHeight) {
+    public SlotMachine() {
         // center the 5x3 grid within the world
         originX = 0.1f;
         originY = 6.75f;
