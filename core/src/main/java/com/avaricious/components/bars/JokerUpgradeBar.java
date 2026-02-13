@@ -3,7 +3,7 @@ package com.avaricious.components.bars;
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -23,7 +23,7 @@ public class JokerUpgradeBar extends UpgradeBar {
 
     @Override
     protected void onCardClicked(Upgrade clickedUpgrade) {
-        UpgradesManager.I().addUpgrade(clickedUpgrade);
+        Deck.I().addUpgradeToDeck(clickedUpgrade);
         cardBounds.remove(clickedUpgrade);
         cardAnimationManagers.remove(clickedUpgrade);
     }

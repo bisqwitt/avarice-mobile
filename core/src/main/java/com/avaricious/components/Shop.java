@@ -6,7 +6,7 @@ import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.JokerUpgradeBarWithPrices;
 import com.avaricious.components.buttons.Button;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -45,13 +45,13 @@ public class Shop {
     public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
             new Rectangle(WINDOW_X + 1.25f, WINDOW_Y + 2.2f, 0.32f, 0.56f), 0.35f);
-        shopCardsBar = new JokerUpgradeBarWithPrices(UpgradesManager.I().randomUpgrades(), new Rectangle(
+        shopCardsBar = new JokerUpgradeBarWithPrices(Deck.I().randomUpgrades(), new Rectangle(
             WINDOW_X + 1f, WINDOW_Y + 3.5f, 142 / 100f, 190 / 100f),
             2f, false);
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
-                shopCardsBar.loadUpgrades(UpgradesManager.I().randomUpgrades());
+                shopCardsBar.loadUpgrades(Deck.I().randomUpgrades());
                 CreditManager.I().pay(3);
             }
         },
@@ -148,7 +148,7 @@ public class Shop {
     }
 
     public void show() {
-        shopCardsBar.loadUpgrades(UpgradesManager.I().randomUpgrades());
+        shopCardsBar.loadUpgrades(Deck.I().randomUpgrades());
         creditScore.setScore(CreditManager.I().getCredits());
 
         state = State.ENTERING;

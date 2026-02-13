@@ -4,11 +4,11 @@ import com.avaricious.AssetKey;
 import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
+import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SlotScreenJokerBar {
-
-    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     private final TextureRegion jokerTexture = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerShadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
@@ -44,8 +42,8 @@ public class SlotScreenJokerBar {
             new Rectangle(6.6f, 0.5f, 142 / 95f, 190 / 95f)
         );
 
-        loadJokers(UpgradesManager.I().getDeck());
-        UpgradesManager.I().onDeckChange(this::loadJokers);
+        loadJokers(Deck.I().getDeck());
+        Hand.I().onChange(this::loadJokers);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {

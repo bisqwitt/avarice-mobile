@@ -5,7 +5,7 @@ import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -46,9 +46,9 @@ public class JokerDeck {
     public JokerDeck(Rectangle deckBounds) {
         this.deckBounds = deckBounds;
 
-        loadJokers(UpgradesManager.I().getDeck());
+        loadJokers(Deck.I().getDeck());
 
-        UpgradesManager.I().onDeckChange(this::loadJokers);
+        Deck.I().onChange(this::loadJokers);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {

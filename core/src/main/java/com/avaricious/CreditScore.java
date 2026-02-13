@@ -9,7 +9,7 @@ public class CreditScore extends CreditNumber {
     public CreditScore(int initialScore, Rectangle rectangle, float offset) {
         super(initialScore, rectangle, offset);
 
-        creditListener = CreditManager.I().onCreditChange(this::setScore);
+        creditListener = CreditManager.I().onChange(this::setScore);
     }
 
     public void dispose() {

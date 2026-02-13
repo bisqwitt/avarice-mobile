@@ -3,7 +3,7 @@ package com.avaricious.upgrades.multAdditions;
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.UpgradeRarity;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class MultPerEmptyJokerSlotUpgrade extends MultAdditionUpgrade {
 
     @Override
     public int getMulti() {
-        return (6 - UpgradesManager.I().getDeck().size()) * 5;
+        return (6 - Deck.I().getDeck().size()) * 5;
     }
 
     @Override

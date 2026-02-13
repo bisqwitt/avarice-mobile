@@ -1,13 +1,10 @@
 package com.avaricious;
 
 import com.avaricious.upgrades.DeptUpgrade;
-import com.avaricious.upgrades.UpgradesManager;
-import com.avaricious.utility.Listener;
+import com.avaricious.upgrades.Deck;
+import com.avaricious.utility.Observable;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-public class CreditManager {
+public class CreditManager extends Observable<Integer> {
 
     private static CreditManager instance;
 
@@ -20,8 +17,6 @@ public class CreditManager {
     }
 
     private int credits;
-
-    private final List<Listener<Integer>> listeners = new CopyOnWriteArrayList<>();
 
     public void gain(int amount) {
         setCredits(credits + amount);
@@ -41,24 +36,16 @@ public class CreditManager {
 
     private void setCredits(int newValue) {
         credits = newValue;
-        notifyCreditChanged(newValue);
-    }
-
-    public AutoCloseable onCreditChange(Listener<Integer> listener) {
-        listeners.add(listener);
-
-        listener.accept(credits);
-        return () -> listeners.remove(listener);
+        notifyChanged(newValue);
     }
 
     public boolean enoughCredit(int value) {
-        int base = UpgradesManager.I().upgradeIsOwned(DeptUpgrade.class) ? -20 : 0;
+        int base = Deck.I().upgradeIsInDeck(DeptUpgrade.class) ? -20 : 0;
         return credits - value >= base;
     }
 
-    private void notifyCreditChanged(int newValue) {
-        for(Listener<Integer> intListener : listeners) {
-            intListener.accept(newValue);
-        }
+    @Override
+    protected Integer snapshot() {
+        return credits;
     }
 }

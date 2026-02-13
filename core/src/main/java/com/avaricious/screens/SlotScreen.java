@@ -32,9 +32,9 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
-import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.UpgradeWithActionAfterSpin;
-import com.avaricious.upgrades.UpgradesManager;
+import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackUpgrade;
@@ -251,7 +251,7 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            MultAdditionUpgrade multAdditionUpgrade = UpgradesManager.I().getUpgradeOfClass(MultAdditionUpgrade.class);
+            MultAdditionUpgrade multAdditionUpgrade = Deck.I().getUpgradeOfClass(MultAdditionUpgrade.class);
             if(multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
                 int multi = multAdditionUpgrade.getMulti();
                 Slot cardSlot = jokerBar.getSlotByUpgrade(multAdditionUpgrade);
@@ -280,9 +280,11 @@ public class SlotScreen extends ScreenAdapter {
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
 
-            for(UpgradeWithActionAfterSpin upgradeWithActionAfterSpin : UpgradesManager.I().getUpgradesOfClass(UpgradeWithActionAfterSpin.class)) {
+            for(UpgradeWithActionAfterSpin upgradeWithActionAfterSpin : Deck.I().getUpgradesOfClass(UpgradeWithActionAfterSpin.class)) {
                 upgradeWithActionAfterSpin.onSpinEnded();
             }
+
+            Hand.I().addCardFromDeck();
         });
 
         if (DevTools.autoSpin) {
@@ -314,7 +316,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 AudioManager.I().playHit(EffectManager.streak);
 
-                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = UpgradesManager.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
+                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = Deck.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
                 if(pointsPerConsecutiveHitUpgrade != null) {
                     int pointAddition = pointsPerConsecutiveHitUpgrade.getPoints();
                     Slot jokerSlot = jokerBar.getSlotByUpgrade(pointsPerConsecutiveHitUpgrade);
@@ -338,7 +340,7 @@ public class SlotScreen extends ScreenAdapter {
                 });
             }
 
-            List<SymbolValueStackUpgrade> symbolValueStackUpgrades = UpgradesManager.I().getUpgradesOfClass(SymbolValueStackUpgrade.class);
+            List<SymbolValueStackUpgrade> symbolValueStackUpgrades = Deck.I().getUpgradesOfClass(SymbolValueStackUpgrade.class);
             SymbolValueStackUpgrade symbolValueStackUpgrade = null;
             for(SymbolValueStackUpgrade upgrade : symbolValueStackUpgrades) {
                 if(upgrade.getSymbol() == slotMatch.getSymbol()) {
