@@ -2,19 +2,14 @@ package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
-import com.avaricious.upgrades.pointAdditions.PointAdditionUpgrade;
+import com.avaricious.upgrades.pointAdditions.PointAdditionRelic;
 
 import java.util.List;
 
-public abstract class SymbolValueStackUpgrade extends PointAdditionUpgrade {
+public abstract class SymbolValueStackRelic extends PointAdditionRelic {
 
     protected int level = 0;
     protected int stacks = 0;
-
-    public SymbolValueStackUpgrade(UpgradeRarity rarity) {
-        super(rarity);
-    }
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {

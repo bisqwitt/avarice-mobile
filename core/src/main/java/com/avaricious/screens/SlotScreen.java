@@ -33,11 +33,10 @@ import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.UpgradeWithActionAfterSpin;
-import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
+import com.avaricious.upgrades.RelicWithActionAfterSpin;
+import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackUpgrade;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRelic;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -61,7 +60,7 @@ public class SlotScreen extends ScreenAdapter {
     private final XpBar xpBar;
 
     private final ScoreDisplay scoreDisplay = new ScoreDisplay();
-    private final PatternDisplay patternDisplay = new PatternDisplay();
+    private final PatternDisplay patternDisplay = PatternDisplay.I();
 
     private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
     });
@@ -207,12 +206,12 @@ public class SlotScreen extends ScreenAdapter {
         TaskScheduler scheduler = new TaskScheduler(0.4f);
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
 
-        for(SlotMatch slotMatch : matches) {
+        for (SlotMatch slotMatch : matches) {
             List<Slot> slots = slotMatch.getSlots();
             Slot middleSlot = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleImmediate(() -> {
-                for(Slot slot : slots) {
+                for (Slot slot : slots) {
                     slot.targetScale = 1.25f;
                     slot.setInPatternHit(true);
                 }
@@ -228,7 +227,7 @@ public class SlotScreen extends ScreenAdapter {
             scheduler.schedule(() -> {
                 PopupManager.I().releaseHoldingNumbers();
 
-                for(Slot slot : slots) {
+                for (Slot slot : slots) {
                     slot.pulse();
                     slot.wobble();
 
@@ -251,8 +250,8 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            MultAdditionUpgrade multAdditionUpgrade = Deck.I().getUpgradeOfClass(MultAdditionUpgrade.class);
-            if(multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
+            MultAdditionRelic multAdditionUpgrade = Hand.I().getUpgradeOfClass(MultAdditionRelic.class);
+            if (multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
                 int multi = multAdditionUpgrade.getMulti();
                 Slot cardSlot = jokerBar.getSlotByUpgrade(multAdditionUpgrade);
                 cardSlot.pulse();
@@ -265,13 +264,13 @@ public class SlotScreen extends ScreenAdapter {
 
             scheduler.schedule(() -> {
                 EffectManager.increaseStreak();
-                for(Slot slot : slots) {
+                for (Slot slot : slots) {
                     slot.targetScale = 1f;
                     slot.setInPatternHit(false);
                     PopupManager.I().releaseHoldingNumbers();
                 }
             });
-        };
+        }
 
         scheduler.schedule(() -> {
             patternDisplay.addStreak(1);
@@ -280,8 +279,8 @@ public class SlotScreen extends ScreenAdapter {
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
 
-            for(UpgradeWithActionAfterSpin upgradeWithActionAfterSpin : Deck.I().getUpgradesOfClass(UpgradeWithActionAfterSpin.class)) {
-                upgradeWithActionAfterSpin.onSpinEnded();
+            for (RelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(RelicWithActionAfterSpin.class)) {
+                relicWithActionAfterSpin.onSpinEnded();
             }
 
             Hand.I().addCardFromDeck();
@@ -295,7 +294,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void triggerSeparateSlots(SlotMatch slotMatch, TaskScheduler scheduler) {
-        for(Slot slot : slotMatch.getSlots()) {
+        for (Slot slot : slotMatch.getSlots()) {
             scheduler.schedule(() -> {
                 slot.pulse();
                 slot.wobble();
@@ -316,8 +315,8 @@ public class SlotScreen extends ScreenAdapter {
 
                 AudioManager.I().playHit(EffectManager.streak);
 
-                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = Deck.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
-                if(pointsPerConsecutiveHitUpgrade != null) {
+                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = Hand.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
+                if (pointsPerConsecutiveHitUpgrade != null) {
                     int pointAddition = pointsPerConsecutiveHitUpgrade.getPoints();
                     Slot jokerSlot = jokerBar.getSlotByUpgrade(pointsPerConsecutiveHitUpgrade);
                     jokerSlot.pulse();
@@ -340,15 +339,15 @@ public class SlotScreen extends ScreenAdapter {
                 });
             }
 
-            List<SymbolValueStackUpgrade> symbolValueStackUpgrades = Deck.I().getUpgradesOfClass(SymbolValueStackUpgrade.class);
-            SymbolValueStackUpgrade symbolValueStackUpgrade = null;
-            for(SymbolValueStackUpgrade upgrade : symbolValueStackUpgrades) {
-                if(upgrade.getSymbol() == slotMatch.getSymbol()) {
+            List<SymbolValueStackRelic> symbolValueStackUpgrades = Hand.I().getUpgradesOfClass(SymbolValueStackRelic.class);
+            SymbolValueStackRelic symbolValueStackUpgrade = null;
+            for (SymbolValueStackRelic upgrade : symbolValueStackUpgrades) {
+                if (upgrade.getSymbol() == slotMatch.getSymbol()) {
                     symbolValueStackUpgrade = upgrade;
                     break;
                 }
             }
-            if(symbolValueStackUpgrade != null) {
+            if (symbolValueStackUpgrade != null) {
                 Slot upgradeSlot = jokerBar.getSlotByUpgrade(symbolValueStackUpgrade);
                 scheduler.scheduleImmediate(() -> {
                     upgradeSlot.pulse();

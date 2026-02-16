@@ -2,11 +2,7 @@ package com.avaricious.upgrades;
 
 import com.avaricious.Assets;
 
-public class DeptUpgrade extends Upgrade {
-
-    public DeptUpgrade(UpgradeRarity rarity) {
-        super(rarity);
-    }
+public class DeptRelic extends Relic {
 
     @Override
     public String description() {

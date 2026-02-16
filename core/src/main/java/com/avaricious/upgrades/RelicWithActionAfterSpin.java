@@ -1,5 +1,5 @@
 package com.avaricious.upgrades;
 
-public interface UpgradeWithActionAfterSpin {
+public interface RelicWithActionAfterSpin {
     void onSpinEnded();
 }

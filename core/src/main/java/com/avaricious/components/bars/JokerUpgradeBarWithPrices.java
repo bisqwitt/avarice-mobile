@@ -2,6 +2,7 @@ package com.avaricious.components.bars;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditNumber;
+import com.avaricious.cards.Card;
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,9 +13,9 @@ import java.util.Map;
 
 public class JokerUpgradeBarWithPrices extends JokerUpgradeBar {
 
-    private final Map<Upgrade, CreditNumber> cardPrices = new HashMap<>();
+    private final Map<Card, CreditNumber> cardPrices = new HashMap<>();
 
-    public JokerUpgradeBarWithPrices(List<? extends Upgrade> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
+    public JokerUpgradeBarWithPrices(List<? extends Card> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
         super(upgrades, cardRectangle, offset, tooltipOnTop);
         loadCreditNumbers(upgrades);
     }
@@ -26,15 +27,15 @@ public class JokerUpgradeBarWithPrices extends JokerUpgradeBar {
     }
 
     @Override
-    protected void onCardClicked(Upgrade clickedUpgrade) {
+    protected void onUpgradeClicked(Upgrade clickedUpgrade) {
         if (CreditManager.I().enoughCredit(3)) {
-            super.onCardClicked(clickedUpgrade);
+            super.onUpgradeClicked(clickedUpgrade);
             cardPrices.remove(clickedUpgrade);
             CreditManager.I().pay(3);
         }
     }
 
-    private void loadCreditNumbers(List<? extends Upgrade> upgrades) {
+    private void loadCreditNumbers(List<? extends Card> upgrades) {
         cardPrices.clear();
 
         for (int i = 0; i < upgrades.size(); i++) {
@@ -48,6 +49,6 @@ public class JokerUpgradeBarWithPrices extends JokerUpgradeBar {
     @Override
     public void loadUpgrades(List<? extends Upgrade> upgrades) {
         super.loadUpgrades(upgrades);
-        loadCreditNumbers(upgrades);
+        loadCreditNumbers((List<Card>) upgrades);
     }
 }

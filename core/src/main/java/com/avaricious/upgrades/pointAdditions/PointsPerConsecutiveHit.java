@@ -2,18 +2,13 @@ package com.avaricious.upgrades.pointAdditions;
 
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
-import com.avaricious.upgrades.UpgradeWithActionAfterSpin;
+import com.avaricious.upgrades.RelicWithActionAfterSpin;
 
 import java.util.List;
 
-public class PointsPerConsecutiveHit extends PointAdditionUpgrade implements UpgradeWithActionAfterSpin {
+public class PointsPerConsecutiveHit extends PointAdditionRelic implements RelicWithActionAfterSpin {
 
     private int hitNumber = 1;
-
-    public PointsPerConsecutiveHit(UpgradeRarity rarity) {
-        super(rarity);
-    }
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {

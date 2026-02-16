@@ -10,6 +10,12 @@ import java.util.Objects;
 
 public class PatternDisplay {
 
+    private static PatternDisplay instance;
+
+    public static PatternDisplay I() {
+        return instance == null ? instance = new PatternDisplay() : instance;
+    }
+
     private final float FIRST_POINT_DIGIT_X = 1.95f;
     private final float FIRST_MULTI_DIGIT_X = 5.2f;
     private final float DIGIT_Y = 13.25f;
@@ -39,7 +45,7 @@ public class PatternDisplay {
 
     private float hoverTime = 0f;
 
-    public PatternDisplay() {
+    private PatternDisplay() {
         multSymbolTexture = Assets.I().get(AssetKey.MULT_SYMBOL);
         multSymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {

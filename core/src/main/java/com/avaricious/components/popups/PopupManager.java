@@ -4,6 +4,7 @@ import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -36,9 +37,21 @@ public class PopupManager {
         numberPopups.add(new NumberPopup(number, color, x, y, false, manualHold));
     }
 
+    public void spawnNumber(int number, Color color, Rectangle bounds, boolean manualHold) {
+        numberPopups.add(new NumberPopup(number, color, bounds, false, manualHold));
+    }
+
+    public void spawnCreditNumber(int number, float x, float y, boolean manualHold) {
+        numberPopups.add(new CreditNumberPopup(number, x, y, false, manualHold));
+    }
+
+    public void spawnCreditNumber(int number, Rectangle bounds, boolean manualHold) {
+        numberPopups.add(new CreditNumberPopup(number, bounds, false, manualHold));
+    }
+
     public void releaseHoldingNumbers() {
-        for(NumberPopup numberPopup : numberPopups) {
-            if(numberPopup.isManualHold()) numberPopup.release();
+        for (NumberPopup numberPopup : numberPopups) {
+            if (numberPopup.isManualHold()) numberPopup.release();
         }
     }
 

@@ -2,8 +2,8 @@ package com.avaricious.stats.statupgrades;
 
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
-import com.avaricious.upgrades.CriticalHitDamageUpgrade;
-import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.CriticalHitDamageRelic;
+import com.avaricious.upgrades.RelicManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class CriticalHitChance extends Stat {
@@ -19,7 +19,7 @@ public class CriticalHitChance extends Stat {
     }
 
     public int criticalHitMultiplier() {
-        return Deck.I().upgradeIsInDeck(CriticalHitDamageUpgrade.class)? 4 : 2;
+        return RelicManager.I().relicOwned(CriticalHitDamageRelic.class) ? 4 : 2;
     }
 
 }

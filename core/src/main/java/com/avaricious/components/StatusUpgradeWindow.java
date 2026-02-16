@@ -4,7 +4,8 @@ import com.avaricious.AssetKey;
 import com.avaricious.Assets;
 import com.avaricious.components.bars.StatusUpgradeBar;
 import com.avaricious.components.bars.UpgradeBar;
-import com.avaricious.stats.statupgrades.StatusUpgrade;
+import com.avaricious.stats.statupgrades.StatusRelic;
+import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -53,8 +54,8 @@ public class StatusUpgradeWindow {
         });
     }
 
-    private List<StatusUpgrade> randomStatUpgrades() {
-        return Arrays.asList(StatusUpgrade.newRandom(), StatusUpgrade.newRandom(), StatusUpgrade.newRandom());
+    private List<Upgrade> randomStatUpgrades() {
+        return Arrays.asList(StatusRelic.newRandom(), StatusRelic.newRandom(), StatusRelic.newRandom());
     }
 
     public void draw(SpriteBatch batch, float delta) {

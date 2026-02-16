@@ -2,8 +2,9 @@ package com.avaricious.components.bars;
 
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
-import com.avaricious.upgrades.Upgrade;
+import com.avaricious.cards.Card;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -14,7 +15,7 @@ public class JokerUpgradeBar extends UpgradeBar {
     private final TextureRegion jokerCard;
     private final TextureRegion jokerCardShadow;
 
-    public JokerUpgradeBar(List<? extends Upgrade> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
+    public JokerUpgradeBar(List<? extends Card> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
         super(upgrades, cardRectangle, offset, tooltipOnTop);
 
         jokerCard = new TextureRegion(Assets.I().get(AssetKey.JOKER_CARD));
@@ -22,8 +23,8 @@ public class JokerUpgradeBar extends UpgradeBar {
     }
 
     @Override
-    protected void onCardClicked(Upgrade clickedUpgrade) {
-        Deck.I().addUpgradeToDeck(clickedUpgrade);
+    protected void onUpgradeClicked(Upgrade clickedUpgrade) {
+        Deck.I().addUpgradeToDeck((Card) clickedUpgrade);
         cardBounds.remove(clickedUpgrade);
         cardAnimationManagers.remove(clickedUpgrade);
     }

@@ -2,15 +2,12 @@ package com.avaricious.upgrades;
 
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
+import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
 
-public class RandomMultAdditionUpgrade extends MultAdditionUpgrade {
-    public RandomMultAdditionUpgrade(UpgradeRarity rarity) {
-        super(rarity);
-    }
+public class RandomMultAdditionRelic extends MultAdditionRelic {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {

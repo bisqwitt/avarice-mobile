@@ -2,15 +2,20 @@ package com.avaricious.components.bars;
 
 import com.avaricious.AssetKey;
 import com.avaricious.Assets;
+import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.components.slot.Slot;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.Deck;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -19,16 +24,31 @@ import java.util.Map;
 
 public class SlotScreenJokerBar {
 
+    private static SlotScreenJokerBar instance;
+
+    public static SlotScreenJokerBar I() {
+        return instance == null ? instance = new SlotScreenJokerBar() : instance;
+    }
+
     private final TextureRegion jokerTexture = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerShadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
     private final TextureRegion blueGreenTexture = Assets.I().get(AssetKey.BLUE_GREEN_PIXEL);
+    private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
 
-    private final Map<Upgrade, Rectangle> jokerBounds = new LinkedHashMap<>();
-    private final Map<Upgrade, Slot> jokerAnimationManagers = new LinkedHashMap<>();
+    private final Map<Card, Rectangle> jokerBounds = new LinkedHashMap<>();
+    private final Map<Card, DragableSlot> jokerAnimationManagers = new LinkedHashMap<>();
 
     private final List<Rectangle> jokerRectangles;
 
-    private Upgrade selectedUpgrade;
+    private Card selectedUpgrade;
+
+    private Card activeDragUpgrade = null;
+    private final Vector2 pressStart = new Vector2();
+    private boolean movedSincePress = false;
+
+    // world units; tune to taste
+    private final float dragThreshold = 0.12f;
+    private float stateTime = 0f;
 
     public SlotScreenJokerBar() {
         jokerRectangles = Arrays.asList(
@@ -42,89 +62,229 @@ public class SlotScreenJokerBar {
             new Rectangle(6.6f, 0.5f, 142 / 95f, 190 / 95f)
         );
 
-        loadJokers(Deck.I().getDeck());
+        loadJokers(Hand.I().getHand());
         Hand.I().onChange(this::loadJokers);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
-        for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
-            Upgrade upgrade = entry.getKey();
-            Rectangle bounds = entry.getValue();
 
-            if (pressed && !wasPressed) {
-                float x = bounds.x;
+        // --- Hover updates (correct: only hovered if mouse inside) ---
+        for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
+            Card upgrade = entry.getKey();
+            Rectangle bounds = entry.getValue();
+            DragableSlot slot = jokerAnimationManagers.get(upgrade);
+
+            boolean hovered = bounds.contains(mouse);
+            slot.updateHoverWobble(hovered, delta);
+
+            // If you want pulse to react to selection state:
+            slot.updatePulse(selectedUpgrade == upgrade, delta);
+        }
+
+        // --- Press: begin drag on top-most hit card (selected drawn last) ---
+        if (pressed && !wasPressed) {
+            pressStart.set(mouse);
+            movedSincePress = false;
+
+            // Prefer selected upgrade if pressed on it (since it is visually on top)
+            if (selectedUpgrade != null) {
+                Rectangle b = jokerBounds.get(selectedUpgrade);
+                if (b != null && b.contains(mouse)) {
+                    activeDragUpgrade = selectedUpgrade;
+                    selectedUpgrade = null;
+                    jokerAnimationManagers.get(activeDragUpgrade).beginDrag(mouse.x, mouse.y, 0);
+                    return;
+                }
             }
-            if (bounds.contains(mouse) && pressed && !wasPressed) {
-                selectedUpgrade = selectedUpgrade != upgrade ? upgrade : null;
-                Slot slot = jokerAnimationManagers.get(upgrade);
-                slot.wobble();
-                slot.pulse();
+
+            // Otherwise find any hit
+            for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
+                Card upgrade = entry.getKey();
+                Rectangle bounds = entry.getValue();
+
+                if (bounds.contains(mouse)) {
+                    activeDragUpgrade = upgrade;
+                    jokerAnimationManagers.get(upgrade).beginDrag(mouse.x, mouse.y, 0);
+                    return;
+                }
             }
         }
 
-        for(Slot slot : jokerAnimationManagers.values()) {
-            slot.updateHoverWobble(true, delta);
-            slot.updatePulse(false, delta);
+        // --- Dragging: update drag offset while pressed ---
+        if (pressed && activeDragUpgrade != null) {
+            if (!movedSincePress && pressStart.dst2(mouse) > dragThreshold * dragThreshold) {
+                movedSincePress = true;
+            }
+            jokerAnimationManagers.get(activeDragUpgrade).dragTo(mouse.x, mouse.y, 0);
+        }
+
+        // --- Release: end drag, and if it was basically a click, toggle selection ---
+        if (!pressed && wasPressed) {
+            if (activeDragUpgrade != null) {
+                DragableSlot dragableSlot = jokerAnimationManagers.get(activeDragUpgrade);
+                if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
+                    applyCard(activeDragUpgrade);
+                }
+                dragableSlot.endDrag(0);
+
+                if (!movedSincePress) {
+                    Card upgrade = activeDragUpgrade;
+                    selectedUpgrade = (selectedUpgrade != upgrade) ? upgrade : null;
+                }
+            }
+            activeDragUpgrade = null;
+        }
+
+        // --- Per-frame updates for draggable physics/tilt/return ---
+        for (DragableSlot slot : jokerAnimationManagers.values()) {
+            slot.update(delta);
         }
     }
 
     public void draw(SpriteBatch batch) {
         batch.setColor(Assets.I().shadowColor());
-        for(Rectangle rectangle : jokerRectangles) {
+        for (Rectangle rectangle : jokerRectangles) {
             batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         }
         batch.setColor(1f, 1f, 1f, 1f);
 
-        for(Map.Entry<Upgrade, Rectangle> entry : jokerBounds.entrySet()) {
-            if(entry.getKey() != selectedUpgrade) drawJokerCard(batch, entry.getKey(), entry.getValue());
+        for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
+            if (entry.getKey() != selectedUpgrade && entry.getKey() != activeDragUpgrade) {
+                drawJokerCard(batch, entry.getKey(), entry.getValue());
+            }
         }
+
+        if (activeDragUpgrade != null || selectedUpgrade != null)
+            drawGlowBorder(batch, SlotMachine.windowBounds, 0.06f, stateTime);
+
+        if (activeDragUpgrade != null) {
+            stateTime += Gdx.graphics.getDeltaTime();
+            drawJokerCard(batch, activeDragUpgrade, jokerBounds.get(activeDragUpgrade));
+        }
+
         if (selectedUpgrade != null)
             drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
     }
 
-    private void drawJokerCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds) {
-        Slot slot = jokerAnimationManagers.get(upgrade);
-        float selectedScale = selectedUpgrade == upgrade ? 1.3f : 1f;
-        float s = slot.pulseScale() * slot.wobbleScale() * selectedScale;
-        float r = slot.wobbleAngleDeg();
+    private void drawJokerCard(SpriteBatch batch, Card upgrade, Rectangle bounds) {
+        DragableSlot slot = jokerAnimationManagers.get(upgrade);
+
+        float selectedScale = (selectedUpgrade == upgrade) ? 1.3f : 1f;
+
+        float s = slot.pulseScale()
+            * slot.wobbleScale()
+            * slot.getDragScaleMul()
+            * slot.getExtraScaleMul()
+            * selectedScale;
+
+        float r = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
 
         float originX = bounds.width * 0.5f;
         float originY = bounds.height * 0.5f;
 
-        if (selectedUpgrade == upgrade) {
-            batch.setColor(Assets.I().shadowColor());
+        // IMPORTANT: render position can differ from bounds.x/y while dragging
+        Vector2 p = slot.getRenderPos(new Vector2());
+        float alpha = slot.getAlpha();
+
+        if (selectedUpgrade == upgrade || slot.isDragging()) {
+            Color shadowColor = Assets.I().shadowColor();
+            batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
             batch.draw(jokerShadowTexture,
-                bounds.x, bounds.y - 0.2f,
+                p.x, p.y - 0.2f,
                 originX, originY,
                 bounds.width, bounds.height,
                 s, s,
                 r);
             batch.setColor(1f, 1f, 1f, 1f);
 
-            PopupManager.I().renderTooltip(selectedUpgrade, bounds.x - 2f, bounds.y + 2.65f);
+            if (!slot.isDragging())
+                PopupManager.I().renderTooltip(selectedUpgrade, p.x - 2f, p.y + 2.65f);
         }
 
+        batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(
             jokerTexture,
-            bounds.x, bounds.y,
+            p.x, p.y,
             originX, originY,
             bounds.width, bounds.height,
             s, s,
             r);
+        batch.setColor(1f, 1f, 1f, 1f);
     }
 
-    private void loadJokers(List<? extends Upgrade> upgrades) {
+    private void drawGlowBorder(SpriteBatch batch, Rectangle r, float thickness, float time) {
+        // pulse 0..1
+        float pulse = 0.5f + 0.5f * (float) Math.sin(time * 8f);
+
+        // base border
+        batch.setColor(1f, 0.95f, 0.2f, 0.65f + 0.25f * pulse);
+        drawRectOutline(batch, yellowTexture, r, thickness);
+
+        // optional outer glow (fatter + more transparent). You can draw 2-3 passes.
+        batch.setColor(1f, 0.95f, 0.2f, 0.18f + 0.12f * pulse);
+        drawRectOutline(batch, yellowTexture, r, thickness * 2.5f);
+
+        batch.setColor(1f, 1f, 1f, 1f);
+    }
+
+    private void drawRectOutline(SpriteBatch batch, TextureRegion px, Rectangle r, float t) {
+        // bottom
+        batch.draw(px, r.x - t, r.y - t, r.width + 2f * t, t);
+        // top
+        batch.draw(px, r.x - t, r.y + r.height, r.width + 2f * t, t);
+        // left
+        batch.draw(px, r.x - t, r.y, t, r.height);
+        // right
+        batch.draw(px, r.x + r.width, r.y, t, r.height);
+    }
+
+
+    private void loadJokers(List<? extends Card> upgrades) {
         jokerBounds.clear();
         jokerAnimationManagers.clear();
 
         for (int i = 0; i < upgrades.size(); i++) {
-            Upgrade upgrade = upgrades.get(i);
+            Card upgrade = upgrades.get(i);
             Rectangle rectangle = jokerRectangles.get(i);
 
             jokerBounds.put(upgrade, rectangle);
-            jokerAnimationManagers.put(upgrade, new Slot(new Vector2(rectangle.x, rectangle.y)));
+
+            jokerAnimationManagers.put(
+                upgrade,
+                new DragableSlot(
+                    new Vector2(rectangle.x, rectangle.y),
+                    rectangle.width,
+                    rectangle.height
+                ).setTilt(200f, 10f)
+                    .setDragScale(1.3f)
+                // optional tuning:
+                //.setFollow(30f, 18f)
+                //.setTilt(14f, 12f)
+                //.setDragScale(1.08f)
+            );
         }
     }
+
+    public void applyCard(Card card) {
+        card.apply();
+
+        DragableSlot slot = jokerAnimationManagers.get(card);
+        slot.pulse();
+        slot.wobble();
+        Vector2 pos = slot.getRenderPos(new Vector2());
+        pos.x += 1.3f;
+        pos.y += 1.8f;
+        card.createPopupRunnable(pos).run();
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                // Start animation and remove only when finished
+                slot.startApplyTo(0.6f, () -> Hand.I().removeCardFromHand(card));
+            }
+        }, 0.5f);
+    }
+
 
     public Rectangle getBoundsByUpgrade(Upgrade upgrade) {
         return jokerBounds.get(upgrade);
@@ -133,5 +293,6 @@ public class SlotScreenJokerBar {
     public Slot getSlotByUpgrade(Upgrade upgrade) {
         return jokerAnimationManagers.get(upgrade);
     }
+
 
 }

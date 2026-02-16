@@ -1,26 +1,24 @@
 package com.avaricious.stats.statupgrades;
 
 import com.avaricious.stats.PlayerStats;
-import com.avaricious.upgrades.ApplieableUpgrade;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradeRarity;
+import com.avaricious.upgrades.ApplieableRelic;
+import com.avaricious.upgrades.Relic;
 
 import java.math.BigDecimal;
 
-public class StatusUpgrade extends Upgrade implements ApplieableUpgrade {
+public class StatusRelic extends Relic implements ApplieableRelic {
 
-    public static StatusUpgrade newRandom() {
+    public static StatusRelic newRandom() {
 //        if (MathUtils.random(1, 20) != 1) {
 //            return null;
 //        }
-        return new StatusUpgrade(PlayerStats.I().getRandomStat(), new BigDecimal("0.05"));
+        return new StatusRelic(PlayerStats.I().getRandomStat(), new BigDecimal("0.05"));
     }
 
     private final Stat stat;
     private final BigDecimal additionalPercentage;
 
-    private StatusUpgrade(Stat stat, BigDecimal percentage) {
-        super(UpgradeRarity.COMMON);
+    private StatusRelic(Stat stat, BigDecimal percentage) {
         this.stat = stat;
         this.additionalPercentage = percentage;
     }

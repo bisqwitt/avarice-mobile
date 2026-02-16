@@ -732,3 +732,10 @@ xporb
   orig: 16, 16
   offset: 0, 0
   index: -1
+yellowPixel
+  rotate: false
+  xy: 939, 447
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1

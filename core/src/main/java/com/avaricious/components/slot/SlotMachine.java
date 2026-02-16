@@ -18,7 +18,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,15 +25,17 @@ import java.util.List;
 public class SlotMachine {
 
     // --- Layout ---
-    private final int cols = 5;
-    private final int rows = 3;
+    public static final int cols = 5;
+    public static final int rows = 3;
     public static final float CELL_W = 1.5f;
     public static final float CELL_H = 1.5f;
-    private final float spacingX = 0.3f;
-    private final float spacingY = 0.3f;
+    public static final float spacingX = 0.3f;
+    public static final float spacingY = 0.3f;
 
-    private final float originX;
-    private final float originY;
+    public static final float originX = 0.15f;
+    public static final float originY = 6.75f;
+
+    public static final Rectangle windowBounds = new Rectangle(0.05f, 6.25f, 8.85f, 6.1f);
 
     // Visual cells (for selection pulse/scale)
     private final Slot[][] grid = new Slot[cols][rows];
@@ -53,10 +54,6 @@ public class SlotMachine {
     private float desiredAlpha = 1f;
 
     public SlotMachine() {
-        // center the 5x3 grid within the world
-        originX = 0.1f;
-        originY = 6.75f;
-
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -357,7 +354,7 @@ public class SlotMachine {
         return result;
     }
 
-    public Rectangle getBounds() {
+    public static Rectangle getBounds() {
         return new Rectangle(
             originX,
             originY,

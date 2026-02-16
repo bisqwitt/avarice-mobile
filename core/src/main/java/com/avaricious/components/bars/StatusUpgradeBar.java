@@ -2,7 +2,7 @@ package com.avaricious.components.bars;
 
 import com.avaricious.Assets;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.stats.statupgrades.StatusUpgrade;
+import com.avaricious.stats.statupgrades.StatusRelic;
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -17,26 +17,26 @@ public class StatusUpgradeBar extends UpgradeBar {
     }
 
     @Override
-    protected void onCardClicked(Upgrade clickedUpgrade) {
+    protected void onUpgradeClicked(Upgrade clickedUpgrade) {
         cardBounds.keySet().retainAll(Collections.singleton(clickedUpgrade));
         cardAnimationManagers.keySet().retainAll(Collections.singleton(clickedUpgrade));
 
         PopupManager.I().spawnPercentage(
-            ((StatusUpgrade) clickedUpgrade).getAdditionalPercentage(),
+            ((StatusRelic) clickedUpgrade).getAdditionalPercentage(),
             Assets.I().green(),
             cardBounds.get(clickedUpgrade).getX() + 1f,
-            cardBounds.get(clickedUpgrade).getY()).setOnFinished(() -> onUpgradeClicked.run());
+            cardBounds.get(clickedUpgrade).getY()).setOnFinished(() -> onCardClicked.run());
 
-        ((StatusUpgrade) clickedUpgrade).apply();
+        ((StatusRelic) clickedUpgrade).apply();
     }
 
     @Override
     protected TextureRegion getTexture(Upgrade upgrade) {
-        return ((StatusUpgrade) upgrade).getStat().getTexture();
+        return ((StatusRelic) upgrade).getStat().getTexture();
     }
 
     @Override
     protected TextureRegion getShadow(Upgrade upgrade) {
-        return ((StatusUpgrade) upgrade).getStat().getShadowTexture();
+        return ((StatusRelic) upgrade).getStat().getShadowTexture();
     }
 }

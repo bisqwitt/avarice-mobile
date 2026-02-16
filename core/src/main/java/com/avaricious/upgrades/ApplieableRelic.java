@@ -1,6 +1,6 @@
 package com.avaricious.upgrades;
 
-public interface ApplieableUpgrade {
+public interface ApplieableRelic {
 
     void apply();
 

@@ -2,19 +2,15 @@ package com.avaricious.upgrades.multAdditions.pattern;
 
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
-import com.avaricious.upgrades.multAdditions.MultAdditionUpgrade;
+import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public abstract class PatternMultAdditionUpgrade extends MultAdditionUpgrade {
+public abstract class PatternMultAdditionRelic extends MultAdditionRelic {
 
     private final double patternType;
 
-    protected PatternMultAdditionUpgrade(UpgradeRarity rarity, long patternType) {
-        super(rarity);
+    protected PatternMultAdditionRelic(long patternType) {
         this.patternType = patternType;
     }
 

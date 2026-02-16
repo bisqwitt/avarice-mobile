@@ -12,20 +12,24 @@ import java.util.List;
 
 public class NumberPopup {
 
+    public final static float defaultWidth = 7 / 15f;
+    public final static float defaultHeight = 11 / 15f;
+
     private enum Phase {PULSE, HOLD, EXIT, FINISHED}
 
-    private final List<TextureRegion> digitalNumberTextures = new ArrayList<>();
-    private final List<TextureRegion> digitalNumberShadowTextures = new ArrayList<>();
+    protected final List<TextureRegion> digitalNumberTextures = new ArrayList<>();
+    protected final List<TextureRegion> digitalNumberShadowTextures = new ArrayList<>();
 
     private final TextureRegion plusTexture = Assets.I().get(AssetKey.PLUS_SYMBOL);
     private final TextureRegion percentageTexture = Assets.I().get(AssetKey.PERCENTAGE_SYMBOL);
 
-    private final Rectangle bounds;
+    protected final Rectangle bounds;
     private final Color color;
 
-    private final float pulseTime = 0.20f; // pop+wobble duration
-    private final float holdTime = 0.40f; // OLD behavior: stay static for this long
-    private final float exitTime = 0.25f; // shrink until gone
+    protected final float numberOffset;
+    protected final float pulseTime = 0.20f; // pop+wobble duration
+    protected final float holdTime = 0.40f; // OLD behavior: stay static for this long
+    protected final float exitTime = 0.25f; // shrink until gone
 
     private final boolean manualHold;
 
@@ -39,13 +43,22 @@ public class NumberPopup {
     private Runnable onFinished;
 
     public NumberPopup(int number, Color color, float x, float y, boolean asPercentage, boolean manualHold) {
+        this(number, color, new Rectangle(x, y, defaultWidth, defaultHeight), asPercentage, manualHold);
+    }
+
+    public NumberPopup(int number, Color color, Rectangle bounds, boolean asPercentage, boolean manualHold) {
         this.color = color;
         this.asPercentage = asPercentage;
         this.manualHold = manualHold;
 
-        this.bounds = new Rectangle(x, y, 7 / 15f, 11 / 15f);
+        this.bounds = new Rectangle(bounds);
         setDigitalNumberTextures(number);
         restart();
+
+        float defaultOffset = 0.5f;
+        numberOffset = bounds.width == defaultWidth && bounds.height == defaultHeight
+            ? defaultOffset
+            : defaultOffset + (bounds.width - defaultWidth) * 0.5f;
     }
 
     public void release() {
@@ -126,7 +139,7 @@ public class NumberPopup {
 
         batch.draw(
             plusTexture,
-            bounds.x - 0.5f, bounds.y,
+            bounds.x - numberOffset, bounds.y,
             originX, originY,
             bounds.width, bounds.height,
             scale, scale,
@@ -149,7 +162,7 @@ public class NumberPopup {
             batch.setColor(color.r, color.g, color.b, alpha);
             batch.draw(
                 digitalNumberTextures.get(i),
-                bounds.x + (0.5f * i), bounds.y,
+                bounds.x + (numberOffset * i), bounds.y,
                 originX, originY,
                 bounds.width, bounds.height,
                 scale, scale,
@@ -171,13 +184,13 @@ public class NumberPopup {
         batch.setColor(1f, 1f, 1f, 1f);
     }
 
-    private float getPulseCurve() {
+    protected float getPulseCurve() {
         float t = clamp01(timeInPhase / pulseTime);
         float pulse = 1f - 4f * (t - 0.5f) * (t - 0.5f);
         return Math.max(0f, pulse);
     }
 
-    private float getScale() {
+    protected float getScale() {
         float baseScale = 1.0f;
 
         if (phase == Phase.PULSE) {
@@ -194,7 +207,7 @@ public class NumberPopup {
         return baseScale * (1f - easeInQuad(t));
     }
 
-    private float getRotation() {
+    protected float getRotation() {
         if (phase == Phase.PULSE) {
             float wobbleAngle = 8f;
             return getPulseCurve() * wobbleAngle;
@@ -202,7 +215,7 @@ public class NumberPopup {
         return 0f;
     }
 
-    private float getAlpha() {
+    protected float getAlpha() {
         if (phase == Phase.PULSE || phase == Phase.HOLD) {
             return 1f;
         }

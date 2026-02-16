@@ -1,16 +1,10 @@
 package com.avaricious.upgrades.multAdditions;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
 
 import java.util.List;
-import java.util.Map;
 
-public class DefaultMultAdditionUpgrade extends MultAdditionUpgrade {
-
-    public DefaultMultAdditionUpgrade(UpgradeRarity rarity) {
-        super(rarity);
-    }
+public class DefaultMultAdditionRelic extends MultAdditionRelic {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {

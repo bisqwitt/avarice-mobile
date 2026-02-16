@@ -1,6 +1,7 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.Assets;
+import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
@@ -25,16 +26,16 @@ public abstract class UpgradeBar {
 
     private final boolean tooltipOnTopOfCard;
 
-    protected Runnable onUpgradeClicked;
+    protected Runnable onCardClicked;
 
-    public UpgradeBar(List<? extends Upgrade> upgrades, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
+    public UpgradeBar(List<? extends Upgrade> Cards, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
         tooltipOnTopOfCard = tooltipOnTop;
 
         this.cardRectangle = cardRectangle;
         this.offset = offset;
 
-        for (int i = 0; i < upgrades.size(); i++) {
-            Upgrade upgrade = upgrades.get(i);
+        for (int i = 0; i < Cards.size(); i++) {
+            Upgrade upgrade = Cards.get(i);
             cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
             cardAnimationManagers.put(upgrade, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
@@ -42,8 +43,8 @@ public abstract class UpgradeBar {
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         hoveringKey = null;
-        Upgrade[] clickedUpgrade = new Upgrade[1];
-        for(Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
+        Upgrade[] clickedCard = new Upgrade[1];
+        for (Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
             Upgrade upgrade = entry.getKey();
             Rectangle rectangle = entry.getValue();
 
@@ -59,15 +60,15 @@ public abstract class UpgradeBar {
             cardSlot.tickScale(delta);
 
             if (hovered) hoveringKey = upgrade;
-            if (selected) clickedUpgrade[0] = hoveringKey;
+            if (selected) clickedCard[0] = hoveringKey;
         }
 
         if (hoveringKey != null)
             PopupManager.I().renderTooltip(hoveringKey,
                 getHoveringRectangle().x - 1f, getHoveringRectangle().y + (tooltipOnTopOfCard ? 2 : -2));
 
-        if (clickedUpgrade[0] != null) {
-            onCardClicked(clickedUpgrade[0]);
+        if (clickedCard[0] != null) {
+            onUpgradeClicked(clickedCard[0]);
         }
     }
 
@@ -76,7 +77,7 @@ public abstract class UpgradeBar {
      */
     public void draw(SpriteBatch batch) {
         // combined scale (identical idea to SlotMachine)
-        for(Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
+        for (Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
             Upgrade upgrade = entry.getKey();
             Rectangle rectangle = entry.getValue();
 
@@ -127,19 +128,19 @@ public abstract class UpgradeBar {
         cardAnimationManagers.clear();
 
         for (int i = 0; i < upgrades.size(); i++) {
-            Upgrade upgrade = upgrades.get(i);
-            cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
-            cardAnimationManagers.put(upgrade, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
+            Upgrade Card = upgrades.get(i);
+            cardBounds.put(Card, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
+            cardAnimationManagers.put(Card, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
     }
 
-    protected abstract void onCardClicked(Upgrade clickedUpgrade);
+    protected abstract void onUpgradeClicked(Upgrade clickedCard);
 
-    protected abstract TextureRegion getTexture(Upgrade upgrade);
+    protected abstract TextureRegion getTexture(Upgrade Card);
 
-    protected abstract TextureRegion getShadow(Upgrade upgrade);
+    protected abstract TextureRegion getShadow(Upgrade Card);
 
-    public Upgrade getHoveringUpgrade() {
+    public Upgrade getHoveringCard() {
         return hoveringKey;
     }
 
@@ -147,16 +148,16 @@ public abstract class UpgradeBar {
         return cardBounds.get(hoveringKey);
     }
 
-    public Slot getSlotByUpgrade(Upgrade upgrade) {
-        return cardAnimationManagers.get(upgrade);
+    public Slot getSlotByCard(Card Card) {
+        return cardAnimationManagers.get(Card);
     }
 
-    public Rectangle getRectangleByUpgrade(Upgrade upgrade) {
-        return cardBounds.get(upgrade);
+    public Rectangle getRectangleByCard(Card Card) {
+        return cardBounds.get(Card);
     }
 
-    public void setOnUpgradeClickedAndAnimationEnded(Runnable onUpgradeClicked) {
-        this.onUpgradeClicked = onUpgradeClicked;
+    public void setOnUpgradeClickedAndAnimationEnded(Runnable onCardClicked) {
+        this.onCardClicked = onCardClicked;
     }
 
     protected Rectangle getCardRectangle() {

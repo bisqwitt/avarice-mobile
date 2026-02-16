@@ -2,17 +2,11 @@ package com.avaricious.upgrades.multAdditions;
 
 import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
 import com.avaricious.upgrades.Deck;
 
 import java.util.List;
 
-public class MultPerEmptyJokerSlotUpgrade extends MultAdditionUpgrade {
-
-
-    public MultPerEmptyJokerSlotUpgrade(UpgradeRarity rarity) {
-        super(rarity);
-    }
+public class MultPerEmptyJokerSlotRelic extends MultAdditionRelic {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {

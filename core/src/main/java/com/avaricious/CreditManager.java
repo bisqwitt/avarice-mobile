@@ -1,7 +1,7 @@
 package com.avaricious;
 
-import com.avaricious.upgrades.DeptUpgrade;
-import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.DeptRelic;
+import com.avaricious.upgrades.RelicManager;
 import com.avaricious.utility.Observable;
 
 public class CreditManager extends Observable<Integer> {
@@ -40,7 +40,7 @@ public class CreditManager extends Observable<Integer> {
     }
 
     public boolean enoughCredit(int value) {
-        int base = Deck.I().upgradeIsInDeck(DeptUpgrade.class) ? -20 : 0;
+        int base = RelicManager.I().relicOwned(DeptRelic.class) ? -20 : 0;
         return credits - value >= base;
     }
 

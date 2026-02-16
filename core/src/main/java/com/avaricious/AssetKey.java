@@ -84,7 +84,8 @@ public enum AssetKey {
     LIGHT_GREY_PIXEL("light-grey-pixel"),
     BUTTON_SHADOW("button-shadow"),
     DARK_BLUE_PIXEL("dark-blue-pixel"),
-    BLUE_GREEN_PIXEL("blue-green-pixel");
+    BLUE_GREEN_PIXEL("blue-green-pixel"),
+    YELLOW_PIXEL("yellowPixel");
 
     private final String path;
 

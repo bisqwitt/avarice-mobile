@@ -29,6 +29,7 @@ public class Assets {
     private final Color red = new Color(0.7922f, 0.3765f, 0.3333f, 1f);
     private final Color green = new Color(0.2980f, 0.7098f, 0.4470f, 1f);
     private final Color yellow = new Color(218f / 255f, 172f / 255f, 83f / 255f, 1f);
+    private final Color silver = new Color(191f / 255f, 197f / 255f, 204f / 255f, 1f);
     private final Color light = new Color(0.992156f, 0.992156f, 0.992156f, 1f);
     private final Color shadow = new Color(1f, 1f, 1f, 0.25f);
 
@@ -132,6 +133,10 @@ public class Assets {
 
     public Color shadowColor() {
         return shadow;
+    }
+
+    public Color silver() {
+        return silver;
     }
 
 }
