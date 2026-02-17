@@ -1,6 +1,8 @@
 package com.avaricious;
 
 import com.avaricious.components.DigitalNumber;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;

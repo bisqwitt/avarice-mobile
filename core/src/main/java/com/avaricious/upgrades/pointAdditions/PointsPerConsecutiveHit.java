@@ -1,8 +1,8 @@
 package com.avaricious.upgrades.pointAdditions;
 
-import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
+import com.avaricious.utility.Assets;
 
 import java.util.List;
 

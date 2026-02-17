@@ -1,8 +1,8 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;

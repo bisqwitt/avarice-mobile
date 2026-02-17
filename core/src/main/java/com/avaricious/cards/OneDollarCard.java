@@ -1,10 +1,9 @@
 package com.avaricious.cards;
 
-import com.avaricious.Assets;
 import com.avaricious.CreditManager;
-import com.avaricious.components.popups.NumberPopup;
+import com.avaricious.components.popups.CreditNumberPopup;
 import com.avaricious.components.popups.PopupManager;
-import com.badlogic.gdx.math.Rectangle;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.Vector2;
 
 public class OneDollarCard extends Card {
@@ -20,6 +19,7 @@ public class OneDollarCard extends Card {
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> PopupManager.I().spawnCreditNumber(1, new Rectangle(pos.x, pos.y, NumberPopup.defaultWidth * 1.3f, NumberPopup.defaultHeight * 1.3f), false);
+        return () -> PopupManager.I().spawnNumber(new CreditNumberPopup(1,
+            posToBounds(pos), false, false));
     }
 }

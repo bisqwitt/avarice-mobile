@@ -1,6 +1,6 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.Assets;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 

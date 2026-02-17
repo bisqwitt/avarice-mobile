@@ -1,8 +1,8 @@
 package com.avaricious.components.displays;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.DevTools;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -18,7 +18,7 @@ public class PatternDisplay {
 
     private final float FIRST_POINT_DIGIT_X = 1.95f;
     private final float FIRST_MULTI_DIGIT_X = 5.2f;
-    private final float DIGIT_Y = 13.25f;
+    private final float DIGIT_Y = 15.25f;
     private final float DIGIT_WIDTH = 8 / 20f;
     private final float DIGIT_HEIGHT = 14 / 20f;
     private final float DIGIT_OFFSET = 0.6f;
@@ -259,8 +259,12 @@ public class PatternDisplay {
     }
 
     public void addPoints(float points) {
-        pointsValue += points;
-        pointsPulseTime = 0f; // pulse only the points side
+        setPoints(pointsValue + points);
+    }
+
+    public void setPoints(float value) {
+        pointsValue = value;
+        pointsPulseTime = 0f;
 
         updateDisplayedPoints();
     }

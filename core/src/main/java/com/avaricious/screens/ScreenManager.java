@@ -4,7 +4,6 @@ import com.avaricious.Main;
 import com.avaricious.screens.mainscreen.MainScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -39,6 +38,10 @@ public class ScreenManager {
 
     public void setScreen(Class<? extends ScreenAdapter> screenClass) {
         app.setScreen(screens.get(screenClass));
+    }
+
+    public <T> T getScreen(Class<T> screenClass) {
+        return (T) screens.get(screenClass);
     }
 
     public static void setViewport(FitViewport fitViewport) {

@@ -1,13 +1,13 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.TextureGlow;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.components.slot.pattern.SlotMatch;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,9 +33,9 @@ public class SlotMachine {
     public static final float spacingY = 0.3f;
 
     public static final float originX = 0.15f;
-    public static final float originY = 6.75f;
+    public static final float originY = 8.75f;
 
-    public static final Rectangle windowBounds = new Rectangle(0.05f, 6.25f, 8.85f, 6.1f);
+    public static final Rectangle windowBounds = new Rectangle(0.05f, 8.25f, 8.85f, 6.1f);
 
     // Visual cells (for selection pulse/scale)
     private final Slot[][] grid = new Slot[cols][rows];

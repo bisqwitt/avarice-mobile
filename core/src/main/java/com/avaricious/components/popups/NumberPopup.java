@@ -1,7 +1,7 @@
 package com.avaricious.components.popups;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -21,7 +21,10 @@ public class NumberPopup {
     protected final List<TextureRegion> digitalNumberShadowTextures = new ArrayList<>();
 
     private final TextureRegion plusTexture = Assets.I().get(AssetKey.PLUS_SYMBOL);
+    private final TextureRegion minusTexture = Assets.I().get(AssetKey.MINUS_SYMBOL);
     private final TextureRegion percentageTexture = Assets.I().get(AssetKey.PERCENTAGE_SYMBOL);
+
+    private final int number;
 
     protected final Rectangle bounds;
     private final Color color;
@@ -47,6 +50,7 @@ public class NumberPopup {
     }
 
     public NumberPopup(int number, Color color, Rectangle bounds, boolean asPercentage, boolean manualHold) {
+        this.number = number;
         this.color = color;
         this.asPercentage = asPercentage;
         this.manualHold = manualHold;
@@ -138,7 +142,7 @@ public class NumberPopup {
         batch.setColor(color.r, color.g, color.b, alpha);
 
         batch.draw(
-            plusTexture,
+            number < 0 ? minusTexture : plusTexture,
             bounds.x - numberOffset, bounds.y,
             originX, originY,
             bounds.width, bounds.height,

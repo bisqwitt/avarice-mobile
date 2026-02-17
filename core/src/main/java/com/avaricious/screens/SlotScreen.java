@@ -1,6 +1,5 @@
 package com.avaricious.screens;
 
-import com.avaricious.Assets;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.DevTools;
@@ -23,6 +22,7 @@ import com.avaricious.components.bars.SlotScreenJokerBar;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.progressbar.ArmorBar;
 import com.avaricious.components.progressbar.HealthBar;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
@@ -32,11 +32,13 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
+import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRelic;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -57,6 +59,7 @@ public class SlotScreen extends ScreenAdapter {
     private final Main app;
     private final SlotMachine slotMachine;
     private final HealthBar healthBar = new HealthBar(100f);
+    private final ArmorBar armorBar = new ArmorBar(100f);
     private final XpBar xpBar;
 
     private final ScoreDisplay scoreDisplay = new ScoreDisplay();
@@ -69,7 +72,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
 
-    private final SlotScreenJokerBar jokerBar = new SlotScreenJokerBar();
+    private final SlotScreenJokerBar jokerBar = SlotScreenJokerBar.I();
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -107,6 +110,7 @@ public class SlotScreen extends ScreenAdapter {
         backgroundLayer.init();
 
         healthBar.setCurrentHealth(healthBar.getMaxHealth());
+        armorBar.setCurrentHealth(0);
         slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(this::runResult);
 
 
@@ -151,8 +155,9 @@ public class SlotScreen extends ScreenAdapter {
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
         healthBar.draw(batch);
+        armorBar.draw(batch);
         xpBar.draw(batch);
-        jokerBar.draw(batch);
+        jokerBar.draw(batch, delta);
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
         shop.draw(batch, delta);
@@ -193,10 +198,35 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<SlotMatch> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            healthBar.damage(20);
-            patternDisplay.reset();
+            EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
+            if (evadeChanceStatus.rollChance()) {
+                HealthBar barToDamage = armorBar.getCurrentHealth() > 0 ? armorBar : healthBar;
+                PopupManager.I().spawnStatisticHit(
+                    evadeChanceStatus.getTexture(),
+                    barToDamage.X + (barToDamage.getFurthestCellIndex() * barToDamage.CELL_OFFSET),
+                    barToDamage.Y + 0.5f);
+                return;
+            }
+
+            float damage = 20f;
+            float armorHp = armorBar.getCurrentHealth();
+            if (armorHp > 0) {
+                float armorDamage = Math.min(damage, armorHp);
+                float spill = damage - armorDamage;
+
+                armorBar.damage(damage);
+                if (spill > 0) {
+                    healthBar.damage(spill);
+                    patternDisplay.reset();
+                }
+            } else {
+                healthBar.damage(damage);
+                patternDisplay.reset();
+            }
+
             if (healthBar.getCurrentHealth() <= 0) {
                 ScreenManager.restartGame();
+                return;
             }
 
             onSpinButtonPressed();
@@ -402,5 +432,9 @@ public class SlotScreen extends ScreenAdapter {
 
     private void onReturnedFromShop() {
         scoreDisplay.resetScore();
+    }
+
+    public ArmorBar getArmorBar() {
+        return armorBar;
     }
 }

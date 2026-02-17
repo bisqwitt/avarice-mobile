@@ -1,11 +1,11 @@
 package com.avaricious.components;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.components.bars.StatusUpgradeBar;
 import com.avaricious.components.bars.UpgradeBar;
 import com.avaricious.stats.statupgrades.StatusRelic;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;

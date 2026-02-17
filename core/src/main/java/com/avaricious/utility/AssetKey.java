@@ -1,4 +1,4 @@
-package com.avaricious;
+package com.avaricious.utility;
 
 public enum AssetKey {
     WHITE_PIXEL("white"),
@@ -85,7 +85,18 @@ public enum AssetKey {
     BUTTON_SHADOW("button-shadow"),
     DARK_BLUE_PIXEL("dark-blue-pixel"),
     BLUE_GREEN_PIXEL("blue-green-pixel"),
-    YELLOW_PIXEL("yellowPixel");
+    YELLOW_PIXEL("yellowPixel"),
+    ARMOR_ICON("armor"),
+    SILVER_PIXEL("silver-pixel"),
+    MINUS_SYMBOL("minus-symbol"),
+    DUMPSTER_OPENED("Dumpster0"),
+    DUMPSTER_1("Dumpster1"),
+    DUMPSTER_2("Dumpster2"),
+    DUMPSTER_3("Dumpster3"),
+    DUMPSTER_4("Dumpster4"),
+    DUMPSTER_CLOSED("Dumpster5"),
+    DUMPSTER_SHADOW("dumpster-shadow"),
+    DARK_RED_PIXEL("dark-red-pixel");
 
     private final String path;
 

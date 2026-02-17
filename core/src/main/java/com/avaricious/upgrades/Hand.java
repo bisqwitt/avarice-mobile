@@ -61,6 +61,10 @@ public class Hand extends Observable<List<? extends Card>> {
         notifyChanged(snapshot());
     }
 
+    public int cardsHeldInHand() {
+        return hand.size();
+    }
+
     public List<Card> getHand() {
         return hand;
     }

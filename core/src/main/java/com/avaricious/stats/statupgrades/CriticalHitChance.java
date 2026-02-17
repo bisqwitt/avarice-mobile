@@ -1,9 +1,9 @@
 package com.avaricious.stats.statupgrades;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.upgrades.CriticalHitDamageRelic;
 import com.avaricious.upgrades.RelicManager;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class CriticalHitChance extends Stat {

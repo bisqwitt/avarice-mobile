@@ -1,12 +1,12 @@
 package com.avaricious.components;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.JokerUpgradeBarWithPrices;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

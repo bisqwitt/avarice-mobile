@@ -1,6 +1,8 @@
 package com.avaricious;
 
 import com.avaricious.components.progressbar.ProgressBar;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class XpBar extends ProgressBar {

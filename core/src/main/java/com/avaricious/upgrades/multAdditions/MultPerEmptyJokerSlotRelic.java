@@ -1,8 +1,8 @@
 package com.avaricious.upgrades.multAdditions;
 
-import com.avaricious.Assets;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.utility.Assets;
 
 import java.util.List;
 

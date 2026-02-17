@@ -1,8 +1,8 @@
 package com.avaricious.components;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.components.buttons.DisablableButton;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ButtonBoard {
 
     private final float BOARD_X = 0.7f;
-    private final float BOARD_Y = 6.5f;
+    private final float BOARD_Y = 8.5f;
 
     private final float BUTTON_W = 79 / 25f;
     private final float BUTTON_H = 25 / 25f;

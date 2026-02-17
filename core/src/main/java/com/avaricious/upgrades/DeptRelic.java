@@ -1,6 +1,6 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.Assets;
+import com.avaricious.utility.Assets;
 
 public class DeptRelic extends Relic {
 

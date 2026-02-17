@@ -1,15 +1,19 @@
-package com.avaricious;
+package com.avaricious.utility;
 
 import com.avaricious.components.slot.Symbol;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.utils.Array;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Assets {
@@ -68,9 +72,24 @@ public class Assets {
         }
     }
 
-
     public TextureRegion get(AssetKey key) {
         return cachedTextures.get(key);
+    }
+
+    public List<TextureRegion> getAnimationFrames(AssetAnimationKey key) {
+        List<TextureRegion> frames = new ArrayList<>();
+        for (AssetKey assetKey : key.getFrameAssetKeys()) {
+            frames.add(get(assetKey));
+        }
+        return frames;
+    }
+
+    public Animation<TextureRegion> getAnimation(AssetAnimationKey key, float frameDuration, Animation.PlayMode playMode) {
+        Array<TextureRegion> frames = new Array<>();
+        for (AssetKey textureKey : key.getFrameAssetKeys()) {
+            frames.add(get(textureKey));
+        }
+        return new Animation<>(frameDuration, frames, playMode);
     }
 
     public TextureRegion getSymbol(Symbol symbol) {
@@ -137,6 +156,10 @@ public class Assets {
 
     public Color silver() {
         return silver;
+    }
+
+    public String silverText(String txt) {
+        return "[#bfc5cc]" + txt + "[]";
     }
 
 }

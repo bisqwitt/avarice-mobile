@@ -1,6 +1,6 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.AssetKey;
+import com.avaricious.utility.AssetKey;
 
 public enum Symbol {
 

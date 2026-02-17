@@ -1,7 +1,9 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.cards.Card;
+import com.avaricious.cards.ConvertPointsToArmorCard;
 import com.avaricious.cards.FivePointsCard;
+import com.avaricious.cards.FivePointsForEachCardInHandCard;
 import com.avaricious.cards.OneDollarCard;
 import com.avaricious.cards.TenArmorCard;
 import com.avaricious.cards.TwoMultCard;
@@ -41,18 +43,21 @@ public class Deck extends Observable<List<? extends Card>> {
 //            PointsPerConsecutiveHit.class
 //        ));
 
-        allUpgrades.addAll(Arrays.asList(
+        allCardClasses.addAll(Arrays.asList(
             FivePointsCard.class,
             TwoMultCard.class,
             TenArmorCard.class,
-            OneDollarCard.class
+            OneDollarCard.class,
+            ConvertPointsToArmorCard.class,
+            FivePointsForEachCardInHandCard.class
         ));
 
-        addUpgradeToDeck(instantiateCard(FivePointsCard.class));
-        addUpgradeToDeck(instantiateCard(TwoMultCard.class));
+        for (Class<? extends Card> cardClass : allCardClasses) {
+            addUpgradeToDeck(instantiateCard(cardClass));
+        }
     }
 
-    private final List<Class<? extends Card>> allUpgrades = new ArrayList<>();
+    private final List<Class<? extends Card>> allCardClasses = new ArrayList<>();
     private final List<Card> deck = new ArrayList<>();
 
     public List<? extends Card> randomUpgrades() {
@@ -85,7 +90,7 @@ public class Deck extends Observable<List<? extends Card>> {
     }
 
     private Class<? extends Card> randomUpgradeClass() {
-        return allUpgrades.get((int) (Math.random() * allUpgrades.size()));
+        return allCardClasses.get((int) (Math.random() * allCardClasses.size()));
     }
 
     public <T> List<T> getUpgradesOfClass(Class<T> clazz) {
@@ -107,7 +112,8 @@ public class Deck extends Observable<List<? extends Card>> {
     }
 
     public Card pickCardFromDeck() {
-        return deck.get((int) (Math.random() * deck.size()));
+//        return deck.get((int) (Math.random() * deck.size()));
+        return instantiateCard(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
     }
 
     public boolean upgradeIsInDeck(Class<? extends Card> upgradeClass) {

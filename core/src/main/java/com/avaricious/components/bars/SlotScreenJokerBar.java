@@ -1,15 +1,15 @@
 package com.avaricious.components.bars;
 
-import com.avaricious.AssetKey;
-import com.avaricious.Assets;
 import com.avaricious.cards.Card;
+import com.avaricious.components.CardDestinationUI;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.Upgrade;
-import com.badlogic.gdx.Gdx;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,10 +30,11 @@ public class SlotScreenJokerBar {
         return instance == null ? instance = new SlotScreenJokerBar() : instance;
     }
 
+    private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
+
     private final TextureRegion jokerTexture = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerShadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
     private final TextureRegion blueGreenTexture = Assets.I().get(AssetKey.BLUE_GREEN_PIXEL);
-    private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
 
     private final Map<Card, Rectangle> jokerBounds = new LinkedHashMap<>();
     private final Map<Card, DragableSlot> jokerAnimationManagers = new LinkedHashMap<>();
@@ -48,25 +49,41 @@ public class SlotScreenJokerBar {
 
     // world units; tune to taste
     private final float dragThreshold = 0.12f;
-    private float stateTime = 0f;
+
+    private boolean reloadRequested = false;
+    private List<? extends Card> pendingHand = null;
 
     public SlotScreenJokerBar() {
         jokerRectangles = Arrays.asList(
-            new Rectangle(0.6f, 2.75f, 142 / 95f, 190 / 95f),
-            new Rectangle(2.6f, 2.75f, 142 / 95f, 190 / 95f),
-            new Rectangle(4.6f, 2.75f, 142 / 95f, 190 / 95f),
-            new Rectangle(6.6f, 2.75f, 142 / 95f, 190 / 95f),
-            new Rectangle(0.6f, 0.5f, 142 / 95f, 190 / 95f),
-            new Rectangle(2.6f, 0.5f, 142 / 95f, 190 / 95f),
-            new Rectangle(4.6f, 0.5f, 142 / 95f, 190 / 95f),
-            new Rectangle(6.6f, 0.5f, 142 / 95f, 190 / 95f)
+            new Rectangle(0.6f, 3.6f, 142 / 95f, 190 / 95f),
+            new Rectangle(2.6f, 3.6f, 142 / 95f, 190 / 95f),
+            new Rectangle(4.6f, 3.6f, 142 / 95f, 190 / 95f),
+            new Rectangle(6.6f, 3.6f, 142 / 95f, 190 / 95f),
+            new Rectangle(0.6f, 1.3f, 142 / 95f, 190 / 95f),
+            new Rectangle(2.6f, 1.3f, 142 / 95f, 190 / 95f),
+            new Rectangle(4.6f, 1.3f, 142 / 95f, 190 / 95f),
+            new Rectangle(6.6f, 1.3f, 142 / 95f, 190 / 95f)
         );
 
         loadJokers(Hand.I().getHand());
-        Hand.I().onChange(this::loadJokers);
+        Hand.I().onChange(newHand -> {
+            reloadRequested = true;
+            pendingHand = newHand;
+        });
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
+        if (reloadRequested) {
+            reloadRequested = false;
+            loadJokers(pendingHand);
+            pendingHand = null;
+
+            if (selectedUpgrade != null && !jokerAnimationManagers.containsKey(selectedUpgrade))
+                selectedUpgrade = null;
+
+            if (activeDragUpgrade != null && !jokerAnimationManagers.containsKey(activeDragUpgrade))
+                activeDragUpgrade = null;
+        }
 
         // --- Hover updates (correct: only hovered if mouse inside) ---
         for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
@@ -91,7 +108,6 @@ public class SlotScreenJokerBar {
                 Rectangle b = jokerBounds.get(selectedUpgrade);
                 if (b != null && b.contains(mouse)) {
                     activeDragUpgrade = selectedUpgrade;
-                    selectedUpgrade = null;
                     jokerAnimationManagers.get(activeDragUpgrade).beginDrag(mouse.x, mouse.y, 0);
                     return;
                 }
@@ -124,6 +140,8 @@ public class SlotScreenJokerBar {
                 DragableSlot dragableSlot = jokerAnimationManagers.get(activeDragUpgrade);
                 if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
                     applyCard(activeDragUpgrade);
+                } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
+                    discardCard(activeDragUpgrade);
                 }
                 dragableSlot.endDrag(0);
 
@@ -141,7 +159,12 @@ public class SlotScreenJokerBar {
         }
     }
 
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, float delta) {
+        boolean dragging = activeDragUpgrade != null;
+        Vector2 center = dragging ? jokerAnimationManagers.get(activeDragUpgrade).getCardCenter() : new Vector2();
+
+        cardDestinationUI.draw(batch, delta, center, dragging);
+
         batch.setColor(Assets.I().shadowColor());
         for (Rectangle rectangle : jokerRectangles) {
             batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
@@ -154,11 +177,7 @@ public class SlotScreenJokerBar {
             }
         }
 
-        if (activeDragUpgrade != null || selectedUpgrade != null)
-            drawGlowBorder(batch, SlotMachine.windowBounds, 0.06f, stateTime);
-
         if (activeDragUpgrade != null) {
-            stateTime += Gdx.graphics.getDeltaTime();
             drawJokerCard(batch, activeDragUpgrade, jokerBounds.get(activeDragUpgrade));
         }
 
@@ -212,33 +231,6 @@ public class SlotScreenJokerBar {
         batch.setColor(1f, 1f, 1f, 1f);
     }
 
-    private void drawGlowBorder(SpriteBatch batch, Rectangle r, float thickness, float time) {
-        // pulse 0..1
-        float pulse = 0.5f + 0.5f * (float) Math.sin(time * 8f);
-
-        // base border
-        batch.setColor(1f, 0.95f, 0.2f, 0.65f + 0.25f * pulse);
-        drawRectOutline(batch, yellowTexture, r, thickness);
-
-        // optional outer glow (fatter + more transparent). You can draw 2-3 passes.
-        batch.setColor(1f, 0.95f, 0.2f, 0.18f + 0.12f * pulse);
-        drawRectOutline(batch, yellowTexture, r, thickness * 2.5f);
-
-        batch.setColor(1f, 1f, 1f, 1f);
-    }
-
-    private void drawRectOutline(SpriteBatch batch, TextureRegion px, Rectangle r, float t) {
-        // bottom
-        batch.draw(px, r.x - t, r.y - t, r.width + 2f * t, t);
-        // top
-        batch.draw(px, r.x - t, r.y + r.height, r.width + 2f * t, t);
-        // left
-        batch.draw(px, r.x - t, r.y, t, r.height);
-        // right
-        batch.draw(px, r.x + r.width, r.y, t, r.height);
-    }
-
-
     private void loadJokers(List<? extends Card> upgrades) {
         jokerBounds.clear();
         jokerAnimationManagers.clear();
@@ -285,6 +277,9 @@ public class SlotScreenJokerBar {
         }, 0.5f);
     }
 
+    public void discardCard(Card card) {
+        jokerAnimationManagers.get(card).startApplyTo(0.6f, () -> Hand.I().removeCardFromHand(card));
+    }
 
     public Rectangle getBoundsByUpgrade(Upgrade upgrade) {
         return jokerBounds.get(upgrade);

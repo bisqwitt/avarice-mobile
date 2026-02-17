@@ -2,9 +2,9 @@ package com.avaricious;
 
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -22,7 +22,7 @@ public class Main extends Game {
         Assets.I().load();
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(9, 16);
+        viewport = new FitViewport(9, 18);
         uiViewport = new ScreenViewport();
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);

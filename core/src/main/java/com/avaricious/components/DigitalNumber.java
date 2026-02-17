@@ -1,6 +1,6 @@
 package com.avaricious.components;
 
-import com.avaricious.Assets;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
