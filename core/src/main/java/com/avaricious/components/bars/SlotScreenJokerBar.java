@@ -42,13 +42,16 @@ public class SlotScreenJokerBar {
     private final List<Rectangle> jokerRectangles;
 
     private Card selectedUpgrade;
-
     private Card activeDragUpgrade = null;
-    private final Vector2 pressStart = new Vector2();
+    private Card discardingCard = null;
+
+    private final Vector2 pressStartLocation = new Vector2();
     private boolean movedSincePress = false;
 
     // world units; tune to taste
     private final float dragThreshold = 0.12f;
+
+    private boolean slotMachineIsRunning = false;
 
     private boolean reloadRequested = false;
     private List<? extends Card> pendingHand = null;
@@ -100,18 +103,18 @@ public class SlotScreenJokerBar {
 
         // --- Press: begin drag on top-most hit card (selected drawn last) ---
         if (pressed && !wasPressed) {
-            pressStart.set(mouse);
+            pressStartLocation.set(mouse);
             movedSincePress = false;
 
             // Prefer selected upgrade if pressed on it (since it is visually on top)
-            if (selectedUpgrade != null) {
-                Rectangle b = jokerBounds.get(selectedUpgrade);
-                if (b != null && b.contains(mouse)) {
-                    activeDragUpgrade = selectedUpgrade;
-                    jokerAnimationManagers.get(activeDragUpgrade).beginDrag(mouse.x, mouse.y, 0);
-                    return;
-                }
-            }
+//            if (selectedUpgrade != null) {
+//                Rectangle b = jokerBounds.get(selectedUpgrade);
+//                if (b != null && b.contains(mouse)) {
+//                    activeDragUpgrade = selectedUpgrade;
+//                    jokerAnimationManagers.get(activeDragUpgrade).beginDrag(mouse.x, mouse.y, 0);
+//                    return;
+//                }
+//            }
 
             // Otherwise find any hit
             for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
@@ -128,15 +131,16 @@ public class SlotScreenJokerBar {
 
         // --- Dragging: update drag offset while pressed ---
         if (pressed && activeDragUpgrade != null) {
-            if (!movedSincePress && pressStart.dst2(mouse) > dragThreshold * dragThreshold) {
+            if (!movedSincePress && pressStartLocation.dst2(mouse) > dragThreshold * dragThreshold) {
                 movedSincePress = true;
             }
             jokerAnimationManagers.get(activeDragUpgrade).dragTo(mouse.x, mouse.y, 0);
         }
 
-        // --- Release: end drag, and if it was basically a click, toggle selection ---
         if (!pressed && wasPressed) {
-            if (activeDragUpgrade != null) {
+            if(selectedUpgrade != null) {
+                selectedUpgrade = null;
+            } else if(activeDragUpgrade != null) {
                 DragableSlot dragableSlot = jokerAnimationManagers.get(activeDragUpgrade);
                 if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
                     applyCard(activeDragUpgrade);
@@ -145,12 +149,9 @@ public class SlotScreenJokerBar {
                 }
                 dragableSlot.endDrag(0);
 
-                if (!movedSincePress) {
-                    Card upgrade = activeDragUpgrade;
-                    selectedUpgrade = (selectedUpgrade != upgrade) ? upgrade : null;
-                }
+                if (!movedSincePress) selectedUpgrade = activeDragUpgrade;
+                activeDragUpgrade = null;
             }
-            activeDragUpgrade = null;
         }
 
         // --- Per-frame updates for draggable physics/tilt/return ---
@@ -164,12 +165,6 @@ public class SlotScreenJokerBar {
         Vector2 center = dragging ? jokerAnimationManagers.get(activeDragUpgrade).getCardCenter() : new Vector2();
 
         cardDestinationUI.draw(batch, delta, center, dragging);
-
-        batch.setColor(Assets.I().shadowColor());
-        for (Rectangle rectangle : jokerRectangles) {
-            batch.draw(blueGreenTexture, rectangle.x, rectangle.y, rectangle.width, rectangle.height);
-        }
-        batch.setColor(1f, 1f, 1f, 1f);
 
         for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
             if (entry.getKey() != selectedUpgrade && entry.getKey() != activeDragUpgrade) {
@@ -185,15 +180,13 @@ public class SlotScreenJokerBar {
             drawJokerCard(batch, selectedUpgrade, jokerBounds.get(selectedUpgrade));
     }
 
-    private void drawJokerCard(SpriteBatch batch, Card upgrade, Rectangle bounds) {
-        DragableSlot slot = jokerAnimationManagers.get(upgrade);
+    private void drawJokerCard(SpriteBatch batch, Card card, Rectangle bounds) {
+        DragableSlot slot = jokerAnimationManagers.get(card);
 
-        float selectedScale = (selectedUpgrade == upgrade) ? 1.3f : 1f;
+        float selectedScale = (selectedUpgrade == card || activeDragUpgrade == card) ? 1.3f : 1f;
 
         float s = slot.pulseScale()
             * slot.wobbleScale()
-            * slot.getDragScaleMul()
-            * slot.getExtraScaleMul()
             * selectedScale;
 
         float r = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
@@ -203,22 +196,22 @@ public class SlotScreenJokerBar {
 
         // IMPORTANT: render position can differ from bounds.x/y while dragging
         Vector2 p = slot.getRenderPos(new Vector2());
+        if(discardingCard == card) p.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
+
         float alpha = slot.getAlpha();
 
-        if (selectedUpgrade == upgrade || slot.isDragging()) {
-            Color shadowColor = Assets.I().shadowColor();
-            batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
-            batch.draw(jokerShadowTexture,
-                p.x, p.y - 0.2f,
-                originX, originY,
-                bounds.width, bounds.height,
-                s, s,
-                r);
-            batch.setColor(1f, 1f, 1f, 1f);
+        Color shadowColor = Assets.I().shadowColor();
+        batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
+        batch.draw(jokerShadowTexture,
+            p.x, p.y - 0.2f,
+            originX, originY,
+            bounds.width, bounds.height,
+            s, s,
+            r);
+        batch.setColor(1f, 1f, 1f, 1f);
 
-            if (!slot.isDragging())
+            if (selectedUpgrade == card && !slot.isDragging())
                 PopupManager.I().renderTooltip(selectedUpgrade, p.x - 2f, p.y + 2.65f);
-        }
 
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(
@@ -271,14 +264,17 @@ public class SlotScreenJokerBar {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                // Start animation and remove only when finished
-                slot.startApplyTo(0.6f, () -> Hand.I().removeCardFromHand(card));
+                slot.startApplyAnimation(0.6f, () -> Hand.I().removeCardFromHand(card));
             }
         }, 0.5f);
     }
 
     public void discardCard(Card card) {
-        jokerAnimationManagers.get(card).startApplyTo(0.6f, () -> Hand.I().removeCardFromHand(card));
+        discardingCard = card;
+        jokerAnimationManagers.get(card).startApplyAnimation(0.6f, () -> {
+            discardingCard = null;
+            Hand.I().removeCardFromHand(card);
+        });
     }
 
     public Rectangle getBoundsByUpgrade(Upgrade upgrade) {
@@ -289,5 +285,7 @@ public class SlotScreenJokerBar {
         return jokerAnimationManagers.get(upgrade);
     }
 
-
+    public void setSlotMachineIsRunning(boolean slotMachineIsRunning) {
+        this.slotMachineIsRunning = slotMachineIsRunning;
+    }
 }

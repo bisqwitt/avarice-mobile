@@ -20,10 +20,10 @@ public class CardDestinationUI {
     private float windowHover = 0f;
     private float dumpsterHover = 0f;
 
-    public void draw(SpriteBatch batch, float delta, Vector2 cardCenterPos, boolean visible) {
+    public void draw(SpriteBatch batch, float delta, Vector2 cardCenterPos, boolean cardIsDragging) {
         stateTime += delta;
 
-        dumpster.update(delta, cardCenterPos, visible);
+        dumpster.update(delta, cardCenterPos, cardIsDragging);
 
         Rectangle window = SlotMachine.windowBounds;
         Rectangle dumpHit = dumpster.getHitBox();
@@ -34,9 +34,9 @@ public class CardDestinationUI {
         windowHover = approach(windowHover, windowIsHovered ? 1f : 0f, 12f, delta);
         dumpsterHover = approach(dumpsterHover, dumpsterIsHovered ? 1f : 0f, 12f, delta);
 
-        if (visible) {
+        if (cardIsDragging) {
             drawGlowBorder(batch, yellowTexture, window, windowHover);
-            drawGlowBorder(batch, redTexture, dumpHit, dumpsterHover);
+//            drawGlowBorder(batch, redTexture, dumpHit, dumpsterHover);
         }
 
         dumpster.draw(batch);
@@ -93,4 +93,7 @@ public class CardDestinationUI {
         return current + Math.signum(diff) * step;
     }
 
+    public Dumpster getDumpster() {
+        return dumpster;
+    }
 }

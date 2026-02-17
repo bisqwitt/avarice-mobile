@@ -36,6 +36,9 @@ public class Dumpster {
     private final float restBoundsX = bounds.x;
     private final float restHitX = hitBox.x;
 
+    private boolean cardIsDiscarding = false;
+
+
     public Rectangle getBounds() {
         return bounds;
     }
@@ -44,13 +47,15 @@ public class Dumpster {
         return hitBox;
     }
 
-    public void update(float delta, Vector2 cardCenterPos, boolean visible) {
-        // 1) slide in/out
-        slide = approach(slide, visible ? 1f : 0f, 10f, delta); // speed=10 -> tune
-        float x = restBoundsX + (1f - slide) * slideOffsetX;
+    public void update(float delta, Vector2 cardCenterPos, boolean cardIsDragging) {
+        if(!cardIsDiscarding) {
+            // 1) slide in/out
+            slide = approach(slide, cardIsDragging ? 1f : 0f, 4f, delta); // speed=10 -> tune
+            float x = restBoundsX + getCurrentSlideValue();
 
-        bounds.x = x;
-        hitBox.x = restHitX + (1f - slide) * slideOffsetX;
+            bounds.x = x;
+            hitBox.x = restHitX + getCurrentSlideValue();
+        }
 
         // 2) only “interact” once mostly visible (prevents opening while still offscreen)
         boolean active = slide > 0.75f;
@@ -86,7 +91,9 @@ public class Dumpster {
                 state == State.CLOSING ? closeAnim.getKeyFrame(stateTime, false) :
                     state == State.OPEN ? openFrame : closedFrame;
 
+        batch.setColor(1f, 1f, 1f, slide);
         batch.draw(frame, bounds.x, bounds.y, bounds.width, bounds.height);
+        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     private float approach(float current, float target, float speed, float delta) {
@@ -95,4 +102,9 @@ public class Dumpster {
         if (Math.abs(diff) <= step) return target;
         return current + Math.signum(diff) * step;
     }
+
+    public float getCurrentSlideValue() {
+        return (1f - slide) * slideOffsetX;
+    }
+
 }

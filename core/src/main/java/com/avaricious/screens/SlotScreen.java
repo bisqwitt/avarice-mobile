@@ -111,7 +111,10 @@ public class SlotScreen extends ScreenAdapter {
 
         healthBar.setCurrentHealth(healthBar.getMaxHealth());
         armorBar.setCurrentHealth(0);
-        slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(this::runResult);
+        slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(() -> {
+            jokerBar.setSlotMachineIsRunning(false);
+            runResult();
+        });
 
 
         Timer.schedule(new Timer.Task() {
@@ -400,6 +403,8 @@ public class SlotScreen extends ScreenAdapter {
     private void onSpinButtonPressed() {
         slotMachine.setAlpha(1f);
         buttonBoard.setVisible(false);
+        jokerBar.setSlotMachineIsRunning(true);
+
         slotMachine.spin();
     }
 

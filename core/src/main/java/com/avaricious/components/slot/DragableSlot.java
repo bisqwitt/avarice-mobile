@@ -207,7 +207,7 @@ public class DragableSlot extends Slot {
         }
     }
 
-    public void startApplyTo(float duration, Runnable onFinished) {
+    public void startApplyAnimation(float duration, Runnable onFinished) {
         this.applying = true;
         this.applyTime = 0f;
         this.applyDuration = Math.max(0.01f, duration);
@@ -288,5 +288,9 @@ public class DragableSlot extends Slot {
         this.width = width;
         this.height = height;
         return this;
+    }
+
+    @Override
+    public void pulse() {
     }
 }
