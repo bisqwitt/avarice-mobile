@@ -17,6 +17,8 @@ public class Hand extends Observable<List<? extends Card>> {
 
     private Hand() {
         addCardFromDeck();
+        addCardFromDeck();
+        addCardFromDeck();
     }
 
     private final List<Card> hand = new ArrayList<>();

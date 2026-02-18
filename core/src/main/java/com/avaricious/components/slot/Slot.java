@@ -21,7 +21,7 @@ public class Slot {
     private final float wobbleDuration = 0.25f;  // seconds
     private final float wobbleAmpDeg = 5f;       // peak rotation in degrees
     private final float wobbleScaleAmp = 0.03f;  // tiny elastic bump
-    private final Vector2 pos;
+    protected final Vector2 pos;
 
     private boolean inPatternHit = false;
 
@@ -114,5 +114,9 @@ public class Slot {
 
     public void setInPatternHit(boolean inPatternHit) {
         this.inPatternHit = inPatternHit;
+    }
+
+    public float getTargetScale() {
+        return targetScale;
     }
 }

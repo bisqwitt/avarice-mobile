@@ -88,73 +88,22 @@ public class SlotScreenJokerBar {
                 activeDragUpgrade = null;
         }
 
-        // --- Hover updates (correct: only hovered if mouse inside) ---
-        for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
-            Card upgrade = entry.getKey();
-            Rectangle bounds = entry.getValue();
-            DragableSlot slot = jokerAnimationManagers.get(upgrade);
-
-            boolean hovered = bounds.contains(mouse);
-            slot.updateHoverWobble(hovered, delta);
-
-            // If you want pulse to react to selection state:
-            slot.updatePulse(selectedUpgrade == upgrade, delta);
+        for (Map.Entry<Card, DragableSlot> entry : jokerAnimationManagers.entrySet()) {
+            entry.getValue().updateHoverWobble(jokerBounds.get(entry.getKey()).contains(mouse), delta);
         }
 
-        // --- Press: begin drag on top-most hit card (selected drawn last) ---
         if (pressed && !wasPressed) {
-            pressStartLocation.set(mouse);
-            movedSincePress = false;
-
-            // Prefer selected upgrade if pressed on it (since it is visually on top)
-//            if (selectedUpgrade != null) {
-//                Rectangle b = jokerBounds.get(selectedUpgrade);
-//                if (b != null && b.contains(mouse)) {
-//                    activeDragUpgrade = selectedUpgrade;
-//                    jokerAnimationManagers.get(activeDragUpgrade).beginDrag(mouse.x, mouse.y, 0);
-//                    return;
-//                }
-//            }
-
-            // Otherwise find any hit
-            for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
-                Card upgrade = entry.getKey();
-                Rectangle bounds = entry.getValue();
-
-                if (bounds.contains(mouse)) {
-                    activeDragUpgrade = upgrade;
-                    jokerAnimationManagers.get(upgrade).beginDrag(mouse.x, mouse.y, 0);
-                    return;
-                }
-            }
+            onTouchDown(mouse);
         }
 
-        // --- Dragging: update drag offset while pressed ---
         if (pressed && activeDragUpgrade != null) {
-            if (!movedSincePress && pressStartLocation.dst2(mouse) > dragThreshold * dragThreshold) {
-                movedSincePress = true;
-            }
-            jokerAnimationManagers.get(activeDragUpgrade).dragTo(mouse.x, mouse.y, 0);
+            onTouching(mouse);
         }
 
         if (!pressed && wasPressed) {
-            if(selectedUpgrade != null) {
-                selectedUpgrade = null;
-            } else if(activeDragUpgrade != null) {
-                DragableSlot dragableSlot = jokerAnimationManagers.get(activeDragUpgrade);
-                if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
-                    applyCard(activeDragUpgrade);
-                } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
-                    discardCard(activeDragUpgrade);
-                }
-                dragableSlot.endDrag(0);
-
-                if (!movedSincePress) selectedUpgrade = activeDragUpgrade;
-                activeDragUpgrade = null;
-            }
+            onTouchRelease();
         }
 
-        // --- Per-frame updates for draggable physics/tilt/return ---
         for (DragableSlot slot : jokerAnimationManagers.values()) {
             slot.update(delta);
         }
@@ -196,7 +145,7 @@ public class SlotScreenJokerBar {
 
         // IMPORTANT: render position can differ from bounds.x/y while dragging
         Vector2 p = slot.getRenderPos(new Vector2());
-        if(discardingCard == card) p.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
+        if (discardingCard == card) p.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
 
         float alpha = slot.getAlpha();
 
@@ -210,8 +159,8 @@ public class SlotScreenJokerBar {
             r);
         batch.setColor(1f, 1f, 1f, 1f);
 
-            if (selectedUpgrade == card && !slot.isDragging())
-                PopupManager.I().renderTooltip(selectedUpgrade, p.x - 2f, p.y + 2.65f);
+        if (selectedUpgrade == card)
+            PopupManager.I().renderTooltip(selectedUpgrade, p.x - 2f, p.y + 2.65f);
 
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(
@@ -234,19 +183,19 @@ public class SlotScreenJokerBar {
 
             jokerBounds.put(upgrade, rectangle);
 
-            jokerAnimationManagers.put(
-                upgrade,
-                new DragableSlot(
-                    new Vector2(rectangle.x, rectangle.y),
-                    rectangle.width,
-                    rectangle.height
-                ).setTilt(200f, 10f)
-                    .setDragScale(1.3f)
-                // optional tuning:
-                //.setFollow(30f, 18f)
-                //.setTilt(14f, 12f)
-                //.setDragScale(1.08f)
-            );
+//            jokerAnimationManagers.put(
+//                upgrade,
+//                new DragableSlot(
+//                    new Vector2(rectangle.x, rectangle.y),
+//                    rectangle.width,
+//                    rectangle.height
+//                ).setTilt(200f, 10f)
+//                    .setDragScale(1.3f)
+//                // optional tuning:
+//                //.setFollow(30f, 18f)
+//                //.setTilt(14f, 12f)
+//                //.setDragScale(1.08f)
+//            );
         }
     }
 
@@ -267,6 +216,48 @@ public class SlotScreenJokerBar {
                 slot.startApplyAnimation(0.6f, () -> Hand.I().removeCardFromHand(card));
             }
         }, 0.5f);
+    }
+
+    private void onTouchDown(Vector2 mouse) {
+        pressStartLocation.set(mouse);
+        movedSincePress = false;
+
+        for (Map.Entry<Card, Rectangle> entry : jokerBounds.entrySet()) {
+            Card card = entry.getKey();
+            Rectangle bounds = entry.getValue();
+
+            if (bounds.contains(mouse)) {
+                activeDragUpgrade = card;
+                jokerAnimationManagers.get(card).beginDrag(mouse.x, mouse.y, 0);
+            }
+        }
+    }
+
+    private void onTouching(Vector2 mouse) {
+        if (activeDragUpgrade == null) return;
+        if (!movedSincePress && pressStartLocation.dst2(mouse) > dragThreshold * dragThreshold) {
+            movedSincePress = true;
+        }
+        jokerAnimationManagers.get(activeDragUpgrade).dragTo(mouse.x, mouse.y, 0);
+    }
+
+    private void onTouchRelease() {
+        if (movedSincePress) {
+            DragableSlot dragableSlot = jokerAnimationManagers.get(activeDragUpgrade);
+            if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
+                applyCard(activeDragUpgrade);
+            } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
+                discardCard(activeDragUpgrade);
+            }
+            dragableSlot.endDrag(0);
+            activeDragUpgrade = null;
+        } else if (selectedUpgrade != null) {
+            selectedUpgrade = null;
+            activeDragUpgrade = null;
+        } else if (activeDragUpgrade != null) {
+            selectedUpgrade = activeDragUpgrade;
+            activeDragUpgrade = null;
+        }
     }
 
     public void discardCard(Card card) {

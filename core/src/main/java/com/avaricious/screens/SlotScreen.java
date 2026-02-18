@@ -16,6 +16,7 @@ import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.CameraShaker;
+import com.avaricious.components.HandUi;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.bars.SlotScreenJokerBar;
@@ -73,6 +74,7 @@ public class SlotScreen extends ScreenAdapter {
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
 
     private final SlotScreenJokerBar jokerBar = SlotScreenJokerBar.I();
+    private final HandUi handUi = new HandUi();
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -160,7 +162,8 @@ public class SlotScreen extends ScreenAdapter {
         healthBar.draw(batch);
         armorBar.draw(batch);
         xpBar.draw(batch);
-        jokerBar.draw(batch, delta);
+//        jokerBar.draw(batch, delta);
+        handUi.draw(batch, delta);
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
         shop.draw(batch, delta);
@@ -193,7 +196,8 @@ public class SlotScreen extends ScreenAdapter {
 
         buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         backgroundLayer.handleInput();
-        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
     }
@@ -208,6 +212,7 @@ public class SlotScreen extends ScreenAdapter {
                     evadeChanceStatus.getTexture(),
                     barToDamage.X + (barToDamage.getFurthestCellIndex() * barToDamage.CELL_OFFSET),
                     barToDamage.Y + 0.5f);
+                onSpinButtonPressed();
                 return;
             }
 

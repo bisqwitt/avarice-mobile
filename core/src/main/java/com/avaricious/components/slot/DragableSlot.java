@@ -3,6 +3,7 @@ package com.avaricious.components.slot;
 import com.avaricious.components.Dumpster;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -65,10 +66,10 @@ public class DragableSlot extends Slot {
     private final Vector2 tmp = new Vector2();
     private final Vector2 renderPos = new Vector2();
 
-    public DragableSlot(Vector2 pos, float width, float height) {
-        super(pos);
-        this.width = width;
-        this.height = height;
+    public DragableSlot(Rectangle bounds) {
+        super(new Vector2(bounds.x, bounds.y));
+        this.width = bounds.width;
+        this.height = bounds.height;
 
         // initialize lastRenderPos
         renderPos.set(super.getPos());
@@ -131,6 +132,8 @@ public class DragableSlot extends Slot {
             // decay tilt back to 0 when not dragging
             tiltDeg += (0f - tiltDeg) * Math.min(1f, tiltResponsiveness * delta);
         }
+
+        tickScale(delta);
     }
 
     /**
@@ -284,10 +287,8 @@ public class DragableSlot extends Slot {
         return this;
     }
 
-    public DragableSlot setSize(float width, float height) {
-        this.width = width;
-        this.height = height;
-        return this;
+    public Rectangle getBounds() {
+        return new Rectangle(pos.x, pos.y, width, height);
     }
 
     @Override
