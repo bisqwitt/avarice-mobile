@@ -12,8 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 public class Dumpster {
     public enum State {CLOSED, OPENING, OPEN, CLOSING}
 
-    public static final Rectangle bounds = new Rectangle(6, 1, 70 / 25f, 80 / 25f);
-    public static final Rectangle hitBox = new Rectangle(5.75f, 0.75f, bounds.width + 0.5f, bounds.height + 0.5f);
+    public static final Rectangle bounds = new Rectangle(6.5f, 0.5f, 70 / 35f, 80 / 35f);
+    public static final Rectangle hitBox = new Rectangle(6.25f, 0.25f, bounds.width + 0.5f, bounds.height + 0.5f);
 
     // How far offscreen (to the right) it starts
     private final float slideOffsetX = 2.5f; // tune this

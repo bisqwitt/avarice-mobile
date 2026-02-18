@@ -12,15 +12,13 @@ import com.badlogic.gdx.math.Vector2;
 public class ButtonBoard {
 
     private final float BOARD_X = 0.7f;
-    private final float BOARD_Y = 8.5f;
+    private final float BOARD_Y = 0.5f;
 
     private final float BUTTON_W = 79 / 25f;
     private final float BUTTON_H = 25 / 25f;
 
     private final DisablableButton spinAgainButton;
     private final DisablableButton cashoutButton;
-
-    private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
     public ButtonBoard(Runnable onSpinButtonPressed, Runnable onCashoutButtonPressed) {
         spinAgainButton = new DisablableButton(onSpinButtonPressed,

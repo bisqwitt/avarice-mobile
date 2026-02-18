@@ -1,5 +1,7 @@
 package com.avaricious.components.buttons;
 
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -19,6 +21,8 @@ public class DisablableButton extends Button {
     private float slideInOffset = 0.45f;     // how far below it comes from
     private float animSpeed = 10f;           // higher = faster
     private float overshootScale = 1.06f;    // Balatro-ish pop
+
+    private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
     public DisablableButton(Runnable onButtonPressedRunnable,
                             TextureRegion defaultButtonTexture,
@@ -112,8 +116,12 @@ public class DisablableButton extends Button {
     }
 
     private void drawWithShadow(SpriteBatch batch, float x, float y, float w, float h) {
-        // Button.draw() currently draws using its rectangle.
-        // We'll call a new protected method in Button that draws at arbitrary x/y/w/h (see below).
-        drawAt(batch, x, y, w, h);
+        if (showShadow) {
+            batch.setColor(Assets.I().shadowColor());
+            batch.draw(buttonShadow, x, y - 0.1f, w, h);
+            batch.setColor(1f, 1f, 1f, 1f);
+        }
+
+        batch.draw(defaultButtonTexture, x, currentTexture == pressedButtonTexture ? y - 0.1f : y, w, h);
     }
 }

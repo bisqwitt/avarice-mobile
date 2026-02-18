@@ -13,7 +13,7 @@ public class Button {
     protected final Rectangle buttonRectangle;
 
     protected final TextureRegion defaultButtonTexture;
-    private final TextureRegion pressedButtonTexture;
+    protected final TextureRegion pressedButtonTexture;
     private final TextureRegion hoveredButtonTexture;
     private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
@@ -23,7 +23,7 @@ public class Button {
     protected TextureRegion currentTexture;
     protected boolean wasHovered;
     private boolean spaceWasPressed;
-    private boolean showShadow = true;
+    protected boolean showShadow = true;
 
     public Button(Runnable onButtonPressedRunnable,
                   TextureRegion defaultButtonTexture,

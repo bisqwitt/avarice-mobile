@@ -8,15 +8,19 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class HandUi {
 
@@ -28,15 +32,19 @@ public class HandUi {
     private final float CARD_HEIGHT = 190 / 90f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
+    private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new HashMap<>();
+    private final Map<Card, Integer> cardIndexes = new HashMap<>();
 
     private Vector2 touchDownLocation = new Vector2();
-    private boolean movedSinceTouchDown = false;
+    private boolean cardMovedSinceTouchDown = false;
+    private boolean cardInTooltipRange = false;
 
     private Card touchingCard = null;
-    private Card selectedCard = null;
     private Card discardingCard = null;
+
+
 
     private List<? extends Card> pendingHand;
 
@@ -59,11 +67,12 @@ public class HandUi {
         }
 
         if (pressed && touchingCard != null) {
-            float dragThreshHold = 0.5f; // How much to drag card to count as dragging and not selecting
-            if (!movedSinceTouchDown && touchDownLocation.dst2(mouse) > dragThreshHold * dragThreshHold) {
-                movedSinceTouchDown = true;
+            float dragThreshHold = 0.12f; // How much to drag card to count as dragging and not selecting
+            if (!cardMovedSinceTouchDown && touchDownLocation.dst2(mouse) > dragThreshHold * dragThreshHold) {
+                cardMovedSinceTouchDown = true;
             }
             cards.get(touchingCard).dragTo(mouse.x, mouse.y, 0);
+            cardInTooltipRange = new Rectangle(0f, 0f, 9f, 8f).contains(mouse);
         }
 
         if (!pressed && wasPressed && touchingCard != null) {
@@ -73,7 +82,7 @@ public class HandUi {
 
     private void onCardTouchDown(Card card, Vector2 mouse) {
         touchDownLocation.set(mouse);
-        movedSinceTouchDown = false;
+        cardMovedSinceTouchDown = false;
 
         touchingCard = card;
         cards.get(card).targetScale = 1.3f;
@@ -81,7 +90,7 @@ public class HandUi {
     }
 
     private void onCardTouchReleased(Card card) {
-        if (movedSinceTouchDown) {
+        if (cardMovedSinceTouchDown) {
             DragableSlot dragableSlot = cards.get(card);
             if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
                 applyCard(card);
@@ -89,14 +98,9 @@ public class HandUi {
                 discardCard(card);
             }
             dragableSlot.endDrag(0);
-            cards.get(card).targetScale = 1f;
-        } else if (selectedCard == null) {
-            selectedCard = touchingCard;
-        } else {
-            selectedCard = null;
-            cards.get(card).targetScale = 1f;
         }
         touchingCard = null;
+        cards.get(card).targetScale = 1f;
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -106,8 +110,10 @@ public class HandUi {
         cardDestinationUI.draw(batch, delta, touchingCardCenter, touchingCard != null);
 
         for (Card card : cards.keySet()) {
-            drawCard(batch, card);
+            if(touchingCard != card) drawCard(batch, card);
         }
+
+        if(touchingCard != null) drawCard(batch, touchingCard);
     }
 
     private void drawCard(SpriteBatch batch, Card card) {
@@ -124,13 +130,26 @@ public class HandUi {
         if (discardingCard == card)
             position.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
 
-        if (selectedCard == card)
-            PopupManager.I().renderTooltip(selectedCard, position.x - 2f, position.y + 2.65f);
+        float originX = bounds.width / 2f;
+        float originY = bounds.width / 2f;
+
+        Color shadowColor = Assets.I().shadowColor();
+        batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
+        batch.draw(jokerCardShadow,
+            position.x, position.y - (card == touchingCard ? 0.2f : 0.1f),
+            originX, originY,
+            bounds.width, bounds.height,
+            scale, scale,
+            rotation
+            );
+
+        if (touchingCard == card && cardInTooltipRange)
+            PopupManager.I().renderTooltip(touchingCard, position.x - 2f, position.y + 2.65f);
 
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(jokerCard,
             position.x, position.y,
-            bounds.width / 2f, bounds.height / 2f,
+            originX, originY,
             bounds.width, bounds.height,
             scale, scale,
             rotation);
@@ -160,18 +179,32 @@ public class HandUi {
     }
 
     private void updateCardBounds() {
+        int i = 0;
+        float firstX = calcFistX();
+
+        for(Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
+            entry.getValue().getBounds().x = firstX + calcCardIndex(entry.getKey()) * CARD_OFFSET;
+            i++;
+        }
+    }
+
+    private float calcFistX() {
         int n = cards.size();
-        if (n == 0) return;
+        if (n == 0) return 0;
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
         float handWidth = (n - 1) * CARD_OFFSET + CARD_WIDTH;
-        float firstX = (screenWidth - handWidth) / 2f;
+        return (screenWidth - handWidth) / 2f;
+    }
 
-        int i = 0;
-        for (DragableSlot slot : cards.values()) {
-            slot.getBounds().x = firstX + i * CARD_OFFSET;
-            i++;
+    private int calcCardIndex(Card card) {
+        List<Map.Entry<Card, DragableSlot>> sorted = new ArrayList<>(cards.entrySet());
+        sorted.sort(Comparator.comparingDouble(entry -> entry.getValue().getRenderPos(new Vector2()).x));
+
+        for(Map.Entry<Card, DragableSlot> entry : sorted) {
+            if(entry.getKey() == card) return sorted.indexOf(entry);
         }
+        return 0;
     }
 
     public void applyCard(Card card) {

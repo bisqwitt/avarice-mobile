@@ -38,7 +38,7 @@ public class TooltipPopup {
         float boxY = pos.y;
 
         float worldWidth = ScreenManager.getViewport().getWorldWidth();
-        if (boxX < 0) boxX = 0.25f;
+        if (boxX < 0.25f) boxX = 0.25f;
         else if (boxX + boxWidth > worldWidth) boxX = worldWidth - boxWidth - 0.25f;
 
         // WORLD SPACE
