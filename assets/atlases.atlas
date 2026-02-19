@@ -326,16 +326,30 @@ bell
   orig: 26, 26
   offset: 0, 0
   index: -1
-black-green-pixel
+black-blue-pixel
   rotate: false
   xy: 815, 257
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
-blue-green-pixel
+black-green-pixel
   rotate: false
   xy: 815, 253
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+blue-green-pixel
+  rotate: false
+  xy: 815, 249
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+bright-slate-pixel
+  rotate: false
+  xy: 815, 245
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -440,21 +454,28 @@ critical hit-shadow
   index: -1
 dark-blue-pixel
   rotate: false
-  xy: 815, 249
+  xy: 815, 241
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 dark-green
   rotate: false
-  xy: 815, 245
+  xy: 815, 237
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 dark-red-pixel
   rotate: false
-  xy: 815, 241
+  xy: 815, 233
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+dark-slate-pixel
+  rotate: false
+  xy: 815, 229
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -482,7 +503,7 @@ dumpster-shadow
   index: -1
 empty-pixel
   rotate: false
-  xy: 815, 237
+  xy: 815, 225
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -503,14 +524,14 @@ evade-shadow
   index: -1
 grey-pixel
   rotate: false
-  xy: 815, 233
+  xy: 815, 221
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 health-red-pixel
   rotate: false
-  xy: 815, 229
+  xy: 815, 217
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -545,7 +566,7 @@ levelup
   index: -1
 light-grey-pixel
   rotate: false
-  xy: 815, 225
+  xy: 815, 213
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -727,7 +748,14 @@ shop-pressed
   index: -1
 silver-pixel
   rotate: false
-  xy: 815, 221
+  xy: 815, 209
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+slate-pixel
+  rotate: false
+  xy: 815, 205
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -790,14 +818,14 @@ upgrade
   index: -1
 white
   rotate: false
-  xy: 815, 217
+  xy: 815, 201
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 xp-pixel
   rotate: false
-  xy: 815, 213
+  xy: 815, 197
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -811,7 +839,7 @@ xporb
   index: -1
 yellowPixel
   rotate: false
-  xy: 815, 209
+  xy: 815, 193
   size: 2, 2
   orig: 2, 2
   offset: 0, 0

@@ -15,14 +15,24 @@ public class TooltipPopup {
 
     private final GlyphLayout jokerTxt = new GlyphLayout();
     private final GlyphLayout description = new GlyphLayout();
-    private final Vector2 pos;
+
     private final TextureRegion box;
     private final TextureRegion boxShadow;
+
     private final BitmapFont bigFont;
     private final BitmapFont smallFont;
 
-    public TooltipPopup(String txt, Vector2 pos) {
-        this.pos = pos;
+    private Vector2 pos;
+    private float rotation;
+
+    private float alpha = 0f;
+    private boolean visible = false;
+
+    private Runnable onDead;
+
+    public TooltipPopup(String txt, Vector2 pos, float rotation) {
+        this.pos = new Vector2(pos);
+        this.rotation = rotation;
         box = Assets.I().get(AssetKey.TOOLTIP_BOX);
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
@@ -31,22 +41,44 @@ public class TooltipPopup {
         description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
     }
 
-    public void render(SpriteBatch batch) {
+    public void update(Vector2 pos, float rotation, boolean visible) {
+        this.pos = new Vector2(pos);
+        this.rotation = rotation;
+        this.visible = visible;
+    }
+
+    public void render(SpriteBatch batch, float delta) {
+        updateAlpha(delta);
+
         float boxWidth = 82 / 15f;
         float boxHeight = 41 / 15f;
+        float originX = boxWidth / 2f;
+        float originY = boxHeight / 2f;
         float boxX = pos.x;
         float boxY = pos.y;
 
         float worldWidth = ScreenManager.getViewport().getWorldWidth();
         if (boxX < 0.25f) boxX = 0.25f;
-        else if (boxX + boxWidth > worldWidth) boxX = worldWidth - boxWidth - 0.25f;
+        else if (boxX + boxWidth > worldWidth - 0.25f) boxX = worldWidth - boxWidth - 0.25f;
 
         // WORLD SPACE
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
-        batch.setColor(Assets.I().shadowColor());
-        batch.draw(boxShadow, boxX, boxY - 0.2f, boxWidth, boxHeight);
+        Color shadowColor = Assets.I().shadowColor();
+        batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha));
+        batch.draw(boxShadow,
+            boxX, boxY - 0.2f,
+            originX, originY,
+            boxWidth, boxHeight,
+            1f, 1f,
+            rotation);
+        batch.setColor(1f, 1f, 1f, alpha);
+        batch.draw(box,
+            boxX, boxY,
+            originX, originY,
+            boxWidth, boxHeight,
+            1f, 1f,
+            rotation);
         batch.setColor(1f, 1f, 1f, 1f);
-        batch.draw(box, boxX, boxY, boxWidth, boxHeight);
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
         ScreenManager.getViewport().project(center);
@@ -56,19 +88,37 @@ public class TooltipPopup {
         float jokerX = center.x - jokerTxt.width / 2f - 30f;
         float jokerY = center.y + 130f;
 
-        bigFont.draw(batch, jokerTxt, jokerX, jokerY);
-
-        // --- DESCRIPTION ----
         float textW = description.width;
         float textH = description.height;
 
         float textX = center.x - textW / 2f;
         float textY = center.y;
 
+        batch.setColor(1f, 1f, 1f, alpha);
+        bigFont.draw(batch, jokerTxt, jokerX, jokerY);
         smallFont.draw(batch, description, textX, textY);
-
+        batch.setColor(1f, 1f, 1f, 1f);
         // restore world matrix
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
     }
 
+    private float getTargetAlpha() {
+        return visible ? 1f : 0f;
+    }
+
+    private void updateAlpha(float delta) {
+        float targetAlpha = getTargetAlpha();
+        float responsiveness = 12f; // higher = snappier
+        alpha += (targetAlpha - alpha) * (1f - (float) Math.exp(-responsiveness * delta));
+        // optional: snap when extremely close
+        if (Math.abs(targetAlpha - alpha) < 0.001f) {
+            alpha = targetAlpha;
+            if (onDead != null) onDead.run();
+        }
+    }
+
+    public void kill(Runnable onDead) {
+        this.onDead = onDead;
+        visible = false;
+    }
 }

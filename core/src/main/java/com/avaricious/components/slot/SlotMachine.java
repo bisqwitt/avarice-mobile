@@ -27,24 +27,21 @@ public class SlotMachine {
     // --- Layout ---
     public static final int cols = 5;
     public static final int rows = 3;
-    public static final float CELL_W = 1.5f;
-    public static final float CELL_H = 1.5f;
-    public static final float spacingX = 0.3f;
-    public static final float spacingY = 0.3f;
+    public static final float CELL_W = 1.7f;
+    public static final float CELL_H = 1.7f;
+    public static final float spacingX = 0f;
+    public static final float spacingY = 0.15f;
 
-    public static final float originX = 0.15f;
-    public static final float originY = 8.75f;
+    public static final float originX = 0.2f;
+    public static final float originY = 8.5f;
 
     public static final Rectangle windowBounds = new Rectangle(0.05f, 8.25f, 8.85f, 6.1f);
 
     // Visual cells (for selection pulse/scale)
     private final Slot[][] grid = new Slot[cols][rows];
 
+    private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
     private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
-    private final TextureRegion slotBoxShadow = Assets.I().get(AssetKey.SLOT_BOX_SHADOW);
-
-    private final TextureRegion darkGreenTexture = Assets.I().get(AssetKey.DARK_GREEN_PIXEL);
-    private final TextureRegion blackGreenTexture = Assets.I().get(AssetKey.BLACK_GREEN_PIXEL);
 
     // Reels (one per column)
     private final List<Reel> reels = new ArrayList<>();
@@ -114,6 +111,8 @@ public class SlotMachine {
         Camera cam = app.getViewport().getCamera();
         cam.update();
 
+        batch.draw(blackBluePixel, 0, 6, 10, 10);
+
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
         area.setWidth(area.width + 0.3f);
@@ -132,7 +131,7 @@ public class SlotMachine {
 
 //        batch.draw(Assets.I().get(AssetKey.WHITE_PIXEL), 0f, 0f, 16f, 9f);
 
-        drawBoxes(batch);
+//        drawBoxes(batch);
         TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
         drawSymbols(batch, delta);
 

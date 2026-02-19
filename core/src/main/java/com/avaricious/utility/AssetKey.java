@@ -96,7 +96,11 @@ public enum AssetKey {
     DUMPSTER_4("Dumpster4"),
     DUMPSTER_CLOSED("Dumpster5"),
     DUMPSTER_SHADOW("dumpster-shadow"),
-    DARK_RED_PIXEL("dark-red-pixel");
+    DARK_RED_PIXEL("dark-red-pixel"),
+    SLATE_PIXEL("slate-pixel"),
+    DARK_SLATE_PIXEL("dark-slate-pixel"),
+    BRIGHT_SLATE_PIXEL("bright-slate-pixel"),
+    BLACK_BLUE_PIXEL("black-blue-pixel");
 
     private final String path;
 

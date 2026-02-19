@@ -140,10 +140,6 @@ public class SlotScreen extends ScreenAdapter {
         Camera camera = app.getViewport().getCamera();
         batch.setProjectionMatrix(camera.combined);
 
-        // Clear the actual screen once
-        Gdx.gl.glClearColor(35 / 255f, 29 / 255f, 30 / 255f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 

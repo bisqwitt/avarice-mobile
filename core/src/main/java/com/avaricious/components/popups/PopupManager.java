@@ -24,12 +24,19 @@ public class PopupManager {
     private final List<StatisticPopup> statisticPopups = new ArrayList<>();
 
     private TooltipPopup tooltipPopup;
-    private boolean renderTooltip;
 
-    public void renderTooltip(Upgrade upgrade, float x, float y) {
+    public void createTooltip(Upgrade upgrade, Vector2 pos) {
         if (upgrade == null) return;
-        renderTooltip = true;
-        tooltipPopup = new TooltipPopup(upgrade.description(), new Vector2(x, y));
+        tooltipPopup = new TooltipPopup(upgrade.description(), pos, 0);
+    }
+
+    public void updateTooltip(Vector2 pos, float rotation, boolean visible) {
+        if (tooltipPopup == null) return;
+        tooltipPopup.update(pos, rotation, visible);
+    }
+
+    public void killTooltip() {
+        tooltipPopup.kill(() -> tooltipPopup = null);
     }
 
     public void spawnNumber(NumberPopup numberPopup) {
@@ -83,8 +90,7 @@ public class PopupManager {
             p.render(batch);
         }
 
-        if (renderTooltip) tooltipPopup.render(batch);
-        renderTooltip = false;
+        if (tooltipPopup != null) tooltipPopup.render(batch, delta);
     }
 }
 

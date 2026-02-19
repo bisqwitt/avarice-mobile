@@ -117,6 +117,6 @@ public class Slot {
     }
 
     public float getTargetScale() {
-        return targetScale;
+        return scale;
     }
 }

@@ -160,7 +160,7 @@ public class SlotScreenJokerBar {
         batch.setColor(1f, 1f, 1f, 1f);
 
         if (selectedUpgrade == card)
-            PopupManager.I().renderTooltip(selectedUpgrade, p.x - 2f, p.y + 2.65f);
+            PopupManager.I().createTooltip(selectedUpgrade, new Vector2(p.x - 2f, p.y + 2.65f));
 
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(

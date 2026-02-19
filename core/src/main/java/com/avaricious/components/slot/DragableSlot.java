@@ -59,6 +59,8 @@ public class DragableSlot extends Slot {
     private float alpha = 1f;
     private float extraScaleMul = 1f;
 
+    private Vector2 targetPosition = null;
+
     // Optional: callback on finish
     private Runnable onApplyFinished = null;
 
@@ -133,19 +135,21 @@ public class DragableSlot extends Slot {
             tiltDeg += (0f - tiltDeg) * Math.min(1f, tiltResponsiveness * delta);
         }
 
+        if (targetPosition != null) {
+            Vector2 pos = getPos(); // must be a mutable Vector2 reference you can set back
+            float responsiveness = 45f; // higher = snappier
+            float t = 1f - (float) Math.exp(-responsiveness * delta);
+
+            pos.lerp(targetPosition, t);
+
+            // snap when close
+            if (pos.epsilonEquals(targetPosition, 0.01f)) {
+                pos.set(targetPosition);
+                targetPosition = null; // optional: stop moving
+            }
+        }
+
         tickScale(delta);
-    }
-
-    /**
-     * Hit test in WORLD coordinates.
-     */
-    public boolean hitTest(float worldX, float worldY) {
-        getRenderPos(renderPos);
-        float x = renderPos.x;
-        float y = renderPos.y;
-
-        // Assumes renderPos is bottom-left. If you treat pos as center, adjust accordingly.
-        return worldX >= x && worldX <= x + width && worldY >= y && worldY <= y + height;
     }
 
     /**
@@ -266,6 +270,10 @@ public class DragableSlot extends Slot {
 
     public Vector2 getCardCenter() {
         return new Vector2(renderPos.x + width / 2, renderPos.y + height / 2);
+    }
+
+    public void moveTo(Vector2 targetPosition) {
+        this.targetPosition = targetPosition;
     }
 
     // --- Tuning knobs (optional) ---
