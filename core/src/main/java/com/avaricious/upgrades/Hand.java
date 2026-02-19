@@ -6,6 +6,7 @@ import com.avaricious.utility.Observable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Hand extends Observable<List<? extends Card>> {
 
@@ -16,12 +17,10 @@ public class Hand extends Observable<List<? extends Card>> {
     }
 
     private Hand() {
-        addCardFromDeck();
-        addCardFromDeck();
-        addCardFromDeck();
     }
 
     private final List<Card> hand = new ArrayList<>();
+    private int startingHandSize = 3;
 
     @Override
     protected List<? extends Card> snapshot() {
@@ -69,5 +68,17 @@ public class Hand extends Observable<List<? extends Card>> {
 
     public List<Card> getHand() {
         return hand;
+    }
+
+    public Card getRandomCard() {
+        return hand.get(new Random().nextInt(hand.size()));
+    }
+
+    public void setStartingHandSize(int startingHandSize) {
+        this.startingHandSize = startingHandSize;
+    }
+
+    public int getStartingHandSize() {
+        return startingHandSize;
     }
 }

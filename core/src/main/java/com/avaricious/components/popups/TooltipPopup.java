@@ -83,23 +83,25 @@ public class TooltipPopup {
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
         ScreenManager.getViewport().project(center);
 
-        batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
+        if(alpha > 0.5f) {
+            batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
 
-        float jokerX = center.x - jokerTxt.width / 2f - 30f;
-        float jokerY = center.y + 130f;
+            float jokerX = center.x - jokerTxt.width / 2f - 30f;
+            float jokerY = center.y + 130f;
 
-        float textW = description.width;
-        float textH = description.height;
+            float textW = description.width;
+            float textH = description.height;
 
-        float textX = center.x - textW / 2f;
-        float textY = center.y;
+            float textX = center.x - textW / 2f;
+            float textY = center.y;
 
-        batch.setColor(1f, 1f, 1f, alpha);
-        bigFont.draw(batch, jokerTxt, jokerX, jokerY);
-        smallFont.draw(batch, description, textX, textY);
-        batch.setColor(1f, 1f, 1f, 1f);
-        // restore world matrix
-        batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
+            batch.setColor(1f, 1f, 1f, alpha);
+            bigFont.draw(batch, jokerTxt, jokerX, jokerY);
+            smallFont.draw(batch, description, textX, textY);
+            batch.setColor(1f, 1f, 1f, 1f);
+            // restore world matrix
+            batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
+        }
     }
 
     private float getTargetAlpha() {

@@ -2,6 +2,7 @@ package com.avaricious.upgrades;
 
 import com.avaricious.cards.Card;
 import com.avaricious.cards.ConvertPointsToArmorCard;
+import com.avaricious.cards.DrawAndDiscardOneCard;
 import com.avaricious.cards.FivePointsCard;
 import com.avaricious.cards.FivePointsForEachCardInHandCard;
 import com.avaricious.cards.OneDollarCard;
@@ -49,7 +50,8 @@ public class Deck extends Observable<List<? extends Card>> {
             TenArmorCard.class,
             OneDollarCard.class,
             ConvertPointsToArmorCard.class,
-            FivePointsForEachCardInHandCard.class
+            FivePointsForEachCardInHandCard.class,
+            DrawAndDiscardOneCard.class
         ));
 
         for (Class<? extends Card> cardClass : allCardClasses) {

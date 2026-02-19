@@ -64,14 +64,14 @@ public class Slot {
         return 1f + bump * pulseAmp;               // peaks at 1 + amp
     }
 
-    public void updateHoverWobble(boolean isHovered, float delta) {
-        if (isHovered && !wasHovered) {
+    public void updateHoverWobble(boolean restart, float delta) {
+        if (restart && !wasHovered) {
             wobbleTime = 0f; // restart wobble on hover entry, regardless of selection
         }
         if (wobbleTime < wobbleDuration) {
             wobbleTime += delta;
         }
-        wasHovered = isHovered;
+        wasHovered = restart;
     }
 
     public void wobble() {

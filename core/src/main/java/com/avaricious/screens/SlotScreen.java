@@ -118,6 +118,7 @@ public class SlotScreen extends ScreenAdapter {
             runResult();
         });
 
+        drawStartingHand();
 
         Timer.schedule(new Timer.Task() {
             @Override
@@ -316,8 +317,6 @@ public class SlotScreen extends ScreenAdapter {
             for (RelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(RelicWithActionAfterSpin.class)) {
                 relicWithActionAfterSpin.onSpinEnded();
             }
-
-            Hand.I().addCardFromDeck();
         });
 
         if (DevTools.autoSpin) {
@@ -438,9 +437,21 @@ public class SlotScreen extends ScreenAdapter {
 
     private void onReturnedFromShop() {
         scoreDisplay.resetScore();
+        drawStartingHand();
     }
 
     public ArmorBar getArmorBar() {
         return armorBar;
+    }
+
+    private void drawStartingHand() {
+        for(int i = 1; i < Hand.I().getStartingHandSize() + 1; i++) {
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Hand.I().addCardFromDeck();
+                }
+            }, i * 0.25f);
+        }
     }
 }

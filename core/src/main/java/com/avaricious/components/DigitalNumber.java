@@ -1,10 +1,12 @@
 package com.avaricious.components;
 
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,8 @@ import java.util.List;
 public class DigitalNumber {
 
     protected final List<TextureRegion> numberTextures = new ArrayList<>();
-    //    protected final List<TextureRegion> numberShadowTextures = new ArrayList<>();
+    protected final List<TextureRegion> numberShadowTextures = new ArrayList<>();
+
     protected final Color color;
     protected final Rectangle rectangle;
     protected final float offset;
@@ -45,6 +48,7 @@ public class DigitalNumber {
 
         for (int i = 0; i < setLength; i++) {
             numberTextures.add(Assets.I().getDigitalNumber(0));
+            numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
         updateDigitalNumbers(score);
     }
@@ -66,10 +70,12 @@ public class DigitalNumber {
         hoverTime += delta;
         float numberBaseY = calcHoverY();
 
-//        batch.setColor(1f, 1f, 1f, 0.25f);
-//        for (int i = 0; i < numberTextures.size(); i++) {
-//            batch.draw(numberShadowTextures.get(i), rectangle.x + (i * offset) + 0.05f, numberBaseY - 0.05f, rectangle.width, rectangle.height);
-//        }
+        batch.setColor(1f, 1f, 1f, 0.25f);
+        for (int i = 0; i < numberTextures.size(); i++) {
+            Vector2 shadowOffset = UiUtility.calcShadowOffset(getNumberCenter(i));
+            batch.draw(numberShadowTextures.get(i),
+                rectangle.x + (i * offset) + shadowOffset.x, numberBaseY + shadowOffset.y, rectangle.width, rectangle.height);
+        }
         batch.setColor(color);
         for (int i = 0; i < numberTextures.size(); i++) {
             batch.draw(numberTextures.get(i), rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height);
@@ -83,7 +89,7 @@ public class DigitalNumber {
 
         for (int i = numberTextures.size() - 1; i >= 0; i--) {
             numberTextures.set(i, assetManager.getDigitalNumber(tempScore % 10));
-//            numberShadowTextures.set(i, assetManager.getDigitalNumberShadow(tempScore % 10));
+            numberShadowTextures.set(i, assetManager.getDigitalNumberShadow(tempScore % 10));
             tempScore /= 10;
         }
     }
@@ -93,7 +99,7 @@ public class DigitalNumber {
         int digits = score == 0 ? 1 : (int) Math.log10(score) + 1;
         while (digits > numberTextures.size()) {
             numberTextures.add(Assets.I().getDigitalNumber(0));
-//            numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
+            numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
         internalScoreIsDisplayed = false;
     }
@@ -111,5 +117,9 @@ public class DigitalNumber {
 
     public void setOnInternalScoreDisplayed(Runnable onInternalScoreDisplayed) {
         this.onInternalScoreDisplayed = onInternalScoreDisplayed;
+    }
+
+    private Vector2 getNumberCenter(float index) {
+        return new Vector2((rectangle.x + index * offset) + rectangle.width / 2, rectangle.y + rectangle.height / 2);
     }
 }

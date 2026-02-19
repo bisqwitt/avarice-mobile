@@ -101,9 +101,19 @@ public class Assets {
         AssetKey.FIVE_NUMBER, AssetKey.SIX_NUMBER, AssetKey.SEVEN_NUMBER, AssetKey.EIGHT_NUMBER, AssetKey.NINE_NUMBER
     };
 
+    private static final AssetKey[] DIGIT_SHADOWS = {
+        AssetKey.ZERO_NUMBER_SHADOW, AssetKey.ONE_NUMBER_SHADOW, AssetKey.TWO_NUMBER_SHADOW, AssetKey.THREE_NUMBER_SHADOW, AssetKey.FOUR_NUMBER_SHADOW,
+        AssetKey.FIVE_NUMBER_SHADOW, AssetKey.SIX_NUMBER_SHADOW, AssetKey.SEVEN_NUMBER_SHADOW, AssetKey.EIGHT_NUMBER_SHADOW, AssetKey.NINE_NUMBER_SHADOW
+    };
+
     public TextureRegion getDigitalNumber(int number) {
         if (number < 0 || number > 9) number = 0;
         return get(DIGITS[number]);
+    }
+
+    public TextureRegion getDigitalNumberShadow(int number) {
+        if(number < 0 || number > 9) number = 0;
+        return get(DIGIT_SHADOWS[number]);
     }
 
     public BitmapFont getBigFont() {

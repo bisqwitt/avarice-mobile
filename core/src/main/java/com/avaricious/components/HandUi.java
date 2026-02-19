@@ -8,6 +8,7 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -35,6 +36,7 @@ public class HandUi {
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new HashMap<>();
+    private final Map<Card, Integer> cardIndexLastRender = new HashMap<>();
 
     private Vector2 touchDownLocation = new Vector2();
     private boolean cardMovedSinceTouchDown = false;
@@ -46,7 +48,6 @@ public class HandUi {
     private List<? extends Card> pendingHand;
 
     public HandUi() {
-        loadCards(Hand.I().getHand());
         Hand.I().onChange(newHand -> pendingHand = newHand);
     }
 
@@ -158,8 +159,10 @@ public class HandUi {
 
         Color shadowColor = Assets.I().shadowColor();
         batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
+        Vector2 shadowOffset = UiUtility.calcShadowOffset(slot.getCardCenter());
         batch.draw(jokerCardShadow,
-            position.x + calcShadowXOffset(card), position.y - (card == touchingCard ? 0.2f : 0.1f),
+            position.x + shadowOffset.x,
+            position.y - (card == touchingCard ? 0.2f : 0.1f),
             originX, originY,
             bounds.width, bounds.height,
             scale, scale,
@@ -195,7 +198,7 @@ public class HandUi {
                 cardsToRemove.add(card);
             }
         }
-        for (Card card : cardsToRemove) cardsToRemove.remove(card);
+        for (Card card : cardsToRemove) cards.remove(card);
 
         updateCardBounds();
     }
@@ -204,33 +207,14 @@ public class HandUi {
         for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
             Card card = entry.getKey();
             DragableSlot slot = entry.getValue();
-            if (card == touchingCard) continue;
 
+            int newCardIndex = calcCardIndex(card);
+            if(cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card)) slot.wobble();
+            cardIndexLastRender.put(card, newCardIndex);
+
+            if (card == touchingCard) continue;
             slot.moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
-    }
-
-    private float calcShadowXOffset(Card card) {
-        DragableSlot slot = cards.get(card);
-        if (slot == null) return 0f;
-
-        Vector2 cardCenter = slot.getCardCenter(); // assumed in world coords
-        float screenWidth = ScreenManager.getViewport().getWorldWidth();
-        float screenCenterX = screenWidth * 0.5f;
-
-        float halfWidth = screenWidth * 0.5f;
-        if (halfWidth <= 0f) return 0f;
-
-        // normalized position: -1 (far left) ... 0 (center) ... +1 (far right)
-        float t = (cardCenter.x - screenCenterX) / halfWidth;
-
-        // clamp so it doesn't go crazy off-screen
-        t = Math.max(-1f, Math.min(1f, t));
-
-        // choose a max shadow shift in world units (tweak this)
-        float maxOffset = 0.2f; // e.g. 8% of screen width
-
-        return t * maxOffset;
     }
 
     private float calcCardX(Card card) {
