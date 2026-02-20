@@ -18,11 +18,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class SlotMachine {
+
+    private static SlotMachine instance;
+
+    public static SlotMachine I() {
+        return instance == null ? instance = new SlotMachine() : instance;
+    }
 
     // --- Layout ---
     public static final int cols = 5;
@@ -50,7 +55,7 @@ public class SlotMachine {
     private float alpha = 1f;
     private float desiredAlpha = 1f;
 
-    public SlotMachine() {
+    private SlotMachine() {
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -344,7 +349,7 @@ public class SlotMachine {
             result.add(new SlotMatch(match.getSymbol(), slots));
         }
 
-        Collections.sort(result, new Comparator<SlotMatch>() {
+        result.sort(new Comparator<SlotMatch>() {
             @Override
             public int compare(SlotMatch o1, SlotMatch o2) {
                 return o1.getSymbol().ordinal() - o2.getSymbol().ordinal();
@@ -376,5 +381,15 @@ public class SlotMachine {
 
     public void setRunningResults(boolean runningResults) {
         this.runningResults = runningResults;
+    }
+
+    public Symbol[][] getSymbolMap() {
+        Symbol[][] symbolMap = new Symbol[cols][rows];
+        for (int c = 0; c < reels.size(); c++) {
+            for (int row = 0; row < rows; row++) {
+                symbolMap[c][row] = reels.get(c).slotAtRow(row).getSymbol();
+            }
+        }
+        return symbolMap;
     }
 }

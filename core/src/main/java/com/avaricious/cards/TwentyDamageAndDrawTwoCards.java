@@ -1,19 +1,21 @@
 package com.avaricious.cards;
 
+import com.avaricious.components.progressbar.Health;
 import com.avaricious.upgrades.Hand;
 import com.badlogic.gdx.math.Vector2;
 
-public class DrawAndDiscardOneCard extends Card {
+public class TwentyDamageAndDrawTwoCards extends Card {
     @Override
     public String description() {
-        return "Draw and Discard one Card";
+        return "Draw two Cards, deals 20 damage";
     }
 
     @Override
     protected void onApply() {
+        Health.I().damage(20);
         Hand hand = Hand.I();
         hand.queueActions(
-            hand::discardRandomCard,
+            hand::drawCard,
             hand::drawCard
         );
     }

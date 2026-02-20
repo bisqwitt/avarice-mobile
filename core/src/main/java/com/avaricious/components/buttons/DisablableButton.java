@@ -2,13 +2,14 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class DisablableButton extends Button {
+public abstract class DisablableButton extends Button {
 
     // "disabled" now means: not interactive
     private boolean disabled = true;
@@ -24,12 +25,15 @@ public class DisablableButton extends Button {
 
     private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
-    public DisablableButton(Runnable onButtonPressedRunnable,
-                            TextureRegion defaultButtonTexture,
-                            TextureRegion pressedButtonTexture,
-                            TextureRegion hoveredButtonTexture,
-                            Rectangle buttonRectangle,
-                            int key) {
+    private boolean disableOnEmptyPattern = false;
+
+    public DisablableButton(
+        Runnable onButtonPressedRunnable,
+        TextureRegion defaultButtonTexture,
+        TextureRegion pressedButtonTexture,
+        TextureRegion hoveredButtonTexture,
+        Rectangle buttonRectangle,
+        int key) {
         super(onButtonPressedRunnable, defaultButtonTexture, pressedButtonTexture, hoveredButtonTexture, buttonRectangle, key);
         setVisibleAnimated(false, true); // start hidden (instant)
     }
@@ -73,6 +77,7 @@ public class DisablableButton extends Button {
 
     @Override
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
+        if (disabled()) return;
         // No input unless fully shown (Balatro-style: commit at the end of the animation)
         if (disabled || vis < 0.999f) {
             wasHovered = false;
@@ -116,12 +121,19 @@ public class DisablableButton extends Button {
     }
 
     private void drawWithShadow(SpriteBatch batch, float x, float y, float w, float h) {
+        float alpha = disabled() ? 0.5f : 1f;
+
         if (showShadow) {
-            batch.setColor(Assets.I().shadowColor());
+            Color shadowColor = Assets.I().shadowColor();
+            batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f);
             batch.draw(buttonShadow, x, y - 0.1f, w, h);
             batch.setColor(1f, 1f, 1f, 1f);
         }
 
+        batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(defaultButtonTexture, x, currentTexture == pressedButtonTexture ? y - 0.1f : y, w, h);
+        batch.setColor(1f, 1f, 1f, 1f);
     }
+
+    abstract boolean disabled();
 }

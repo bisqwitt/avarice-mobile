@@ -145,7 +145,6 @@ public class SlotScreenJokerBar {
 
         // IMPORTANT: render position can differ from bounds.x/y while dragging
         Vector2 p = slot.getRenderPos(new Vector2());
-        if (discardingCard == card) p.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
 
         float alpha = slot.getAlpha();
 

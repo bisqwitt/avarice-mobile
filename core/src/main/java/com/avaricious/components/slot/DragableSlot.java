@@ -128,7 +128,8 @@ public class DragableSlot extends Slot {
 
         if (dragging) {
             // tune 0.08..0.25 depending on your world scale
-            float targetTilt = MathUtils.clamp(dragVelX * 0.25f, -maxTiltDeg, maxTiltDeg);
+            float tiltStrength = 0.5f;
+            float targetTilt = MathUtils.clamp(-dragVelX * tiltStrength, -maxTiltDeg, maxTiltDeg);
             tiltDeg += (targetTilt - tiltDeg) * Math.min(1f, tiltResponsiveness * delta);
         } else {
             // decay tilt back to 0 when not dragging

@@ -2,23 +2,24 @@ package com.avaricious.cards;
 
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.upgrades.Hand;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.Vector2;
 
-public class FivePointsForEachCardInHandCard extends Card {
+public class TwoPointsForEverySymbolHit extends Card {
 
     private int points = 0;
 
     @Override
     public String description() {
-        return Assets.I().blueText("+5 Points") + " for every Card held in Hand"
-            + "\n(" + Hand.I().cardsHeldInHand() + ")";
+        return Assets.I().blueText("+2 Points") + " for every symbol hit last spin\n"
+            + "(" + ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() + ")";
     }
 
     @Override
     protected void onApply() {
-        points = Hand.I().cardsHeldInHand() * 5;
+        points = ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() * 2;
         PatternDisplay.I().addPoints(points);
     }
 

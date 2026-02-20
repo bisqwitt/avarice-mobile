@@ -5,8 +5,8 @@ import com.avaricious.utility.Assets;
 
 public class ArmorBar extends HealthBar {
 
-    public ArmorBar(float maxHealth) {
-        super(maxHealth, 7.3f, Assets.I().get(AssetKey.ARMOR_ICON), Assets.I().get(AssetKey.SILVER_PIXEL));
+    public ArmorBar(float maxHealth, float y) {
+        super(maxHealth, y, Assets.I().get(AssetKey.ARMOR_ICON), Assets.I().get(AssetKey.SILVER_PIXEL));
     }
 
 }

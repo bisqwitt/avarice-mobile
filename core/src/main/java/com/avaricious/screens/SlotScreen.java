@@ -19,12 +19,10 @@ import com.avaricious.components.CameraShaker;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.bars.SlotScreenJokerBar;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.progressbar.ArmorBar;
-import com.avaricious.components.progressbar.HealthBar;
+import com.avaricious.components.progressbar.Health;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.SlotMatch;
@@ -33,7 +31,6 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
-import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
@@ -59,9 +56,8 @@ public class SlotScreen extends ScreenAdapter {
 
     private final Main app;
     private final SlotMachine slotMachine;
-    private final HealthBar healthBar = new HealthBar(100f);
-    private final ArmorBar armorBar = new ArmorBar(100f);
     private final XpBar xpBar;
+    private final Health health = Health.I();
 
     private final ScoreDisplay scoreDisplay = new ScoreDisplay();
     private final PatternDisplay patternDisplay = PatternDisplay.I();
@@ -72,8 +68,6 @@ public class SlotScreen extends ScreenAdapter {
     private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
-
-    private final SlotScreenJokerBar jokerBar = SlotScreenJokerBar.I();
     private final HandUi handUi = new HandUi();
 
     private final CreditScore creditScore = new CreditScore(0,
@@ -87,10 +81,11 @@ public class SlotScreen extends ScreenAdapter {
     private final RoundsManager roundsManager = RoundsManager.I();
     private final Vector2 mouse = new Vector2();
     private boolean leftClickWasPressed = false;
+    private int symbolsHitLastSpin = 0;
 
     public SlotScreen(Main app) {
         this.app = app;
-        slotMachine = new SlotMachine();
+        slotMachine = SlotMachine.I();
         xpBar = new XpBar(statusUpgradeWindow::show);
 
         cameraShaker = new CameraShaker(app);
@@ -99,7 +94,6 @@ public class SlotScreen extends ScreenAdapter {
         scoreDisplay.setOnInternalScoreDisplayed(() -> {
             AudioManager.I().endPayout();
             if (scoreDisplay.targetScoreReached()) onTargetScoreReached();
-            else onSpinButtonPressed();
         });
 
         if (DevTools.enableProfiler) Profiler.start();
@@ -107,14 +101,9 @@ public class SlotScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        buttonBoard.setVisible(false);
-
         backgroundLayer.init();
-
-        healthBar.setCurrentHealth(healthBar.getMaxHealth());
-        armorBar.setCurrentHealth(0);
         slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(() -> {
-            jokerBar.setSlotMachineIsRunning(false);
+            buttonBoard.setSlotMachineIsSpinning(false);
             runResult();
         });
 
@@ -123,12 +112,9 @@ public class SlotScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-//                statusUpgradeWindow.show();
-//                shop.show();
+                buttonBoard.setVisible(true);
             }
         }, 1);
-
-        onSpinButtonPressed();
     }
 
     @Override
@@ -156,8 +142,7 @@ public class SlotScreen extends ScreenAdapter {
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
-        healthBar.draw(batch);
-        armorBar.draw(batch);
+        health.draw(batch);
         xpBar.draw(batch);
 //        jokerBar.draw(batch, delta);
         handUi.draw(batch, delta);
@@ -202,39 +187,7 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<SlotMatch> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
-            if (evadeChanceStatus.rollChance()) {
-                HealthBar barToDamage = armorBar.getCurrentHealth() > 0 ? armorBar : healthBar;
-                PopupManager.I().spawnStatisticHit(
-                    evadeChanceStatus.getTexture(),
-                    barToDamage.X + (barToDamage.getFurthestCellIndex() * barToDamage.CELL_OFFSET),
-                    barToDamage.Y + 0.5f);
-                onSpinButtonPressed();
-                return;
-            }
-
-            float damage = 20f;
-            float armorHp = armorBar.getCurrentHealth();
-            if (armorHp > 0) {
-                float armorDamage = Math.min(damage, armorHp);
-                float spill = damage - armorDamage;
-
-                armorBar.damage(damage);
-                if (spill > 0) {
-                    healthBar.damage(spill);
-                    patternDisplay.reset();
-                }
-            } else {
-                healthBar.damage(damage);
-                patternDisplay.reset();
-            }
-
-            if (healthBar.getCurrentHealth() <= 0) {
-                ScreenManager.restartGame();
-                return;
-            }
-
-            onSpinButtonPressed();
+            health.damage(20);
             return;
         }
 
@@ -288,13 +241,13 @@ public class SlotScreen extends ScreenAdapter {
             MultAdditionRelic multAdditionUpgrade = Hand.I().getUpgradeOfClass(MultAdditionRelic.class);
             if (multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
                 int multi = multAdditionUpgrade.getMulti();
-                Slot cardSlot = jokerBar.getSlotByUpgrade(multAdditionUpgrade);
-                cardSlot.pulse();
-                cardSlot.wobble();
-                patternDisplay.addMulti(multi);
-                PopupManager.I().spawnNumber(multi, Assets.I().red(),
-                    cardSlot.getPos().x + 1.1f, cardSlot.getPos().y + 1.6f,
-                    false);
+//                Slot cardSlot = jokerBar.getSlotByUpgrade(multAdditionUpgrade);
+//                cardSlot.pulse();
+//                cardSlot.wobble();
+//                patternDisplay.addMulti(multi);
+//                PopupManager.I().spawnNumber(multi, Assets.I().red(),
+//                    cardSlot.getPos().x + 1.1f, cardSlot.getPos().y + 1.6f,
+//                    false);
             }
 
             scheduler.schedule(() -> {
@@ -309,7 +262,6 @@ public class SlotScreen extends ScreenAdapter {
 
         scheduler.schedule(() -> {
             patternDisplay.addStreak(1);
-            buttonBoard.setVisible(true);
 //            slotMachine.setAlpha(0.25f);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
@@ -327,8 +279,11 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void triggerSeparateSlots(SlotMatch slotMatch, TaskScheduler scheduler) {
+        symbolsHitLastSpin = 0;
         for (Slot slot : slotMatch.getSlots()) {
             scheduler.schedule(() -> {
+                symbolsHitLastSpin++;
+
                 slot.pulse();
                 slot.wobble();
 
@@ -351,12 +306,12 @@ public class SlotScreen extends ScreenAdapter {
                 PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = Hand.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
                 if (pointsPerConsecutiveHitUpgrade != null) {
                     int pointAddition = pointsPerConsecutiveHitUpgrade.getPoints();
-                    Slot jokerSlot = jokerBar.getSlotByUpgrade(pointsPerConsecutiveHitUpgrade);
-                    jokerSlot.pulse();
-                    jokerSlot.wobble();
-                    patternDisplay.addPoints(pointAddition);
-                    PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
-                        jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.6f, false);
+//                    Slot jokerSlot = jokerBar.getSlotByUpgrade(pointsPerConsecutiveHitUpgrade);
+//                    jokerSlot.pulse();
+//                    jokerSlot.wobble();
+//                    patternDisplay.addPoints(pointAddition);
+//                    PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
+//                        jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.6f, false);
                 }
 
                 xpBar.addXp(points);
@@ -381,29 +336,28 @@ public class SlotScreen extends ScreenAdapter {
                 }
             }
             if (symbolValueStackUpgrade != null) {
-                Slot upgradeSlot = jokerBar.getSlotByUpgrade(symbolValueStackUpgrade);
-                scheduler.scheduleImmediate(() -> {
-                    upgradeSlot.pulse();
-                    upgradeSlot.wobble();
-                    PopupManager.I().spawnNumber(1, Assets.I().green(),
-                        upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
-                });
-                if (symbolValueStackUpgrade.addStacks(1)) {
-                    scheduler.schedule(() -> {
-                        upgradeSlot.pulse();
-                        upgradeSlot.wobble();
-                        PopupManager.I().spawnNumber(1, Assets.I().blue(),
-                            upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
-                    });
-                }
+//                Slot upgradeSlot = jokerBar.getSlotByUpgrade(symbolValueStackUpgrade);
+//                scheduler.scheduleImmediate(() -> {
+//                    upgradeSlot.pulse();
+//                    upgradeSlot.wobble();
+//                    PopupManager.I().spawnNumber(1, Assets.I().green(),
+//                        upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
+//                });
+//                if (symbolValueStackUpgrade.addStacks(1)) {
+//                    scheduler.schedule(() -> {
+//                        upgradeSlot.pulse();
+//                        upgradeSlot.wobble();
+//                        PopupManager.I().spawnNumber(1, Assets.I().blue(),
+//                            upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
+//                    });
+//                }
             }
         }
     }
 
     private void onSpinButtonPressed() {
         slotMachine.setAlpha(1f);
-        buttonBoard.setVisible(false);
-        jokerBar.setSlotMachineIsRunning(true);
+        buttonBoard.setSlotMachineIsSpinning(true);
 
         slotMachine.spin();
     }
@@ -415,7 +369,6 @@ public class SlotScreen extends ScreenAdapter {
 
         patternDisplay.spawnEcho();
         patternDisplay.reset();
-        buttonBoard.setVisible(false);
     }
 
     private void onTargetScoreReached() {
@@ -425,7 +378,7 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().createTopLayer(9, 0, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(0, 16, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
-        healthBar.fullHeal();
+        health.getHealthBar().fullHeal();
         shop.show();
     }
 
@@ -440,18 +393,21 @@ public class SlotScreen extends ScreenAdapter {
         drawStartingHand();
     }
 
-    public ArmorBar getArmorBar() {
-        return armorBar;
+    private void drawStartingHand() {
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Hand hand = Hand.I();
+                hand.queueActions(
+                    hand::drawCard,
+                    hand::drawCard,
+                    hand::drawCard
+                );
+            }
+        }, 0.25f);
     }
 
-    private void drawStartingHand() {
-        for(int i = 1; i < Hand.I().getStartingHandSize() + 1; i++) {
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    Hand.I().addCardFromDeck();
-                }
-            }, i * 0.25f);
-        }
+    public int getSymbolsHitLastSpin() {
+        return symbolsHitLastSpin;
     }
 }

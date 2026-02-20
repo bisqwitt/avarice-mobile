@@ -1,33 +1,33 @@
 package com.avaricious.components;
 
-import com.avaricious.components.buttons.DisablableButton;
+import com.avaricious.components.buttons.CashoutButton;
+import com.avaricious.components.buttons.SpinButton;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class ButtonBoard {
 
     private final float BOARD_X = 0.7f;
-    private final float BOARD_Y = 0.5f;
+    private final float BOARD_Y = 5.95f;
 
     private final float BUTTON_W = 79 / 25f;
     private final float BUTTON_H = 25 / 25f;
 
-    private final DisablableButton spinAgainButton;
-    private final DisablableButton cashoutButton;
+    private final SpinButton spinAgainButton;
+    private final CashoutButton cashoutButton;
 
     public ButtonBoard(Runnable onSpinButtonPressed, Runnable onCashoutButtonPressed) {
-        spinAgainButton = new DisablableButton(onSpinButtonPressed,
-            Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON),
-            Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.SPIN_AGAIN_BUTTON),
+        spinAgainButton = new SpinButton(onSpinButtonPressed,
+            Assets.I().get(AssetKey.SPIN_BUTTON),
+            Assets.I().get(AssetKey.SPIN_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.SPIN_BUTTON),
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
-        cashoutButton = new DisablableButton(onCashoutButtonPressed,
+        cashoutButton = new CashoutButton(onCashoutButtonPressed,
             Assets.I().get(AssetKey.CASHOUT_BUTTON),
             Assets.I().get(AssetKey.CASHOUT_BUTTON_PRESSED),
             Assets.I().get(AssetKey.CASHOUT_BUTTON),
@@ -53,5 +53,8 @@ public class ButtonBoard {
         cashoutButton.setVisibleAnimated(visible);
     }
 
-
+    public void setSlotMachineIsSpinning(boolean slotMachineIsSpinning) {
+        spinAgainButton.setSlotMachineIsRunning(slotMachineIsSpinning);
+        cashoutButton.setSlotMachineIsRunning(slotMachineIsSpinning);
+    }
 }

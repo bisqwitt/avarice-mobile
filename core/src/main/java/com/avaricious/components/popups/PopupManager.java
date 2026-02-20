@@ -27,12 +27,12 @@ public class PopupManager {
 
     public void createTooltip(Upgrade upgrade, Vector2 pos) {
         if (upgrade == null) return;
-        tooltipPopup = new TooltipPopup(upgrade.description(), pos, 0);
+        tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
-    public void updateTooltip(Vector2 pos, float rotation, boolean visible) {
+    public void updateTooltip(Vector2 pos, boolean visible) {
         if (tooltipPopup == null) return;
-        tooltipPopup.update(pos, rotation, visible);
+        tooltipPopup.update(pos, visible);
     }
 
     public void killTooltip() {

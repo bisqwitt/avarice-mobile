@@ -25,6 +25,8 @@ public class Button {
     private boolean spaceWasPressed;
     protected boolean showShadow = true;
 
+    private boolean pressDownIsOnButton = false;
+
     public Button(Runnable onButtonPressedRunnable,
                   TextureRegion defaultButtonTexture,
                   TextureRegion pressedButtonTexture,
@@ -52,11 +54,12 @@ public class Button {
         else if (!hovering && wasHovered) currentTexture = defaultButtonTexture;
 
         if (pressed && !wasPressed) {
-            if (buttonRectangle.contains(mouse.x, mouse.y))
+            pressDownIsOnButton = hovering;
+            if (hovering)
                 currentTexture = pressedButtonTexture;
         } else if (!pressed && wasPressed) {
             currentTexture = hovering ? hoveredButtonTexture : defaultButtonTexture;
-            if (hovering) onButtonPressed();
+            if (hovering && pressDownIsOnButton) onButtonPressed();
         }
 
         boolean spacePressed = Gdx.input.isKeyPressed(key);

@@ -69,7 +69,7 @@ public class HandUi {
         }
 
         if (pressed && touchingCard != null) {
-            onCardTouching(touchingCard, mouse, delta);
+            onCardTouching(touchingCard, mouse);
         }
 
         if (!pressed && wasPressed && touchingCard != null) {
@@ -88,7 +88,7 @@ public class HandUi {
         PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()));
     }
 
-    private void onCardTouching(Card card, Vector2 mouse, float delta) {
+    private void onCardTouching(Card card, Vector2 mouse) {
         DragableSlot touchingSlot = cards.get(card);
         Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
 
@@ -101,7 +101,6 @@ public class HandUi {
 
         PopupManager.I().updateTooltip(
             new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
-            touchingSlot.wobbleAngleDeg() + touchingSlot.getDragTiltDeg(),
             new Rectangle(0f, 0f, 9f, 8f).contains(mouse));
     }
 
@@ -151,8 +150,6 @@ public class HandUi {
         if (cardDestinationUI.isOverDumpster(slot.getCardCenter())) alpha -= 0.5f;
 
         Vector2 position = slot.getRenderPos(new Vector2());
-        if (discardingCard == card)
-            position.x += cardDestinationUI.getDumpster().getCurrentSlideValue();
 
         float originX = bounds.width / 2f;
         float originY = bounds.height / 2f;
@@ -187,7 +184,7 @@ public class HandUi {
                     (CARD_OFFSET * cards.size()), Y,
                     CARD_WIDTH, CARD_HEIGHT);
 
-                cards.put(card, new DragableSlot(initialBounds));
+                cards.put(card, new DragableSlot(initialBounds).setTilt(200f, 20f));
             }
         }
 
@@ -198,7 +195,10 @@ public class HandUi {
                 cardsToRemove.add(card);
             }
         }
-        for (Card card : cardsToRemove) cards.remove(card);
+        for (Card card : cardsToRemove) {
+            cards.remove(card);
+            cardIndexLastRender.remove(card);
+        }
 
         updateCardBounds();
     }
@@ -209,7 +209,8 @@ public class HandUi {
             DragableSlot slot = entry.getValue();
 
             int newCardIndex = calcCardIndex(card);
-            if(cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card)) slot.wobble();
+//            if (cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card))
+//                slot.wobble();
             cardIndexLastRender.put(card, newCardIndex);
 
             if (card == touchingCard) continue;
@@ -303,7 +304,7 @@ public class HandUi {
         discardingCard = card;
         cards.get(card).startApplyAnimation(0.6f, () -> {
             discardingCard = null;
-            Hand.I().removeCardFromHand(card);
+            Hand.I().discardCard(card);
         });
     }
 

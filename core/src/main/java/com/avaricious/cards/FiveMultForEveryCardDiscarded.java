@@ -6,24 +6,24 @@ import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.Vector2;
 
-public class FivePointsForEachCardInHandCard extends Card {
+public class FiveMultForEveryCardDiscarded extends Card {
 
-    private int points = 0;
+    private int mult;
 
     @Override
     public String description() {
-        return Assets.I().blueText("+5 Points") + " for every Card held in Hand"
-            + "\n(" + Hand.I().cardsHeldInHand() + ")";
+        return Assets.I().redText("+5 Mult") + " for every Card discarded\n("
+            + Hand.I().getCardsDiscarded() + ")";
     }
 
     @Override
     protected void onApply() {
-        points = Hand.I().cardsHeldInHand() * 5;
-        PatternDisplay.I().addPoints(points);
+        mult = Hand.I().getCardsDiscarded() * 5;
+        PatternDisplay.I().addMulti(mult);
     }
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> PopupManager.I().spawnNumber(createNumberPopup(points, pos, Assets.I().blue()));
+        return () -> PopupManager.I().spawnNumber(createNumberPopup(mult, pos, Assets.I().red()));
     }
 }

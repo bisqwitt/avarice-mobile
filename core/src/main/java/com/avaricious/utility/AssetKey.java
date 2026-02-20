@@ -110,7 +110,10 @@ public enum AssetKey {
     SLATE_PIXEL("slate-pixel"),
     DARK_SLATE_PIXEL("dark-slate-pixel"),
     BRIGHT_SLATE_PIXEL("bright-slate-pixel"),
-    BLACK_BLUE_PIXEL("black-blue-pixel");
+    BLACK_BLUE_PIXEL("black-blue-pixel"),
+    SPIN_BUTTON("spin-button"),
+    SPIN_BUTTON_PRESSED("spin-button-pressed"),
+    DARK_STEEL_PIXEL("dark-steel-pixel");
 
     private final String path;
 

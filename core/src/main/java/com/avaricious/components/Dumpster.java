@@ -48,13 +48,13 @@ public class Dumpster {
     }
 
     public void update(float delta, Vector2 cardCenterPos, boolean cardIsDragging) {
-        if(!cardIsDiscarding) {
+        if (!cardIsDiscarding) {
             // 1) slide in/out
             slide = approach(slide, cardIsDragging ? 1f : 0f, 4f, delta); // speed=10 -> tune
-            float x = restBoundsX + getCurrentSlideValue();
-
-            bounds.x = x;
-            hitBox.x = restHitX + getCurrentSlideValue();
+//            float x = restBoundsX + getCurrentSlideValue();
+//
+//            bounds.x = x;
+//            hitBox.x = restHitX + getCurrentSlideValue();
         }
 
         // 2) only “interact” once mostly visible (prevents opening while still offscreen)

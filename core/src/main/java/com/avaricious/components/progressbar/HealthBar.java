@@ -18,8 +18,8 @@ public class HealthBar extends ProgressBar {
 
     private float currentValue;
 
-    public HealthBar(float maxHealth) {
-        this(maxHealth, 6.3f, Assets.I().get(AssetKey.HEART), Assets.I().get(AssetKey.HEALTH_RED_PIXEL));
+    public HealthBar(float maxHealth, float y) {
+        this(maxHealth, y, Assets.I().get(AssetKey.HEART), Assets.I().get(AssetKey.HEALTH_RED_PIXEL));
     }
 
     public HealthBar(float maxHealth, float y, TextureRegion icon, TextureRegion barTexture) {

@@ -3,11 +3,15 @@ package com.avaricious.upgrades;
 import com.avaricious.cards.Card;
 import com.avaricious.cards.ConvertPointsToArmorCard;
 import com.avaricious.cards.DrawAndDiscardOneCard;
+import com.avaricious.cards.FiveMultForEveryCardDiscarded;
 import com.avaricious.cards.FivePointsCard;
 import com.avaricious.cards.FivePointsForEachCardInHandCard;
 import com.avaricious.cards.OneDollarCard;
-import com.avaricious.cards.TenArmorCard;
+import com.avaricious.cards.OnePointForEveryFruitCard;
+import com.avaricious.cards.TwentyArmorCard;
+import com.avaricious.cards.TwentyDamageAndDrawTwoCards;
 import com.avaricious.cards.TwoMultCard;
+import com.avaricious.cards.TwoPointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,11 +51,15 @@ public class Deck extends Observable<List<? extends Card>> {
         allCardClasses.addAll(Arrays.asList(
             FivePointsCard.class,
             TwoMultCard.class,
-            TenArmorCard.class,
+            TwentyArmorCard.class,
             OneDollarCard.class,
             ConvertPointsToArmorCard.class,
             FivePointsForEachCardInHandCard.class,
-            DrawAndDiscardOneCard.class
+            DrawAndDiscardOneCard.class,
+            FiveMultForEveryCardDiscarded.class,
+            TwentyDamageAndDrawTwoCards.class,
+            TwoPointsForEverySymbolHit.class,
+            OnePointForEveryFruitCard.class
         ));
 
         for (Class<? extends Card> cardClass : allCardClasses) {

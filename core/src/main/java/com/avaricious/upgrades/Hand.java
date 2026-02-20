@@ -2,6 +2,7 @@ package com.avaricious.upgrades;
 
 import com.avaricious.cards.Card;
 import com.avaricious.utility.Observable;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,12 +23,14 @@ public class Hand extends Observable<List<? extends Card>> {
     private final List<Card> hand = new ArrayList<>();
     private int startingHandSize = 3;
 
+    private int cardsDiscarded = 0;
+
     @Override
     protected List<? extends Card> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(hand));
     }
 
-    public void addCardFromDeck() {
+    public void drawCard() {
         Card upgrade = Deck.I().pickCardFromDeck();
         if (upgrade == null) return;
 
@@ -62,6 +65,28 @@ public class Hand extends Observable<List<? extends Card>> {
         notifyChanged(snapshot());
     }
 
+    public void discardCard(Card card) {
+        cardsDiscarded++;
+        removeCardFromHand(card);
+    }
+
+    public void discardRandomCard() {
+        cardsDiscarded++;
+        removeCardFromHand(getRandomCard());
+    }
+
+    public void queueActions(Runnable... actions) {
+        for (int i = 0; i < actions.length; i++) {
+            final int index = i;
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    actions[index].run();
+                }
+            }, i * 0.25f);
+        }
+    }
+
     public int cardsHeldInHand() {
         return hand.size();
     }
@@ -76,6 +101,10 @@ public class Hand extends Observable<List<? extends Card>> {
 
     public void setStartingHandSize(int startingHandSize) {
         this.startingHandSize = startingHandSize;
+    }
+
+    public int getCardsDiscarded() {
+        return cardsDiscarded;
     }
 
     public int getStartingHandSize() {

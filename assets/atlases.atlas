@@ -459,6 +459,13 @@ cashout
   orig: 79, 24
   offset: 0, 0
   index: -1
+cashout-pressed
+  rotate: false
+  xy: 1412, 108
+  size: 79, 24
+  orig: 79, 24
+  offset: 0, 0
+  index: -1
 cashout-disabled
   rotate: false
   xy: 804, 54
@@ -471,13 +478,6 @@ cashout-hovered
   xy: 885, 54
   size: 79, 25
   orig: 79, 25
-  offset: 0, 0
-  index: -1
-cashout-pressed
-  rotate: false
-  xy: 1412, 82
-  size: 79, 24
-  orig: 79, 24
   offset: 0, 0
   index: -1
 cherry
@@ -550,6 +550,20 @@ dark-slate-pixel
   orig: 2, 2
   offset: 0, 0
   index: -1
+dark-steel-pixel
+  rotate: false
+  xy: 23, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+slate-pixel
+  rotate: false
+  xy: 23, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 diamond
   rotate: false
   xy: 1683, 301
@@ -573,7 +587,7 @@ dumpster-shadow
   index: -1
 empty-pixel
   rotate: false
-  xy: 23, 2
+  xy: 23, 6
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -594,14 +608,14 @@ evade-shadow
   index: -1
 grey-pixel
   rotate: false
-  xy: 23, 6
+  xy: 27, 6
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 health-red-pixel
   rotate: false
-  xy: 27, 6
+  xy: 27, 2
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -636,7 +650,7 @@ levelup
   index: -1
 light-grey-pixel
   rotate: false
-  xy: 27, 2
+  xy: 31, 2
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -797,7 +811,7 @@ seven
   index: -1
 shop
   rotate: false
-  xy: 1412, 56
+  xy: 1412, 82
   size: 79, 24
   orig: 79, 24
   offset: 0, 0
@@ -811,19 +825,12 @@ shop-hovered
   index: -1
 shop-pressed
   rotate: false
-  xy: 1412, 30
+  xy: 1412, 56
   size: 79, 24
   orig: 79, 24
   offset: 0, 0
   index: -1
 silver-pixel
-  rotate: false
-  xy: 31, 2
-  size: 2, 2
-  orig: 2, 2
-  offset: 0, 0
-  index: -1
-slate-pixel
   rotate: false
   xy: 31, 6
   size: 2, 2
@@ -851,9 +858,65 @@ slotMachineBox
   orig: 175, 118
   offset: 0, 0
   index: -1
+sls-palette-0
+  rotate: false
+  xy: 35, 6
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-1
+  rotate: false
+  xy: 35, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-2
+  rotate: false
+  xy: 39, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-3
+  rotate: false
+  xy: 39, 6
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-4
+  rotate: false
+  xy: 43, 6
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-5
+  rotate: false
+  xy: 43, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-6
+  rotate: false
+  xy: 47, 2
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+sls-palette-7
+  rotate: false
+  xy: 47, 6
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
 spin-again
   rotate: false
-  xy: 1412, 4
+  xy: 1412, 30
   size: 79, 24
   orig: 79, 24
   offset: 0, 0
@@ -874,6 +937,20 @@ spin-again-hovered
   index: -1
 spin-again-pressed
   rotate: false
+  xy: 1412, 4
+  size: 79, 24
+  orig: 79, 24
+  offset: 0, 0
+  index: -1
+spin-button
+  rotate: false
+  xy: 1709, 144
+  size: 79, 24
+  orig: 79, 24
+  offset: 0, 0
+  index: -1
+spin-button-pressed
+  rotate: false
   xy: 1709, 144
   size: 79, 24
   orig: 79, 24
@@ -888,14 +965,14 @@ upgrade
   index: -1
 white
   rotate: false
-  xy: 35, 6
+  xy: 51, 6
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 xp-pixel
   rotate: false
-  xy: 35, 2
+  xy: 51, 2
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
@@ -909,7 +986,7 @@ xporb
   index: -1
 yellowPixel
   rotate: false
-  xy: 39, 2
+  xy: 55, 2
   size: 2, 2
   orig: 2, 2
   offset: 0, 0

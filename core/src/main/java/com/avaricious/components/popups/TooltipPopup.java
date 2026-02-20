@@ -1,6 +1,7 @@
 package com.avaricious.components.popups;
 
 import com.avaricious.screens.ScreenManager;
+import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Color;
@@ -22,29 +23,30 @@ public class TooltipPopup {
     private final BitmapFont bigFont;
     private final BitmapFont smallFont;
 
+    private final Upgrade upgrade;
+
     private Vector2 pos;
-    private float rotation;
 
     private float alpha = 0f;
     private boolean visible = false;
 
     private Runnable onDead;
 
-    public TooltipPopup(String txt, Vector2 pos, float rotation) {
+    public TooltipPopup(Upgrade upgrade, Vector2 pos) {
+        this.upgrade = upgrade;
         this.pos = new Vector2(pos);
-        this.rotation = rotation;
         box = Assets.I().get(AssetKey.TOOLTIP_BOX);
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
         jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250f, Align.top | Align.center, true);
-        description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
+        setDescription(upgrade.description());
     }
 
-    public void update(Vector2 pos, float rotation, boolean visible) {
+    public void update(Vector2 pos, boolean visible) {
         this.pos = new Vector2(pos);
-        this.rotation = rotation;
         this.visible = visible;
+        setDescription(upgrade.description());
     }
 
     public void render(SpriteBatch batch, float delta) {
@@ -70,20 +72,20 @@ public class TooltipPopup {
             originX, originY,
             boxWidth, boxHeight,
             1f, 1f,
-            rotation);
+            0);
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(box,
             boxX, boxY,
             originX, originY,
             boxWidth, boxHeight,
             1f, 1f,
-            rotation);
+            0);
         batch.setColor(1f, 1f, 1f, 1f);
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
         ScreenManager.getViewport().project(center);
 
-        if(alpha > 0.5f) {
+        if (alpha > 0.5f) {
             batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
 
             float jokerX = center.x - jokerTxt.width / 2f - 30f;
@@ -122,5 +124,9 @@ public class TooltipPopup {
     public void kill(Runnable onDead) {
         this.onDead = onDead;
         visible = false;
+    }
+
+    private void setDescription(String txt) {
+        description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
     }
 }
