@@ -29,9 +29,9 @@ public class PatternDisplay {
     private final TextureRegion multSymbolShadow;
 
     private final TextureRegion[] pointDigitalNumbers = new TextureRegion[NUMBER_PER_PATTERN_PART];
-    private final TextureRegion[] pointNumberShadows = new TextureRegion[3];
+    private final TextureRegion[] pointNumberShadows = new TextureRegion[NUMBER_PER_PATTERN_PART];
     private final TextureRegion[] multiDigitalNumbers = new TextureRegion[NUMBER_PER_PATTERN_PART];
-    private final TextureRegion[] multiNumberShadows = new TextureRegion[3];
+    private final TextureRegion[] multiNumberShadows = new TextureRegion[NUMBER_PER_PATTERN_PART];
     private final TextureRegion[] streakDigitalNumbers = new TextureRegion[2];
     private final TextureRegion[] streakNumberShadows = new TextureRegion[2];
 
@@ -50,9 +50,9 @@ public class PatternDisplay {
         multSymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {
             pointDigitalNumbers[i] = new TextureRegion(Assets.I().getDigitalNumber(0));
-//            pointNumberShadows[i] = new TextureRegion(Assets.I().getDigitalNumberShadow(0));
+            pointNumberShadows[i] = new TextureRegion(Assets.I().getDigitalNumberShadow(0));
             multiDigitalNumbers[i] = new TextureRegion(Assets.I().getDigitalNumber(0));
-//            multiNumberShadows[i] = new TextureRegion(Assets.I().getDigitalNumberShadow(0));
+            multiNumberShadows[i] = new TextureRegion(Assets.I().getDigitalNumberShadow(0));
         }
         streakDigitalNumbers[0] = new TextureRegion(Assets.I().getDigitalNumber(0));
 //        streakNumberShadows[0] = new TextureRegion(Assets.I().getDigitalNumberShadow(0));
@@ -134,15 +134,15 @@ public class PatternDisplay {
         // Draw POINTS (blue)
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {
             float x = FIRST_POINT_DIGIT_X + (i * DIGIT_OFFSET);
-//            batch.setColor(1f, 1f, 1f, 0.25f);
-//            batch.draw(
-//                pointNumberShadows[i],
-//                x - originX + 0.05f, numberBaseY - originY - 0.05f,
-//                originX, originY,
-//                DIGIT_WIDTH, DIGIT_HEIGHT,
-//                pointsScale, pointsScale,
-//                pointsRotation
-//            );
+            batch.setColor(1f, 1f, 1f, 0.25f);
+            batch.draw(
+                pointNumberShadows[i],
+                x - originX, numberBaseY - originY - 0.05f,
+                originX, originY,
+                DIGIT_WIDTH, DIGIT_HEIGHT,
+                pointsScale, pointsScale,
+                pointsRotation
+            );
             batch.setColor(Assets.I().blue());
             batch.draw(
                 pointDigitalNumbers[i],
@@ -161,15 +161,15 @@ public class PatternDisplay {
         // Draw MULTI (red)
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {
             float x = FIRST_MULTI_DIGIT_X + (i * DIGIT_OFFSET);
-//            batch.setColor(1f, 1f, 1f, 0.25f);
-//            batch.draw(
-//                multiNumberShadows[i],
-//                x - originX + 0.05f, numberBaseY - originY - 0.05f,
-//                originX, originY,
-//                DIGIT_WIDTH, DIGIT_HEIGHT,
-//                multiScale, multiScale,
-//                multiRotation
-//            );
+            batch.setColor(1f, 1f, 1f, 0.25f);
+            batch.draw(
+                multiNumberShadows[i],
+                x - originX, numberBaseY - originY - 0.05f,
+                originX, originY,
+                DIGIT_WIDTH, DIGIT_HEIGHT,
+                multiScale, multiScale,
+                multiRotation
+            );
             batch.setColor(Assets.I().red());
             batch.draw(
                 multiDigitalNumbers[i],
@@ -212,7 +212,7 @@ public class PatternDisplay {
             );
         }
         batch.setColor(Assets.I().shadowColor());
-        batch.draw(multSymbolShadow, 10.75f + 0.05f, numberBaseY - originY - 0.05f, 0.35f, 0.35f);
+        batch.draw(multSymbolShadow, 4.325f, numberBaseY - originY - 0.1f, 0.4f, 0.4f);
 //        batch.draw(multSymbolShadow, 4.21f, numberBaseY - originY - 0.05f, 0.35f, 0.35f);
         batch.setColor(1f, 1f, 1f, 1f);
         batch.draw(multSymbolTexture, 4.325f, numberBaseY - originY, 0.4f, 0.4f);
@@ -289,7 +289,7 @@ public class PatternDisplay {
 
         for (int i = pointDigitalNumbers.length - 1; i >= 0; i--) {
             pointDigitalNumbers[i] = new TextureRegion(assetManager.getDigitalNumber((int) (tempScore % 10)));
-//            pointNumberShadows[i] = new TextureRegion(assetManager.getDigitalNumberShadow(tempScore % 10));
+            pointNumberShadows[i] = new TextureRegion(assetManager.getDigitalNumberShadow((int) tempScore % 10));
             tempScore /= 10;
         }
     }
@@ -300,7 +300,7 @@ public class PatternDisplay {
 
         for (int i = multiDigitalNumbers.length - 1; i >= 0; i--) {
             multiDigitalNumbers[i] = new TextureRegion(assetManager.getDigitalNumber((int) (tempScore % 10)));
-//            multiNumberShadows[i] = new TextureRegion(assetManager.getDigitalNumberShadow(tempScore % 10));
+            multiNumberShadows[i] = new TextureRegion(assetManager.getDigitalNumberShadow((int) tempScore % 10));
             tempScore /= 10;
         }
     }

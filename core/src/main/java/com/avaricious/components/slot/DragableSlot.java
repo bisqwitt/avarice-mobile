@@ -151,6 +151,7 @@ public class DragableSlot extends Slot {
         }
 
         tickScale(delta);
+        updatePulse(true, delta);
         updateHoverWobble(false, delta);
     }
 
@@ -299,9 +300,5 @@ public class DragableSlot extends Slot {
 
     public Rectangle getBounds() {
         return new Rectangle(pos.x, pos.y, width, height);
-    }
-
-    @Override
-    public void pulse() {
     }
 }

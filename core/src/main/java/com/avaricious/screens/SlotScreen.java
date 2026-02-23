@@ -3,19 +3,16 @@ package com.avaricious.screens;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.DevTools;
-import com.avaricious.effects.EffectManager;
 import com.avaricious.Main;
-import com.avaricious.effects.particle.ParticleManager;
-import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.Profiler;
 import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.TextureEcho;
-import com.avaricious.effects.TextureGlow;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.CameraShaker;
+import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
@@ -26,6 +23,11 @@ import com.avaricious.components.progressbar.Health;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.SlotMatch;
+import com.avaricious.effects.EffectManager;
+import com.avaricious.effects.RainbowBorderPulseMesh;
+import com.avaricious.effects.TextureGlow;
+import com.avaricious.effects.particle.ParticleManager;
+import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.mainscreen.BackgroundLayer;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
@@ -70,6 +72,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = new HandUi();
+    private final DeckUi deckUi = new DeckUi();
 
     private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
 
@@ -105,7 +108,7 @@ public class SlotScreen extends ScreenAdapter {
     @Override
     public void show() {
         backgroundLayer.init();
-        slotMachine.getReels().get(slotMachine.getReels().size() - 1).setOnSpinFinished(() -> {
+        slotMachine.setOnLastReelFinished(() -> {
             buttonBoard.setSlotMachineIsSpinning(false);
             runResult();
         });
@@ -151,6 +154,10 @@ public class SlotScreen extends ScreenAdapter {
         health.draw(batch);
         xpBar.draw(batch);
 //        jokerBar.draw(batch, delta);
+        deckUi.draw(batch);
+
+        ParticleManager.I().drawBehindCardLayer(batch, delta);
+
         handUi.draw(batch, delta);
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
@@ -158,6 +165,8 @@ public class SlotScreen extends ScreenAdapter {
         statusUpgradeWindow.draw(batch, delta);
         PopupManager.I().draw(batch, delta);
         ParticleManager.I().drawTopLayer(batch, delta);
+
+        RainbowBorderPulseMesh.I().render(batch, delta);
         batch.end();
 
         vfxManager.endInputCapture();

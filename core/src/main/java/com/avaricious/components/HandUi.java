@@ -4,6 +4,8 @@ import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.components.slot.SlotMachine;
+import com.avaricious.effects.particle.ParticleManager;
+import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
@@ -159,7 +161,7 @@ public class HandUi {
         Vector2 shadowOffset = UiUtility.calcShadowOffset(slot.getCardCenter());
         batch.draw(jokerCardShadow,
             position.x + shadowOffset.x,
-            position.y - (card == touchingCard ? 0.2f : 0.1f),
+            position.y - (card == touchingCard ? 0.3f : 0.2f),
             originX, originY,
             bounds.width, bounds.height,
             scale, scale,
@@ -285,6 +287,9 @@ public class HandUi {
         slot.pulse();
         slot.wobble();
         Vector2 pos = slot.getRenderPos(new Vector2());
+
+        ParticleManager.I().createBehindCardLayer(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW);
+
         pos.x += 1.3f;
         pos.y += 1.8f;
         card.createPopupRunnable(pos).run();

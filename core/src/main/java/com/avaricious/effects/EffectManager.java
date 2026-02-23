@@ -15,6 +15,7 @@ public class EffectManager {
         ParticleManager.I().create(bounds.x, bounds.y, ParticleType.RAINBOW, streak, echoColor);
         TextureEcho.create(texture, bounds, new Color(1f, 1f, 1f, 1f), streak);
         TextureGlow.create(texture, bounds, parentType, streak);
+        RainbowBorderPulseMesh.I().triggerOnce();
     }
 
     public static void increaseStreak() {

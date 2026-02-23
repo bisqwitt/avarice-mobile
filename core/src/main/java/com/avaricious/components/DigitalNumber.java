@@ -1,7 +1,6 @@
 package com.avaricious.components;
 
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -72,9 +71,8 @@ public class DigitalNumber {
 
         batch.setColor(1f, 1f, 1f, 0.25f);
         for (int i = 0; i < numberTextures.size(); i++) {
-            Vector2 shadowOffset = UiUtility.calcShadowOffset(getNumberCenter(i));
             batch.draw(numberShadowTextures.get(i),
-                rectangle.x + (i * offset) + shadowOffset.x, numberBaseY + shadowOffset.y, rectangle.width, rectangle.height);
+                rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height);
         }
         batch.setColor(color);
         for (int i = 0; i < numberTextures.size(); i++) {

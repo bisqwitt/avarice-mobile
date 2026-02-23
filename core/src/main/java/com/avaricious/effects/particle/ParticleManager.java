@@ -26,10 +26,11 @@ public class ParticleManager {
     }
 
     private final Map<ParticleEffect, Color> particleEffects = new HashMap<>();
+    private final List<ParticleEffect> behindCardEmitters = new ArrayList<>();
     private final List<ParticleEffect> topLayerEmitters = new ArrayList<>();
 
     public void draw(SpriteBatch batch, float delta) {
-        for(Map.Entry<ParticleEffect, Color> entry : particleEffects.entrySet()) {
+        for (Map.Entry<ParticleEffect, Color> entry : particleEffects.entrySet()) {
             entry.getKey().update(delta);
 
             batch.setColor(entry.getValue());
@@ -37,23 +38,35 @@ public class ParticleManager {
             batch.setColor(1f, 1f, 1f, 1f);
         }
         Set<ParticleEffect> dump = new HashSet<>();
-        for(ParticleEffect particleEffect : particleEffects.keySet()) {
-            if(particleEffect.isComplete()) dump.add(particleEffect);
+        for (ParticleEffect particleEffect : particleEffects.keySet()) {
+            if (particleEffect.isComplete()) dump.add(particleEffect);
         }
 
         particleEffects.remove(dump);
     }
 
     public void drawTopLayer(SpriteBatch batch, float delta) {
-        for(ParticleEffect particleEffect : topLayerEmitters) {
+        for (ParticleEffect particleEffect : topLayerEmitters) {
             particleEffect.update(delta);
             particleEffect.draw(batch);
         }
         Set<ParticleEffect> dump = new HashSet<>();
-        for(ParticleEffect particleEffect : topLayerEmitters) {
-            if(particleEffect.isComplete()) dump.add(particleEffect);
+        for (ParticleEffect particleEffect : topLayerEmitters) {
+            if (particleEffect.isComplete()) dump.add(particleEffect);
         }
         topLayerEmitters.remove(dump);
+    }
+
+    public void drawBehindCardLayer(SpriteBatch batch, float delta) {
+        for (ParticleEffect particleEffect : behindCardEmitters) {
+            particleEffect.update(delta);
+            particleEffect.draw(batch);
+        }
+        Set<ParticleEffect> dump = new HashSet<>();
+        for (ParticleEffect particleEffect : behindCardEmitters) {
+            if (particleEffect.isComplete()) dump.add(particleEffect);
+        }
+        behindCardEmitters.remove(dump);
     }
 
     public void create(float x, float y, ParticleType type, float streak, Color color) {
@@ -62,7 +75,7 @@ public class ParticleManager {
             Gdx.files.internal("particles/pngs"));
         particle.scaleEffect(0.03f);
         particle.setDuration(1);
-        for(ParticleEmitter emitter : particle.getEmitters()) {
+        for (ParticleEmitter emitter : particle.getEmitters()) {
             emitter.getEmission().setHigh(25 + streak * 5);
         }
 
@@ -80,6 +93,17 @@ public class ParticleManager {
         particle.setPosition(x, y);
         particle.start();
         topLayerEmitters.add(particle);
+    }
+
+    public void createBehindCardLayer(float x, float y, ParticleType type) {
+        ParticleEffect particle = new ParticleEffect();
+        particle.load(type.getFile(),
+            Gdx.files.internal("particles/pngs"));
+        particle.scaleEffect(0.03f);
+
+        particle.setPosition(x, y);
+        particle.start();
+        behindCardEmitters.add(particle);
     }
 
 }

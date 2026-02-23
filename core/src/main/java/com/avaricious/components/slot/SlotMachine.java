@@ -2,10 +2,10 @@ package com.avaricious.components.slot;
 
 import com.avaricious.DevTools;
 import com.avaricious.Main;
-import com.avaricious.effects.TextureGlow;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.components.slot.pattern.SlotMatch;
+import com.avaricious.effects.TextureGlow;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Camera;
@@ -53,6 +53,9 @@ public class SlotMachine {
     private float alpha = 1f;
     private float desiredAlpha = 1f;
 
+    private Runnable onLastReelFinished;
+    private int spinningReels = 0;
+
     private SlotMachine() {
         // build visual cells
         for (int c = 0; c < cols; c++) {
@@ -93,7 +96,10 @@ public class SlotMachine {
         }
 
         for (int c = 0; c < cols; c++) {
-            reels.add(new Reel(baseStrip, rows));
+            reels.add(new Reel(baseStrip, rows, () -> {
+                spinningReels--;
+                if (spinningReels == 0) onLastReelFinished.run();
+            }));
         }
     }
 
@@ -292,12 +298,12 @@ public class SlotMachine {
 
     // --- spin control (organic staggered start/stop, aligned to center row) ---
     public void spin() {
-        // tuning knobs
-        float startSpeed = 16f;      // symbols/sec target cruise
-        float startStagger = 0.15f;  // delay between reel starts
-        float stopStagger = 0.35f;  // delay between reel stops (after starts)
+        spinningReels = 5;
 
-        // start + schedule stop per reel
+        float startSpeed = 16f;
+        float startStagger = 0.1f;
+        float stopStagger = 0.18f;
+
         for (int c = 0; c < cols; c++) {
             final int col = c;
             float startDelay = c * startStagger;
@@ -306,13 +312,14 @@ public class SlotMachine {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    reels.get(col).start(startSpeed);
+                    reels.get(col).start(startSpeed + MathUtils.random(-0.7f, 0.7f)); // tiny per-reel variation
                 }
             }, startDelay);
+
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    reels.get(col).stopSoonAlignCenter();
+                    reels.get(col).requestStopAlignCenter(0); // at least 2 full strip loops after stop requested
                 }
             }, stopDelay);
         }
@@ -387,5 +394,9 @@ public class SlotMachine {
             }
         }
         return symbolMap;
+    }
+
+    public void setOnLastReelFinished(Runnable onLastReelFinished) {
+        this.onLastReelFinished = onLastReelFinished;
     }
 }
