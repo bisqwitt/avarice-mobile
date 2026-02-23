@@ -1,4 +1,4 @@
-package com.avaricious;
+package com.avaricious.effects.particle;
 
 public enum PatternType {
 

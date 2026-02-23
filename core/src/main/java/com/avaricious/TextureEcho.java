@@ -15,7 +15,7 @@ public class TextureEcho {
 
     private final Rectangle currentPos;
     private final float streak;
-    private float alpha = 0.5f;
+    private float alpha = 1f;
 
     private static final List<TextureEcho> echos = new ArrayList<>();
 
@@ -45,17 +45,18 @@ public class TextureEcho {
         batch.setColor(1f, 1f, 1f, 1f);
 
         float echoSpeed = 18f;
-        float fadeSpeed = 1f;
+        float fadeSpeed = 0.2f;
 
         float additionalSize = delta * echoSpeed;
         float aspectRatio = currentPos.width / currentPos.height;
 
         currentPos.width += additionalSize;
         currentPos.height = currentPos.width / aspectRatio;
-        currentPos.x -= additionalSize / 2;
-        currentPos.y -= additionalSize / 2;
 
-        alpha -= delta * fadeSpeed;
+        currentPos.x -= currentPos.width / 2;
+        currentPos.y -= currentPos.height / 2;
+
+//        alpha -= delta * fadeSpeed;
     }
 
     public boolean isAlive() {

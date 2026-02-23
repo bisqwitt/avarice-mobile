@@ -2,7 +2,7 @@ package com.avaricious.components.slot;
 
 import com.avaricious.DevTools;
 import com.avaricious.Main;
-import com.avaricious.TextureGlow;
+import com.avaricious.effects.TextureGlow;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.components.slot.pattern.SlotMatch;
@@ -44,8 +44,6 @@ public class SlotMachine {
 
     // Visual cells (for selection pulse/scale)
     private final Slot[][] grid = new Slot[cols][rows];
-
-    private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
     private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
 
     // Reels (one per column)
@@ -115,8 +113,6 @@ public class SlotMachine {
         // one big clip over the whole machine area
         Camera cam = app.getViewport().getCamera();
         cam.update();
-
-        batch.draw(blackBluePixel, 0, 6, 10, 10);
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);

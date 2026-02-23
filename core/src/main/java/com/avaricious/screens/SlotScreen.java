@@ -3,15 +3,15 @@ package com.avaricious.screens;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.DevTools;
-import com.avaricious.EffectManager;
+import com.avaricious.effects.EffectManager;
 import com.avaricious.Main;
-import com.avaricious.ParticleManager;
-import com.avaricious.ParticleType;
+import com.avaricious.effects.particle.ParticleManager;
+import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.Profiler;
 import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.TextureEcho;
-import com.avaricious.TextureGlow;
+import com.avaricious.effects.TextureGlow;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ButtonBoard;
@@ -36,14 +36,15 @@ import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRelic;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -69,6 +70,8 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = new HandUi();
+
+    private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -136,6 +139,9 @@ public class SlotScreen extends ScreenAdapter {
 
         batch.begin();
         TextureEcho.draw(batch, delta);
+
+        batch.draw(blackBluePixel, 0, 6, 10, 10);
+
         ParticleManager.I().draw(batch, delta);
 
         slotMachine.draw(app, delta);
@@ -221,7 +227,7 @@ public class SlotScreen extends ScreenAdapter {
 
                     EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                         new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                        TextureGlow.Type.SLOT, new Color(1f, 1f, 1f, 1f));
+                        TextureGlow.Type.SLOT, Assets.I().red());
                 }
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
@@ -299,7 +305,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                    TextureGlow.Type.SLOT, new Color(1f, 1f, 1f, 1f));
+                    TextureGlow.Type.SLOT, Assets.I().blue());
 
                 AudioManager.I().playHit(EffectManager.streak);
 

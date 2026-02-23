@@ -1,13 +1,17 @@
-package com.avaricious;
+package com.avaricious.effects.particle;
 
+import com.avaricious.components.slot.SlotMachine;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ParticleManager {
@@ -21,20 +25,23 @@ public class ParticleManager {
     private ParticleManager() {
     }
 
-    private final List<ParticleEffect> emitters = new ArrayList<>();
+    private final Map<ParticleEffect, Color> particleEffects = new HashMap<>();
     private final List<ParticleEffect> topLayerEmitters = new ArrayList<>();
 
     public void draw(SpriteBatch batch, float delta) {
-        for(ParticleEffect particleEffect : emitters) {
-            particleEffect.update(delta);
-            particleEffect.draw(batch);
+        for(Map.Entry<ParticleEffect, Color> entry : particleEffects.entrySet()) {
+            entry.getKey().update(delta);
+
+            batch.setColor(entry.getValue());
+            entry.getKey().draw(batch);
+            batch.setColor(1f, 1f, 1f, 1f);
         }
         Set<ParticleEffect> dump = new HashSet<>();
-        for(ParticleEffect particleEffect : emitters) {
+        for(ParticleEffect particleEffect : particleEffects.keySet()) {
             if(particleEffect.isComplete()) dump.add(particleEffect);
         }
 
-        emitters.remove(dump);
+        particleEffects.remove(dump);
     }
 
     public void drawTopLayer(SpriteBatch batch, float delta) {
@@ -49,29 +56,19 @@ public class ParticleManager {
         topLayerEmitters.remove(dump);
     }
 
-    public void create(float x, float y, ParticleType type, float streak) {
+    public void create(float x, float y, ParticleType type, float streak, Color color) {
         ParticleEffect particle = new ParticleEffect();
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));
         particle.scaleEffect(0.03f);
+        particle.setDuration(1);
         for(ParticleEmitter emitter : particle.getEmitters()) {
-            emitter.getEmission().setHigh(streak * 60);
+            emitter.getEmission().setHigh(25 + streak * 5);
         }
 
-        particle.setPosition(x, y);
+        particle.setPosition(x + SlotMachine.CELL_W / 2, y + SlotMachine.CELL_H / 2);
         particle.start();
-        emitters.add(particle);
-    }
-
-    public void create(float x, float y, ParticleType type) {
-        ParticleEffect particle = new ParticleEffect();
-        particle.load(type.getFile(),
-            Gdx.files.internal("particles/pngs"));
-        particle.scaleEffect(0.03f);
-
-        particle.setPosition(x, y);
-        particle.start();
-        emitters.add(particle);
+        particleEffects.put(particle, color);
     }
 
     public void createTopLayer(float x, float y, ParticleType type) {

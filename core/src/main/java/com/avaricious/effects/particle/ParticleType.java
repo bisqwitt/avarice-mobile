@@ -1,4 +1,4 @@
-package com.avaricious;
+package com.avaricious.effects.particle;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

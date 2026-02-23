@@ -1,4 +1,4 @@
-package com.avaricious;
+package com.avaricious.effects;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
