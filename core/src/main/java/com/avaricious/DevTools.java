@@ -12,7 +12,7 @@ public class DevTools {
 
     public static boolean lemonCherry = false;
 
-    public static boolean audioMuted = true;
+    public static boolean audioMuted = false;
 
     public static boolean fullscreen = true;
 

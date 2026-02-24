@@ -1,7 +1,6 @@
 package com.avaricious.components.slot.pattern;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.components.slot.SymbolInstance;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class PatternFinder {
      * Finds all matches of length >= 3 in the given symbol grid.
      * Assumes symbolMap[x][y] => x = column, y = row.
      */
-    public static List<PatternMatch> findMatches(SymbolInstance[][] symbolMap) {
+    public static List<PatternMatch> findMatches(Symbol[][] symbolMap) {
         List<PatternMatch> matches = new ArrayList<>();
 
         int cols = symbolMap.length;
@@ -32,7 +31,7 @@ public class PatternFinder {
 
         for (int x = 0; x < cols; x++) {
             for (int y = 0; y < rows; y++) {
-                Symbol symbol = symbolMap[x][y].getSymbol();
+                Symbol symbol = symbolMap[x][y];
                 if (symbol == null) continue; // skip empty
 
                 for (int d = 0; d < dirs.length; d++) {
@@ -44,7 +43,7 @@ public class PatternFinder {
                     int prevX = x - dx;
                     int prevY = y - dy;
                     if (inBounds(prevX, prevY, cols, rows) &&
-                        equalsSymbol(symbolMap[prevX][prevY].getSymbol(), symbol)) {
+                        equalsSymbol(symbolMap[prevX][prevY], symbol)) {
                         continue; // this run was/will be counted from an earlier cell
                     }
 
@@ -54,7 +53,7 @@ public class PatternFinder {
                     int cy = y;
 
                     while (inBounds(cx, cy, cols, rows) &&
-                        equalsSymbol(symbolMap[cx][cy].getSymbol(), symbol)) {
+                        equalsSymbol(symbolMap[cx][cy], symbol)) {
                         positions.add(new Vector2((float) cx, (float) cy));
                         cx += dx;
                         cy += dy;

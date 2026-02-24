@@ -221,11 +221,10 @@ public class Reel {
      * Returns the SymbolInstance that appears at a given visible row (0..visibleRows-1),
      * and also supports rows outside for overdraw (like -1 and visibleRows).
      */
-    public SymbolInstance slotAtRow(int row) {
+    public Symbol symbolAtRow(int row) {
         // The symbol index for a row is floor(pos + row)
         int idx = (int) Math.floor(pos + row);
-        Symbol sym = strip.get(mod(idx, stripLen));
-        return new SymbolInstance(sym, null); // adapt if your SymbolInstance needs more data
+        return strip.get(mod(idx, stripLen));
     }
 
     public Phase phase() {

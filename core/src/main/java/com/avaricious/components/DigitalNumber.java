@@ -109,7 +109,7 @@ public class DigitalNumber {
         internalScoreIsDisplayed = false;
     }
 
-    protected float calcHoverY() {
+    public float calcHoverY() {
         float hoverSpeed = 1.5f;
         float hoverStrength = 0.03f;
         float hoverOffset = (float) Math.sin(hoverTime * hoverSpeed) * hoverStrength;

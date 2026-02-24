@@ -23,6 +23,7 @@ import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
+import com.avaricious.components.slot.SymbolSlot;
 import com.avaricious.components.slot.pattern.SlotMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.RainbowBorderPulseMesh;
@@ -152,8 +153,8 @@ public class SlotScreen extends ScreenAdapter {
 
         ParticleManager.I().draw(batch, delta);
 
-        slotMachine.draw(app, delta);
         scoreDisplay.draw(batch, delta);
+        slotMachine.draw(app, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
         healthUi.draw(batch, delta);
@@ -220,12 +221,12 @@ public class SlotScreen extends ScreenAdapter {
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
 
         for (SlotMatch slotMatch : matches) {
-            List<Slot> slots = slotMatch.getSlots();
+            List<SymbolSlot> slots = slotMatch.getSlots();
             Slot middleSlot = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleImmediate(() -> {
-                for (Slot slot : slots) {
-                    slot.targetScale = 1.25f;
+                for (SymbolSlot slot : slots) {
+                    slot.targetScale = 1.4f;
                     slot.setInPatternHit(true);
                 }
             });

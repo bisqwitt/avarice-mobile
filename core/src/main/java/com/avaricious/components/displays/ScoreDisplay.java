@@ -29,13 +29,13 @@ public class ScoreDisplay {
 //        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
 
         batch.draw(slateTexture, 0f, 14.5f, 9f, 3f);
-        batch.draw(slateTexture, 0f, 0f, 9f, 8f);
-        batch.draw(darkSlateTexture, 0f, 2.75f, 9f, 3.4f);
+        batch.draw(slateTexture, 0f, 0f, 9f, 8.75f);
+        batch.draw(darkSlateTexture, 0f, 3.5f, 9f, 3.35f);
 
         batch.draw(brightSlateTexture, 0f, 14.4f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 7.9f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 2.75f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 2.25f + 3.9f - 0.1f, 9f, 0.1f);
+        batch.draw(brightSlateTexture, 0f, 8.65f, 9f, 0.1f);
+        batch.draw(brightSlateTexture, 0f, 2.85f, 9f, 0.1f);
+        batch.draw(brightSlateTexture, 0f, 6.8f, 9f, 0.1f);
         digitalNumber.draw(batch, delta);
     }
 

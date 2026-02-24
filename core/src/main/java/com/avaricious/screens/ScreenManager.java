@@ -1,7 +1,10 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
+import com.avaricious.components.HealthUi;
+import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.screens.mainscreen.MainScreen;
+import com.avaricious.upgrades.Hand;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -68,6 +71,11 @@ public class ScreenManager {
                 // You must manage disposal yourself; libGDX does not auto-dispose Screens.
                 old.dispose();
             }
+
+            HealthUi.I().healHealth();
+            Hand.I().discardRandomCard();
+            Hand.I().discardRandomCard();
+            Hand.I().discardRandomCard();
 
             ScreenAdapter fresh = new SlotScreen(instance.app);
             instance.screens.put(SlotScreen.class, fresh);

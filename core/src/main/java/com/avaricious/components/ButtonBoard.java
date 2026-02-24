@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class ButtonBoard {
 
     private final float BOARD_X = 0.7f;
-    private final float BOARD_Y = 5.95f;
+    private final float BOARD_Y = 6.7f;
 
     private final float BUTTON_W = 79 / 25f;
     private final float BUTTON_H = 25 / 25f;

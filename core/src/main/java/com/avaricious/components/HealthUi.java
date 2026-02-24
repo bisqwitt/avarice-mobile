@@ -20,66 +20,50 @@ public class HealthUi {
         return instance == null ? instance = new HealthUi() : instance;
     }
 
-    private final float numberWidth = 7 / 15f;
-    private final float numberHeight = 11 / 15f;
-    private final float numberOffset = 0.6f;
+    private final float hpSizeRatio = 15f;
+    private final float armorSizeRatio = 20f;
+
+    private final float numberOffset = 0.55f;
 
     private final float healthY = 0.5f;
     private final float armorY = healthY + 1.1f;
-    //    private final float txtX = 0.25f;
-    private final float currentValueX = 0.35f;
-    private final float maxValueX = currentValueX + 2.25f;
+    private final float txtX = 0.25f;
+    private final float currentValueX = txtX + 2f;
 
-    private final DigitalNumber currentArmor;
-    private final DigitalNumber maxArmor;
-
-    private final DigitalNumber currentHealth;
-    private final DigitalNumber maxHealth;
+    private final DigitalNumber armor;
+    private final DigitalNumber health;
 
     private final TextureRegion hpTxt = Assets.I().get(AssetKey.HP_TXT);
     private final TextureRegion hpTxtShadow = Assets.I().get(AssetKey.HP_TXT_SHADOW);
     private final TextureRegion armTxt = Assets.I().get(AssetKey.ARM_TXT);
     private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.ARM_TXT_SHADOW);
-    private final TextureRegion slashSymbol = Assets.I().get(AssetKey.SLASH_SYMBOL);
 
     private HealthUi() {
-        currentArmor = new DigitalNumber(0, Assets.I().silver(), 3,
-            new Rectangle(currentValueX, armorY, numberWidth, numberHeight), numberOffset);
-        maxArmor = new DigitalNumber(100, Assets.I().silver(), 3,
-            new Rectangle(maxValueX, armorY, numberWidth, numberHeight), numberOffset);
+        armor = new DigitalNumber(0, Assets.I().silver(), 3,
+            new Rectangle(currentValueX, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), numberOffset);
 
-        currentHealth = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
-            new Rectangle(currentValueX, healthY, numberWidth, numberHeight), numberOffset);
-        maxHealth = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
-            new Rectangle(maxValueX, healthY, numberWidth, numberHeight), numberOffset);
+        health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
+            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), numberOffset);
     }
 
     public void draw(SpriteBatch batch, float delta) {
-//        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-//            () -> {
-//                batch.draw(armTxtShadow, txtX, armorY + 0.05f - 0.1f, 31 / 25f, 11 / 25f);
-//                batch.draw(hpTxtShadow, txtX + 0.25f, healthY + 0.05f - 0.1f, 18 / 25f, 11 / 25f);
-//            });
+        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+            () -> {
+                batch.draw(armTxtShadow, txtX, armor.calcHoverY() + 0.05f - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio);
+                batch.draw(hpTxtShadow, txtX + 0.5f, health.calcHoverY() + 0.05f - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio);
+            });
 
-        currentArmor.draw(batch, delta);
+        armor.draw(batch, delta);
         Pencil.I().drawInColor(batch, Assets.I().silver(),
-            () -> {
-//                batch.draw(armTxt, txtX, armorY + 0.05f, 31 / 25f, 11 / 25f);
-                batch.draw(slashSymbol, currentValueX + 1.75f, armorY, numberWidth, numberHeight);
-            });
-        maxArmor.draw(batch, delta);
+            () -> batch.draw(armTxt, txtX, armor.calcHoverY() + 0.05f, 31 / armorSizeRatio, 11 / armorSizeRatio));
 
-        currentHealth.draw(batch, delta);
+        health.draw(batch, delta);
         Pencil.I().drawInColor(batch, Assets.I().healthRedColor(),
-            () -> {
-//                batch.draw(hpTxt, txtX + 0.25f, healthY + 0.05f, 18 / 25f, 11 / 25f);
-                batch.draw(slashSymbol, currentValueX + 1.75f, healthY, numberWidth, numberHeight);
-            });
-        maxHealth.draw(batch, delta);
+            () -> batch.draw(hpTxt, txtX + 0.5f, health.calcHoverY() + 0.05f, 18 / hpSizeRatio, 11 / hpSizeRatio));
     }
 
     public void damage(int damage) {
-        float currentArmorValue = currentArmor.getScore();
+        float currentArmorValue = armor.getScore();
 
         EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
         if (evadeChanceStatus.rollChance()) {
@@ -90,7 +74,7 @@ public class HealthUi {
             return;
         }
 
-        float armorHp = currentArmor.getScore();
+        float armorHp = armor.getScore();
         if (armorHp > 0) {
             float armorDamage = Math.min(damage, armorHp);
             float spill = damage - armorDamage;
@@ -105,21 +89,21 @@ public class HealthUi {
             PatternDisplay.I().reset();
         }
 
-        if (currentHealth.getScore() <= 0) {
+        if (health.getScore() <= 0) {
             ScreenManager.restartGame();
         }
     }
 
     public void healHealth() {
-        currentHealth.setScore(maxHealth.getScore());
+        health.setScore(100);
     }
 
     private void damageArmor(int damage) {
-        currentArmor.setScore(currentArmor.getScore() - damage);
+        armor.setScore(armor.getScore() - damage);
     }
 
     private void damageHealth(int damage) {
-        currentHealth.setScore(currentHealth.getScore() - damage);
+        health.setScore(health.getScore() - damage);
     }
 
 }

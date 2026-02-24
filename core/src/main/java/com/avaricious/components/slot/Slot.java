@@ -23,7 +23,7 @@ public class Slot {
     private final float wobbleScaleAmp = 0.03f;  // tiny elastic bump
     protected final Vector2 pos;
 
-    private boolean inPatternHit = false;
+    private boolean isEmphasized = false;
 
     public Slot(Vector2 pos) {
         this.pos = pos;
@@ -109,11 +109,11 @@ public class Slot {
     }
 
     public boolean isInPatternHit() {
-        return inPatternHit;
+        return isEmphasized;
     }
 
-    public void setInPatternHit(boolean inPatternHit) {
-        this.inPatternHit = inPatternHit;
+    public void setInPatternHit(boolean emphasized) {
+        this.isEmphasized = emphasized;
     }
 
     public float getTargetScale() {

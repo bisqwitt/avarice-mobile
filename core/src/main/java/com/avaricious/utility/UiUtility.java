@@ -65,7 +65,6 @@ public class UiUtility {
 
         float expo = 2.0f;
         float eased = (float) Math.pow(u, expo);
-
         float shaped = Math.signum(t) * eased;
 
         // Scale with screen height
