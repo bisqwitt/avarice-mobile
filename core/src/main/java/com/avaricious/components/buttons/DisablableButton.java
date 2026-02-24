@@ -2,6 +2,7 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -125,14 +126,12 @@ public abstract class DisablableButton extends Button {
 
         if (showShadow) {
             Color shadowColor = Assets.I().shadowColor();
-            batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f);
-            batch.draw(buttonShadow, x, y - 0.1f, w, h);
-            batch.setColor(1f, 1f, 1f, 1f);
+            Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f),
+                () -> batch.draw(buttonShadow, x, y - 0.1f, w, h));
         }
 
-        batch.setColor(1f, 1f, 1f, alpha);
-        batch.draw(defaultButtonTexture, x, currentTexture == pressedButtonTexture ? y - 0.1f : y, w, h);
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
+            () -> batch.draw(defaultButtonTexture, x, currentTexture == pressedButtonTexture ? y - 0.1f : y, w, h));
     }
 
     abstract boolean disabled();

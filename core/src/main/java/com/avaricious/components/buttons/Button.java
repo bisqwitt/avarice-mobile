@@ -2,6 +2,7 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -75,9 +76,8 @@ public class Button {
 
     protected void drawAt(SpriteBatch batch, float x, float y, float w, float h) {
         if (showShadow) {
-            batch.setColor(Assets.I().shadowColor());
-            batch.draw(buttonShadow, x, y - 0.1f, w, h);
-            batch.setColor(1f, 1f, 1f, 1f);
+            Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+                () -> batch.draw(buttonShadow, x, y - 0.1f, w, h));
         }
 
         batch.draw(currentTexture, x, y, w, h);

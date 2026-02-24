@@ -2,6 +2,7 @@ package com.avaricious.components.popups;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -139,39 +140,27 @@ public class NumberPopup {
         float originY = bounds.height / 2f;
 
         // Use alpha for main draw color
-        batch.setColor(color.r, color.g, color.b, alpha);
-
-        batch.draw(
-            number < 0 ? minusTexture : plusTexture,
-            bounds.x - numberOffset, bounds.y,
-            originX, originY,
-            bounds.width, bounds.height,
-            scale, scale,
-            rotation
-        );
-
-        for (int i = 0; i < digitalNumberTextures.size(); i++) {
-            // Shadow
-//            batch.setColor(1f, 1f, 1f, 0.25f);
-//            batch.draw(
-//                digitalNumberShadowTextures.get(i),
-//                bounds.x + (0.5f * i) + 0.1f, bounds.y - 0.1f,
-//                originX, originY,
-//                bounds.width, bounds.height,
-//                scale, scale,
-//                rotation
-//            );
-
-            // Foreground digit
-            batch.setColor(color.r, color.g, color.b, alpha);
-            batch.draw(
-                digitalNumberTextures.get(i),
-                bounds.x + (numberOffset * i), bounds.y,
+        Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
+            () -> batch.draw(
+                number < 0 ? minusTexture : plusTexture,
+                bounds.x - numberOffset, bounds.y,
                 originX, originY,
                 bounds.width, bounds.height,
                 scale, scale,
                 rotation
-            );
+            ));
+
+        for (int i = 0; i < digitalNumberTextures.size(); i++) {
+            int index = i;
+            Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
+                () -> batch.draw(
+                    digitalNumberTextures.get(index),
+                    bounds.x + (numberOffset * index), bounds.y,
+                    originX, originY,
+                    bounds.width, bounds.height,
+                    scale, scale,
+                    rotation
+                ));
         }
 
         if (asPercentage) {
@@ -184,8 +173,6 @@ public class NumberPopup {
                 rotation
             );
         }
-
-        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     protected float getPulseCurve() {

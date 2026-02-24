@@ -5,6 +5,7 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -101,18 +102,17 @@ public abstract class UpgradeBar {
 
     protected void drawCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds, float scale, float rotation) {
         // draw shadow (also scaled and rotated)
-        batch.setColor(Assets.I().shadowColor());
-        batch.draw(
-            getShadow(upgrade),
-            bounds.x + 0.1f, bounds.y - 0.1f,
-            bounds.width / 2f, bounds.height / 2f,   // origin for rotation (center)
-            bounds.width, bounds.height,
-            1f, 1f,
-            rotation
-        );
 
-        // draw card
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+            () -> batch.draw(
+                getShadow(upgrade),
+                bounds.x + 0.1f, bounds.y - 0.1f,
+                bounds.width / 2f, bounds.height / 2f,   // origin for rotation (center)
+                bounds.width, bounds.height,
+                1f, 1f,
+                rotation
+            ));
+
         batch.draw(
             getTexture(upgrade),
             bounds.x, bounds.y,

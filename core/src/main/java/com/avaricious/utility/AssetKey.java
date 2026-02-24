@@ -113,7 +113,14 @@ public enum AssetKey {
     BLACK_BLUE_PIXEL("black-blue-pixel"),
     SPIN_BUTTON("spin-button"),
     SPIN_BUTTON_PRESSED("spin-button-pressed"),
-    DARK_STEEL_PIXEL("dark-steel-pixel");
+    DARK_STEEL_PIXEL("dark-steel-pixel"),
+    SLASH_SYMBOL("slash-symbol"),
+    BAG("bag"),
+    BAG_SHADOW("bag-shadow"),
+    HP_TXT("hp-txt"),
+    HP_TXT_SHADOW("hp-txt-shadow"),
+    ARM_TXT("arm-txt"),
+    ARM_TXT_SHADOW("arm-txt-shadow");
 
     private final String path;
 

@@ -1,6 +1,7 @@
 package com.avaricious.effects.particle;
 
 import com.avaricious.components.slot.SlotMachine;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -34,8 +35,8 @@ public class ParticleManager {
             entry.getKey().update(delta);
 
             batch.setColor(entry.getValue());
-            entry.getKey().draw(batch);
-            batch.setColor(1f, 1f, 1f, 1f);
+            Pencil.I().drawInColor(batch, entry.getValue(),
+                () -> entry.getKey().draw(batch));
         }
         Set<ParticleEffect> dump = new HashSet<>();
         for (ParticleEffect particleEffect : particleEffects.keySet()) {

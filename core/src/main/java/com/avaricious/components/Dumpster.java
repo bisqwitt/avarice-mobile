@@ -82,18 +82,18 @@ public class Dumpster {
     public void draw(SpriteBatch batch) {
         if (slide <= 0.001f) return; // fully hidden
 
-        batch.setColor(Assets.I().shadowColor());
-        batch.draw(dumpsterShadow, bounds.x + 0.15f, bounds.y - 0.25f, bounds.width, bounds.height);
-        batch.setColor(1f, 1f, 1f, 1f);
-
-        TextureRegion frame =
-            state == State.OPENING ? openAnim.getKeyFrame(stateTime, false) :
-                state == State.CLOSING ? closeAnim.getKeyFrame(stateTime, false) :
-                    state == State.OPEN ? openFrame : closedFrame;
-
-        batch.setColor(1f, 1f, 1f, slide);
-        batch.draw(frame, bounds.x, bounds.y, bounds.width, bounds.height);
-        batch.setColor(1f, 1f, 1f, 1f);
+//        batch.setColor(Assets.I().shadowColor());
+//        batch.draw(dumpsterShadow, bounds.x + 0.15f, bounds.y - 0.25f, bounds.width, bounds.height);
+//        batch.setColor(1f, 1f, 1f, 1f);
+//
+//        TextureRegion frame =
+//            state == State.OPENING ? openAnim.getKeyFrame(stateTime, false) :
+//                state == State.CLOSING ? closeAnim.getKeyFrame(stateTime, false) :
+//                    state == State.OPEN ? openFrame : closedFrame;
+//
+//        batch.setColor(1f, 1f, 1f, slide);
+//        batch.draw(frame, bounds.x, bounds.y, bounds.width, bounds.height);
+//        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     private float approach(float current, float target, float speed, float delta) {

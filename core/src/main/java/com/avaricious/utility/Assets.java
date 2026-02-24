@@ -36,6 +36,7 @@ public class Assets {
     private final Color silver = new Color(191f / 255f, 197f / 255f, 204f / 255f, 1f);
     private final Color light = new Color(0.992156f, 0.992156f, 0.992156f, 1f);
     private final Color shadow = new Color(1f, 1f, 1f, 0.25f);
+    private final Color healthRed = new Color(229 / 255f, 57 / 255f, 53 / 255f, 1f);
 
     private Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
     private BitmapFont bigFont;
@@ -112,7 +113,7 @@ public class Assets {
     }
 
     public TextureRegion getDigitalNumberShadow(int number) {
-        if(number < 0 || number > 9) number = 0;
+        if (number < 0 || number > 9) number = 0;
         return get(DIGIT_SHADOWS[number]);
     }
 
@@ -170,6 +171,10 @@ public class Assets {
 
     public String silverText(String txt) {
         return "[#bfc5cc]" + txt + "[]";
+    }
+
+    public Color healthRedColor() {
+        return healthRed;
     }
 
 }

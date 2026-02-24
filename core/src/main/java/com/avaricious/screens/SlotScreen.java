@@ -14,12 +14,13 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.CameraShaker;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
+import com.avaricious.components.HealthUi;
+import com.avaricious.components.RelicBag;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.progressbar.Health;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.SlotMatch;
@@ -40,6 +41,7 @@ import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRelic;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -49,6 +51,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.OldTvEffect;
@@ -60,7 +63,6 @@ public class SlotScreen extends ScreenAdapter {
     private final Main app;
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
-    private final Health health = Health.I();
 
     private final ScoreDisplay scoreDisplay = new ScoreDisplay();
     private final PatternDisplay patternDisplay = PatternDisplay.I();
@@ -73,6 +75,7 @@ public class SlotScreen extends ScreenAdapter {
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = new HandUi();
     private final DeckUi deckUi = new DeckUi();
+    private final HealthUi healthUi = HealthUi.I();
 
     private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
 
@@ -125,11 +128,13 @@ public class SlotScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        ScreenUtils.clear(0f, 0f, 0f, 1f);
+
         SpriteBatch batch = app.getBatch();
         handleInput(delta);
-        app.getViewport().apply();
-        cameraShaker.render(delta);
 
+        app.getViewport().apply();
         Camera camera = app.getViewport().getCamera();
         batch.setProjectionMatrix(camera.combined);
 
@@ -151,16 +156,20 @@ public class SlotScreen extends ScreenAdapter {
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
-        health.draw(batch);
+        healthUi.draw(batch, delta);
         xpBar.draw(batch);
 //        jokerBar.draw(batch, delta);
         deckUi.draw(batch);
+        RelicBag.I().draw(batch);
 
         ParticleManager.I().drawBehindCardLayer(batch, delta);
 
         handUi.draw(batch, delta);
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
+
+        Pencil.I().drawDarkenWindow(batch);
+
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);
         PopupManager.I().draw(batch, delta);
@@ -195,6 +204,7 @@ public class SlotScreen extends ScreenAdapter {
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
     }
@@ -202,7 +212,7 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<SlotMatch> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            health.damage(20);
+            healthUi.damage(20);
             return;
         }
 
@@ -381,8 +391,6 @@ public class SlotScreen extends ScreenAdapter {
         int score = Math.round(patternDisplay.getPoints() * patternDisplay.getMulti() * patternDisplay.getXMulti());
         scoreDisplay.addToScore(score);
 //        healthBar.heal(PlayerStats.I().getStat(Omnivamp.class).getPercentage().multiply(BigDecimal.valueOf(score)).intValue());
-
-        patternDisplay.spawnEcho();
         patternDisplay.reset();
     }
 
@@ -393,7 +401,7 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().createTopLayer(9, 0, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(0, 16, ParticleType.RAINBOW);
         ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
-        health.getHealthBar().fullHeal();
+        healthUi.healHealth();
         shop.show();
     }
 

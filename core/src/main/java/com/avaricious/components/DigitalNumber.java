@@ -1,6 +1,7 @@
 package com.avaricious.components;
 
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -69,16 +70,20 @@ public class DigitalNumber {
         hoverTime += delta;
         float numberBaseY = calcHoverY();
 
-        batch.setColor(1f, 1f, 1f, 0.25f);
-        for (int i = 0; i < numberTextures.size(); i++) {
-            batch.draw(numberShadowTextures.get(i),
-                rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height);
-        }
-        batch.setColor(color);
-        for (int i = 0; i < numberTextures.size(); i++) {
-            batch.draw(numberTextures.get(i), rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height);
-        }
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, 0.25f),
+            () -> {
+                for (int i = 0; i < numberTextures.size(); i++) {
+                    batch.draw(numberShadowTextures.get(i),
+                        rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height);
+                }
+            });
+        Pencil.I().drawInColor(batch, color,
+            () -> {
+                batch.setColor(color);
+                for (int i = 0; i < numberTextures.size(); i++) {
+                    batch.draw(numberTextures.get(i), rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height);
+                }
+            });
     }
 
     private void updateDigitalNumbers(int score) {
@@ -93,6 +98,8 @@ public class DigitalNumber {
     }
 
     public void setScore(int score) {
+        if (score < 0) score = 0;
+
         this.score = score;
         int digits = score == 0 ? 1 : (int) Math.log10(score) + 1;
         while (digits > numberTextures.size()) {

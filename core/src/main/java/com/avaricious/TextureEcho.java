@@ -1,5 +1,6 @@
 package com.avaricious;
 
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,9 +26,9 @@ public class TextureEcho {
 
     public static void draw(SpriteBatch batch, float delta) {
         List<TextureEcho> dump = new ArrayList<>();
-        for(TextureEcho echo : echos) {
+        for (TextureEcho echo : echos) {
             echo._draw(batch, delta);
-            if(!echo.isAlive()) dump.add(echo);
+            if (!echo.isAlive()) dump.add(echo);
         }
         echos.removeAll(dump);
     }
@@ -40,9 +41,8 @@ public class TextureEcho {
     }
 
     private void _draw(SpriteBatch batch, float delta) {
-        batch.setColor(color.r, color.g, color.b, alpha);
-        batch.draw(textureEcho, currentPos.x, currentPos.y, currentPos.width, currentPos.height);
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
+            () -> batch.draw(textureEcho, currentPos.x, currentPos.y, currentPos.width, currentPos.height));
 
         float echoSpeed = 18f;
         float fadeSpeed = 0.2f;

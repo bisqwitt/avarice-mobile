@@ -7,7 +7,9 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -119,22 +121,22 @@ public class Shop {
         );
 
         // Window
-        batch.setColor(1f, 1f, 1f, winAlpha);
-        batch.draw(
-            window,
-            WINDOW_X, WINDOW_Y + winYOffset,
-            winW / 2f, winH / 2f,
-            winW, winH,
-            winScale, winScale,
-            0f
-        );
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, winAlpha),
+            () -> batch.draw(
+                window,
+                WINDOW_X, WINDOW_Y + winYOffset,
+                winW / 2f, winH / 2f,
+                winW, winH,
+                winScale, winScale,
+                0f
+            ));
 
         // Shop title shadow + title (fade + slide)
-        batch.setColor(Assets.I().shadowColor().r, Assets.I().shadowColor().g, Assets.I().shadowColor().b, winAlpha);
-        batch.draw(shopTxtShadow, WINDOW_X + 2.6f, WINDOW_Y + 6.5f + winYOffset, 29 / 10f, 13 / 10f);
-
-        batch.setColor(1f, 1f, 1f, winAlpha);
-        batch.draw(shopTxt, WINDOW_X + 2.5f, WINDOW_Y + 6.6f + winYOffset, 29 / 10f, 13 / 10f);
+        Color shadowColor = Assets.I().shadowColor();
+        Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha),
+            () -> batch.draw(shopTxtShadow, WINDOW_X + 2.6f, WINDOW_Y + 6.5f + winYOffset, 29 / 10f, 13 / 10f));
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, winAlpha),
+            () -> batch.draw(shopTxt, WINDOW_X + 2.5f, WINDOW_Y + 6.6f + winYOffset, 29 / 10f, 13 / 10f));
 
         // Content (fade only by color; slide by yOffset if you want)
         shopCardsBar.draw(batch);
@@ -143,8 +145,6 @@ public class Shop {
         returnButton.draw(batch, delta);
         rerollButton.draw(batch, delta);
         creditScore.draw(batch, delta);
-
-        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     public void show() {

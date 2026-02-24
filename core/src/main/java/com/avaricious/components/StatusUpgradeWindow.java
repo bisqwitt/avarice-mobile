@@ -6,6 +6,8 @@ import com.avaricious.stats.statupgrades.StatusRelic;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -100,7 +102,6 @@ public class StatusUpgradeWindow {
         }
 
         // Apply alpha + scale + offset while drawing
-        batch.setColor(1f, 1f, 1f, windowAlpha);
 
         float wWin = 225f / 30f;
         float hWin = 163f / 30f;
@@ -109,14 +110,15 @@ public class StatusUpgradeWindow {
         float originX = wWin / 2f;
         float originY = hWin / 2f;
 
-        batch.draw(
-            window,
-            WINDOW_X, WINDOW_Y + windowYOffset,
-            originX, originY,
-            wWin, hWin,
-            windowScale, windowScale,
-            0f
-        );
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, windowAlpha),
+            () -> batch.draw(
+                window,
+                WINDOW_X, WINDOW_Y + windowYOffset,
+                originX, originY,
+                wWin, hWin,
+                windowScale, windowScale,
+                0f
+            ));
 
         // Draw upgrade bar and text; simplest is to just draw them with same alpha
         upgradeBar.draw(batch);
@@ -132,7 +134,6 @@ public class StatusUpgradeWindow {
             0f
         );
 
-        batch.setColor(1f, 1f, 1f, 1f);
     }
 
 

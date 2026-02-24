@@ -10,6 +10,7 @@ import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -149,27 +150,25 @@ public class SlotScreenJokerBar {
         float alpha = slot.getAlpha();
 
         Color shadowColor = Assets.I().shadowColor();
-        batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
-        batch.draw(jokerShadowTexture,
-            p.x, p.y - 0.2f,
-            originX, originY,
-            bounds.width, bounds.height,
-            s, s,
-            r);
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha)),
+            () -> batch.draw(jokerShadowTexture,
+                p.x, p.y - 0.2f,
+                originX, originY,
+                bounds.width, bounds.height,
+                s, s,
+                r));
 
         if (selectedUpgrade == card)
             PopupManager.I().createTooltip(selectedUpgrade, new Vector2(p.x - 2f, p.y + 2.65f));
 
-        batch.setColor(1f, 1f, 1f, alpha);
-        batch.draw(
-            jokerTexture,
-            p.x, p.y,
-            originX, originY,
-            bounds.width, bounds.height,
-            s, s,
-            r);
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
+            () -> batch.draw(
+                jokerTexture,
+                p.x, p.y,
+                originX, originY,
+                bounds.width, bounds.height,
+                s, s,
+                r));
     }
 
     private void loadJokers(List<? extends Card> upgrades) {

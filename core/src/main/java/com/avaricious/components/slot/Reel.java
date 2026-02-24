@@ -95,6 +95,9 @@ public class Reel {
                 pos += vel * dt;
 
                 if (stopRequested) {
+                    int randomNumber = MathUtils.random(1, 10);
+                    if (randomNumber > 9) stopTargetPos += stripLen;
+//                    if (randomNumber == 10) stopTargetPos += stripLen;
                     phase = Phase.STOPPING;
                 }
                 break;
@@ -108,7 +111,7 @@ public class Reel {
 
                 // Ensure remaining is positive; if not, we've passed it—push target forward by one strip loop
                 if (remaining < 0f) {
-                    stopTargetPos += stripLen;
+//                    stopTargetPos += stripLen;
                     remaining = stopTargetPos - pos;
                 }
 

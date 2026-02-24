@@ -8,7 +8,9 @@ import com.avaricious.components.slot.pattern.SlotMatch;
 import com.avaricious.effects.TextureGlow;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -260,27 +262,24 @@ public class SlotMachine {
                 // NEW: rotate around center using current wobble angle
                 float rotation = isInGrid ? grid[c][k].wobbleAngleDeg() : 0f;
 
-                batch.setColor(Assets.I().shadowColor());
-                batch.draw(
-                    Assets.I().getSymbol(symbolSlot.getSymbol()),
-                    adjX + 0.05f, adjY - 0.05f,
-                    drawW / 2f, drawH / 2f,
-                    drawW, drawH,
-                    1f, 1f,
-                    rotation
-                );
-                batch.setColor(1f, 1f, 1f, alpha);
-
-                // Draw with origin at the center, width/height already scaled
-                batch.draw(
-                    region,
-                    adjX, adjY,
-                    drawW / 2f, drawH / 2f,   // originX, originY
-                    drawW, drawH,
-                    1f, 1f,                   // scale already baked into drawW/H
-                    rotation
-                );
-                batch.setColor(1f, 1f, 1f, 1f);
+                Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+                    () -> batch.draw(
+                        Assets.I().getSymbol(symbolSlot.getSymbol()),
+                        adjX + 0.05f, adjY - 0.05f,
+                        drawW / 2f, drawH / 2f,
+                        drawW, drawH,
+                        1f, 1f,
+                        rotation
+                    ));
+                Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
+                    () -> batch.draw(
+                        region,
+                        adjX, adjY,
+                        drawW / 2f, drawH / 2f,   // originX, originY
+                        drawW, drawH,
+                        1f, 1f,                   // scale already baked into drawW/H
+                        rotation
+                    ));
 
                 if (symbolSlot.getStatUpgrade() != null) {
                     batch.draw(
@@ -302,7 +301,7 @@ public class SlotMachine {
 
         float startSpeed = 16f;
         float startStagger = 0.1f;
-        float stopStagger = 0.18f;
+        float stopStagger = 0.5f;
 
         for (int c = 0; c < cols; c++) {
             final int col = c;
@@ -321,7 +320,7 @@ public class SlotMachine {
                 public void run() {
                     reels.get(col).requestStopAlignCenter(0); // at least 2 full strip loops after stop requested
                 }
-            }, stopDelay);
+            }, 1f + stopDelay);
         }
     }
 

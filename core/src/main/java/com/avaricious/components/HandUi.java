@@ -10,6 +10,7 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
 import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,7 +30,7 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = 3f;
+    private final float Y = 3.25f;
     private final float CARD_OFFSET = 1.25f;
     private final float CARD_WIDTH = 142 / 85f;
     private final float CARD_HEIGHT = 190 / 85f;
@@ -145,8 +146,8 @@ public class HandUi {
         float scale = slot.pulseScale()
             * slot.wobbleScale()
             * slot.getTargetScale();
-        float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
-        if (card != touchingCard && card != applyingCard) rotation += getHandRotation(card);
+        final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg()
+            + (card != touchingCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = slot.getAlpha();
         if (cardDestinationUI.isOverDumpster(slot.getCardCenter())) alpha -= 0.5f;
@@ -168,14 +169,13 @@ public class HandUi {
             rotation
         );
 
-        batch.setColor(1f, 1f, 1f, alpha);
-        batch.draw(jokerCard,
-            position.x, position.y,
-            originX, originY,
-            bounds.width, bounds.height,
-            scale, scale,
-            rotation);
-        batch.setColor(1f, 1f, 1f, 1f);
+        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
+            () -> batch.draw(jokerCard,
+                position.x, position.y,
+                originX, originY,
+                bounds.width, bounds.height,
+                scale, scale,
+                rotation));
     }
 
     private void loadCards(List<? extends Card> newHand) {

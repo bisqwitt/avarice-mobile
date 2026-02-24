@@ -3,6 +3,8 @@ package com.avaricious.components.displays;
 import com.avaricious.DevTools;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -88,6 +90,8 @@ public class PatternDisplay {
             float wobbleAngle = 8f;    // degrees
             pointsRotation = pulseCurve * wobbleAngle;
         }
+        final float finalPointsScale = pointsScale;
+        final float finalPointsRotation = pointsRotation;
 
         // ----- Pulse + wobble for MULTI -----
         float multiScale = 1f;
@@ -107,6 +111,8 @@ public class PatternDisplay {
             float wobbleAngle = 8f;
             multiRotation = pulseCurve * wobbleAngle;
         }
+        final float finalMultiScale = multiScale;
+        final float finalMultiRotation = multiRotation;
 
         // ----- Pulse + wobble for X MULTI -----
         float streakScale = 1f;
@@ -134,55 +140,55 @@ public class PatternDisplay {
         // Draw POINTS (blue)
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {
             float x = FIRST_POINT_DIGIT_X + (i * DIGIT_OFFSET);
-            batch.setColor(1f, 1f, 1f, 0.25f);
-            batch.draw(
-                pointNumberShadows[i],
-                x - originX, numberBaseY - originY - 0.05f,
-                originX, originY,
-                DIGIT_WIDTH, DIGIT_HEIGHT,
-                pointsScale, pointsScale,
-                pointsRotation
-            );
-            batch.setColor(Assets.I().blue());
-            batch.draw(
-                pointDigitalNumbers[i],
-                x - originX,           // x (bottom-left with origin in center)
-                numberBaseY - originY, // y
-                originX,               // originX
-                originY,               // originY
-                DIGIT_WIDTH,
-                DIGIT_HEIGHT,
-                pointsScale,
-                pointsScale,
-                pointsRotation
-            );
+            int index = i;
+
+            Pencil.I().drawInColor(batch, new Color(Assets.I().shadowColor()),
+                () -> batch.draw(
+                    pointNumberShadows[index],
+                    x - originX, numberBaseY - originY - 0.05f,
+                    originX, originY,
+                    DIGIT_WIDTH, DIGIT_HEIGHT,
+                    finalPointsScale, finalPointsScale,
+                    finalPointsRotation
+                ));
+
+            Pencil.I().drawInColor(batch, Assets.I().blue(),
+                () -> batch.draw(
+                    pointDigitalNumbers[index],
+                    x - originX,           // x (bottom-left with origin in center)
+                    numberBaseY - originY, // y
+                    originX, originY,
+                    DIGIT_WIDTH, DIGIT_HEIGHT,
+                    finalPointsScale, finalPointsScale,
+                    finalPointsRotation
+                ));
         }
 
         // Draw MULTI (red)
         for (int i = 0; i < NUMBER_PER_PATTERN_PART; i++) {
             float x = FIRST_MULTI_DIGIT_X + (i * DIGIT_OFFSET);
-            batch.setColor(1f, 1f, 1f, 0.25f);
-            batch.draw(
-                multiNumberShadows[i],
-                x - originX, numberBaseY - originY - 0.05f,
-                originX, originY,
-                DIGIT_WIDTH, DIGIT_HEIGHT,
-                multiScale, multiScale,
-                multiRotation
-            );
-            batch.setColor(Assets.I().red());
-            batch.draw(
-                multiDigitalNumbers[i],
-                x - originX,
-                numberBaseY - originY,
-                originX,
-                originY,
-                DIGIT_WIDTH,
-                DIGIT_HEIGHT,
-                multiScale,
-                multiScale,
-                multiRotation
-            );
+            int index = i;
+
+            Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+                () -> batch.draw(
+                    multiNumberShadows[index],
+                    x - originX, numberBaseY - originY - 0.05f,
+                    originX, originY,
+                    DIGIT_WIDTH, DIGIT_HEIGHT,
+                    finalMultiScale, finalMultiScale,
+                    finalMultiRotation
+                ));
+
+            Pencil.I().drawInColor(batch, Assets.I().red(),
+                () -> batch.draw(
+                    multiDigitalNumbers[index],
+                    x - originX,
+                    numberBaseY - originY,
+                    originX, originY,
+                    DIGIT_WIDTH, DIGIT_HEIGHT,
+                    finalMultiScale, finalMultiScale,
+                    finalMultiRotation
+                ));
         }
 
         if (Objects.equals(DevTools.playMode, "asdf")) for (int i = 0; i < 2; i++) {
@@ -211,32 +217,12 @@ public class PatternDisplay {
                 streakRotation
             );
         }
-        batch.setColor(Assets.I().shadowColor());
-        batch.draw(multSymbolShadow, 4.325f, numberBaseY - originY - 0.1f, 0.4f, 0.4f);
-//        batch.draw(multSymbolShadow, 4.21f, numberBaseY - originY - 0.05f, 0.35f, 0.35f);
-        batch.setColor(1f, 1f, 1f, 1f);
+
+        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
+            () -> batch.draw(multSymbolShadow, 4.325f, numberBaseY - originY - 0.1f, 0.4f, 0.4f));
         batch.draw(multSymbolTexture, 4.325f, numberBaseY - originY, 0.4f, 0.4f);
         if (Objects.equals(DevTools.playMode, "sadf"))
             batch.draw(multSymbolTexture, 5.4f, numberBaseY - originY + 1f, 0.4f, 0.4f);
-    }
-
-    public void spawnEcho() {
-//        for(int i = 0; i < pointDigitalNumbers.length; i++) {
-//            Rectangle bounds = new Rectangle(FIRST_POINT_DIGIT_X + (i * DIGIT_OFFSET), DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT);
-//            TextureEcho.create(pointDigitalNumbers[i],
-//                bounds,
-//                Assets.I().colorBlue());
-//            TextureGlow.create(pointDigitalNumbers[i],
-//                bounds, "number");
-//        }
-//        for(int i = 0; i < multiDigitalNumbers.length; i++) {
-//            Rectangle bounds = new Rectangle(FIRST_MULTI_DIGIT_X + (i * DIGIT_OFFSET), DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT);
-//            TextureEcho.create(multiDigitalNumbers[i],
-//                bounds,
-//                Assets.I().colorRed());
-//            TextureGlow.create(pointDigitalNumbers[i],
-//                bounds, "number");
-//        }
     }
 
     public void resetBaseValues() {
