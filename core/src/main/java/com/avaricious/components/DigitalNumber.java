@@ -124,6 +124,10 @@ public class DigitalNumber {
         this.onInternalScoreDisplayed = onInternalScoreDisplayed;
     }
 
+    public Rectangle getBounds() {
+        return rectangle;
+    }
+
     private Vector2 getNumberCenter(float index) {
         return new Vector2((rectangle.x + index * offset) + rectangle.width / 2, rectangle.y + rectangle.height / 2);
     }

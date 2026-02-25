@@ -11,12 +11,12 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 
-public class RainbowBorderPulseMesh {
+public class BorderPulseMesh {
 
-    private static RainbowBorderPulseMesh instance;
+    private static BorderPulseMesh instance;
 
-    public static RainbowBorderPulseMesh I() {
-        return instance == null ? (instance = new RainbowBorderPulseMesh()) : instance;
+    public static BorderPulseMesh I() {
+        return instance == null ? (instance = new BorderPulseMesh()) : instance;
     }
 
     // Pulse timing
@@ -25,8 +25,8 @@ public class RainbowBorderPulseMesh {
     private boolean active = false;
 
     // Thickness in PIXELS (screen space)
-    public float baseThickness = 10f;
-    public float pulseExtraThickness = 8f;
+    public float baseThickness = 20f;
+    public float pulseExtraThickness = 15f;
 
     // Optional: set >0 to make rainbow drift while pulsing
     public float phaseSpeed = 0f; // cycles per second
@@ -43,19 +43,22 @@ public class RainbowBorderPulseMesh {
     private int cachedW = -1, cachedH = -1;
 
     // working buffers
-    private float[] vertices;   // x,y,r,g,b,a (6 floats per vertex)
+    // Vertex layout: x,y,r,g,b,a,fade (7 floats per vertex)
+    // fade: 0 = outer edge, 1 = inner edge (used in fragment shader to fade off)
+    private float[] vertices;
     private short[] indices;
 
     private final Color tmp = new Color();
+    private Type type = Type.RAINBOW;
 
-    private RainbowBorderPulseMesh() {
-        // You can enable this if you want shader compilation logs:
-        // ShaderProgram.pedantic = false;
+    private BorderPulseMesh() {
+        // ShaderProgram.pedantic = false; // enable if you want more lenient shader checks
     }
 
-    public void triggerOnce() {
+    public void triggerOnce(Type type) {
         t = 0f;
         active = true;
+        this.type = type;
     }
 
     public boolean isActive() {
@@ -127,7 +130,7 @@ public class RainbowBorderPulseMesh {
             // points = 4*segmentsPerEdge + 1 (closing duplicate of start)
             int points = 4 * segmentsPerEdge + 1;
             int vertsCount = points * 2;            // outer+inner per point
-            int floatsPerVert = 6;                 // x,y,r,g,b,a
+            int floatsPerVert = 7;                 // x,y,r,g,b,a,fade
             vertices = new float[vertsCount * floatsPerVert];
 
             // Triangles: for each segment between point i and i+1, two triangles = 6 indices
@@ -155,7 +158,8 @@ public class RainbowBorderPulseMesh {
 
             mesh = new Mesh(false, vertsCount, indices.length,
                 new VertexAttribute(Usage.Position, 2, "a_position"),
-                new VertexAttribute(Usage.ColorUnpacked, 4, "a_color"));
+                new VertexAttribute(Usage.ColorUnpacked, 4, "a_color"),
+                new VertexAttribute(Usage.Generic, 1, "a_fade"));
 
             shader = buildShader();
             if (!shader.isCompiled()) {
@@ -168,10 +172,13 @@ public class RainbowBorderPulseMesh {
         final String vert =
             "attribute vec2 a_position;\n" +
                 "attribute vec4 a_color;\n" +
+                "attribute float a_fade;\n" +
                 "uniform mat4 u_projTrans;\n" +
                 "varying vec4 v_color;\n" +
+                "varying float v_fade;\n" +
                 "void main(){\n" +
                 "  v_color = a_color;\n" +
+                "  v_fade = a_fade;\n" +
                 "  gl_Position = u_projTrans * vec4(a_position.xy, 0.0, 1.0);\n" +
                 "}\n";
 
@@ -180,8 +187,13 @@ public class RainbowBorderPulseMesh {
                 "precision mediump float;\n" +
                 "#endif\n" +
                 "varying vec4 v_color;\n" +
+                "varying float v_fade;\n" +
                 "void main(){\n" +
-                "  gl_FragColor = v_color;\n" +
+                "  // v_fade: 0 outer -> 1 inner\n" +
+                "  float falloff = 1.0 - smoothstep(0.0, 1.0, v_fade);\n" +
+                "  // Optional: make the inner tail softer/longer\n" +
+                "  falloff = pow(falloff, 1.8);\n" +
+                "  gl_FragColor = vec4(v_color.rgb, v_color.a * falloff);\n" +
                 "}\n";
 
         return new ShaderProgram(vert, frag);
@@ -204,31 +216,35 @@ public class RainbowBorderPulseMesh {
         int S = segmentsPerEdge;
 
         int pointIndex = 0; // perimeter point index
-        final int[] v = {0};          // float index in vertices array
+        final int[] v = {0}; // float index in vertices array
 
-        // Helper lambda-ish: writes two vertices (outer, inner) for a perimeter point
-        // Using local method style in Java:
         class Writer {
             void write(float ox, float oy, float ix, float iy, float s) {
-                float hue = (s / P + phase) % 1f;
-                tmp.fromHsv(hue * 360f, 1f, 1f);
+                if (type == Type.RAINBOW) {
+                    float hue = (s / P + phase) % 1f;
+                    tmp.fromHsv(hue * 360f, 1f, 1f);
+                } else {
+                    tmp.set(new Color(1, 0, 0, 1));
+                }
                 tmp.a = alpha;
 
-                // outer vertex
+                // outer vertex (fade = 0)
                 vertices[v[0]++] = ox;
                 vertices[v[0]++] = oy;
                 vertices[v[0]++] = tmp.r;
                 vertices[v[0]++] = tmp.g;
                 vertices[v[0]++] = tmp.b;
                 vertices[v[0]++] = tmp.a;
+                vertices[v[0]++] = 0f;
 
-                // inner vertex
+                // inner vertex (fade = 1)
                 vertices[v[0]++] = ix;
                 vertices[v[0]++] = iy;
                 vertices[v[0]++] = tmp.r;
                 vertices[v[0]++] = tmp.g;
                 vertices[v[0]++] = tmp.b;
                 vertices[v[0]++] = tmp.a;
+                vertices[v[0]++] = 1f;
             }
         }
         Writer w = new Writer();
@@ -281,8 +297,7 @@ public class RainbowBorderPulseMesh {
             pointIndex++;
         }
 
-        // At this point, we should have exactly (4*S + 1) points -> (4*S + 1)*2 vertices
-        // If you want, you can assert in debug builds:
+        // Expected: (4*S + 1) points
         // int expectedPoints = 4*S + 1;
         // if (pointIndex != expectedPoints) Gdx.app.log("Border", "points=" + pointIndex + " expected=" + expectedPoints);
     }
@@ -301,5 +316,10 @@ public class RainbowBorderPulseMesh {
             shader.dispose();
             shader = null;
         }
+    }
+
+    public enum Type {
+        RAINBOW,
+        BLOODY
     }
 }

@@ -19,7 +19,7 @@ public class FivePointsForEachCardInHandCard extends Card {
     @Override
     protected void onApply() {
         points = Hand.I().cardsHeldInHand() * 5;
-        PatternDisplay.I().addPoints(points);
+        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
     }
 
     @Override

@@ -75,9 +75,9 @@ public class ParticleManager {
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));
         particle.scaleEffect(0.03f);
-        particle.setDuration(1);
+//        particle.setDuration(1);
         for (ParticleEmitter emitter : particle.getEmitters()) {
-            emitter.getEmission().setHigh(25 + streak * 5);
+            emitter.getEmission().setHigh(50);
         }
 
         particle.setPosition(x + SlotMachine.CELL_W / 2, y + SlotMachine.CELL_H / 2);

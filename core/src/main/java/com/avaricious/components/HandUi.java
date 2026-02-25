@@ -30,7 +30,7 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = 4f;
+    private final float Y = 3.75f;
     private final float CARD_OFFSET = 1.25f;
     private final float CARD_WIDTH = 142 / 85f;
     private final float CARD_HEIGHT = 190 / 85f;
@@ -182,11 +182,23 @@ public class HandUi {
         // Add new Cards
         for (Card card : newHand) {
             if (!cards.containsKey(card)) {
-                Rectangle initialBounds = new Rectangle(
-                    (CARD_OFFSET * cards.size()), Y,
-                    CARD_WIDTH, CARD_HEIGHT);
 
-                cards.put(card, new DragableSlot(initialBounds).setTilt(200f, 20f));
+                // 1) Start at deck position
+                Vector2 deckSpawn = DeckUi.I().getTopCardSpawnPos();
+
+                Rectangle initialBounds = new Rectangle(
+                    deckSpawn.x, deckSpawn.y,
+                    CARD_WIDTH, CARD_HEIGHT
+                );
+
+                DragableSlot slot = new DragableSlot(initialBounds).setTilt(200f, 20f);
+
+                // Optional: make the draw feel juicy
+                slot.targetScale = 1.15f;  // slight pop while flying
+                slot.pulse();
+                slot.wobble();
+
+                cards.put(card, slot);
             }
         }
 
@@ -298,7 +310,6 @@ public class HandUi {
             @Override
             public void run() {
                 slot.startApplyAnimation(0.6f, () -> {
-                    applyingCard = null;
                     Hand.I().removeCardFromHand(card);
                 });
             }

@@ -26,6 +26,10 @@ public class Pencil {
         batch.setColor(1f, 1f, 1f, 1f);
     }
 
+    public void toggleDarkenEverythingBehindWindow() {
+        darkenEverythingBehindWindow = !darkenEverythingBehindWindow;
+    }
+
     public void setDarkenEverythingBehindWindow(boolean value) {
         darkenEverythingBehindWindow = value;
     }

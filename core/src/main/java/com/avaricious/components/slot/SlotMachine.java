@@ -42,7 +42,7 @@ public class SlotMachine {
     public static final float originX = 0.2f;
     public static final float originY = 8.9f;
 
-    public static final Rectangle windowBounds = new Rectangle(0.05f, 8.65f, 8.85f, 6.1f);
+    public static final Rectangle windowBounds = new Rectangle(0.05f, 8.8f, 8.85f, 5.6f);
 
     // Visual cells (for selection pulse/scale)
     private final SymbolSlot[][] grid = new SymbolSlot[cols][rows];
@@ -134,48 +134,49 @@ public class SlotMachine {
         batch.flush();
         ScissorStack.pushScissors(scissors);
 
-        TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
-        drawSymbols(batch, delta);
+        List<Vector2> emphasizedSymbols = drawSymbols(batch, delta);
 
         batch.flush();
         ScissorStack.popScissors();
+
+        TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
+        for (Vector2 emphasizedSymbolPos : emphasizedSymbols) {
+            drawSymbol(batch, emphasizedSymbolPos, delta);
+        }
     }
 
-    private void drawSymbols(SpriteBatch batch, float delta) {
+    private List<Vector2> drawSymbols(SpriteBatch batch, float delta) {
         List<Vector2> emphasizedSlotPositions = new ArrayList<>();
-        final float stepX = (CELL_W + spacingX);
-
         for (int c = 0; c < cols; c++) {
-            Reel reel = reels.get(c);
-            float frac = reel.frac(); // 0..1 progress toward next symbol
-            float colX = originX + c * stepX;
-
             int drawFrom = -1;
             int drawTo = rows - 1;
 
             for (int k = drawFrom; k <= drawTo; k++) {
                 Vector2 pos = new Vector2(c, k);
-                if(isInGrid(pos) && grid[c][k].isEmphasized()) {
+                if (isInGrid(pos) && grid[c][k].isEmphasized()) {
                     emphasizedSlotPositions.add(pos);
                     continue;
-                };
+                }
 
-                drawSymbol(batch, reel.symbolAtRow(k), pos, frac, colX, delta);
+                drawSymbol(batch, pos, delta);
             }
         }
 
-        for(Vector2 slotPosition : emphasizedSlotPositions) {
-            Reel reel = reels.get((int) slotPosition.x);
-            drawSymbol(batch, reel.symbolAtRow((int) slotPosition.y), slotPosition, reel.frac(), originX + slotPosition.x * stepX, delta);
-        }
+        return emphasizedSlotPositions;
     }
 
-    private void drawSymbol(SpriteBatch batch, Symbol symbol, Vector2 gridPos, float frac, float colX, float delta) {
+    private void drawSymbol(SpriteBatch batch, Vector2 gridPos, float delta) {
+        Reel reel = reels.get((int) gridPos.x);
+        Symbol symbol = reel.symbolAtRow((int) gridPos.y);
+
+        final float stepX = CELL_W + spacingX;
+        float colX = originX + gridPos.x * stepX;
+
         boolean isInGrid = isInGrid(gridPos);
 
         final float stepY = (CELL_H + spacingY);
         final float topY = originY + (rows - 1) * stepY;
-        float drawY = topY - (gridPos.y + frac) * stepY;
+        float drawY = topY - (gridPos.y + reel.frac()) * stepY;
 
         boolean selected = false;
         boolean hovered = false;

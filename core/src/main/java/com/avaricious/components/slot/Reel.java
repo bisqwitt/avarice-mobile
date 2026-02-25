@@ -95,8 +95,8 @@ public class Reel {
                 pos += vel * dt;
 
                 if (stopRequested) {
-                    int randomNumber = MathUtils.random(1, 10);
-                    if (randomNumber > 9) stopTargetPos += stripLen;
+                    int randomNumber = MathUtils.random(1, 100);
+                    if (randomNumber == 100) stopTargetPos += stripLen;
 //                    if (randomNumber == 10) stopTargetPos += stripLen;
                     phase = Phase.STOPPING;
                 }

@@ -24,14 +24,15 @@ public class TextureGlow {
     private static final List<TextureGlow> glows = new ArrayList<>();
 
     public static void create(TextureRegion texture, Rectangle spawnPoint, Type parentType, float streak) {
-        glows.add(new TextureGlow(texture, spawnPoint, parentType, 1.5f + (0.4f * streak)));
+//        glows.add(new TextureGlow(texture, spawnPoint, parentType, 1.5f + (0.4f * streak)));
+        glows.add(new TextureGlow(texture, spawnPoint, parentType, 3f));
     }
 
     public static void draw(SpriteBatch batch, float delta, Type parentType) {
         List<TextureGlow> dump = new ArrayList<>();
-        for(TextureGlow textureGlow : glows) {
-            if(textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
-            if(textureGlow.dead()) dump.add(textureGlow);
+        for (TextureGlow textureGlow : glows) {
+            if (textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
+            if (textureGlow.dead()) dump.add(textureGlow);
         }
         glows.removeAll(dump);
     }

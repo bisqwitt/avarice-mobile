@@ -20,7 +20,7 @@ public class OnePointForEveryFruitCard extends Card {
     @Override
     protected void onApply() {
         points = countFruits();
-        PatternDisplay.I().addPoints(points);
+        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
     }
 
     @Override

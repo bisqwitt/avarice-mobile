@@ -18,10 +18,9 @@ public class RelicBag {
     private RelicBag() {
     }
 
-    private final Rectangle bagBounds = new Rectangle(4.85f, 0.4f, 42 / 25f, 48 / 25f);
+    private final Rectangle bagBounds = new Rectangle(4.75f, 0.4f, 42 / 25f, 48 / 25f);
 
     private final TextureRegion bagTexture = Assets.I().get(AssetKey.BAG);
-    private final TextureRegion bagShadow = Assets.I().get(AssetKey.BAG_SHADOW);
     private final TextureRegion shadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     public void draw(SpriteBatch batch) {

@@ -13,14 +13,14 @@ public class ConvertPointsToArmorCard extends Card {
     @Override
     public String description() {
         return "Converts " + Assets.I().blueText("Points") + " ("
-            + Assets.I().blueText(((int) PatternDisplay.I().getPoints()) + "") + ")\nto "
+            + Assets.I().blueText(((int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS)) + "") + ")\nto "
             + Assets.I().silverText("Armor");
     }
 
     @Override
     protected void onApply() {
-        points = (int) PatternDisplay.I().getPoints();
-        PatternDisplay.I().setPoints(0);
+        points = (int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS);
+        PatternDisplay.I().setValueOf(PatternDisplay.Type.POINTS, 0);
         Health.I().getArmorBar().heal(points);
     }
 

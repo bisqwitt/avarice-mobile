@@ -14,7 +14,7 @@ public class FivePointsCard extends Card {
 
     @Override
     public void onApply() {
-        PatternDisplay.I().addPoints(5);
+        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, 5);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class CashoutButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return PatternDisplay.I().isEmpty() || slotMachineIsRunning;
+        return PatternDisplay.I().isClear() || slotMachineIsRunning;
     }
 
     public void setSlotMachineIsRunning(boolean slotMachineIsRunning) {

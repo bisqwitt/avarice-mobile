@@ -14,7 +14,7 @@ public class TwoMultCard extends Card {
 
     @Override
     public void onApply() {
-        PatternDisplay.I().addMulti(2);
+        PatternDisplay.I().addTo(PatternDisplay.Type.MULTI, 2);
     }
 
     @Override

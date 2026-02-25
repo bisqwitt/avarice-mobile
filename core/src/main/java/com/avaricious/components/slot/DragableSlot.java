@@ -278,9 +278,7 @@ public class DragableSlot extends Slot {
     public void moveTo(Vector2 targetPosition) {
         this.targetPosition = targetPosition;
     }
-
-    // --- Tuning knobs (optional) ---
-
+    
     public DragableSlot setFollow(float dragFollowSpeed, float returnSpeed) {
         this.dragFollowSpeed = dragFollowSpeed;
         this.returnSpeed = returnSpeed;

@@ -18,7 +18,7 @@ public class ScoreDisplay {
 
     public ScoreDisplay() {
         digitalNumber = new DigitalNumber(RoundsManager.I().getCurrentTargetScore(), Assets.I().lightColor(), 8,
-            new Rectangle(1.5f, 16f, 0.32f * 1.8f, 0.56f * 1.8f), 0.8f);
+            new Rectangle(1f, 16.4f, 8 / 13f, 14 / 13f), 0.9f);
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -28,14 +28,14 @@ public class ScoreDisplay {
 //        batch.draw(whiteTexture, 2.25f, 6.8f, 11.25f, 0.1f);
 //        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
 
-        batch.draw(slateTexture, 0f, 14.5f, 9f, 3f);
-        batch.draw(slateTexture, 0f, 0f, 9f, 8.75f);
-        batch.draw(darkSlateTexture, 0f, 3.5f, 9f, 3.35f);
+        batch.draw(slateTexture, -3f, 14.5f, 15f, 6f);
+        batch.draw(slateTexture, -3f, -3f, 15f, 11.75f);
+        batch.draw(darkSlateTexture, -3f, 3f, 15f, 3.85f);
 
-        batch.draw(brightSlateTexture, 0f, 14.4f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 8.65f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 2.85f, 9f, 0.1f);
-        batch.draw(brightSlateTexture, 0f, 6.8f, 9f, 0.1f);
+        batch.draw(brightSlateTexture, -3f, 14.4f, 15f, 0.1f);
+        batch.draw(brightSlateTexture, -3f, 8.65f, 15f, 0.1f);
+        batch.draw(brightSlateTexture, -3f, 2.85f, 15f, 0.1f);
+        batch.draw(brightSlateTexture, -3f, 6.8f, 15f, 0.1f);
         digitalNumber.draw(batch, delta);
     }
 

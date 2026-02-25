@@ -19,7 +19,7 @@ public class FiveMultForEveryCardDiscarded extends Card {
     @Override
     protected void onApply() {
         mult = Hand.I().getCardsDiscarded() * 5;
-        PatternDisplay.I().addMulti(mult);
+        PatternDisplay.I().addTo(PatternDisplay.Type.MULTI, mult);
     }
 
     @Override

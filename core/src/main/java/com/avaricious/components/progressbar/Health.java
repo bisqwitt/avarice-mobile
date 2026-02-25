@@ -1,6 +1,5 @@
 package com.avaricious.components.progressbar;
 
-import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.stats.PlayerStats;
@@ -48,11 +47,11 @@ public class Health {
             armorBar.damage(damage);
             if (spill > 0) {
                 healthBar.damage(spill);
-                PatternDisplay.I().reset();
+//                PatternDisplayOld.I().reset();
             }
         } else {
             healthBar.damage(damage);
-            PatternDisplay.I().reset();
+//            PatternDisplayOld.I().reset();
         }
 
         if (healthBar.getCurrentHealth() <= 0) {

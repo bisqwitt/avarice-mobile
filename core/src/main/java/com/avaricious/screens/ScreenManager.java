@@ -2,7 +2,6 @@ package com.avaricious.screens;
 
 import com.avaricious.Main;
 import com.avaricious.components.HealthUi;
-import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.screens.mainscreen.MainScreen;
 import com.avaricious.upgrades.Hand;
 import com.badlogic.gdx.Gdx;
