@@ -10,6 +10,7 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
@@ -158,24 +159,22 @@ public class HandUi {
         float originY = bounds.height / 2f;
 
         Color shadowColor = Assets.I().shadowColor();
-        batch.setColor(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha));
         Vector2 shadowOffset = UiUtility.calcShadowOffset(slot.getCardCenter());
-        batch.draw(jokerCardShadow,
-            position.x + shadowOffset.x,
-            position.y - (card == touchingCard ? 0.3f : 0.2f),
-            originX, originY,
-            bounds.width, bounds.height,
-            scale, scale,
-            rotation
-        );
-
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
-            () -> batch.draw(jokerCard,
-                position.x, position.y,
-                originX, originY,
-                bounds.width, bounds.height,
-                scale, scale,
-                rotation));
+        Pencil.I().addDrawing(new TextureDrawing(
+            jokerCardShadow,
+            new Rectangle(
+                position.x + shadowOffset.x, position.y - (card == touchingCard ? 0.3f : 0.2f),
+                bounds.width, bounds.height
+            ),
+            scale, rotation,
+            10, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            jokerCard,
+            new Rectangle(position.x, position.y, bounds.width, bounds.height),
+            scale, rotation,
+            10, new Color(1f, 1f, 1f, alpha)
+        ));
     }
 
     private void loadCards(List<? extends Card> newHand) {
@@ -191,10 +190,11 @@ public class HandUi {
                     CARD_WIDTH, CARD_HEIGHT
                 );
 
-                DragableSlot slot = new DragableSlot(initialBounds).setTilt(200f, 20f);
+                DragableSlot slot = new DragableSlot(initialBounds)
+                    .setTilt(200f, 20f);
 
                 // Optional: make the draw feel juicy
-                slot.targetScale = 1.15f;  // slight pop while flying
+//                slot.targetScale = 1.15f;  // slight pop while flying
                 slot.pulse();
                 slot.wobble();
 

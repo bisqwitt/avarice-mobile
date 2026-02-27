@@ -2,6 +2,7 @@ package com.avaricious.components.popups;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -140,38 +141,27 @@ public class NumberPopup {
         float originY = bounds.height / 2f;
 
         // Use alpha for main draw color
-        Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
-            () -> batch.draw(
-                number < 0 ? minusTexture : plusTexture,
-                bounds.x - numberOffset, bounds.y,
-                originX, originY,
-                bounds.width, bounds.height,
-                scale, scale,
-                rotation
-            ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            number < 0 ? minusTexture : plusTexture,
+            new Rectangle(bounds.x - numberOffset, bounds.y, bounds.width, bounds.height),
+            scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+        ));
 
         for (int i = 0; i < digitalNumberTextures.size(); i++) {
             int index = i;
-            Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
-                () -> batch.draw(
-                    digitalNumberTextures.get(index),
-                    bounds.x + (numberOffset * index), bounds.y,
-                    originX, originY,
-                    bounds.width, bounds.height,
-                    scale, scale,
-                    rotation
-                ));
+            Pencil.I().addDrawing(new TextureDrawing(
+                digitalNumberTextures.get(index),
+                new Rectangle(bounds.x + (numberOffset * index), bounds.y, bounds.width, bounds.height),
+                scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+            ));
         }
 
         if (asPercentage) {
-            batch.draw(
+            Pencil.I().addDrawing(new TextureDrawing(
                 percentageTexture,
-                bounds.x + 0.4f, bounds.y,
-                originX, originY,
-                8 / 20f, 13 / 20f,
-                scale, scale,
-                rotation
-            );
+                new Rectangle(bounds.x + 0.4f, bounds.y, 8 / 20f, 13 / 20f),
+                scale, rotation, 16
+            ));
         }
     }
 

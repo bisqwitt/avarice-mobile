@@ -2,6 +2,7 @@ package com.avaricious.components.popups;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -29,13 +30,10 @@ public class CreditNumberPopup extends NumberPopup {
         float alpha = getAlpha();
 
         Color color = Assets.I().yellow();
-        Pencil.I().drawInColor(batch, new Color(color.r, color.g, color.b, alpha),
-            () -> batch.draw(
-                dollarSymbol,
-                bounds.x + (numberOffset * digitalNumberTextures.size()), bounds.y,
-                bounds.width / 2f, bounds.height / 2f,
-                bounds.width, bounds.height,
-                scale, scale,
-                rotation));
+        Pencil.I().addDrawing(new TextureDrawing(
+            dollarSymbol,
+            new Rectangle(bounds.x + (numberOffset * digitalNumberTextures.size()), bounds.y, bounds.width, bounds.height),
+            scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+        ));
     }
 }

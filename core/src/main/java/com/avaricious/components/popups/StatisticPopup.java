@@ -1,7 +1,10 @@
 package com.avaricious.components.popups;
 
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 
 public class StatisticPopup {
 
@@ -43,14 +46,11 @@ public class StatisticPopup {
         float originX = width / 2f;
         float originY = height / 2f;
 
-        batch.draw(
+        Pencil.I().addDrawing(new TextureDrawing(
             texture,
-            x - originX - 0.5f, y - originY,
-            originX, originY,
-            width, height,
-            scale, scale,
-            rotation
-        );
+            new Rectangle(x - originX - 0.5f, y - originY, width, height),
+            scale, rotation, 16
+        ));
     }
 
     private float getPulseCurve() {

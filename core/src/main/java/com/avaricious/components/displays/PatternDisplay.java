@@ -3,6 +3,8 @@ package com.avaricious.components.displays;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -38,9 +40,15 @@ public class PatternDisplay {
         float xSymbolSize = 11 / 20f;
 
         pointsNumber.draw(batch, delta);
-        batch.draw(xSymbol, pointsNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize);
+        Pencil.I().addDrawing(new TextureDrawing(
+            xSymbol, new Rectangle(pointsNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
+            2
+        ));
         multiNumber.draw(batch, delta);
-        batch.draw(xSymbol, multiNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize);
+        Pencil.I().addDrawing(new TextureDrawing(
+            xSymbol, new Rectangle(multiNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
+            2
+        ));
         streakNumber.draw(batch, delta);
     }
 

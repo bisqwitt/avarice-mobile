@@ -5,6 +5,8 @@ import com.avaricious.audio.AudioManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -28,14 +30,28 @@ public class ScoreDisplay {
 //        batch.draw(whiteTexture, 2.25f, 6.8f, 11.25f, 0.1f);
 //        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
 
-        batch.draw(slateTexture, -3f, 14.5f, 15f, 6f);
-        batch.draw(slateTexture, -3f, -3f, 15f, 11.75f);
-        batch.draw(darkSlateTexture, -3f, 3f, 15f, 3.85f);
+        Pencil.I().addDrawing(new TextureDrawing(slateTexture,
+            new Rectangle(-3f, 14.5f, 15f, 6f),
+            1));
+        Pencil.I().addDrawing(new TextureDrawing(slateTexture,
+            new Rectangle(-3f, -3f, 15f, 11.75f),
+            1));
+        Pencil.I().addDrawing(new TextureDrawing(darkSlateTexture,
+            new Rectangle(-3f, 3f, 15f, 3.85f),
+            1));
 
-        batch.draw(brightSlateTexture, -3f, 14.4f, 15f, 0.1f);
-        batch.draw(brightSlateTexture, -3f, 8.65f, 15f, 0.1f);
-        batch.draw(brightSlateTexture, -3f, 2.85f, 15f, 0.1f);
-        batch.draw(brightSlateTexture, -3f, 6.8f, 15f, 0.1f);
+        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
+            new Rectangle(-3f, 14.4f, 15f, 0.1f),
+            1));
+        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
+            new Rectangle(-3f, 8.65f, 15f, 0.1f),
+            1));
+        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
+            new Rectangle(-3f, 2.85f, 15f, 0.1f),
+            1));
+        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
+            new Rectangle(-3f, 6.8f, 15f, 0.1f),
+            1));
         digitalNumber.draw(batch, delta);
     }
 

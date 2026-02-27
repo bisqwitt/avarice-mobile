@@ -151,23 +151,20 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        TextureEcho.draw(batch, delta);
-
-        batch.draw(blackBluePixel, 0, 6, 10, 10);
+        TextureEcho.draw(batch, delta); // 0
 
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
         healthUi.draw(batch, delta);
-        xpBar.draw(batch);
+        xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw(batch);
         RelicBag.I().draw(batch);
 
         ParticleManager.I().draw(batch, delta);
         ParticleManager.I().drawBehindCardLayer(batch, delta);
-        slotMachine.draw(app, delta);
+        slotMachine.draw(app, delta);   // 10
 
         handUi.draw(batch, delta);
 
@@ -176,11 +173,14 @@ public class SlotScreen extends ScreenAdapter {
         Pencil.I().drawDarkenWindow(batch);
 
         shop.draw(batch, delta);
-        statusUpgradeWindow.draw(batch, delta);
+        statusUpgradeWindow.draw(batch, delta);     // 15
         PopupManager.I().draw(batch, delta);
         ParticleManager.I().drawTopLayer(batch, delta);
 
         BorderPulseMesh.I().render(batch, delta);
+
+        batch.begin();
+        Pencil.I().draw(batch);
         batch.end();
 
         vfxManager.endInputCapture();

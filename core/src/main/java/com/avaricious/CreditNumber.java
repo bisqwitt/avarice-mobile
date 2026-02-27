@@ -3,6 +3,7 @@ package com.avaricious;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,7 +26,9 @@ public class CreditNumber extends DigitalNumber {
         float x = rectangle.x + (numberTextures.size() * offset) + 0.05f;
         float y = calcHoverY();
 
-        Pencil.I().drawInColor(batch, color,
-            () -> batch.draw(dollarSymbol, x, y, rectangle.width, rectangle.height));
+        Pencil.I().addDrawing(new TextureDrawing(
+            dollarSymbol,
+            new Rectangle(x, y, rectangle.width, rectangle.height),
+            0, color));
     }
 }

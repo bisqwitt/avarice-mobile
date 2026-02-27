@@ -2,6 +2,7 @@ package com.avaricious.components;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,10 +25,16 @@ public class RelicBag {
     private final TextureRegion shadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     public void draw(SpriteBatch batch) {
-        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-            () -> batch.draw(shadowTexture, bagBounds.x - 0.2f, bagBounds.y - 0.2f, bagBounds.width + 0.4f, bagBounds.height + 0.4f));
+        Pencil.I().addDrawing(new TextureDrawing(
+            shadowTexture,
+            new Rectangle(bagBounds.x - 0.2f, bagBounds.y - 0.2f, bagBounds.width + 0.4f, bagBounds.height + 0.4f),
+            7, Assets.I().shadowColor()));
 
-        batch.draw(bagTexture, bagBounds.x, bagBounds.y, bagBounds.width, bagBounds.height);
+        Pencil.I().addDrawing(new TextureDrawing(
+            bagTexture,
+            bagBounds,
+            7
+        ));
     }
 
 }

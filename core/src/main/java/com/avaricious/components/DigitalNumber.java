@@ -1,6 +1,7 @@
 package com.avaricious.components;
 
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -70,20 +71,18 @@ public class DigitalNumber {
         hoverTime += delta;
         float numberBaseY = calcHoverY();
 
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, 0.25f),
-            () -> {
-                for (int i = 0; i < numberTextures.size(); i++) {
-                    batch.draw(numberShadowTextures.get(i),
-                        rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height);
-                }
-            });
-        Pencil.I().drawInColor(batch, color,
-            () -> {
-                batch.setColor(color);
-                for (int i = 0; i < numberTextures.size(); i++) {
-                    batch.draw(numberTextures.get(i), rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height);
-                }
-            });
+        for (int i = 0; i < numberTextures.size(); i++) {
+            Pencil.I().addDrawing(new TextureDrawing(
+                numberShadowTextures.get(i),
+                new Rectangle(rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height),
+                1, Assets.I().shadowColor()
+            ));
+            Pencil.I().addDrawing(new TextureDrawing(
+                numberTextures.get(i),
+                new Rectangle(rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height),
+                1, color
+            ));
+        }
     }
 
     private void updateDigitalNumbers(int score) {

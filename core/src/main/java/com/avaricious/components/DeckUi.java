@@ -5,12 +5,14 @@ import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +43,7 @@ public class DeckUi {
     private List<? extends Card> pendingCards;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
-        if (pendingCards != null) {
-            loadPendingCards();
-        }
+        update(delta);
 
         if (pressed && !wasPressed) {
             touchDownLocation.set(mouse.x, mouse.y);
@@ -51,19 +51,33 @@ public class DeckUi {
 
         if (!pressed && wasPressed) {
             if (firstCardBounds.contains(touchDownLocation) && firstCardBounds.contains(mouse)) {
-                Pencil.I().toggleDarkenEverythingBehindWindow();
+                toggleShowDeck();
             }
         }
     }
 
+    private void update(float delta) {
+        if (pendingCards != null) {
+            loadPendingCards();
+            pendingCards = null;
+        }
+        for (DragableSlot slot : cards.values()) {
+            slot.update(delta);
+        }
+    }
+
     public void draw(SpriteBatch batch) {
-        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-            () -> batch.draw(jokerCardShadow, 6.8f, 0.05f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f));
+        Pencil.I().addDrawing(new TextureDrawing(
+            jokerCardShadow,
+            new Rectangle(6.8f, 0.05f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
+            6, Assets.I().shadowColor()));
         for (DragableSlot card : cards.values()) {
             Vector2 pos = card.getRenderPos(new Vector2());
-            batch.draw(jokerCard,
-                pos.x, pos.y,
-                firstCardBounds.width, firstCardBounds.height);
+            Pencil.I().addDrawing(new TextureDrawing(
+                jokerCard,
+                new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
+                6
+            ));
         }
     }
 
@@ -75,6 +89,22 @@ public class DeckUi {
                 firstCardBounds.width, firstCardBounds.height
             );
             cards.put(pendingCards.get(i), new DragableSlot(bounds).setTilt(200f, 20f));
+        }
+    }
+
+    private void toggleShowDeck() {
+        Pencil.I().toggleDarkenEverythingBehindWindow();
+        List<Vector2> positions = new ArrayList<>();
+        for (int col = 5; col > 0; col--) {
+            for (int row = 0; row < 4; row++) {
+                positions.add(new Vector2(1f + row * 2f, 1f + col * 2f));
+            }
+        }
+
+        int index = 0;
+        for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
+            entry.getValue().moveTo(positions.get(index));
+            index++;
         }
     }
 

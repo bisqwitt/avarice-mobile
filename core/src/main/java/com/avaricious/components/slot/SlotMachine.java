@@ -9,6 +9,7 @@ import com.avaricious.effects.TextureGlow;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,7 +17,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
@@ -128,24 +128,17 @@ public class SlotMachine {
         area.setY(area.y - 0.125f);
         area.setHeight(area.height);
 
-        Rectangle scissors = new Rectangle();
-        ScissorStack.calculateScissors(cam, batch.getTransformMatrix(), area, scissors);
-
-        batch.flush();
-        ScissorStack.pushScissors(scissors);
-
-        List<Vector2> emphasizedSymbols = drawSymbols(batch, delta);
-
-        batch.flush();
-        ScissorStack.popScissors();
+        Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
+        List<Vector2> emphasizedSymbols = drawSymbols(delta);
+        Pencil.I().endScissors();
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
         for (Vector2 emphasizedSymbolPos : emphasizedSymbols) {
-            drawSymbol(batch, emphasizedSymbolPos, delta);
+            drawSymbol(emphasizedSymbolPos, delta);
         }
     }
 
-    private List<Vector2> drawSymbols(SpriteBatch batch, float delta) {
+    private List<Vector2> drawSymbols(float delta) {
         List<Vector2> emphasizedSlotPositions = new ArrayList<>();
         for (int c = 0; c < cols; c++) {
             int drawFrom = -1;
@@ -158,14 +151,14 @@ public class SlotMachine {
                     continue;
                 }
 
-                drawSymbol(batch, pos, delta);
+                drawSymbol(pos, delta);
             }
         }
 
         return emphasizedSlotPositions;
     }
 
-    private void drawSymbol(SpriteBatch batch, Vector2 gridPos, float delta) {
+    private void drawSymbol(Vector2 gridPos, float delta) {
         Reel reel = reels.get((int) gridPos.x);
         Symbol symbol = reel.symbolAtRow((int) gridPos.y);
 
@@ -207,24 +200,16 @@ public class SlotMachine {
         // NEW: rotate around center using current wobble angle
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
 
-        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-            () -> batch.draw(
-                Assets.I().getSymbol(symbol),
-                adjX + 0.05f, adjY - 0.05f,
-                drawW / 2f, drawH / 2f,
-                drawW, drawH,
-                1f, 1f,
-                rotation
-            ));
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
-            () -> batch.draw(
-                region,
-                adjX, adjY,
-                drawW / 2f, drawH / 2f,   // originX, originY
-                drawW, drawH,
-                1f, 1f,                   // scale already baked into drawW/H
-                rotation
-            ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            Assets.I().getSymbol(symbol),
+            new Rectangle(adjX + 0.05f, adjY - 0.05f, drawW, drawH),
+            1f, rotation, 10, Assets.I().shadowColor()
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            region,
+            new Rectangle(adjX, adjY, drawW, drawH),
+            1f, rotation, 10, new Color(1f, 1f, 1f, alpha)
+        ));
     }
 
     // --- spin control (organic staggered start/stop, aligned to center row) ---

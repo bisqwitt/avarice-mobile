@@ -2,6 +2,7 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -116,22 +117,25 @@ public abstract class DisablableButton extends Button {
         // Optional: fade in (uncomment if you want)
         // batch.setColor(1f, 1f, 1f, t);
 
-        drawWithShadow(batch, drawX, drawY, w, h);
+        drawWithShadow(batch, new Rectangle(drawX, drawY, w, h));
 
         // batch.setColor(1f, 1f, 1f, 1f);
     }
 
-    private void drawWithShadow(SpriteBatch batch, float x, float y, float w, float h) {
+    private void drawWithShadow(SpriteBatch batch, Rectangle bounds) {
         float alpha = disabled() ? 0.5f : 1f;
-
         if (showShadow) {
             Color shadowColor = Assets.I().shadowColor();
-            Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f),
-                () -> batch.draw(buttonShadow, x, y - 0.1f, w, h));
+            Pencil.I().addDrawing(new TextureDrawing(
+                buttonShadow, new Rectangle(bounds.x, bounds.y - 0.1f, bounds.width, bounds.height),
+                3, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f)
+            ));
         }
-
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
-            () -> batch.draw(defaultButtonTexture, x, currentTexture == pressedButtonTexture ? y - 0.1f : y, w, h));
+        Pencil.I().addDrawing(new TextureDrawing(
+            defaultButtonTexture,
+            new Rectangle(bounds.x, currentTexture == pressedButtonTexture ? bounds.y - 0.1f : bounds.y, bounds.width, bounds.height),
+            3, new Color(1f, 1f, 1f, alpha)
+        ));
     }
 
     abstract boolean disabled();

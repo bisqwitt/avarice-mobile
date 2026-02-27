@@ -2,6 +2,7 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -46,7 +47,7 @@ public class Button {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        drawAt(batch, buttonRectangle.x, buttonRectangle.y, buttonRectangle.width, buttonRectangle.height);
+        drawAt(batch, buttonRectangle);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
@@ -74,13 +75,17 @@ public class Button {
         spaceWasPressed = spacePressed;
     }
 
-    protected void drawAt(SpriteBatch batch, float x, float y, float w, float h) {
+    protected void drawAt(SpriteBatch batch, Rectangle bounds) {
         if (showShadow) {
-            Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-                () -> batch.draw(buttonShadow, x, y - 0.1f, w, h));
+            Pencil.I().addDrawing(new TextureDrawing(
+                buttonShadow, bounds,
+                3, Assets.I().shadowColor()
+            ));
         }
-
-        batch.draw(currentTexture, x, y, w, h);
+        Pencil.I().addDrawing(new TextureDrawing(
+            currentTexture, bounds,
+            3
+        ));
     }
 
     protected void onButtonPressed() {

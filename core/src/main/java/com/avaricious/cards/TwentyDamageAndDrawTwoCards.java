@@ -1,6 +1,6 @@
 package com.avaricious.cards;
 
-import com.avaricious.components.progressbar.Health;
+import com.avaricious.components.HealthUi;
 import com.avaricious.upgrades.Hand;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,7 +12,7 @@ public class TwentyDamageAndDrawTwoCards extends Card {
 
     @Override
     protected void onApply() {
-        Health.I().damage(20);
+        HealthUi.I().damage(20);
         Hand hand = Hand.I();
         hand.queueActions(
             hand::drawCard,

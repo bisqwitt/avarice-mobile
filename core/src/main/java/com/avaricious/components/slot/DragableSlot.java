@@ -138,7 +138,7 @@ public class DragableSlot extends Slot {
 
         if (targetPosition != null) {
             Vector2 pos = getPos(); // must be a mutable Vector2 reference you can set back
-            float responsiveness = 45f; // higher = snappier
+            float responsiveness = 18f; // higher = snappier
             float t = 1f - (float) Math.exp(-responsiveness * delta);
 
             pos.lerp(targetPosition, t);
@@ -278,7 +278,7 @@ public class DragableSlot extends Slot {
     public void moveTo(Vector2 targetPosition) {
         this.targetPosition = targetPosition;
     }
-    
+
     public DragableSlot setFollow(float dragFollowSpeed, float returnSpeed) {
         this.dragFollowSpeed = dragFollowSpeed;
         this.returnSpeed = returnSpeed;

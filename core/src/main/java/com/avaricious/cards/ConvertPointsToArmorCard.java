@@ -1,8 +1,8 @@
 package com.avaricious.cards;
 
+import com.avaricious.components.HealthUi;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.progressbar.Health;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,7 +21,7 @@ public class ConvertPointsToArmorCard extends Card {
     protected void onApply() {
         points = (int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS);
         PatternDisplay.I().setValueOf(PatternDisplay.Type.POINTS, 0);
-        Health.I().getArmorBar().heal(points);
+        HealthUi.I().addArmor(points);
     }
 
     @Override

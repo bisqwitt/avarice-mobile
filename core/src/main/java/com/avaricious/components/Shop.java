@@ -7,6 +7,7 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -107,41 +108,32 @@ public class Shop {
         }
 
         // Window shadow
-        batch.setColor(Assets.I().shadowColor().r, Assets.I().shadowColor().g, Assets.I().shadowColor().b, winAlpha);
         float winW = 303 / 40f;
         float winH = 340 / 40f;
-
-        batch.draw(
+        Color shadowColor = Assets.I().shadowColor();
+        Pencil.I().addDrawing(new TextureDrawing(
             windowShadow,
-            WINDOW_X + 0.1f, WINDOW_Y - 0.2f + winYOffset,
-            winW / 2f, winH / 2f,
-            winW, winH,
-            winScale, winScale,
-            0f
-        );
+            new Rectangle(WINDOW_X + 0.1f, WINDOW_Y - 0.2f + winYOffset, winW, winH),
+            14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)
+        ));
 
         // Window
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, winAlpha),
-            () -> batch.draw(
-                window,
-                WINDOW_X, WINDOW_Y + winYOffset,
-                winW / 2f, winH / 2f,
-                winW, winH,
-                winScale, winScale,
-                0f
-            ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            window,
+            new Rectangle(WINDOW_X, WINDOW_Y + winYOffset, winW, winH),
+            14, new Color(1f, 1f, 1f, winAlpha)
+        ));
 
         // Shop title shadow + title (fade + slide)
-        Color shadowColor = Assets.I().shadowColor();
-        Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha),
-            () -> batch.draw(shopTxtShadow, WINDOW_X + 2.6f, WINDOW_Y + 6.5f + winYOffset, 29 / 10f, 13 / 10f));
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, winAlpha),
-            () -> batch.draw(shopTxt, WINDOW_X + 2.5f, WINDOW_Y + 6.6f + winYOffset, 29 / 10f, 13 / 10f));
+        Pencil.I().addDrawing(new TextureDrawing(shopTxtShadow,
+            new Rectangle(WINDOW_X + 2.6f, WINDOW_Y + 6.5f + winYOffset, 29 / 10f, 13 / 10f),
+            14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
+        Pencil.I().addDrawing(new TextureDrawing(shopTxt,
+            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 6.6f + winYOffset, 29 / 10f, 13 / 10f),
+            14, new Color(1f, 1f, 1f, winAlpha)));
 
-        // Content (fade only by color; slide by yOffset if you want)
         shopCardsBar.draw(batch);
 
-        // Buttons + score (fade only)
         returnButton.draw(batch, delta);
         rerollButton.draw(batch, delta);
         creditScore.draw(batch, delta);

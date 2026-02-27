@@ -4,12 +4,15 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
@@ -66,27 +69,21 @@ public class TooltipPopup {
         // WORLD SPACE
         batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
         Color shadowColor = Assets.I().shadowColor();
-        Pencil.I().drawInColor(batch, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha)),
-            () -> batch.draw(boxShadow,
-                boxX, boxY - 0.2f,
-                originX, originY,
-                boxWidth, boxHeight,
-                1f, 1f,
-                0));
-        Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
-            () -> batch.draw(box,
-                boxX, boxY,
-                originX, originY,
-                boxWidth, boxHeight,
-                1f, 1f,
-                0));
+        Pencil.I().addDrawing(new TextureDrawing(
+            boxShadow,
+            new Rectangle(boxX, boxY - 0.2f, boxWidth, boxHeight),
+            1f, 0f, 16, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            box,
+            new Rectangle(boxX, boxY, boxWidth, boxHeight),
+            1f, 0f, 16, new Color(1f, 1f, 1f, alpha)
+        ));
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
         ScreenManager.getViewport().project(center);
 
         if (alpha > 0.5f) {
-            batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
-
             float jokerX = center.x - jokerTxt.width / 2f - 30f;
             float jokerY = center.y + 130f;
 
@@ -96,12 +93,12 @@ public class TooltipPopup {
             float textX = center.x - textW / 2f;
             float textY = center.y;
 
-            Pencil.I().drawInColor(batch, new Color(1f, 1f, 1f, alpha),
-                () -> {
-                    bigFont.draw(batch, jokerTxt, jokerX, jokerY);
-                    smallFont.draw(batch, description, textX, textY);
-                });
-            batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
+            Pencil.I().addDrawing(new FontDrawing(
+                bigFont, jokerTxt, new Vector2(jokerX, jokerY), 16
+            ));
+            Pencil.I().addDrawing(new FontDrawing(
+                smallFont, description, new Vector2(textX, textY), 16
+            ));
         }
     }
 

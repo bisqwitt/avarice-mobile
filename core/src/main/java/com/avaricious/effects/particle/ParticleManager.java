@@ -2,6 +2,7 @@ package com.avaricious.effects.particle;
 
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunnableDrawing;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -26,6 +27,8 @@ public class ParticleManager {
     private ParticleManager() {
     }
 
+    // TODO use layering
+
     private final Map<ParticleEffect, Color> particleEffects = new HashMap<>();
     private final List<ParticleEffect> behindCardEmitters = new ArrayList<>();
     private final List<ParticleEffect> topLayerEmitters = new ArrayList<>();
@@ -34,9 +37,10 @@ public class ParticleManager {
         for (Map.Entry<ParticleEffect, Color> entry : particleEffects.entrySet()) {
             entry.getKey().update(delta);
 
-            batch.setColor(entry.getValue());
-            Pencil.I().drawInColor(batch, entry.getValue(),
-                () -> entry.getKey().draw(batch));
+            Pencil.I().addDrawing(new RunnableDrawing(
+                () -> entry.getKey().draw(batch),
+                8, entry.getValue()
+            ));
         }
         Set<ParticleEffect> dump = new HashSet<>();
         for (ParticleEffect particleEffect : particleEffects.keySet()) {
@@ -49,7 +53,10 @@ public class ParticleManager {
     public void drawTopLayer(SpriteBatch batch, float delta) {
         for (ParticleEffect particleEffect : topLayerEmitters) {
             particleEffect.update(delta);
-            particleEffect.draw(batch);
+
+            Pencil.I().addDrawing(new RunnableDrawing(
+                () -> particleEffect.draw(batch), 17
+            ));
         }
         Set<ParticleEffect> dump = new HashSet<>();
         for (ParticleEffect particleEffect : topLayerEmitters) {
@@ -61,7 +68,10 @@ public class ParticleManager {
     public void drawBehindCardLayer(SpriteBatch batch, float delta) {
         for (ParticleEffect particleEffect : behindCardEmitters) {
             particleEffect.update(delta);
-            particleEffect.draw(batch);
+
+            Pencil.I().addDrawing(new RunnableDrawing(
+                () -> particleEffect.draw(batch), 9
+            ));
         }
         Set<ParticleEffect> dump = new HashSet<>();
         for (ParticleEffect particleEffect : behindCardEmitters) {

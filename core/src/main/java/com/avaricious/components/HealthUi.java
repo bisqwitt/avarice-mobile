@@ -8,6 +8,7 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -46,19 +47,28 @@ public class HealthUi {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        Pencil.I().drawInColor(batch, Assets.I().shadowColor(),
-            () -> {
-                batch.draw(armTxtShadow, txtX - 0.15f, armor.calcHoverY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio);
-                batch.draw(hpTxtShadow, txtX, health.calcHoverY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio);
-            });
+        Pencil.I().addDrawing(new TextureDrawing(
+            armTxtShadow,
+            new Rectangle(txtX - 0.15f, armor.calcHoverY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
+            4, Assets.I().shadowColor()
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            hpTxtShadow,
+            new Rectangle(txtX, health.calcHoverY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
+            4, Assets.I().shadowColor()
+        ));
 
         armor.draw(batch, delta);
-        Pencil.I().drawInColor(batch, Assets.I().silver(),
-            () -> batch.draw(armTxt, txtX - 0.15f, armor.calcHoverY(), 31 / armorSizeRatio, 11 / armorSizeRatio));
+        Pencil.I().addDrawing(new TextureDrawing(armTxt,
+            new Rectangle(txtX - 0.15f, armor.calcHoverY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
+            4, Assets.I().silver()));
 
         health.draw(batch, delta);
-        Pencil.I().drawInColor(batch, Assets.I().healthRedColor(),
-            () -> batch.draw(hpTxt, txtX, health.calcHoverY(), 18 / hpSizeRatio, 11 / hpSizeRatio));
+        Pencil.I().addDrawing(new TextureDrawing(
+            hpTxt,
+            new Rectangle(txtX, health.calcHoverY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
+            4, Assets.I().healthRedColor()
+        ));
     }
 
     public void damage(int damage) {
@@ -94,17 +104,29 @@ public class HealthUi {
     }
 
     public void healHealth() {
-        health.setScore(100);
+        setHealth(100);
+    }
+
+    public void addArmor(int amount) {
+        setArmor(armor.getScore() + amount);
     }
 
     private void damageArmor(int damage) {
-        armor.setScore(armor.getScore() - damage);
+        setArmor(armor.getScore() - damage);
     }
 
     private void damageHealth(int damage) {
-        health.setScore(health.getScore() - damage);
+        setHealth(health.getScore() - damage);
         BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.BLOODY);
         ScreenShake.I().addTrauma(0.55f);
+    }
+
+    private void setHealth(int value) {
+        health.setScore(value);
+    }
+
+    private void setArmor(int value) {
+        armor.setScore(value);
     }
 
 }
