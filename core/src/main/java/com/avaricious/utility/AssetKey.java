@@ -120,7 +120,13 @@ public enum AssetKey {
     HP_TXT("hp-txt"),
     HP_TXT_SHADOW("hp-txt-shadow"),
     ARM_TXT("arm-txt"),
-    ARM_TXT_SHADOW("arm-txt-shadow");
+    ARM_TXT_SHADOW("arm-txt-shadow"),
+    DOT_SYMBOL("dot"),
+    COLON("colon"),
+    ROUND_TXT("round-txt"),
+    ROUND_TXT_SHADOW("round-txt-shadow"),
+    LIGHT_BULB_ON("light-bulb-on"),
+    LIGHT_BULB_OFF("light-bulb-off");
 
     private final String path;
 

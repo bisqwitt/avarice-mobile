@@ -1,5 +1,6 @@
 package com.avaricious.effects;
 
+import com.avaricious.TextureEcho;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.badlogic.gdx.graphics.Color;

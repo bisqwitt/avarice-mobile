@@ -27,6 +27,8 @@ public class Button {
     private boolean spaceWasPressed;
     protected boolean showShadow = true;
 
+    private int layer = 3;
+
     private boolean pressDownIsOnButton = false;
 
     public Button(Runnable onButtonPressedRunnable,
@@ -46,8 +48,8 @@ public class Button {
         this.buttonRectangle = buttonRectangle;
     }
 
-    public void draw(SpriteBatch batch, float delta) {
-        drawAt(batch, buttonRectangle);
+    public void draw() {
+        drawAt(buttonRectangle);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
@@ -75,16 +77,17 @@ public class Button {
         spaceWasPressed = spacePressed;
     }
 
-    protected void drawAt(SpriteBatch batch, Rectangle bounds) {
+    protected void drawAt(Rectangle bounds) {
         if (showShadow) {
+            Rectangle shadowBounds = new Rectangle(bounds).setY(bounds.y - 0.1f);
             Pencil.I().addDrawing(new TextureDrawing(
-                buttonShadow, bounds,
-                3, Assets.I().shadowColor()
+                buttonShadow, shadowBounds,
+                layer, Assets.I().shadowColor()
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
             currentTexture, bounds,
-            3
+            layer
         ));
     }
 
@@ -96,4 +99,8 @@ public class Button {
         this.showShadow = showShadow;
     }
 
+    public Button setLayer(int layer) {
+        this.layer = layer;
+        return this;
+    }
 }

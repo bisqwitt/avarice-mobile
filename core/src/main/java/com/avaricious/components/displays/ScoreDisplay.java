@@ -12,15 +12,30 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 public class ScoreDisplay {
-    private final DigitalNumber digitalNumber;
 
+    private final float DIGIT_WIDTH = 7 / 13f;
+    private final float DIGIT_HEIGHT = 11 / 13f;
+
+    private final float ROUND_TXT_X = 1f;
+    private final float CURRENT_ROUND_X = ROUND_TXT_X + 3.25f; // 4.25f
+    private final float COLON_X = CURRENT_ROUND_X + 0.5f; // 4.75
+    private final float TARGET_SCORE_X = COLON_X + 1f; // 5.5
+
+    private final DigitalNumber currentRound;
+    private final DigitalNumber targetScore;
+
+    private final TextureRegion roundTxt = Assets.I().get(AssetKey.ROUND_TXT);
+    private final TextureRegion roundTxtShadow = Assets.I().get(AssetKey.ROUND_TXT_SHADOW);
+    private final TextureRegion colon = Assets.I().get(AssetKey.COLON);
     private final TextureRegion slateTexture = Assets.I().get(AssetKey.SLATE_PIXEL);
     private final TextureRegion darkSlateTexture = Assets.I().get(AssetKey.DARK_SLATE_PIXEL);
     private final TextureRegion brightSlateTexture = Assets.I().get(AssetKey.BRIGHT_SLATE_PIXEL);
 
     public ScoreDisplay() {
-        digitalNumber = new DigitalNumber(RoundsManager.I().getCurrentTargetScore(), Assets.I().lightColor(), 8,
-            new Rectangle(1f, 16.4f, 8 / 13f, 14 / 13f), 0.9f);
+        currentRound = new DigitalNumber(RoundsManager.I().getCurrentRound(), Assets.I().lightColor(),
+            new Rectangle(CURRENT_ROUND_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 0.9f);
+        targetScore = new DigitalNumber(RoundsManager.I().getCurrentTargetScore(), Assets.I().lightColor(),
+            new Rectangle(TARGET_SCORE_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 0.75f);
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -52,24 +67,33 @@ public class ScoreDisplay {
         Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
             new Rectangle(-3f, 6.8f, 15f, 0.1f),
             1));
-        digitalNumber.draw(batch, delta);
+
+        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
+            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() -0.1f, 37 / 13f, DIGIT_HEIGHT), 1, Assets.I().shadowColor()));
+        Pencil.I().addDrawing(new TextureDrawing(roundTxt,
+            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), 1));
+        currentRound.draw(batch, delta);
+        Pencil.I().addDrawing(new TextureDrawing(colon,
+            new Rectangle(COLON_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 1));
+        targetScore.draw(batch, delta);
     }
 
     public void addToScore(int amount) {
         AudioManager.I().startPayout();
-        digitalNumber.setScore(Math.max(digitalNumber.getScore() - amount, 0));
+        targetScore.setScore(Math.max(targetScore.getScore() - amount, 0));
     }
 
     public void resetScore() {
-        digitalNumber.setScore(RoundsManager.I().getCurrentTargetScore());
+        targetScore.setScore(RoundsManager.I().getCurrentTargetScore());
+        currentRound.setScore(RoundsManager.I().getCurrentRound());
     }
 
     public boolean targetScoreReached() {
-        return digitalNumber.getScore() == 0;
+        return targetScore.getScore() == 0;
     }
 
     public void setOnInternalScoreDisplayed(Runnable onInternalScoreDisplayed) {
-        digitalNumber.setOnInternalScoreDisplayed(onInternalScoreDisplayed);
+        targetScore.setOnInternalScoreDisplayed(onInternalScoreDisplayed);
     }
 
 }

@@ -43,8 +43,8 @@ public class ButtonBoard {
         spinAgainButton.update(delta);
         cashoutButton.update(delta);
 
-        spinAgainButton.draw(batch, delta);
-        cashoutButton.draw(batch, delta);
+        spinAgainButton.draw();
+        cashoutButton.draw();
     }
 
 

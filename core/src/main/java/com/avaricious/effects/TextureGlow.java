@@ -68,15 +68,13 @@ public class TextureGlow {
         float x = cx - drawW * 0.5f;
         float y = cy - drawH * 0.5f;
 
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
             new Rectangle(x, y, drawW, drawH),
-            12, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
-        ));
-
-        // Restore state
-        batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            1, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
+        ).setBeforeDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
+            .setAfterDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
     }
 
 

@@ -23,6 +23,8 @@ public class Pencil {
     private Pencil() {
     }
 
+    private SpriteBatch batch;
+
     private final List<Drawing> drawings = new ArrayList<>();
 
     private final TextureRegion blackTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
@@ -30,7 +32,6 @@ public class Pencil {
 
     private Rectangle scissors;
     private Runnable beforeDrawing;
-    private Runnable afterDrawing;
 
     public void draw(SpriteBatch batch) {
         drawings.sort(Comparator.comparingInt(Drawing::getLayer));
@@ -41,7 +42,7 @@ public class Pencil {
     }
 
     public void addDrawing(Drawing drawing) {
-        if (beforeDrawing != null && TextureDrawing.class.isInstance(drawing)) {
+        if (beforeDrawing != null && drawing instanceof TextureDrawing) {
             ((TextureDrawing) drawing).setBeforeDrawing(beforeDrawing);
             beforeDrawing = null;
         }
@@ -52,7 +53,7 @@ public class Pencil {
         darkenEverythingBehindWindow = !darkenEverythingBehindWindow;
     }
 
-    public void drawDarkenWindow(SpriteBatch batch) {
+    public void drawDarkenWindow() {
         if (!darkenEverythingBehindWindow) return;
         Pencil.I().addDrawing(new TextureDrawing(
             blackTexture,
@@ -67,6 +68,7 @@ public class Pencil {
         scissors = new Rectangle();
         beforeDrawing = () -> {
             ScissorStack.calculateScissors(cam, matrix, area, scissors);
+            batch.flush();
             ScissorStack.pushScissors(scissors);
         };
     }
@@ -74,7 +76,13 @@ public class Pencil {
     public void endScissors() {
         Drawing drawing = drawings.get(drawings.size() - 1);
         if (drawing instanceof TextureDrawing)
-            ((TextureDrawing) drawing).setAfterDrawing(ScissorStack::popScissors);
+            ((TextureDrawing) drawing).setAfterDrawing(() -> {
+                batch.flush();
+                ScissorStack.popScissors();
+            });
     }
 
+    public void setBatch(SpriteBatch batch) {
+        this.batch = batch;
+    }
 }

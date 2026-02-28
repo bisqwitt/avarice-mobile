@@ -57,7 +57,9 @@ public class TextureDrawing implements Drawing {
 
     @Override
     public void draw(SpriteBatch batch) {
-        if (beforeDrawing != null) beforeDrawing.run();
+        if (beforeDrawing != null) {
+            beforeDrawing.run();
+        }
         if (color != null) batch.setColor(color);
 
         if (additionalValues) {
@@ -74,7 +76,9 @@ public class TextureDrawing implements Drawing {
         }
 
         if (color != null) batch.setColor(1f, 1f, 1f, 1f);
-        if (afterDrawing != null) afterDrawing.run();
+        if (afterDrawing != null) {
+            afterDrawing.run();
+        }
     }
 
     @Override
@@ -82,11 +86,13 @@ public class TextureDrawing implements Drawing {
         return layer;
     }
 
-    public void setBeforeDrawing(Runnable beforeDrawing) {
+    public TextureDrawing setBeforeDrawing(Runnable beforeDrawing) {
         this.beforeDrawing = beforeDrawing;
+        return this;
     }
 
-    public void setAfterDrawing(Runnable afterDrawing) {
+    public TextureDrawing setAfterDrawing(Runnable afterDrawing) {
         this.afterDrawing = afterDrawing;
+        return this;
     }
 }

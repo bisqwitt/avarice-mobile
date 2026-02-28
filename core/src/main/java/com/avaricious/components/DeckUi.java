@@ -1,16 +1,19 @@
 package com.avaricious.components;
 
 import com.avaricious.cards.Card;
+import com.avaricious.components.buttons.Button;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -37,10 +40,17 @@ public class DeckUi {
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new LinkedHashMap<>();
+    private List<? extends Card> pendingCards;
+    private final Button returnButton = new Button(
+        this::toggleShowDeck,
+        Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.RETURN_BUTTON),
+        Assets.I().get(AssetKey.RETURN_BUTTON),
+        new Rectangle(5.5f, 0.5f, 79 / 25f, 25 / 25f), Input.Keys.ESCAPE).setLayer(25);
 
     private final Vector2 touchDownLocation = new Vector2();
 
-    private List<? extends Card> pendingCards;
+    private boolean showingDeck = false;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         update(delta);
@@ -66,17 +76,27 @@ public class DeckUi {
         }
     }
 
-    public void draw(SpriteBatch batch) {
+    public void draw() {
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
             new Rectangle(6.8f, 0.05f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
             6, Assets.I().shadowColor()));
+
+//        if(showingDeck) {
+//            returnButton.draw();
+//        }
         for (DragableSlot card : cards.values()) {
             Vector2 pos = card.getRenderPos(new Vector2());
+            if(showingDeck) {
+                Pencil.I().addDrawing(new TextureDrawing(
+                    jokerCardShadow,
+                    new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height), 24, Assets.I().shadowColor()
+                ));
+            }
             Pencil.I().addDrawing(new TextureDrawing(
                 jokerCard,
                 new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
-                6
+                showingDeck ? 25 : 6
             ));
         }
     }
@@ -94,17 +114,44 @@ public class DeckUi {
 
     private void toggleShowDeck() {
         Pencil.I().toggleDarkenEverythingBehindWindow();
-        List<Vector2> positions = new ArrayList<>();
-        for (int col = 5; col > 0; col--) {
-            for (int row = 0; row < 4; row++) {
-                positions.add(new Vector2(1f + row * 2f, 1f + col * 2f));
+        if(!showingDeck) {
+            List<Vector2> positions = new ArrayList<>();
+            for (int col = 5; col > 0; col--) {
+                for (int row = 0; row < 4; row++) {
+                    positions.add(new Vector2(1f + row * 2f, 1f + col * 2.5f));
+                }
             }
-        }
 
-        int index = 0;
-        for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
-            entry.getValue().moveTo(positions.get(index));
-            index++;
+            int index = 0;
+            for (DragableSlot card : cards.values()) {
+                int finalIndex = index;
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        card.moveTo(positions.get(finalIndex));
+                    }
+                }, index * 0.1f);
+                index++;
+            }
+            showingDeck = true;
+        } else {
+            int index = 0;
+            for(DragableSlot card : cards.values()) {
+                int finalIndex = index;
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        card.moveTo(new Vector2(firstCardBounds.x + 0.025f * finalIndex, firstCardBounds.y + 0.025f * finalIndex));
+                    }
+                }, index * 0.1f);
+                index++;
+            }
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    showingDeck = false;
+                }
+            }, index * 0.1f);
         }
     }
 

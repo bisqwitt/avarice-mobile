@@ -134,8 +134,8 @@ public class Shop {
 
         shopCardsBar.draw(batch);
 
-        returnButton.draw(batch, delta);
-        rerollButton.draw(batch, delta);
+        returnButton.draw();
+        rerollButton.draw();
         creditScore.draw(batch, delta);
     }
 

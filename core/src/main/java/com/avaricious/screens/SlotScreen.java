@@ -14,6 +14,8 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
+import com.avaricious.components.LightBulbBorder;
+import com.avaricious.components.LightBulbBorderShader;
 import com.avaricious.components.RelicBag;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
@@ -43,6 +45,7 @@ import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStac
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -67,6 +70,8 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ScoreDisplay scoreDisplay = new ScoreDisplay();
     private final PatternDisplay patternDisplay = PatternDisplay.I();
+//    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
+//    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
 
     private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
     });
@@ -96,6 +101,7 @@ public class SlotScreen extends ScreenAdapter {
 
     public SlotScreen(Main app) {
         this.app = app;
+        Pencil.I().setBatch(app.getBatch());
         slotMachine = SlotMachine.I();
         xpBar = new XpBar(statusUpgradeWindow::show);
 
@@ -151,15 +157,18 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        TextureEcho.draw(batch, delta); // 0
+        Pencil.I().addDrawing(new TextureDrawing(blackBluePixel, new Rectangle(0, 6, 10, 10), 0));
+//        TextureEcho.draw(batch, delta); // 0
 
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
+
+//        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);
         healthUi.draw(batch, delta);
         xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
-        deckUi.draw(batch);
+        deckUi.draw();
         RelicBag.I().draw(batch);
 
         ParticleManager.I().draw(batch, delta);
@@ -168,9 +177,9 @@ public class SlotScreen extends ScreenAdapter {
 
         handUi.draw(batch, delta);
 
-        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
+//        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
 
-        Pencil.I().drawDarkenWindow(batch);
+        Pencil.I().drawDarkenWindow();
 
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
@@ -182,6 +191,9 @@ public class SlotScreen extends ScreenAdapter {
         batch.begin();
         Pencil.I().draw(batch);
         batch.end();
+
+//        bulbBorderShader.update(delta);
+//        bulbBorderShader.draw(camera.combined, 1.5f, 15.75f, 6f, 1f);
 
         vfxManager.endInputCapture();
         vfxManager.applyEffects();

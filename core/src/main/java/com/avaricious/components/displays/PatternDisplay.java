@@ -22,9 +22,9 @@ public class PatternDisplay {
 
     private final TextureRegion xSymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
 
-    private final float DIGIT_Y = 14.9f;
-    private final float DIGIT_WIDTH = 8 / 15f;
-    private final float DIGIT_HEIGHT = 14 / 15f;
+    private final float DIGIT_Y = 15.25f;
+    private final float DIGIT_WIDTH = 7 / 15f;
+    private final float DIGIT_HEIGHT = 11 / 15f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
@@ -37,7 +37,7 @@ public class PatternDisplay {
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
     public void draw(SpriteBatch batch, float delta) {
-        float xSymbolSize = 11 / 20f;
+        float xSymbolSize = 11 / 25f;
 
         pointsNumber.draw(batch, delta);
         Pencil.I().addDrawing(new TextureDrawing(

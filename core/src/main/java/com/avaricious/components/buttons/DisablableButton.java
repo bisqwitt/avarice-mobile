@@ -89,7 +89,7 @@ public abstract class DisablableButton extends Button {
     }
 
     @Override
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw() {
         if (vis <= 0.001f) return;
 
         // Ease for nicer motion
@@ -117,12 +117,12 @@ public abstract class DisablableButton extends Button {
         // Optional: fade in (uncomment if you want)
         // batch.setColor(1f, 1f, 1f, t);
 
-        drawWithShadow(batch, new Rectangle(drawX, drawY, w, h));
+        drawWithShadow(new Rectangle(drawX, drawY, w, h));
 
         // batch.setColor(1f, 1f, 1f, 1f);
     }
 
-    private void drawWithShadow(SpriteBatch batch, Rectangle bounds) {
+    private void drawWithShadow(Rectangle bounds) {
         float alpha = disabled() ? 0.5f : 1f;
         if (showShadow) {
             Color shadowColor = Assets.I().shadowColor();
