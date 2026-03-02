@@ -18,4 +18,9 @@ public class CreditScore extends CreditNumber {
         } catch (Exception ignore) {
         }
     }
+
+    @Override
+    protected int getLayer() {
+        return 14;
+    }
 }

@@ -75,12 +75,12 @@ public class DigitalNumber {
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
                 new Rectangle(rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height),
-                1, Assets.I().shadowColor()
+                getLayer(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
                 new Rectangle(rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height),
-                1, color
+                getLayer(), color
             ));
         }
     }
@@ -129,5 +129,9 @@ public class DigitalNumber {
 
     private Vector2 getNumberCenter(float index) {
         return new Vector2((rectangle.x + index * offset) + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+    }
+
+    protected int getLayer() {
+        return 1;
     }
 }

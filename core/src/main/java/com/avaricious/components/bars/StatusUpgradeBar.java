@@ -19,7 +19,7 @@ public class StatusUpgradeBar extends UpgradeBar {
     @Override
     protected void onUpgradeClicked(Upgrade clickedUpgrade) {
         cardBounds.keySet().retainAll(Collections.singleton(clickedUpgrade));
-        cardAnimationManagers.keySet().retainAll(Collections.singleton(clickedUpgrade));
+//        cards.keySet().retainAll(Collections.singleton(clickedUpgrade));
 
         PopupManager.I().spawnPercentage(
             ((StatusRelic) clickedUpgrade).getAdditionalPercentage(),

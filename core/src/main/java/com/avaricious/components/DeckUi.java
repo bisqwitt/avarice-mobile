@@ -87,16 +87,20 @@ public class DeckUi {
 //        }
         for (DragableSlot card : cards.values()) {
             Vector2 pos = card.getRenderPos(new Vector2());
+            final float scale = 1f;
+            final float rotation = card.getDragTiltDeg();
+
             if(showingDeck) {
                 Pencil.I().addDrawing(new TextureDrawing(
                     jokerCardShadow,
-                    new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height), 24, Assets.I().shadowColor()
+                    new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height),
+                    scale, rotation, 24, Assets.I().shadowColor()
                 ));
             }
             Pencil.I().addDrawing(new TextureDrawing(
                 jokerCard,
                 new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
-                showingDeck ? 25 : 6
+                scale, rotation, showingDeck ? 25 : 6
             ));
         }
     }

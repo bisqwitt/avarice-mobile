@@ -3,6 +3,7 @@ package com.avaricious.components;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.JokerUpgradeBarWithPrices;
+import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Shop {
 
-    private final float WINDOW_X = 0.7f;
+    private final float WINDOW_X = 0.15f;
     private final float WINDOW_Y = 6.6f;
 
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
@@ -30,7 +31,7 @@ public class Shop {
     private final Button rerollButton;
 
     private final CreditScore creditScore;
-    private final JokerUpgradeBarWithPrices shopCardsBar;
+    private final ShopCardsBar cards = new ShopCardsBar();
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
@@ -48,18 +49,15 @@ public class Shop {
     public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
             new Rectangle(WINDOW_X + 1.25f, WINDOW_Y + 2.2f, 0.32f, 0.56f), 0.35f);
-        shopCardsBar = new JokerUpgradeBarWithPrices(Deck.I().randomUpgrades(), new Rectangle(
-            WINDOW_X + 1f, WINDOW_Y + 3.5f, 142 / 100f, 190 / 100f),
-            2f, false);
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
-                shopCardsBar.loadUpgrades(Deck.I().randomUpgrades());
+                cards.loadCards(Deck.I().randomUpgrades());
                 CreditManager.I().pay(3);
             }
         },
             Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON),
-            new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE);
+            new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE).setLayer(14);
         rerollButton.setShowShadow(false);
 
         returnButton = new Button(() -> {
@@ -68,7 +66,7 @@ public class Shop {
             onReturnedFromShop.run();
         },
             Assets.I().get(AssetKey.RETURN_BUTTON), Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED), Assets.I().get(AssetKey.RETURN_BUTTON),
-            new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER);
+            new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER).setLayer(14);
         returnButton.setShowShadow(false);
     }
 
@@ -107,9 +105,10 @@ public class Shop {
             winYOffset = 0f;
         }
 
+        float winW = 303 / 35f;
+        float winH = 340 / 35f;
+
         // Window shadow
-        float winW = 303 / 40f;
-        float winH = 340 / 40f;
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             windowShadow,
@@ -126,13 +125,13 @@ public class Shop {
 
         // Shop title shadow + title (fade + slide)
         Pencil.I().addDrawing(new TextureDrawing(shopTxtShadow,
-            new Rectangle(WINDOW_X + 2.6f, WINDOW_Y + 6.5f + winYOffset, 29 / 10f, 13 / 10f),
+            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 7.4f + winYOffset, 29 / 8f, 13 / 8f),
             14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
         Pencil.I().addDrawing(new TextureDrawing(shopTxt,
-            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 6.6f + winYOffset, 29 / 10f, 13 / 10f),
+            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 7.5f + winYOffset, 29 / 8f, 13 / 8f),
             14, new Color(1f, 1f, 1f, winAlpha)));
 
-        shopCardsBar.draw(batch);
+        cards.draw();
 
         returnButton.draw();
         rerollButton.draw();
@@ -140,7 +139,6 @@ public class Shop {
     }
 
     public void show() {
-        shopCardsBar.loadUpgrades(Deck.I().randomUpgrades());
         creditScore.setScore(CreditManager.I().getCredits());
 
         state = State.ENTERING;
@@ -154,7 +152,7 @@ public class Shop {
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         if (state != State.SHOWN) return;
 
-        shopCardsBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         returnButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

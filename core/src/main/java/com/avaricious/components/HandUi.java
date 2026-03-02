@@ -32,18 +32,15 @@ public class HandUi {
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = 3.75f;
-    private final float CARD_OFFSET = 1.25f;
     private final float CARD_WIDTH = 142 / 85f;
     private final float CARD_HEIGHT = 190 / 85f;
+    private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new HashMap<>();
     private final Map<Card, Integer> cardIndexLastRender = new HashMap<>();
-
-    private Vector2 touchDownLocation = new Vector2();
-    private boolean cardMovedSinceTouchDown = false;
 
     private Card touchingCard = null;
     private Card applyingCard = null;
@@ -82,9 +79,6 @@ public class HandUi {
     }
 
     private void onCardTouchDown(Card card, Vector2 mouse) {
-        cards.get(card).getRenderPos(touchDownLocation);
-        cardMovedSinceTouchDown = false;
-
         touchingCard = card;
         cards.get(card).targetScale = 1.3f;
         cards.get(card).beginDrag(mouse.x, mouse.y, 0);
@@ -96,10 +90,6 @@ public class HandUi {
         DragableSlot touchingSlot = cards.get(card);
         Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
 
-        if (!cardMovedSinceTouchDown &&
-            touchDownLocation.dst2(cardRenderPos) > 0) {
-            cardMovedSinceTouchDown = true;
-        }
         touchingSlot.dragTo(mouse.x, mouse.y, 0);
         updateCardBounds();
 
@@ -109,19 +99,15 @@ public class HandUi {
     }
 
     private void onCardTouchReleased(Card card) {
-        if (cardMovedSinceTouchDown) {
-            DragableSlot dragableSlot = cards.get(card);
-            if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
-                applyCard(card);
-            } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
-                discardCard(card);
-            } else {
-                dragableSlot.endDrag(0);
-                cards.get(card).targetScale = 1f;
-            }
+        DragableSlot dragableSlot = cards.get(card);
+        if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
+            applyCard(card);
+        } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
+            discardCard(card);
         } else {
-            cards.get(card).targetScale = 1f;
+            dragableSlot.endDrag(0);
         }
+        cards.get(card).targetScale = 1f;
         touchingCard = null;
         PopupManager.I().killTooltip();
         updateCardBounds();
@@ -134,13 +120,13 @@ public class HandUi {
         cardDestinationUI.draw(batch, delta, touchingCardCenter, touchingCard != null);
 
         for (Map.Entry<Card, DragableSlot> entry : getEntriesSortedByX()) {
-            if (touchingCard != entry.getKey()) drawCard(batch, entry.getKey());
+            if (touchingCard != entry.getKey()) drawCard(entry.getKey());
         }
 
-        if (touchingCard != null) drawCard(batch, touchingCard);
+        if (touchingCard != null) drawCard(touchingCard);
     }
 
-    private void drawCard(SpriteBatch batch, Card card) {
+    private void drawCard(Card card) {
         Rectangle bounds = cards.get(card).getBounds();
         DragableSlot slot = cards.get(card);
 
@@ -154,9 +140,6 @@ public class HandUi {
         if (cardDestinationUI.isOverDumpster(slot.getCardCenter())) alpha -= 0.5f;
 
         Vector2 position = slot.getRenderPos(new Vector2());
-
-        float originX = bounds.width / 2f;
-        float originY = bounds.height / 2f;
 
         Color shadowColor = Assets.I().shadowColor();
         Vector2 shadowOffset = UiUtility.calcShadowOffset(slot.getCardCenter());

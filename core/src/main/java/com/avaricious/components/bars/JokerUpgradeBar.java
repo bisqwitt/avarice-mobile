@@ -26,7 +26,7 @@ public class JokerUpgradeBar extends UpgradeBar {
     protected void onUpgradeClicked(Upgrade clickedUpgrade) {
         Deck.I().addUpgradeToDeck((Card) clickedUpgrade);
         cardBounds.remove(clickedUpgrade);
-        cardAnimationManagers.remove(clickedUpgrade);
+//        cards.remove(clickedUpgrade);
     }
 
     @Override

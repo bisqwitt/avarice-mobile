@@ -29,6 +29,6 @@ public class CreditNumber extends DigitalNumber {
         Pencil.I().addDrawing(new TextureDrawing(
             dollarSymbol,
             new Rectangle(x, y, rectangle.width, rectangle.height),
-            0, color));
+            getLayer(), color));
     }
 }
