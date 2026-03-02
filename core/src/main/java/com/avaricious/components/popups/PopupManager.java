@@ -30,6 +30,11 @@ public class PopupManager {
         tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
+    public void createTooltip(Upgrade upgrade, Vector2 pos, int layer) {
+        if (upgrade == null) return;
+        tooltipPopup = new TooltipPopup(upgrade, pos, layer);
+    }
+
     public void updateTooltip(Vector2 pos, boolean visible) {
         if (tooltipPopup == null) return;
         tooltipPopup.update(pos, visible);

@@ -28,6 +28,7 @@ public class TooltipPopup {
     private final BitmapFont smallFont;
 
     private final Upgrade upgrade;
+    private final int layer;
 
     private Vector2 pos;
 
@@ -37,8 +38,14 @@ public class TooltipPopup {
     private Runnable onDead;
 
     public TooltipPopup(Upgrade upgrade, Vector2 pos) {
+        this(upgrade, pos, 16);
+    }
+
+    public TooltipPopup(Upgrade upgrade, Vector2 pos, int layer) {
         this.upgrade = upgrade;
         this.pos = new Vector2(pos);
+        this.layer = layer;
+
         box = Assets.I().get(AssetKey.TOOLTIP_BOX);
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
@@ -72,12 +79,12 @@ public class TooltipPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             boxShadow,
             new Rectangle(boxX, boxY - 0.2f, boxWidth, boxHeight),
-            1f, 0f, 16, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+            1f, 0f, layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             box,
             new Rectangle(boxX, boxY, boxWidth, boxHeight),
-            1f, 0f, 16, new Color(1f, 1f, 1f, alpha)
+            1f, 0f, layer, new Color(1f, 1f, 1f, alpha)
         ));
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
@@ -94,10 +101,10 @@ public class TooltipPopup {
             float textY = center.y;
 
             Pencil.I().addDrawing(new FontDrawing(
-                bigFont, jokerTxt, new Vector2(jokerX, jokerY), 16
+                bigFont, jokerTxt, new Vector2(jokerX, jokerY), layer
             ));
             Pencil.I().addDrawing(new FontDrawing(
-                smallFont, description, new Vector2(textX, textY), 16
+                smallFont, description, new Vector2(textX, textY), layer
             ));
         }
     }

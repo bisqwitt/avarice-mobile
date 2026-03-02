@@ -5,8 +5,8 @@ import com.avaricious.audio.AudioManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -27,9 +27,6 @@ public class ScoreDisplay {
     private final TextureRegion roundTxt = Assets.I().get(AssetKey.ROUND_TXT);
     private final TextureRegion roundTxtShadow = Assets.I().get(AssetKey.ROUND_TXT_SHADOW);
     private final TextureRegion colon = Assets.I().get(AssetKey.COLON);
-    private final TextureRegion slateTexture = Assets.I().get(AssetKey.SLATE_PIXEL);
-    private final TextureRegion darkSlateTexture = Assets.I().get(AssetKey.DARK_SLATE_PIXEL);
-    private final TextureRegion brightSlateTexture = Assets.I().get(AssetKey.BRIGHT_SLATE_PIXEL);
 
     public ScoreDisplay() {
         currentRound = new DigitalNumber(RoundsManager.I().getCurrentRound(), Assets.I().lightColor(),
@@ -45,31 +42,8 @@ public class ScoreDisplay {
 //        batch.draw(whiteTexture, 2.25f, 6.8f, 11.25f, 0.1f);
 //        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
 
-        Pencil.I().addDrawing(new TextureDrawing(slateTexture,
-            new Rectangle(-3f, 14.5f, 15f, 6f),
-            1));
-        Pencil.I().addDrawing(new TextureDrawing(slateTexture,
-            new Rectangle(-3f, -3f, 15f, 11.75f),
-            1));
-        Pencil.I().addDrawing(new TextureDrawing(darkSlateTexture,
-            new Rectangle(-3f, 3f, 15f, 3.85f),
-            1));
-
-        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
-            new Rectangle(-3f, 14.4f, 15f, 0.1f),
-            1));
-        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
-            new Rectangle(-3f, 8.65f, 15f, 0.1f),
-            1));
-        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
-            new Rectangle(-3f, 2.85f, 15f, 0.1f),
-            1));
-        Pencil.I().addDrawing(new TextureDrawing(brightSlateTexture,
-            new Rectangle(-3f, 6.8f, 15f, 0.1f),
-            1));
-
         Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
-            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() -0.1f, 37 / 13f, DIGIT_HEIGHT), 1, Assets.I().shadowColor()));
+            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() - 0.1f, 37 / 13f, DIGIT_HEIGHT), 1, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(roundTxt,
             new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), 1));
         currentRound.draw(batch, delta);

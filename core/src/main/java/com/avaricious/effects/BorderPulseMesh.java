@@ -1,5 +1,6 @@
 package com.avaricious.effects;
 
+import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -25,8 +26,8 @@ public class BorderPulseMesh {
     private boolean active = false;
 
     // Thickness in PIXELS (screen space)
-    public float baseThickness = 20f;
-    public float pulseExtraThickness = 15f;
+    public float baseThickness = 1f;
+    public float pulseExtraThickness = 0.5f;
 
     // Optional: set >0 to make rainbow drift while pulsing
     public float phaseSpeed = 0f; // cycles per second
@@ -40,7 +41,7 @@ public class BorderPulseMesh {
 
     // cached sizing to rebuild buffers when needed
     private int cachedSegments = -1;
-    private int cachedW = -1, cachedH = -1;
+    private float cachedW = -1, cachedH = -1;
 
     // working buffers
     // Vertex layout: x,y,r,g,b,a,fade (7 floats per vertex)
@@ -90,8 +91,8 @@ public class BorderPulseMesh {
     }
 
     private void renderInternal(float delta) {
-        final int W = Gdx.graphics.getWidth();
-        final int H = Gdx.graphics.getHeight();
+        final float W = ScreenManager.getViewport().getWorldWidth();
+        final float H = ScreenManager.getViewport().getWorldHeight();
 
         ensureResources(W, H);
 
@@ -118,7 +119,7 @@ public class BorderPulseMesh {
         mesh.render(shader, GL20.GL_TRIANGLES);
     }
 
-    private void ensureResources(int W, int H) {
+    private void ensureResources(float W, float H) {
         if (mesh == null || shader == null || cachedSegments != segmentsPerEdge || cachedW != W || cachedH != H) {
             dispose(); // clean old
 

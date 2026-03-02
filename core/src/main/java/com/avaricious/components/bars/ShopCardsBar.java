@@ -20,7 +20,7 @@ import java.util.Map;
 public class ShopCardsBar {
 
     private final Rectangle buyBounds = new Rectangle(0f, 0f, 0f, 0f);
-    private final Rectangle firstCardBounds = new Rectangle(1.65f, 10.25f, 142 / 85f, 190 / 85f);
+    private final Rectangle firstCardBounds = new Rectangle(1.65f, 10.8f, 142 / 85f, 190 / 85f);
     private final float CARD_OFFSET = 2f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -34,22 +34,22 @@ public class ShopCardsBar {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
-        for(DragableSlot slot : cards.values()) slot.update(delta);
+        for (DragableSlot slot : cards.values()) slot.update(delta);
 
-        if(touching && !wasTouching) {
-            for(Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
-                if(entry.getValue().getBounds().contains(mouse)) {
+        if (touching && !wasTouching) {
+            for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
+                if (entry.getValue().getBounds().contains(mouse)) {
                     onCardTouchDown(entry.getKey(), mouse);
                     break;
                 }
             }
         }
 
-        if(touching && touchingCard != null) {
+        if (touching && touchingCard != null) {
             onCardTouching(touchingCard, mouse);
         }
 
-        if(!touching && wasTouching && touchingCard != null) {
+        if (!touching && wasTouching && touchingCard != null) {
             onCardTouchReleased(touchingCard);
         }
     }
@@ -75,9 +75,8 @@ public class ShopCardsBar {
 
     private void onCardTouchReleased(Card card) {
         DragableSlot dragableSlot = cards.get(card);
-        if(buyBounds.contains(dragableSlot.getCardCenter())) {
+        if (buyBounds.contains(dragableSlot.getCardCenter())) {
             buyCard(card);
-        } else {
         }
         dragableSlot.endDrag(0);
         cards.get(card).targetScale = 1f;
@@ -88,10 +87,10 @@ public class ShopCardsBar {
     public void draw() {
         // TODO draw glowBorder to buy card
 
-        for(Card card : cards.keySet()) {
-            if(touchingCard != card) drawCard(card);
+        for (Card card : cards.keySet()) {
+            if (touchingCard != card) drawCard(card);
         }
-        if(touchingCard != null) drawCard(touchingCard);
+        if (touchingCard != null) drawCard(touchingCard);
     }
 
     private void drawCard(Card card) {
@@ -126,7 +125,7 @@ public class ShopCardsBar {
     public void loadCards(List<? extends Card> cards) {
         this.cards.clear();
         int index = 0;
-        for(Card card : cards) {
+        for (Card card : cards) {
             Rectangle bounds = new Rectangle(
                 firstCardBounds.x + index * CARD_OFFSET, firstCardBounds.y,
                 firstCardBounds.width, firstCardBounds.height

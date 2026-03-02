@@ -62,10 +62,14 @@ public class Deck extends Observable<List<? extends Card>> {
             OnePointForEveryFruitCard.class
         ));
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 3; i++) {
             addUpgradeToDeck(instantiateCard(FivePointsCard.class));
+        }
+        for (int i = 0; i < 3; i++) {
             addUpgradeToDeck(instantiateCard(TwoMultCard.class));
         }
+        addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
+        addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
     }
 
     private final List<Class<? extends Card>> allCardClasses = new ArrayList<>();
@@ -122,8 +126,8 @@ public class Deck extends Observable<List<? extends Card>> {
         return null;
     }
 
-    public Card pickCardFromDeck() {
-        return deck.remove((int) (Math.random() * deck.size()));
+    public Card drawRandomCard() {
+        return removeCard((int) (Math.random() * deck.size()));
     }
 
     public boolean upgradeIsInDeck(Class<? extends Card> upgradeClass) {
@@ -138,11 +142,11 @@ public class Deck extends Observable<List<? extends Card>> {
         notifyChanged(snapshot());
     }
 
-    public void removeUpgrade(Card upgrade) {
-        deck.remove(upgrade);
+    public Card removeCard(int index) {
+        Card card = deck.remove(index);
         notifyChanged(snapshot());
+        return card;
     }
-
 
     public List<Card> getDeck() {
         return deck;

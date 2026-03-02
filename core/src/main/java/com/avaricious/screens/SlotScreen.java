@@ -7,15 +7,12 @@ import com.avaricious.Main;
 import com.avaricious.Profiler;
 import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
-import com.avaricious.TextureEcho;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
-import com.avaricious.components.LightBulbBorder;
-import com.avaricious.components.LightBulbBorderShader;
 import com.avaricious.components.RelicBag;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
@@ -45,7 +42,6 @@ import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStac
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -86,6 +82,9 @@ public class SlotScreen extends ScreenAdapter {
     private final HealthUi healthUi = HealthUi.I();
 
     private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
+    private final TextureRegion slateTexture = Assets.I().get(AssetKey.SLATE_PIXEL);
+    private final TextureRegion darkSlateTexture = Assets.I().get(AssetKey.DARK_SLATE_PIXEL);
+    private final TextureRegion brightSlateTexture = Assets.I().get(AssetKey.BRIGHT_SLATE_PIXEL);
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -158,9 +157,6 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        Pencil.I().addDrawing(new TextureDrawing(blackBluePixel, new Rectangle(0, 6, 10, 10), 0));
-//        TextureEcho.draw(batch, delta); // 0
-
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
@@ -187,9 +183,16 @@ public class SlotScreen extends ScreenAdapter {
         PopupManager.I().draw(batch, delta);
         ParticleManager.I().drawTopLayer(batch, delta);
 
-        BorderPulseMesh.I().render(batch, delta);
-
         batch.begin();
+        batch.draw(blackBluePixel, 0, 6, 10, 10);
+        batch.draw(slateTexture, -3, 14.5f, 15, 6);
+        batch.draw(slateTexture, -3, -3, 15, 11.75f);
+        batch.draw(darkSlateTexture, -3, 3, 15, 3.85f);
+        batch.draw(brightSlateTexture, -3, 14.4f, 15, 0.1f);
+        batch.draw(brightSlateTexture, -3, 8.65f, 15, 0.1f);
+        batch.draw(brightSlateTexture, -3, 2.85f, 15, 0.1f);
+        batch.draw(brightSlateTexture, -3, 6.8f, 15, 0.1f);
+        BorderPulseMesh.I().render(batch, delta);
         Pencil.I().draw(batch);
         batch.end();
 

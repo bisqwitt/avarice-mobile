@@ -2,14 +2,14 @@ package com.avaricious.components;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
-import com.avaricious.components.bars.JokerUpgradeBarWithPrices;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.RandomRelic;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,18 +20,21 @@ import com.badlogic.gdx.math.Vector2;
 public class Shop {
 
     private final float WINDOW_X = 0.15f;
-    private final float WINDOW_Y = 6.6f;
+    private final float WINDOW_Y = 1f;
 
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
     private final TextureRegion windowShadow = Assets.I().get(AssetKey.SHOP_WINDOW_SHADOW);
     private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
     private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
+    private final TextureRegion buyBox = Assets.I().get(AssetKey.BUY_BOX);
+    private final TextureRegion buyTxt = Assets.I().get(AssetKey.BUY_TXT);
 
     private final Button returnButton;
     private final Button rerollButton;
 
     private final CreditScore creditScore;
     private final ShopCardsBar cards = new ShopCardsBar();
+    private final RandomRelic randomRelic = new RandomRelic();
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
@@ -106,7 +109,7 @@ public class Shop {
         }
 
         float winW = 303 / 35f;
-        float winH = 340 / 35f;
+        float winH = 534 / 35f;
 
         // Window shadow
         Color shadowColor = Assets.I().shadowColor();
@@ -125,13 +128,14 @@ public class Shop {
 
         // Shop title shadow + title (fade + slide)
         Pencil.I().addDrawing(new TextureDrawing(shopTxtShadow,
-            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 7.4f + winYOffset, 29 / 8f, 13 / 8f),
+            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13f + winYOffset, 29 / 8f, 13 / 8f),
             14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
         Pencil.I().addDrawing(new TextureDrawing(shopTxt,
-            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 7.5f + winYOffset, 29 / 8f, 13 / 8f),
+            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13.1f + winYOffset, 29 / 8f, 13 / 8f),
             14, new Color(1f, 1f, 1f, winAlpha)));
 
         cards.draw();
+        randomRelic.draw();
 
         returnButton.draw();
         rerollButton.draw();
@@ -153,6 +157,7 @@ public class Shop {
         if (state != State.SHOWN) return;
 
         cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        randomRelic.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         returnButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

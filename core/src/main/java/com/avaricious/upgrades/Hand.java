@@ -31,7 +31,7 @@ public class Hand extends Observable<List<? extends Card>> {
     }
 
     public void drawCard() {
-        Card upgrade = Deck.I().pickCardFromDeck();
+        Card upgrade = Deck.I().drawRandomCard();
         if (upgrade == null) return;
 
         addCardToHand(upgrade);

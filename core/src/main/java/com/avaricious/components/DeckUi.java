@@ -2,14 +2,14 @@ package com.avaricious.components;
 
 import com.avaricious.cards.Card;
 import com.avaricious.components.buttons.Button;
+import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -49,8 +49,8 @@ public class DeckUi {
         new Rectangle(5.5f, 0.5f, 79 / 25f, 25 / 25f), Input.Keys.ESCAPE).setLayer(25);
 
     private final Vector2 touchDownLocation = new Vector2();
-
     private boolean showingDeck = false;
+    private Card touchingCard = null;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         update(delta);
@@ -62,6 +62,41 @@ public class DeckUi {
         if (!pressed && wasPressed) {
             if (firstCardBounds.contains(touchDownLocation) && firstCardBounds.contains(mouse)) {
                 toggleShowDeck();
+            }
+        }
+
+        if (showingDeck) {
+            if (pressed && !wasPressed) {
+                for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
+                    Card card = entry.getKey();
+
+                    if (entry.getValue().getBounds().contains(mouse)) {
+                        touchingCard = card;
+                        cards.get(card).targetScale = 1.3f;
+                        cards.get(card).beginDrag(mouse.x, mouse.y, 0);
+
+                        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), 25);
+                    }
+                }
+            }
+
+            if (pressed && touchingCard != null) {
+                DragableSlot touchingSlot = cards.get(touchingCard);
+                Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
+
+                touchingSlot.dragTo(mouse.x, mouse.y, 0);
+                PopupManager.I().updateTooltip(
+                    new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
+                    true
+                );
+            }
+
+            if (!pressed && wasPressed && touchingCard != null) {
+                DragableSlot dragableSlot = cards.get(touchingCard);
+                dragableSlot.endDrag(0);
+                cards.get(touchingCard).targetScale = 1f;
+                touchingCard = null;
+                PopupManager.I().killTooltip();
             }
         }
     }
@@ -85,24 +120,30 @@ public class DeckUi {
 //        if(showingDeck) {
 //            returnButton.draw();
 //        }
-        for (DragableSlot card : cards.values()) {
-            Vector2 pos = card.getRenderPos(new Vector2());
-            final float scale = 1f;
-            final float rotation = card.getDragTiltDeg();
+        for (Card card : cards.keySet()) {
+            if (card != touchingCard) drawCard(card);
+        }
+        if (touchingCard != null) drawCard(touchingCard);
+    }
 
-            if(showingDeck) {
-                Pencil.I().addDrawing(new TextureDrawing(
-                    jokerCardShadow,
-                    new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height),
-                    scale, rotation, 24, Assets.I().shadowColor()
-                ));
-            }
+    public void drawCard(Card card) {
+        DragableSlot slot = cards.get(card);
+        Vector2 pos = slot.getRenderPos(new Vector2());
+        final float scale = slot.pulseScale() * slot.getTargetScale();
+        final float rotation = slot.getDragTiltDeg();
+
+        if (showingDeck) {
             Pencil.I().addDrawing(new TextureDrawing(
-                jokerCard,
-                new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
-                scale, rotation, showingDeck ? 25 : 6
+                jokerCardShadow,
+                new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height),
+                scale, rotation, 24, Assets.I().shadowColor()
             ));
         }
+        Pencil.I().addDrawing(new TextureDrawing(
+            jokerCard,
+            new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
+            scale, rotation, showingDeck ? 25 : 6
+        ));
     }
 
     private void loadPendingCards() {
@@ -118,11 +159,11 @@ public class DeckUi {
 
     private void toggleShowDeck() {
         Pencil.I().toggleDarkenEverythingBehindWindow();
-        if(!showingDeck) {
+        if (!showingDeck) {
             List<Vector2> positions = new ArrayList<>();
             for (int col = 5; col > 0; col--) {
                 for (int row = 0; row < 4; row++) {
-                    positions.add(new Vector2(1f + row * 2f, 1f + col * 2.5f));
+                    positions.add(new Vector2(0.7f + row * 2f, 1f + col * 2.5f));
                 }
             }
 
@@ -140,7 +181,7 @@ public class DeckUi {
             showingDeck = true;
         } else {
             int index = 0;
-            for(DragableSlot card : cards.values()) {
+            for (DragableSlot card : cards.values()) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override

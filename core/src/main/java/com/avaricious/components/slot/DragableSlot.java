@@ -1,6 +1,5 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.components.Dumpster;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -205,12 +204,9 @@ public class DragableSlot extends Slot {
     public void endDrag(int pointer) {
         if (!dragging || pointer != draggingPointer) return;
 
-        // Return to origin
-        if (!SlotMachine.windowBounds.contains(getCardCenter()) && !Dumpster.hitBox.contains(getCardCenter())) {
-            targetOffset.setZero();
-            dragging = false;
-            draggingPointer = -1;
-        }
+        targetOffset.setZero();
+        dragging = false;
+        draggingPointer = -1;
 
         if (dropWobble > 0f) {
             wobble();
