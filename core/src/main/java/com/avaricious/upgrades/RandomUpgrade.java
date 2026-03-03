@@ -1,8 +1,15 @@
 package com.avaricious.upgrades;
 
-public class RandomUpgrade extends Upgrade {
+import com.avaricious.utility.RingKey;
+
+public class RandomUpgrade extends Relic {
     @Override
     public String description() {
         return "Random Relic";
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return null;
     }
 }

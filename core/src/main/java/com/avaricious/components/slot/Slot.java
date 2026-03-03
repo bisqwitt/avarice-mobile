@@ -14,6 +14,7 @@ public class Slot {
     private float pulseTime = 0f;
     private final float pulseDuration = 0.15f;
     private final float pulseAmp = 0.2f;
+    private float targetScaleSpeed = 15f;
 
     // --- NEW: hover wobble state ---
     private boolean wasHovered = false;
@@ -35,8 +36,7 @@ public class Slot {
     }
 
     public void tickScale(float delta) {
-        float speed = 15f; // higher = snappier
-        scale += (targetScale - scale) * Math.min(1f, speed * delta);
+        scale += (targetScale - scale) * Math.min(1f, targetScaleSpeed * delta);
     }
 
     public void updatePulse(boolean isSelected, float delta) {
@@ -118,5 +118,10 @@ public class Slot {
 
     public float getTargetScale() {
         return scale;
+    }
+
+    public Slot setTargetScaleSpeed(float value) {
+        this.targetScaleSpeed = value;
+        return this;
     }
 }

@@ -10,8 +10,8 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.UiUtility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -283,7 +283,7 @@ public class HandUi {
         slot.wobble();
         Vector2 pos = slot.getRenderPos(new Vector2());
 
-        ParticleManager.I().createBehindCardLayer(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW);
+        ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, 9);
 
         pos.x += 1.3f;
         pos.y += 1.8f;

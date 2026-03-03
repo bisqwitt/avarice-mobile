@@ -12,6 +12,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 
+/**
+ * Border pulse rendered as a ring mesh in screen space.
+ * <p>
+ * Changes vs your original:
+ * - Adds globalTime so rainbow can move continuously (not tied to pulse time t)
+ * - Adds phaseOffset randomized per trigger so colors don't start in same place
+ * - Uses phaseSpeed as cycles/sec to scroll hue around the perimeter
+ * - Optional subtle hue wobble (traveling wave) to avoid rigid linear gradient
+ */
 public class BorderPulseMesh {
 
     private static BorderPulseMesh instance;
@@ -25,12 +34,29 @@ public class BorderPulseMesh {
     private float t = 0f;
     private boolean active = false;
 
+    // Continuous time for hue animation (keeps moving across triggers)
+    private float globalTime = 0f;
+
+    // Random per-trigger hue offset so it doesn't always align the same
+    private float phaseOffset = 0f;
+
     // Thickness in PIXELS (screen space)
-    public float baseThickness = 1f;
+    public float baseThickness = 0f;
     public float pulseExtraThickness = 0.5f;
 
-    // Optional: set >0 to make rainbow drift while pulsing
-    public float phaseSpeed = 0f; // cycles per second
+    /**
+     * Rainbow scroll speed around the border, in cycles per second.
+     * Example: 0.25 = one full revolution every 4 seconds.
+     */
+    public float phaseSpeed = 0.25f;
+
+    /**
+     * Optional hue wobble to make the gradient feel more "alive".
+     * Set strength to 0 to disable.
+     */
+    public float hueWobbleStrength = 0.06f; // 0..~0.15 is reasonable
+    public float hueWobbleWaves = 6f;       // number of ripples around perimeter
+    public float hueWobbleSpeed = 0.8f;     // cycles per second
 
     // Mesh quality: higher = smoother rainbow around edges
     public int segmentsPerEdge = 96;
@@ -53,13 +79,16 @@ public class BorderPulseMesh {
     private Type type = Type.RAINBOW;
 
     private BorderPulseMesh() {
-        // ShaderProgram.pedantic = false; // enable if you want more lenient shader checks
+        // ShaderProgram.pedantic = false;
     }
 
     public void triggerOnce(Type type) {
         t = 0f;
         active = true;
         this.type = type;
+
+        // Randomize starting hue alignment each pulse (so colors aren't always identical)
+        phaseOffset = MathUtils.random(); // 0..1
     }
 
     public boolean isActive() {
@@ -67,7 +96,11 @@ public class BorderPulseMesh {
     }
 
     public void update(float delta) {
+        // Keep global time moving always (so hue drift doesn't reset)
+        globalTime += delta;
+
         if (!active) return;
+
         t += delta;
         if (t >= duration) {
             t = duration;
@@ -85,24 +118,27 @@ public class BorderPulseMesh {
         boolean wasDrawing = batch.isDrawing();
         if (wasDrawing) batch.end();
 
-        renderInternal(delta);
+        renderInternal();
 
         if (wasDrawing) batch.begin();
     }
 
-    private void renderInternal(float delta) {
+    private void renderInternal() {
         final float W = ScreenManager.getViewport().getWorldWidth();
         final float H = ScreenManager.getViewport().getWorldHeight();
 
         ensureResources(W, H);
 
-        float u = t / duration;
+        float u = (duration <= 0f) ? 1f : (t / duration);
         float pulse = easeOutCubic(1f - Math.abs(2f * u - 1f)); // 0..1 peak in middle
         float alpha = 0.15f + 0.85f * pulse;
         float thickness = baseThickness + pulseExtraThickness * pulse;
 
+        // Hue phase: random per trigger + continuous scroll
+        float phase = (phaseOffset + (phaseSpeed * globalTime)) % 1f;
+
         // Build vertices each frame because thickness & alpha change during pulse
-        buildBorderRingVertices(W, H, thickness, alpha, (phaseSpeed * t) % 1f);
+        buildBorderRingVertices(W, H, thickness, alpha, phase);
 
         mesh.setVertices(vertices);
         mesh.setIndices(indices);
@@ -127,7 +163,7 @@ public class BorderPulseMesh {
             cachedW = W;
             cachedH = H;
 
-            // Total perimeter "points" (see build method):
+            // Total perimeter "points":
             // points = 4*segmentsPerEdge + 1 (closing duplicate of start)
             int points = 4 * segmentsPerEdge + 1;
             int vertsCount = points * 2;            // outer+inner per point
@@ -192,7 +228,6 @@ public class BorderPulseMesh {
                 "void main(){\n" +
                 "  // v_fade: 0 outer -> 1 inner\n" +
                 "  float falloff = 1.0 - smoothstep(0.0, 1.0, v_fade);\n" +
-                "  // Optional: make the inner tail softer/longer\n" +
                 "  falloff = pow(falloff, 1.8);\n" +
                 "  gl_FragColor = vec4(v_color.rgb, v_color.a * falloff);\n" +
                 "}\n";
@@ -216,16 +251,25 @@ public class BorderPulseMesh {
 
         int S = segmentsPerEdge;
 
-        int pointIndex = 0; // perimeter point index
         final int[] v = {0}; // float index in vertices array
 
         class Writer {
             void write(float ox, float oy, float ix, float iy, float s) {
                 if (type == Type.RAINBOW) {
-                    float hue = (s / P + phase) % 1f;
-                    tmp.fromHsv(hue * 360f, 1f, 1f);
+                    float base = (s / P + phase) % 1f;
+
+                    // Optional moving wobble (traveling wave) to avoid rigid gradient
+                    if (hueWobbleStrength != 0f && hueWobbleWaves != 0f && hueWobbleSpeed != 0f) {
+                        float wobblePhase = (s / P) * MathUtils.PI2 * hueWobbleWaves
+                            + (globalTime * MathUtils.PI2 * hueWobbleSpeed);
+                        float wobble = hueWobbleStrength * MathUtils.sin(wobblePhase);
+                        base = (base + wobble) % 1f;
+                        if (base < 0f) base += 1f;
+                    }
+
+                    tmp.fromHsv(base * 360f, 1f, 1f);
                 } else {
-                    tmp.set(new Color(1, 0, 0, 1));
+                    tmp.set(1f, 0f, 0f, 1f);
                 }
                 tmp.a = alpha;
 
@@ -257,7 +301,6 @@ public class BorderPulseMesh {
 
             float s = x; // along bottom
             w.write(x, y, x, y + thickness, s);
-            pointIndex++;
         }
 
         // Right edge (W,0) -> (W,H), skip first corner
@@ -267,7 +310,6 @@ public class BorderPulseMesh {
 
             float s = W + y;
             w.write(x, y, x - thickness, y, s);
-            pointIndex++;
         }
 
         // Top edge (W,H) -> (0,H), skip first corner
@@ -277,7 +319,6 @@ public class BorderPulseMesh {
 
             float s = W + H + (W - x);
             w.write(x, y, x, y - thickness, s);
-            pointIndex++;
         }
 
         // Left edge (0,H) -> (0,0), skip both corners
@@ -287,7 +328,6 @@ public class BorderPulseMesh {
 
             float s = 2f * W + H + (H - y);
             w.write(x, y, x + thickness, y, s);
-            pointIndex++;
         }
 
         // Close the loop by duplicating the first point (0,0)
@@ -295,12 +335,7 @@ public class BorderPulseMesh {
             float x = 0f, y = 0f;
             float s = 0f;
             w.write(x, y, x, y + thickness, s);
-            pointIndex++;
         }
-
-        // Expected: (4*S + 1) points
-        // int expectedPoints = 4*S + 1;
-        // if (pointIndex != expectedPoints) Gdx.app.log("Border", "points=" + pointIndex + " expected=" + expectedPoints);
     }
 
     private static float easeOutCubic(float x) {

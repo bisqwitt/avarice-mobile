@@ -169,7 +169,6 @@ public class SlotScreen extends ScreenAdapter {
         RelicBag.I().draw(batch);
 
         ParticleManager.I().draw(batch, delta);
-        ParticleManager.I().drawBehindCardLayer(batch, delta);
         slotMachine.draw(app, delta);   // 10
 
         handUi.draw(batch, delta);
@@ -181,7 +180,6 @@ public class SlotScreen extends ScreenAdapter {
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
         PopupManager.I().draw(batch, delta);
-        ParticleManager.I().drawTopLayer(batch, delta);
 
         batch.begin();
         batch.draw(blackBluePixel, 0, 6, 10, 10);
@@ -267,7 +265,7 @@ public class SlotScreen extends ScreenAdapter {
 
                     EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                         new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                        TextureGlow.Type.SLOT, Assets.I().red());
+                        TextureGlow.Type.SLOT);
                 }
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
@@ -345,7 +343,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
-                    TextureGlow.Type.SLOT, Assets.I().blue());
+                    TextureGlow.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
 
@@ -417,10 +415,10 @@ public class SlotScreen extends ScreenAdapter {
     private void onTargetScoreReached() {
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
-        ParticleManager.I().createTopLayer(0, 0, ParticleType.RAINBOW);
-        ParticleManager.I().createTopLayer(9, 0, ParticleType.RAINBOW);
-        ParticleManager.I().createTopLayer(0, 16, ParticleType.RAINBOW);
-        ParticleManager.I().createTopLayer(9, 16, ParticleType.RAINBOW);
+        ParticleManager.I().create(0, 0, ParticleType.RAINBOW, 0.05f, 17);
+        ParticleManager.I().create(9, 0, ParticleType.RAINBOW, 0.05f, 17);
+        ParticleManager.I().create(0, 16, ParticleType.RAINBOW, 0.05f, 17);
+        ParticleManager.I().create(9, 16, ParticleType.RAINBOW, 0.05f, 17);
         healthUi.healHealth();
         shop.show();
     }

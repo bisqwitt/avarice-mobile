@@ -3,31 +3,29 @@ package com.avaricious.utility;
 import java.util.concurrent.ThreadLocalRandom;
 
 public enum RingKey {
-    RING_4(AssetKey.RING_4, AssetKey.RING_4_SHADOW),
-    RING_12(AssetKey.RING_12, AssetKey.RING_12_SHADOW),
-    RING_19(AssetKey.RING_19, AssetKey.RING_19_SHADOW),
-    RING_24(AssetKey.RING_24, AssetKey.RING_24_SHADOW),
-    RING_25(AssetKey.RING_25, AssetKey.RING_25_SHADOW),
-    RING_31(AssetKey.RING_31, AssetKey.RING_31_SHADOW),
-    RING_32(AssetKey.RING_32, AssetKey.RING_32_SHADOW),
-    RING_43(AssetKey.RING_43, AssetKey.RING_43_SHADOW),
-    RING_44(AssetKey.RING_44, AssetKey.RING_44_SHADOW),
-    RING_58(AssetKey.RING_58, AssetKey.RING_58_SHADOW),
-    RING_77(AssetKey.RING_77, AssetKey.RING_77_SHADOW),
-    RING_80(AssetKey.RING_80, AssetKey.RING_80_SHADOW),
-    RING_93(AssetKey.RING_93, AssetKey.RING_93_SHADOW),
-    RING_95(AssetKey.RING_95, AssetKey.RING_95_SHADOW);
+    RING_4(AssetKey.RING_4, AssetKey.RING_4_SHADOW, AssetKey.RING_24_WHITE),
+    RING_12(AssetKey.RING_12, AssetKey.RING_12_SHADOW, AssetKey.RING_12_WHITE),
+    RING_19(AssetKey.RING_19, AssetKey.RING_19_SHADOW, AssetKey.RING_19_WHITE),
+    RING_24(AssetKey.RING_24, AssetKey.RING_24_SHADOW, AssetKey.RING_24_WHITE),
+    RING_25(AssetKey.RING_25, AssetKey.RING_25_SHADOW, AssetKey.RING_25_WHITE),
+    RING_31(AssetKey.RING_31, AssetKey.RING_31_SHADOW, AssetKey.RING_31_WHITE),
+    RING_32(AssetKey.RING_32, AssetKey.RING_32_SHADOW, AssetKey.RING_32_WHITE),
+    RING_43(AssetKey.RING_43, AssetKey.RING_43_SHADOW, AssetKey.RING_43_WHITE),
+    RING_44(AssetKey.RING_44, AssetKey.RING_44_SHADOW, AssetKey.RING_44_WHITE),
+    RING_58(AssetKey.RING_58, AssetKey.RING_58_SHADOW, AssetKey.RING_58_WHITE),
+    RING_77(AssetKey.RING_77, AssetKey.RING_77_SHADOW, AssetKey.RING_77_WHITE),
+    RING_80(AssetKey.RING_80, AssetKey.RING_80_SHADOW, AssetKey.RING_80_WHITE),
+    RING_93(AssetKey.RING_93, AssetKey.RING_93_SHADOW, AssetKey.RING_93_WHITE),
+    RING_95(AssetKey.RING_95, AssetKey.RING_95_SHADOW, AssetKey.RING_95_WHITE);
 
     private final AssetKey assetKey;
-    private AssetKey shadowKey;
+    private final AssetKey shadowKey;
+    private final AssetKey whiteKey;
 
-    RingKey(AssetKey assetKey, AssetKey shadowKey) {
+    RingKey(AssetKey assetKey, AssetKey shadowKey, AssetKey whiteKey) {
         this.assetKey = assetKey;
         this.shadowKey = shadowKey;
-    }
-
-    RingKey(AssetKey assetKey) {
-        this(assetKey, null);
+        this.whiteKey = whiteKey;
     }
 
     public AssetKey getAssetKey() {
@@ -38,7 +36,18 @@ public enum RingKey {
         return shadowKey;
     }
 
+    public AssetKey getWhiteKey() {
+        return whiteKey;
+    }
+
     public static RingKey random() {
         return values()[ThreadLocalRandom.current().nextInt(values().length)];
+    }
+
+    public static RingKey getRingKeyByDefaultKey(AssetKey assetKey) {
+        for (RingKey ringKey : values()) {
+            if (ringKey.assetKey == assetKey) return ringKey;
+        }
+        return null;
     }
 }

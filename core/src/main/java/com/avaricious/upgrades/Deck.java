@@ -29,25 +29,6 @@ public class Deck extends Observable<List<? extends Card>> {
     }
 
     private Deck() {
-//        allUpgrades.addAll(Arrays.asList(
-//            CriticalHitDamageUpgrade.class,
-//            DeptUpgrade.class,
-//            RandomMultAdditionUpgrade.class,
-//            MultPerEmptyJokerSlotUpgrade.class,
-//            ThreeOfAKindMultAdditionUpgrade.class,
-//            FourOfAKindMultAdditionUpgrade.class,
-//            FiveOfAKindMultAdditionUpgrade.class,
-//            PointsPerStreak.class,
-//            LemonValueStackUpgrade.class,
-//            CherryValueStackUpgrade.class,
-//            CloverValueStackUpgrade.class,
-//            BellValueStackUpgrade.class,
-//            IronValueStackUpgrade.class,
-//            DiamondValueStackUpgrade.class,
-//            SevenValueStackUpgrade.class,
-//            PointsPerConsecutiveHit.class
-//        ));
-
         allCardClasses.addAll(Arrays.asList(
             FivePointsCard.class,
             TwoMultCard.class,

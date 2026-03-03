@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ShopCardsBar {
 
-    private final Rectangle buyBounds = new Rectangle(0f, 0f, 0f, 0f);
+    private final Rectangle buyBounds;
     private final Rectangle firstCardBounds = new Rectangle(1.65f, 10.8f, 142 / 85f, 190 / 85f);
     private final float CARD_OFFSET = 2f;
 
@@ -29,7 +29,8 @@ public class ShopCardsBar {
     private final Map<Card, DragableSlot> cards = new HashMap<>();
     private Card touchingCard = null;
 
-    public ShopCardsBar() {
+    public ShopCardsBar(Rectangle buyBounds) {
+        this.buyBounds = buyBounds;
         loadCards(Deck.I().randomUpgrades());
     }
 
@@ -77,9 +78,10 @@ public class ShopCardsBar {
         DragableSlot dragableSlot = cards.get(card);
         if (buyBounds.contains(dragableSlot.getCardCenter())) {
             buyCard(card);
+        } else {
+            dragableSlot.endDrag(0);
+            cards.get(card).targetScale = 1f;
         }
-        dragableSlot.endDrag(0);
-        cards.get(card).targetScale = 1f;
         touchingCard = null;
         PopupManager.I().killTooltip();
     }
@@ -143,7 +145,17 @@ public class ShopCardsBar {
     }
 
     private void buyCard(Card card) {
+        Deck.I().addUpgradeToDeck(card);
+        cards.remove(card);
+    }
 
+    public boolean isDragging() {
+        return touchingCard != null;
+    }
+
+    public Vector2 getDraggingCardsCenter() {
+        if (touchingCard == null) return new Vector2(-10, -10);
+        return cards.get(touchingCard).getCardCenter();
     }
 
 }

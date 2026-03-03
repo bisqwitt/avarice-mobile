@@ -1,6 +1,7 @@
 package com.avaricious.upgrades.multAdditions;
 
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.utility.RingKey;
 
 import java.util.List;
 
@@ -19,5 +20,10 @@ public class DefaultMultAdditionRelic extends MultAdditionRelic {
     @Override
     public String description() {
         return "Add " + getMulti() + " to multiplier";
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return RingKey.RING_19;
     }
 }

@@ -4,6 +4,7 @@ import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
+import com.avaricious.effects.GlowBorder;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.RandomRelic;
 import com.avaricious.utility.AssetKey;
@@ -26,15 +27,17 @@ public class Shop {
     private final TextureRegion windowShadow = Assets.I().get(AssetKey.SHOP_WINDOW_SHADOW);
     private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
     private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
-    private final TextureRegion buyBox = Assets.I().get(AssetKey.BUY_BOX);
     private final TextureRegion buyTxt = Assets.I().get(AssetKey.BUY_TXT);
+    private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
 
     private final Button returnButton;
     private final Button rerollButton;
 
+    private final Rectangle buyBox = new Rectangle(3.75f, 3.75f, 3.75f, 3f);
+
     private final CreditScore creditScore;
-    private final ShopCardsBar cards = new ShopCardsBar();
-    private final RandomRelic randomRelic = new RandomRelic();
+    private final ShopCardsBar cards = new ShopCardsBar(buyBox);
+    private final RandomRelic randomRelic = new RandomRelic(buyBox);
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
@@ -51,7 +54,7 @@ public class Shop {
 
     public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
-            new Rectangle(WINDOW_X + 1.25f, WINDOW_Y + 2.2f, 0.32f, 0.56f), 0.35f);
+            new Rectangle(WINDOW_X + 1.6f, WINDOW_Y + 4.75f, 0.32f, 0.56f), 0.35f);
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
@@ -134,6 +137,17 @@ public class Shop {
             new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13.1f + winYOffset, 29 / 8f, 13 / 8f),
             14, new Color(1f, 1f, 1f, winAlpha)));
 
+        Pencil.I().addDrawing(new TextureDrawing(buyTxt,
+            new Rectangle(4.3f, 4.65f, 24 / 10f, 13 / 10f),
+            14, Assets.I().shadowColor()
+        ));
+
+        if (cards.isDragging() || randomRelic.isDragging()) {
+            GlowBorder.drawGlowBorder(yellowTexture, buyBox,
+                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(randomRelic.getRelicCenter()),
+                14, delta);
+        }
+
         cards.draw();
         randomRelic.draw();
 
@@ -143,7 +157,7 @@ public class Shop {
     }
 
     public void show() {
-        creditScore.setScore(CreditManager.I().getCredits());
+        cards.loadCards(Deck.I().randomUpgrades());
 
         state = State.ENTERING;
         animT = 0f;

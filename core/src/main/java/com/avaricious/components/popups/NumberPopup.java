@@ -2,8 +2,8 @@ package com.avaricious.components.popups;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,8 +14,8 @@ import java.util.List;
 
 public class NumberPopup {
 
-    public final static float defaultWidth = 7 / 15f;
-    public final static float defaultHeight = 11 / 15f;
+    public final static float defaultWidth = 7 / 12f;
+    public final static float defaultHeight = 11 / 12f;
 
     private enum Phase {PULSE, HOLD, EXIT, FINISHED}
 
@@ -137,13 +137,12 @@ public class NumberPopup {
 
         if (alpha <= 0f || scale <= 0f) return;
 
-        float originX = bounds.width / 2f;
-        float originY = bounds.height / 2f;
+        float yOffset = getPulseYOffset();
 
         // Use alpha for main draw color
         Pencil.I().addDrawing(new TextureDrawing(
             number < 0 ? minusTexture : plusTexture,
-            new Rectangle(bounds.x - numberOffset, bounds.y, bounds.width, bounds.height),
+            new Rectangle(bounds.x - numberOffset, bounds.y + yOffset, bounds.width, bounds.height),
             scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
         ));
 
@@ -151,7 +150,7 @@ public class NumberPopup {
             int index = i;
             Pencil.I().addDrawing(new TextureDrawing(
                 digitalNumberTextures.get(index),
-                new Rectangle(bounds.x + (numberOffset * index), bounds.y, bounds.width, bounds.height),
+                new Rectangle(bounds.x + (numberOffset * index), bounds.y + yOffset, bounds.width, bounds.height),
                 scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
             ));
         }
@@ -159,7 +158,7 @@ public class NumberPopup {
         if (asPercentage) {
             Pencil.I().addDrawing(new TextureDrawing(
                 percentageTexture,
-                new Rectangle(bounds.x + 0.4f, bounds.y, 8 / 20f, 13 / 20f),
+                new Rectangle(bounds.x + 0.4f, bounds.y + yOffset, 8 / 20f, 13 / 20f),
                 scale, rotation, 16
             ));
         }
@@ -167,16 +166,41 @@ public class NumberPopup {
 
     protected float getPulseCurve() {
         float t = clamp01(timeInPhase / pulseTime);
-        float pulse = 1f - 4f * (t - 0.5f) * (t - 0.5f);
-        return Math.max(0f, pulse);
+
+        // Main pop: quick overshoot then settle
+        float pop = easeOutBack(t);
+
+        // Secondary tiny bounce near the end (damped sine)
+        float bounceWindow = smoothstep(clamp01((t - 0.55f) / 0.45f)); // activates late
+        float bounce = (float) Math.sin((t - 0.55f) * Math.PI * 3.0) * 0.08f * bounceWindow;
+
+        // Clamp-ish: keep it sane
+        return pop + bounce;
     }
 
     protected float getScale() {
         float baseScale = 1.0f;
 
         if (phase == Phase.PULSE) {
-            float pulseScale = 0.35f;
-            return baseScale + getPulseCurve() * pulseScale;
+            float t = clamp01(timeInPhase / pulseTime);
+
+            // Overshoot amount (tune)
+            float overshoot = 0.28f;
+
+            // getPulseCurve() is ~1 at rest end, >1 at overshoot
+            // We want scale to start at ~0.85 and end at 1.0 with overshoot.
+            float startScale = 0.85f;
+            float pop = getPulseCurve(); // around 0..~1.1
+
+            // Normalize-ish: map pop so it starts near 0 and ends near 1
+            // We'll use smoothstep for a stable end.
+            float settle = smoothstep(t);
+
+            // pop gives overshoot, settle ensures it lands exactly at 1
+            float scale = startScale + (1f - startScale) * settle;
+            scale += (pop - settle) * overshoot;
+
+            return scale;
         }
 
         if (phase == Phase.HOLD) {
@@ -189,11 +213,30 @@ public class NumberPopup {
     }
 
     protected float getRotation() {
-        if (phase == Phase.PULSE) {
-            float wobbleAngle = 8f;
-            return getPulseCurve() * wobbleAngle;
-        }
-        return 0f;
+        if (phase != Phase.PULSE) return 0f;
+
+        float t = clamp01(timeInPhase / pulseTime);
+
+        // Damped oscillation: starts strong, decays quickly
+        float maxAngle = 7.0f;     // tune
+        float damping = 10.0f;     // tune
+        float freq = 14.0f;        // tune (radians-ish)
+
+        float osc = (float) Math.sin(t * freq) * (float) Math.exp(-damping * t);
+
+        // Optional: flip direction based on sign so plus/minus feel distinct
+        float dir = (number < 0) ? -1f : 1f;
+
+        return dir * maxAngle * osc;
+    }
+
+    protected float getPulseYOffset() {
+        if (phase != Phase.PULSE) return 0f;
+        float t = clamp01(timeInPhase / pulseTime);
+
+        // Up-kick early, settle back
+        float kick = (float) Math.sin(Math.PI * t) * 0.06f; // tune (world units)
+        return kick;
     }
 
     protected float getAlpha() {
@@ -204,6 +247,18 @@ public class NumberPopup {
         // EXIT fade
         float t = clamp01(timeInPhase / exitTime);
         return 1f - t;
+    }
+
+    private float easeOutBack(float t) {
+        // Standard "back" overshoot ease
+        float s = 1.70158f;
+        t -= 1f;
+        return 1f + (s + 1f) * t * t * t + s * t * t;
+    }
+
+    private float smoothstep(float t) {
+        // Nice smooth 0..1
+        return t * t * (3f - 2f * t);
     }
 
     private float clamp01(float v) {

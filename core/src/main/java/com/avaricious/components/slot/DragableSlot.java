@@ -46,6 +46,7 @@ public class DragableSlot extends Slot {
     private float tiltResponsiveness = 10f;  // smoothing for tilt
     private float dragScaleMul = 1.10f;      // scale while dragging
     private float dropWobble = 1f;           // call wobble() on release if you like
+    private float moveToSpeed = 10f;
 
     // Smoothed tilt
     private float tiltDeg = 0f;
@@ -137,8 +138,7 @@ public class DragableSlot extends Slot {
 
         if (targetPosition != null) {
             Vector2 pos = getPos(); // must be a mutable Vector2 reference you can set back
-            float responsiveness = 10f; // higher = snappier
-            float t = 1f - (float) Math.exp(-responsiveness * delta);
+            float t = 1f - (float) Math.exp(-moveToSpeed * delta);
 
             pos.lerp(targetPosition, t);
 
@@ -263,6 +263,11 @@ public class DragableSlot extends Slot {
         return dragging ? dragScaleMul : 1f;
     }
 
+    public DragableSlot setMoveToSpeed(float moveToSpeed) {
+        this.moveToSpeed = moveToSpeed;
+        return this;
+    }
+
     public boolean isDragging() {
         return dragging;
     }
@@ -284,6 +289,12 @@ public class DragableSlot extends Slot {
     public DragableSlot setTilt(float maxTiltDeg, float tiltResponsiveness) {
         this.maxTiltDeg = maxTiltDeg;
         this.tiltResponsiveness = tiltResponsiveness;
+        return this;
+    }
+
+    @Override
+    public DragableSlot setTargetScaleSpeed(float value) {
+        super.setTargetScaleSpeed(value);
         return this;
     }
 
