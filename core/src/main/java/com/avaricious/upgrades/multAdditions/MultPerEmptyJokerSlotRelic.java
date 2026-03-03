@@ -3,6 +3,7 @@ package com.avaricious.upgrades.multAdditions;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.RingKey;
 
 import java.util.List;
 
@@ -22,5 +23,10 @@ public class MultPerEmptyJokerSlotRelic extends MultAdditionRelic {
     public String description() {
         return Assets.I().redText("+5 mult") + " for each empty Joker slot\n"
             + Assets.I().greenText("(Currently +" + getMulti() + ")");
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return RingKey.RING_25;
     }
 }

@@ -3,6 +3,7 @@ package com.avaricious.upgrades;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.RingKey;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
@@ -23,5 +24,10 @@ public class RandomMultAdditionRelic extends MultAdditionRelic {
     public String description() {
         return Assets.I().redText("+0") + " - " + Assets.I().redText("23 Mult") + "\n"
             + "(Random each turn)";
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return RingKey.RING_44;
     }
 }

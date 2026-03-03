@@ -3,6 +3,7 @@ package com.avaricious.stats.statupgrades;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.upgrades.ApplieableRelic;
 import com.avaricious.upgrades.Relic;
+import com.avaricious.utility.RingKey;
 
 import java.math.BigDecimal;
 
@@ -39,5 +40,10 @@ public class StatusRelic extends Relic implements ApplieableRelic {
 
     public int getAdditionalPercentage() {
         return (int) (additionalPercentage.floatValue() * 100);
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return RingKey.RING_58;
     }
 }

@@ -14,6 +14,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
+import com.badlogic.gdx.utils.Timer;
 
 public class RandomRelic {
 
@@ -110,7 +112,7 @@ public class RandomRelic {
             15, new Color(1f, 1f, 1f, alpha)
         ));
 
-        if (whiten > 0f) {
+        if (whiten > 0f && !ripped) {
             float easedWhiten = whiten * whiten * (3f - 2f * whiten);
             Pencil.I().addDrawing(new TextureDrawing(
                 getWhiteTexture(),
@@ -119,6 +121,8 @@ public class RandomRelic {
                 15, new Color(1f, 1f, 1f, alpha * easedWhiten)
             ));
         }
+
+//        if(ripped) PopupManager.I().updateTooltip(slot.getRenderPos(new Vector2()), true);
     }
 
     private void update(float delta) {
@@ -201,6 +205,12 @@ public class RandomRelic {
         relic = RelicBag.I().randomRelic();
         Vector2 centerPos = slot.getCardCenter().sub(1, 1);
         ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.04f, 15);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                PopupManager.I().createTooltip(relic, slot.getRenderPos(new Vector2()), 16);
+            }
+        }, 0.25f);
     }
 
     private TextureRegion getTexture() {

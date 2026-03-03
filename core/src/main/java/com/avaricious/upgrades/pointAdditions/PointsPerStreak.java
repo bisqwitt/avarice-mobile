@@ -1,6 +1,7 @@
 package com.avaricious.upgrades.pointAdditions;
 
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.utility.RingKey;
 
 import java.util.List;
 
@@ -19,5 +20,10 @@ public class PointsPerStreak extends PointAdditionRelic {
     @Override
     public String description() {
         return "";
+    }
+
+    @Override
+    public RingKey ringKey() {
+        return RingKey.RING_43;
     }
 }
