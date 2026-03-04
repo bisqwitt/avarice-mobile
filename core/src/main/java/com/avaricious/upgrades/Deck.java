@@ -56,24 +56,21 @@ public class Deck extends Observable<List<? extends Card>> {
     private final List<Class<? extends Card>> allCardClasses = new ArrayList<>();
     private final List<Card> deck = new ArrayList<>();
 
-    public List<? extends Card> randomUpgrades() {
-        List<Class<? extends Card>> randomUpgrades = Arrays.asList(
-            randomUpgradeClass(),
-            randomUpgradeClass(),
-            randomUpgradeClass()
-        );
-        List<Card> result = new ArrayList<>(randomUpgrades.size());
-        for (int i = 0; i < randomUpgrades.size(); i++) {
-            Class<? extends Card> upgradeClass = randomUpgrades.get(i);
-            try {
-                Card upgrade = upgradeClass.getDeclaredConstructor().newInstance();
-                result.add(upgrade);
-            } catch (InstantiationException | IllegalAccessException |
-                     InvocationTargetException | NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
+    public List<? extends Card> randomUpgrades(int amount) {
+        List<Card> result = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            result.add(randomUpgrade());
         }
         return result;
+    }
+
+    public Card randomUpgrade() {
+        try {
+            return randomUpgradeClass().getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException |
+                 InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Card instantiateCard(Class<? extends Card> cardClass) {

@@ -3,7 +3,7 @@ package com.avaricious.upgrades.multAdditions.pattern;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public abstract class PatternMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_31;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_31;
     }
 }

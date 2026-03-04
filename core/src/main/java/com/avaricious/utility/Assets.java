@@ -1,6 +1,7 @@
 package com.avaricious.utility;
 
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.upgrades.Rarity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -37,6 +38,11 @@ public class Assets {
     private final Color light = new Color(0.992156f, 0.992156f, 0.992156f, 1f);
     private final Color shadow = new Color(1f, 1f, 1f, 0.25f);
     private final Color healthRed = new Color(229 / 255f, 57 / 255f, 53 / 255f, 1f);
+    private final Color common = new Color(1f, 1f, 1f, 1f);
+    private final Color uncommon = new Color(0.30f, 0.69f, 0.31f, 1f);
+    private final Color rare = new Color(0.13f, 0.59f, 0.95f, 1f);
+    private final Color epic = new Color(0.61f, 0.15f, 0.69f, 1f);
+    private final Color legendary = new Color(1f, 0.60f, 0.00f, 1f);
 
     private Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
     private BitmapFont bigFont;
@@ -177,5 +183,12 @@ public class Assets {
         return healthRed;
     }
 
+    public Color getRarityColor(Rarity rarity) {
+        if (rarity == Rarity.COMMON) return common;
+        else if (rarity == Rarity.UNCOMMON) return uncommon;
+        else if (rarity == Rarity.RARE) return rare;
+        else if (rarity == Rarity.EPIC) return epic;
+        else return legendary;
+    }
 }
 

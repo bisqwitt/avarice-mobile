@@ -1,7 +1,7 @@
 package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 public class BellValueStackRelic extends SymbolValueStackRelic {
 
@@ -11,7 +11,7 @@ public class BellValueStackRelic extends SymbolValueStackRelic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_24;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_24;
     }
 }

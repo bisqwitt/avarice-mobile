@@ -2,7 +2,7 @@ package com.avaricious.utility;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-public enum RingKey {
+public enum RingAssetKeys {
     RING_4(AssetKey.RING_4, AssetKey.RING_4_SHADOW, AssetKey.RING_24_WHITE),
     RING_12(AssetKey.RING_12, AssetKey.RING_12_SHADOW, AssetKey.RING_12_WHITE),
     RING_19(AssetKey.RING_19, AssetKey.RING_19_SHADOW, AssetKey.RING_19_WHITE),
@@ -22,7 +22,7 @@ public enum RingKey {
     private final AssetKey shadowKey;
     private final AssetKey whiteKey;
 
-    RingKey(AssetKey assetKey, AssetKey shadowKey, AssetKey whiteKey) {
+    RingAssetKeys(AssetKey assetKey, AssetKey shadowKey, AssetKey whiteKey) {
         this.assetKey = assetKey;
         this.shadowKey = shadowKey;
         this.whiteKey = whiteKey;
@@ -40,12 +40,12 @@ public enum RingKey {
         return whiteKey;
     }
 
-    public static RingKey random() {
+    public static RingAssetKeys random() {
         return values()[ThreadLocalRandom.current().nextInt(values().length)];
     }
 
-    public static RingKey getRingKeyByDefaultKey(AssetKey assetKey) {
-        for (RingKey ringKey : values()) {
+    public static RingAssetKeys getRingKeyByDefaultKey(AssetKey assetKey) {
+        for (RingAssetKeys ringKey : values()) {
             if (ringKey.assetKey == assetKey) return ringKey;
         }
         return null;

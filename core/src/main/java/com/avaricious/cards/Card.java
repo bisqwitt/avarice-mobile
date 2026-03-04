@@ -3,6 +3,7 @@ package com.avaricious.cards;
 import com.avaricious.components.popups.NumberPopup;
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -11,6 +12,8 @@ public abstract class Card extends Upgrade {
     public abstract String description();
 
     protected abstract void onApply();
+
+    public abstract TextureRegion texture();
 
     public abstract Runnable createPopupRunnable(Vector2 pos);
 

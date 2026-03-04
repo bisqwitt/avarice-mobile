@@ -4,4 +4,6 @@ public abstract class Upgrade {
 
     public abstract String description();
 
+//    public abstract Rarity rarity();
+
 }

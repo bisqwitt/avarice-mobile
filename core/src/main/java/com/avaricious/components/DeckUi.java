@@ -140,7 +140,7 @@ public class DeckUi {
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
-            jokerCard,
+            card.texture(),
             new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
             scale, rotation, showingDeck ? 25 : 6
         ));

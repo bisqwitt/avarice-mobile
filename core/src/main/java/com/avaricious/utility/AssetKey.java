@@ -171,7 +171,20 @@ public enum AssetKey {
     RING_95("ring95"),
     RING_95_SHADOW("ring95-shadow"),
     RING_95_WHITE("ring95-white"),
-    ;
+    BALL8_CARD("8-Ball-Card"),
+    BANNER_CARD("Banner-card"),
+    BLACKBOARD_CARD("Blackboard-card"),
+    CEREMONIAL_DAGGER_CARD("Ceremonial-Dagger-card"),
+    CREDIT_CARD_CARD("Credit-Card-card"),
+    DELAYED_GRATIFICATION_CARD("Delayed-Gratification-card"),
+    DNA_CARD("DNA-card"),
+    DUSK_CARD("Dusk-card"),
+    MIME_CARD("Mime-card"),
+    MISPRINT_CARD("Misprint-card"),
+    MYSTIC_SUMMIT_CARD("Mystic-Summit-card"),
+    SPACE_JOKER_CARD("Space-Joker-card"),
+    SUPERNOVA_CARD("Supernova-card"),
+    WHITE_JOKER_CARD("Joker-white");
 
     private final String path;
 

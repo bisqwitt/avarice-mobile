@@ -2,10 +2,14 @@ package com.avaricious.cards;
 
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class FivePointsCard extends Card {
+
+    private final TextureRegion texture = Assets.I().get(AssetKey.CEREMONIAL_DAGGER_CARD);
 
     @Override
     public String description() {
@@ -15,6 +19,11 @@ public class FivePointsCard extends Card {
     @Override
     public void onApply() {
         PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, 5);
+    }
+
+    @Override
+    public TextureRegion texture() {
+        return texture;
     }
 
     @Override

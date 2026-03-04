@@ -16,6 +16,8 @@ public class TextureDrawing implements Drawing {
     private float scale;
     private float rotation;
 
+    private boolean usePosAsOrigin = false;
+
     private Runnable beforeDrawing;
     private Runnable afterDrawing;
 
@@ -65,7 +67,7 @@ public class TextureDrawing implements Drawing {
         if (additionalValues) {
             batch.draw(textureRegion,
                 bounds.x, bounds.y,
-                bounds.width / 2f, bounds.height / 2f,
+                bounds.width / 2f, usePosAsOrigin ? 0 : bounds.height / 2f,
                 bounds.width, bounds.height,
                 scale, scale,
                 rotation);
@@ -93,6 +95,11 @@ public class TextureDrawing implements Drawing {
 
     public TextureDrawing setAfterDrawing(Runnable afterDrawing) {
         this.afterDrawing = afterDrawing;
+        return this;
+    }
+
+    public TextureDrawing usePosAsOrigin() {
+        usePosAsOrigin = true;
         return this;
     }
 }

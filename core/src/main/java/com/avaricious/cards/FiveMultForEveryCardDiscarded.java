@@ -3,11 +3,14 @@ package com.avaricious.cards;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.upgrades.Hand;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class FiveMultForEveryCardDiscarded extends Card {
 
+    private final TextureRegion texture = Assets.I().get(AssetKey.BLACKBOARD_CARD);
     private int mult;
 
     @Override
@@ -20,6 +23,11 @@ public class FiveMultForEveryCardDiscarded extends Card {
     protected void onApply() {
         mult = Hand.I().getCardsDiscarded() * 5;
         PatternDisplay.I().addTo(PatternDisplay.Type.MULTI, mult);
+    }
+
+    @Override
+    public TextureRegion texture() {
+        return texture;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.avaricious.upgrades.multAdditions;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class DefaultMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_19;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_19;
     }
 }

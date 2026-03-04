@@ -3,7 +3,7 @@ package com.avaricious.upgrades.pointAdditions;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class PointsPerConsecutiveHit extends PointAdditionRelic implements Relic
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_32;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_32;
     }
 }

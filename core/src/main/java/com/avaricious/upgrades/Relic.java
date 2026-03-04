@@ -1,9 +1,9 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 public abstract class Relic extends Upgrade {
 
-    public abstract RingKey ringKey();
+    public abstract RingAssetKeys ringKey();
 
 }

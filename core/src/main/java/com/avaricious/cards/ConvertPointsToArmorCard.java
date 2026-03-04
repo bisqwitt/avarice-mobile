@@ -3,11 +3,14 @@ package com.avaricious.cards;
 import com.avaricious.components.HealthUi;
 import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class ConvertPointsToArmorCard extends Card {
 
+    private final TextureRegion texture = Assets.I().get(AssetKey.BALL8_CARD);
     private int points;
 
     @Override
@@ -22,6 +25,11 @@ public class ConvertPointsToArmorCard extends Card {
         points = (int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS);
         PatternDisplay.I().setValueOf(PatternDisplay.Type.POINTS, 0);
         HealthUi.I().addArmor(points);
+    }
+
+    @Override
+    public TextureRegion texture() {
+        return texture;
     }
 
     @Override

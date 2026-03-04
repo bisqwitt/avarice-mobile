@@ -153,7 +153,7 @@ public class HandUi {
             10, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
-            jokerCard,
+            card.texture(),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
             scale, rotation,
             10, new Color(1f, 1f, 1f, alpha)

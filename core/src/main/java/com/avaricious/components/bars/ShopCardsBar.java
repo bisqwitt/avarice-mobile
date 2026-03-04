@@ -23,7 +23,6 @@ public class ShopCardsBar {
     private final Rectangle firstCardBounds = new Rectangle(1.65f, 10.8f, 142 / 85f, 190 / 85f);
     private final float CARD_OFFSET = 2f;
 
-    private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new HashMap<>();
@@ -31,7 +30,7 @@ public class ShopCardsBar {
 
     public ShopCardsBar(Rectangle buyBounds) {
         this.buyBounds = buyBounds;
-        loadCards(Deck.I().randomUpgrades());
+        loadCards(Deck.I().randomUpgrades(3));
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
@@ -87,8 +86,6 @@ public class ShopCardsBar {
     }
 
     public void draw() {
-        // TODO draw glowBorder to buy card
-
         for (Card card : cards.keySet()) {
             if (touchingCard != card) drawCard(card);
         }
@@ -105,6 +102,7 @@ public class ShopCardsBar {
             * slot.wobbleScale()
             * slot.getTargetScale();
         final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
+        final int layer = card == touchingCard ? 16 : 15;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -114,13 +112,13 @@ public class ShopCardsBar {
                 bounds.width, bounds.height
             ),
             scale, rotation,
-            15, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+            layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
-            jokerCard,
+            card.texture(),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
             scale, rotation,
-            15, new Color(1f, 1f, 1f, alpha)
+            layer, new Color(1f, 1f, 1f, alpha)
         ));
     }
 

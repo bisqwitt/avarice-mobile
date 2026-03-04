@@ -2,11 +2,12 @@ package com.avaricious.components;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
+import com.avaricious.cards.CardPack;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.effects.GlowBorder;
 import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.RandomRelic;
+import com.avaricious.upgrades.RelicPack;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -33,11 +34,12 @@ public class Shop {
     private final Button returnButton;
     private final Button rerollButton;
 
-    private final Rectangle buyBox = new Rectangle(3.75f, 3.75f, 3.75f, 3f);
+    private final Rectangle buyBox = new Rectangle(3.75f, 2.75f, 3.75f, 3f);
 
     private final CreditScore creditScore;
     private final ShopCardsBar cards = new ShopCardsBar(buyBox);
-    private final RandomRelic randomRelic = new RandomRelic(buyBox);
+    private final CardPack cardPack = new CardPack(buyBox);
+    private final RelicPack relicPack = new RelicPack(buyBox);
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
@@ -54,11 +56,11 @@ public class Shop {
 
     public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
-            new Rectangle(WINDOW_X + 1.6f, WINDOW_Y + 4.75f, 0.32f, 0.56f), 0.35f);
+            new Rectangle(WINDOW_X + 1.6f, WINDOW_Y + 3.75f, 0.32f, 0.56f), 0.35f);
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
-                cards.loadCards(Deck.I().randomUpgrades());
+                cards.loadCards(Deck.I().randomUpgrades(3));
                 CreditManager.I().pay(3);
             }
         },
@@ -138,18 +140,19 @@ public class Shop {
             14, new Color(1f, 1f, 1f, winAlpha)));
 
         Pencil.I().addDrawing(new TextureDrawing(buyTxt,
-            new Rectangle(4.3f, 4.65f, 24 / 10f, 13 / 10f),
+            new Rectangle(4.3f, 3.5f, 24 / 10f, 13 / 10f),
             14, Assets.I().shadowColor()
         ));
 
-        if (cards.isDragging() || randomRelic.isDragging()) {
+        if (cards.isDragging() || cardPack.isDragging() || relicPack.isDragging()) {
             GlowBorder.drawGlowBorder(yellowTexture, buyBox,
-                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(randomRelic.getRelicCenter()),
+                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(cardPack.getCenter()) || buyBox.contains(relicPack.getCenter()),
                 14, delta);
         }
 
         cards.draw();
-        randomRelic.draw();
+        cardPack.draw();
+        relicPack.draw();
 
         returnButton.draw();
         rerollButton.draw();
@@ -157,7 +160,7 @@ public class Shop {
     }
 
     public void show() {
-        cards.loadCards(Deck.I().randomUpgrades());
+        cards.loadCards(Deck.I().randomUpgrades(3));
 
         state = State.ENTERING;
         animT = 0f;
@@ -171,7 +174,8 @@ public class Shop {
         if (state != State.SHOWN) return;
 
         cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        randomRelic.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        relicPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         returnButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

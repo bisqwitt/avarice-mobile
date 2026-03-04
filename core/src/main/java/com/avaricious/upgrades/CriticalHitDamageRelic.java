@@ -1,7 +1,7 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 public class CriticalHitDamageRelic extends Relic {
     @Override
@@ -10,7 +10,7 @@ public class CriticalHitDamageRelic extends Relic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_4;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_4;
     }
 }

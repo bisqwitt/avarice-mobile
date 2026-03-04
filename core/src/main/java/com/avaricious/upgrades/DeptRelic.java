@@ -1,7 +1,7 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 public class DeptRelic extends Relic {
 
@@ -11,7 +11,7 @@ public class DeptRelic extends Relic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_12;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_12;
     }
 }

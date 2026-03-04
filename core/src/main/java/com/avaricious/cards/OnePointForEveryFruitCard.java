@@ -4,11 +4,14 @@ import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 public class OnePointForEveryFruitCard extends Card {
 
+    private final TextureRegion texture = Assets.I().get(AssetKey.DNA_CARD);
     int points = 0;
 
     @Override
@@ -21,6 +24,11 @@ public class OnePointForEveryFruitCard extends Card {
     protected void onApply() {
         points = countFruits();
         PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
+    }
+
+    @Override
+    public TextureRegion texture() {
+        return texture;
     }
 
     @Override

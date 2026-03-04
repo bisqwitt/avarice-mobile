@@ -3,7 +3,7 @@ package com.avaricious.upgrades;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class RandomMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_44;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_44;
     }
 }

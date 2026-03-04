@@ -3,7 +3,7 @@ package com.avaricious.stats.statupgrades;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.upgrades.ApplieableRelic;
 import com.avaricious.upgrades.Relic;
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 import java.math.BigDecimal;
 
@@ -43,7 +43,7 @@ public class StatusRelic extends Relic implements ApplieableRelic {
     }
 
     @Override
-    public RingKey ringKey() {
-        return RingKey.RING_58;
+    public RingAssetKeys ringKey() {
+        return RingAssetKeys.RING_58;
     }
 }

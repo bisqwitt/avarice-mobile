@@ -1,6 +1,6 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.utility.RingKey;
+import com.avaricious.utility.RingAssetKeys;
 
 public class RandomUpgrade extends Relic {
     @Override
@@ -9,7 +9,7 @@ public class RandomUpgrade extends Relic {
     }
 
     @Override
-    public RingKey ringKey() {
+    public RingAssetKeys ringKey() {
         return null;
     }
 }
