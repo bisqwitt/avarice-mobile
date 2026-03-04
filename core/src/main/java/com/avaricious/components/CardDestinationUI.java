@@ -11,34 +11,18 @@ import com.badlogic.gdx.math.Vector2;
 
 public class CardDestinationUI {
 
-    private final Dumpster dumpster = new Dumpster();
-
     private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
     private final TextureRegion redTexture = Assets.I().get(AssetKey.DARK_RED_PIXEL);
 
     public void draw(SpriteBatch batch, float delta, Vector2 cardCenterPos, boolean cardIsDragging) {
 
-        dumpster.update(delta, cardCenterPos, cardIsDragging);
-
         Rectangle window = SlotMachine.windowBounds;
-        Rectangle dumpHit = dumpster.getHitBox();
-
-        boolean windowIsHovered = window.contains(cardCenterPos);
-        boolean dumpsterIsHovered = dumpHit.contains(cardCenterPos);
+        Rectangle deckCardBounds = DeckUi.I().getFirstCardBounds();
+        Rectangle deckHitBox = new Rectangle(deckCardBounds.x - 0.1f, deckCardBounds.y - 0.1f, deckCardBounds.width + 0.2f, deckCardBounds.height + 0.2f);
 
         if (cardIsDragging) {
-            GlowBorder.drawGlowBorder(yellowTexture, window, windowIsHovered, 11, delta);
-//            drawGlowBorder(batch, redTexture, dumpHit, dumpsterHover);
+            GlowBorder.drawGlowBorder(yellowTexture, window, window.contains(cardCenterPos), 10, delta);
+            GlowBorder.drawGlowBorder(redTexture, deckHitBox, deckHitBox.contains(cardCenterPos), 10, delta);
         }
-
-        dumpster.draw(batch);
-    }
-
-    public boolean isOverDumpster(Vector2 cardCenterPos) {
-        return dumpster.getHitBox().contains(cardCenterPos);
-    }
-
-    public Dumpster getDumpster() {
-        return dumpster;
     }
 }

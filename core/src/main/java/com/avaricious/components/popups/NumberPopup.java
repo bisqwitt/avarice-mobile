@@ -61,7 +61,7 @@ public class NumberPopup {
         setDigitalNumberTextures(number);
         restart();
 
-        float defaultOffset = 0.5f;
+        float defaultOffset = 0.6f;
         numberOffset = bounds.width == defaultWidth && bounds.height == defaultHeight
             ? defaultOffset
             : defaultOffset + (bounds.width - defaultWidth) * 0.5f;

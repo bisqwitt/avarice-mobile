@@ -102,7 +102,7 @@ public class HandUi {
         DragableSlot dragableSlot = cards.get(card);
         if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
             applyCard(card);
-        } else if (cardDestinationUI.isOverDumpster(dragableSlot.getCardCenter())) {
+        } else if (DeckUi.I().getFirstCardBounds().contains(dragableSlot.getCardCenter())) {
             discardCard(card);
         } else {
             dragableSlot.endDrag(0);
@@ -137,7 +137,7 @@ public class HandUi {
             + (card != touchingCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = slot.getAlpha();
-        if (cardDestinationUI.isOverDumpster(slot.getCardCenter())) alpha -= 0.5f;
+        if (DeckUi.I().getFirstCardBounds().contains(slot.getCardCenter())) alpha -= 0.5f;
 
         Vector2 position = slot.getRenderPos(new Vector2());
 

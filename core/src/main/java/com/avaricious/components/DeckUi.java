@@ -211,4 +211,7 @@ public class DeckUi {
         );
     }
 
+    public Rectangle getFirstCardBounds() {
+        return firstCardBounds;
+    }
 }
