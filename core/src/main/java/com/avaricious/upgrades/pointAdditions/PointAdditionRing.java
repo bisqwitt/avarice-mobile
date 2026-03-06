@@ -1,11 +1,11 @@
 package com.avaricious.upgrades.pointAdditions;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.Relic;
+import com.avaricious.upgrades.Ring;
 
 import java.util.List;
 
-public abstract class PointAdditionRelic extends Relic {
+public abstract class PointAdditionRing extends Ring {
 
     public abstract boolean condition(List<Symbol> selection, long count);
 

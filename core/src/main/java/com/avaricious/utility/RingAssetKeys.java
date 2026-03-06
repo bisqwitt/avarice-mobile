@@ -28,7 +28,7 @@ public enum RingAssetKeys {
         this.whiteKey = whiteKey;
     }
 
-    public AssetKey getAssetKey() {
+    public AssetKey getTextureKey() {
         return assetKey;
     }
 

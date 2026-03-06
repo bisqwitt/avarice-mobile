@@ -1,6 +1,7 @@
 package com.avaricious.components.popups;
 
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,7 +31,7 @@ public class PopupManager {
         tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
-    public void createTooltip(Upgrade upgrade, Vector2 pos, int layer) {
+    public void createTooltip(Upgrade upgrade, Vector2 pos, ZIndex layer) {
         if (upgrade == null) return;
         tooltipPopup = new TooltipPopup(upgrade, pos, layer);
     }

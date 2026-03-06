@@ -1,8 +1,9 @@
 package com.avaricious.components;
 
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -131,7 +132,7 @@ public class DigitalNumber {
         return new Vector2((rectangle.x + index * offset) + rectangle.width / 2, rectangle.y + rectangle.height / 2);
     }
 
-    protected int getLayer() {
-        return 1;
+    protected ZIndex getLayer() {
+        return ZIndex.DIGITAL_NUMBER;
     }
 }

@@ -2,10 +2,10 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +19,7 @@ public class Button {
     private final TextureRegion hoveredButtonTexture;
     private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
 
+    protected final ZIndex layer;
     private final int key;
     private final Runnable onButtonPressedRunnable;
 
@@ -27,7 +28,6 @@ public class Button {
     private boolean spaceWasPressed;
     protected boolean showShadow = true;
 
-    private int layer = 3;
 
     private boolean pressDownIsOnButton = false;
 
@@ -36,7 +36,7 @@ public class Button {
                   TextureRegion pressedButtonTexture,
                   TextureRegion hoveredButtonTexture,
                   Rectangle buttonRectangle,
-                  int key) {
+                  int key, ZIndex layer) {
         this.onButtonPressedRunnable = onButtonPressedRunnable;
 
         this.defaultButtonTexture = defaultButtonTexture;
@@ -46,6 +46,7 @@ public class Button {
 
         currentTexture = this.defaultButtonTexture;
         this.buttonRectangle = buttonRectangle;
+        this.layer = layer;
     }
 
     public void draw() {
@@ -99,8 +100,4 @@ public class Button {
         this.showShadow = showShadow;
     }
 
-    public Button setLayer(int layer) {
-        this.layer = layer;
-        return this;
-    }
 }

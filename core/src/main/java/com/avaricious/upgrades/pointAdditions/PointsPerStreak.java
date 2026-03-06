@@ -5,7 +5,7 @@ import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public class PointsPerStreak extends PointAdditionRelic {
+public class PointsPerStreak extends PointAdditionRing {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {
@@ -23,7 +23,7 @@ public class PointsPerStreak extends PointAdditionRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_43;
     }
 }

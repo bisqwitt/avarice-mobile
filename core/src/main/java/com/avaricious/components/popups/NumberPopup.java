@@ -4,6 +4,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -143,7 +144,7 @@ public class NumberPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             number < 0 ? minusTexture : plusTexture,
             new Rectangle(bounds.x - numberOffset, bounds.y + yOffset, bounds.width, bounds.height),
-            scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+            scale, rotation, ZIndex.POPUP_DEFAULT, new Color(color.r, color.g, color.b, alpha)
         ));
 
         for (int i = 0; i < digitalNumberTextures.size(); i++) {
@@ -151,7 +152,7 @@ public class NumberPopup {
             Pencil.I().addDrawing(new TextureDrawing(
                 digitalNumberTextures.get(index),
                 new Rectangle(bounds.x + (numberOffset * index), bounds.y + yOffset, bounds.width, bounds.height),
-                scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+                scale, rotation, ZIndex.POPUP_DEFAULT, new Color(color.r, color.g, color.b, alpha)
             ));
         }
 
@@ -159,7 +160,7 @@ public class NumberPopup {
             Pencil.I().addDrawing(new TextureDrawing(
                 percentageTexture,
                 new Rectangle(bounds.x + 0.4f, bounds.y + yOffset, 8 / 20f, 13 / 20f),
-                scale, rotation, 16
+                scale, rotation, ZIndex.POPUP_DEFAULT
             ));
         }
     }

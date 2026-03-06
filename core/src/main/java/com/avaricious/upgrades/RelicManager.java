@@ -11,12 +11,12 @@ public class RelicManager {
         return instance == null ? instance = new RelicManager() : instance;
     }
 
-    private final List<Relic> relics = new ArrayList<>();
+    private final List<Ring> rings = new ArrayList<>();
 
     public <T> List<T> getRelicsOfClass(Class<T> clazz) {
         List<T> out = new ArrayList<>();
-        for (int i = 0; i < relics.size(); i++) {          // deck is a List<?>
-            Object o = relics.get(i);
+        for (int i = 0; i < rings.size(); i++) {          // deck is a List<?>
+            Object o = rings.get(i);
             if (clazz.isInstance(o)) {
                 out.add(clazz.cast(o));
             }
@@ -25,15 +25,15 @@ public class RelicManager {
     }
 
     public <T> T getRelicOfClass(Class<T> upgradeClass) {
-        for (Relic upgrade : relics) {
+        for (Ring upgrade : rings) {
             if (upgradeClass.isInstance(upgrade)) return (T) upgrade;
         }
         return null;
     }
 
-    public boolean relicOwned(Class<? extends Relic> relicClass) {
-        for (Relic relic : relics) {
-            if (relicClass.isInstance(relic)) return true;
+    public boolean relicOwned(Class<? extends Ring> relicClass) {
+        for (Ring ring : rings) {
+            if (relicClass.isInstance(ring)) return true;
         }
         return false;
     }

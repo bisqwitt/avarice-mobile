@@ -1,14 +1,14 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
+import com.avaricious.upgrades.multAdditions.MultAdditionRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.List;
 
-public class RandomMultAdditionRelic extends MultAdditionRelic {
+public class RandomMultAdditionRing extends MultAdditionRing {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {
@@ -27,7 +27,7 @@ public class RandomMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_44;
     }
 }

@@ -4,12 +4,10 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-
-import javax.swing.plaf.basic.BasicIconFactory;
 
 /**
  * Draws an animated "light bulb" marquee border around a rectangle.
@@ -21,7 +19,7 @@ public final class LightBulbBorder {
     private final float BULB_HEIGHT = 91 / 250f;
 
     private final TextureRegion bulbOn = Assets.I().get(AssetKey.LIGHT_BULB_ON);
-//    private final TextureRegion bulbOff = Assets.I().get(AssetKey.LIGHT_BULB_OFF); // may be null -> uses tint fallback
+    //    private final TextureRegion bulbOff = Assets.I().get(AssetKey.LIGHT_BULB_OFF); // may be null -> uses tint fallback
     private final TextureRegion bulbOff = null;
 
     // Layout
@@ -45,10 +43,25 @@ public final class LightBulbBorder {
     private final Color offTint = new Color(0.35f, 0.35f, 0.35f, 1f);
 
     // ---------- Configuration ----------
-    public LightBulbBorder setGap(float gap) { this.gap = gap; return this; }
-    public LightBulbBorder setSpacing(float spacing) { this.spacing = spacing; return this; }
-    public LightBulbBorder setInset(float inset) { this.inset = inset; return this; }
-    public LightBulbBorder setKeepCornersClear(boolean v) { this.keepCornersClear = v; return this; }
+    public LightBulbBorder setGap(float gap) {
+        this.gap = gap;
+        return this;
+    }
+
+    public LightBulbBorder setSpacing(float spacing) {
+        this.spacing = spacing;
+        return this;
+    }
+
+    public LightBulbBorder setInset(float inset) {
+        this.inset = inset;
+        return this;
+    }
+
+    public LightBulbBorder setKeepCornersClear(boolean v) {
+        this.keepCornersClear = v;
+        return this;
+    }
 
     public LightBulbBorder setStepTime(float secondsPerStep) {
         this.stepTime = Math.max(0.01f, secondsPerStep);
@@ -61,21 +74,29 @@ public final class LightBulbBorder {
         return this;
     }
 
-    public LightBulbBorder setClockwise(boolean clockwise) { this.clockwise = clockwise; return this; }
+    public LightBulbBorder setClockwise(boolean clockwise) {
+        this.clockwise = clockwise;
+        return this;
+    }
 
     public LightBulbBorder setOnColor(Color c) {
         if (c != null) this.onColor.set(c);
         return this;
     }
 
-    /** Used only when bulbOff is null (we tint bulbOn darker). */
+    /**
+     * Used only when bulbOff is null (we tint bulbOn darker).
+     */
     public LightBulbBorder setOffTint(Color c) {
         if (c != null) this.offTint.set(c);
         return this;
     }
 
     // ---------- Runtime ----------
-    public void reset() { step = 0; acc = 0f; }
+    public void reset() {
+        step = 0;
+        acc = 0f;
+    }
 
     public void update(float dt) {
         acc += dt;
@@ -96,10 +117,10 @@ public final class LightBulbBorder {
         final float bh = BULB_HEIGHT;
 
         // Border rectangle where bulbs are placed (expanded by gap, optionally inset back)
-        final float left   = x - gap + inset;
-        final float right  = x + w + gap - inset;
+        final float left = x - gap + inset;
+        final float right = x + w + gap - inset;
         final float bottom = y - gap + inset;
-        final float top    = y + h + gap - inset;
+        final float top = y + h + gap - inset;
 
         // Step size along edges
         final float stepX = bw + spacing;
@@ -107,9 +128,9 @@ public final class LightBulbBorder {
 
         // How many bulbs per edge
         int nBottom = countAlong((right - left), stepX, keepCornersClear);
-        int nTop    = nBottom;
-        int nLeft   = countAlong((top - bottom), stepY, keepCornersClear);
-        int nRight  = nLeft;
+        int nTop = nBottom;
+        int nLeft = countAlong((top - bottom), stepY, keepCornersClear);
+        int nRight = nLeft;
 
         // Total bulbs in the loop (start at bottom-left, go around)
         int total = nBottom + nRight + nTop + nLeft;
@@ -160,7 +181,7 @@ public final class LightBulbBorder {
         if (length <= 0) return 0;
         float usable = length;
         if (clearCorners) usable = Math.max(0, usable - 2f * step); // reserve space near corners
-        int n = (int)Math.floor(usable / step) + 1;
+        int n = (int) Math.floor(usable / step) + 1;
         return Math.max(0, n);
     }
 
@@ -175,16 +196,16 @@ public final class LightBulbBorder {
 
         if (on) {
             Pencil.I().addDrawing(new TextureDrawing(
-                bulbOn, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), 1, onColor
+                bulbOn, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), ZIndex.LIGHT_BULB_BORDER, onColor
             ));
         } else {
             if (bulbOff != null) {
                 Pencil.I().addDrawing(new TextureDrawing(
-                    bulbOff, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), 1, onColor
+                    bulbOff, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), ZIndex.LIGHT_BULB_BORDER, onColor
                 ));
             } else {
                 Pencil.I().addDrawing(new TextureDrawing(
-                    bulbOn, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), 1, offTint
+                    bulbOn, new Rectangle(x, y, BULB_WIDTH, BULB_HEIGHT), ZIndex.LIGHT_BULB_BORDER, offTint
                 ));
             }
         }

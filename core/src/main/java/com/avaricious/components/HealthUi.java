@@ -8,8 +8,9 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -50,24 +51,24 @@ public class HealthUi {
         Pencil.I().addDrawing(new TextureDrawing(
             armTxtShadow,
             new Rectangle(txtX - 0.15f, armor.calcHoverY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
-            4, Assets.I().shadowColor()
+            ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxtShadow,
             new Rectangle(txtX, health.calcHoverY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
-            4, Assets.I().shadowColor()
+            ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
 
         armor.draw(batch, delta);
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
             new Rectangle(txtX - 0.15f, armor.calcHoverY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
-            4, Assets.I().silver()));
+            ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(batch, delta);
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxt,
             new Rectangle(txtX, health.calcHoverY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
-            4, Assets.I().healthRedColor()
+            ZIndex.HEALTH_UI, Assets.I().healthRedColor()
         ));
     }
 

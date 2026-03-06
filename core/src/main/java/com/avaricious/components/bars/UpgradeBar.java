@@ -5,8 +5,9 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -106,12 +107,12 @@ public abstract class UpgradeBar {
         Pencil.I().addDrawing(new TextureDrawing(
             getShadow(upgrade),
             new Rectangle(bounds.x + 0.1f, bounds.y - 0.1f, bounds.width, bounds.height),
-            1f, rotation, 5, Assets.I().shadowColor()
+            1f, rotation, ZIndex.UPGRADE_BAR, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             getTexture(upgrade),
             bounds, 1f, rotation,
-            5
+            ZIndex.UPGRADE_BAR
         ));
     }
 

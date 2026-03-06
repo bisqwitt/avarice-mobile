@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class TextureDrawing implements Drawing {
 
-    private final int layer;
+    private final ZIndex layer;
 
     private final boolean additionalValues;
     private final TextureRegion textureRegion;
@@ -23,14 +23,14 @@ public class TextureDrawing implements Drawing {
 
     private Color color;
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, int layer) {
+    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, ZIndex layer) {
         this.textureRegion = textureRegion;
         this.bounds = bounds;
         this.layer = layer;
         additionalValues = false;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, int layer, Color color) {
+    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, ZIndex layer, Color color) {
         this.textureRegion = textureRegion;
         this.bounds = bounds;
         this.layer = layer;
@@ -38,7 +38,7 @@ public class TextureDrawing implements Drawing {
         additionalValues = false;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, int layer) {
+    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, ZIndex layer) {
         this.textureRegion = textureRegion;
         this.bounds = bounds;
         this.scale = scale;
@@ -47,7 +47,7 @@ public class TextureDrawing implements Drawing {
         additionalValues = true;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, int layer, Color color) {
+    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, ZIndex layer, Color color) {
         this.textureRegion = textureRegion;
         this.bounds = bounds;
         this.scale = scale;
@@ -84,7 +84,7 @@ public class TextureDrawing implements Drawing {
     }
 
     @Override
-    public int getLayer() {
+    public ZIndex getZIndex() {
         return layer;
     }
 

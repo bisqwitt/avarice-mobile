@@ -14,6 +14,7 @@ import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
 import com.avaricious.components.RelicBag;
+import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
@@ -36,9 +37,9 @@ import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
-import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
+import com.avaricious.upgrades.multAdditions.MultAdditionRing;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRelic;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -79,12 +80,14 @@ public class SlotScreen extends ScreenAdapter {
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = new HandUi();
     private final DeckUi deckUi = DeckUi.I();
+    private final RingBar ringBar = new RingBar();
     private final HealthUi healthUi = HealthUi.I();
 
-    private final TextureRegion blackBluePixel = Assets.I().get(AssetKey.BLACK_BLUE_PIXEL);
-    private final TextureRegion slateTexture = Assets.I().get(AssetKey.SLATE_PIXEL);
-    private final TextureRegion darkSlateTexture = Assets.I().get(AssetKey.DARK_SLATE_PIXEL);
-    private final TextureRegion brightSlateTexture = Assets.I().get(AssetKey.BRIGHT_SLATE_PIXEL);
+    private final TextureRegion backgroundDarkest = Assets.I().get(AssetKey.BACKGROUND_DARKEST);
+    private final TextureRegion backgroundPixel = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
+    private final TextureRegion backgroundPixelDarker = Assets.I().get(AssetKey.BACKGROUND_DARKER);
+    private final TextureRegion backgroundWhite = Assets.I().get(AssetKey.BACKGROUND_WHITE);
+    private final TextureRegion backgroundBrighter = Assets.I().get(AssetKey.BACKGROUND_DARKEST);
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -129,7 +132,6 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
             }
         }, 1);
     }
@@ -160,6 +162,7 @@ public class SlotScreen extends ScreenAdapter {
         scoreDisplay.draw(batch, delta);
         patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
+        ringBar.draw();
 
 //        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);
         healthUi.draw(batch, delta);
@@ -182,14 +185,21 @@ public class SlotScreen extends ScreenAdapter {
         PopupManager.I().draw(batch, delta);
 
         batch.begin();
-        batch.draw(blackBluePixel, 0, 6, 10, 10);
-        batch.draw(slateTexture, -3, 14.5f, 15, 6);
-        batch.draw(slateTexture, -3, -3, 15, 11.75f);
-        batch.draw(darkSlateTexture, -3, 3, 15, 3.85f);
-        batch.draw(brightSlateTexture, -3, 14.4f, 15, 0.1f);
-        batch.draw(brightSlateTexture, -3, 8.65f, 15, 0.1f);
-        batch.draw(brightSlateTexture, -3, 2.85f, 15, 0.1f);
-        batch.draw(brightSlateTexture, -3, 6.8f, 15, 0.1f);
+        batch.draw(backgroundDarkest, 0, 6, 10, 10);
+        batch.draw(backgroundPixel, -3, 14.5f, 15, 6);
+        batch.draw(backgroundPixel, -3, -3, 15, 11.75f);
+        batch.draw(backgroundPixelDarker, -3, 3, 15, 3.85f);
+
+        batch.draw(backgroundBrighter, -3, 17.9f, 15, 0.1f);
+//        batch.draw(backgroundWhiteDarker, -3, 17.85f, 15, 0.05f);
+//        batch.draw(backgroundWhite, -3, 14.4f, 15, 0.1f);
+////        batch.draw(backgroundWhiteDarker, -3, 14.35f, 15, 0.05f);
+//        batch.draw(backgroundWhite, -3, 8.65f, 15, 0.1f);
+//        batch.draw(backgroundWhiteDarker, -3, 8.6f, 15, 0.05f);
+        batch.draw(backgroundBrighter, -3, 2.9f, 15, 0.1f);
+//        batch.draw(backgroundWhiteDarker, -3, 2.8f, 15, 0.05f);
+        batch.draw(backgroundBrighter, -3, 6.8f, 15, 0.1f);
+//        batch.draw(backgroundWhiteDarker, -3, 6.75f, 15, 0.05f);
         BorderPulseMesh.I().render(batch, delta);
         Pencil.I().draw(batch);
         batch.end();
@@ -222,6 +232,7 @@ public class SlotScreen extends ScreenAdapter {
         buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
@@ -232,6 +243,7 @@ public class SlotScreen extends ScreenAdapter {
         List<SlotMatch> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
             healthUi.damage(20);
+            buttonBoard.setVisible(true);
             return;
         }
 
@@ -282,16 +294,16 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            MultAdditionRelic multAdditionUpgrade = Hand.I().getUpgradeOfClass(MultAdditionRelic.class);
+            MultAdditionRing multAdditionUpgrade = ringBar.getRingByClass(MultAdditionRing.class);
             if (multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
                 int multi = multAdditionUpgrade.getMulti();
-//                Slot cardSlot = jokerBar.getSlotByUpgrade(multAdditionUpgrade);
-//                cardSlot.pulse();
-//                cardSlot.wobble();
-//                patternDisplay.addMulti(multi);
-//                PopupManager.I().spawnNumber(multi, Assets.I().red(),
-//                    cardSlot.getPos().x + 1.1f, cardSlot.getPos().y + 1.6f,
-//                    false);
+                Slot cardSlot = ringBar.getSlotByRing(multAdditionUpgrade);
+                cardSlot.pulse();
+                cardSlot.wobble();
+                patternDisplay.addTo(PatternDisplay.Type.MULTI, multi);
+                PopupManager.I().spawnNumber(multi, Assets.I().red(),
+                    cardSlot.getPos().x + 1.1f, cardSlot.getPos().y + 1.6f,
+                    false);
             }
 
             scheduler.schedule(() -> {
@@ -309,6 +321,7 @@ public class SlotScreen extends ScreenAdapter {
 //            slotMachine.setAlpha(0.25f);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
+            buttonBoard.setVisible(true);
 
             for (RelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(RelicWithActionAfterSpin.class)) {
                 relicWithActionAfterSpin.onSpinEnded();
@@ -347,15 +360,15 @@ public class SlotScreen extends ScreenAdapter {
 
                 AudioManager.I().playHit(EffectManager.streak);
 
-                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = Hand.I().getUpgradeOfClass(PointsPerConsecutiveHit.class);
+                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = ringBar.getRingByClass(PointsPerConsecutiveHit.class);
                 if (pointsPerConsecutiveHitUpgrade != null) {
                     int pointAddition = pointsPerConsecutiveHitUpgrade.getPoints();
-//                    Slot jokerSlot = jokerBar.getSlotByUpgrade(pointsPerConsecutiveHitUpgrade);
-//                    jokerSlot.pulse();
-//                    jokerSlot.wobble();
-//                    patternDisplay.addPoints(pointAddition);
-//                    PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
-//                        jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.6f, false);
+                    Slot jokerSlot = ringBar.getSlotByRing(pointsPerConsecutiveHitUpgrade);
+                    jokerSlot.pulse();
+                    jokerSlot.wobble();
+                    patternDisplay.addTo(PatternDisplay.Type.POINTS, pointAddition);
+                    PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
+                        jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.6f, false);
                 }
 
                 xpBar.addXp(points);
@@ -371,30 +384,30 @@ public class SlotScreen extends ScreenAdapter {
                 });
             }
 
-            List<SymbolValueStackRelic> symbolValueStackUpgrades = Hand.I().getUpgradesOfClass(SymbolValueStackRelic.class);
-            SymbolValueStackRelic symbolValueStackUpgrade = null;
-            for (SymbolValueStackRelic upgrade : symbolValueStackUpgrades) {
+            List<SymbolValueStackRing> symbolValueStackUpgrades = ringBar.getRingsByClass(SymbolValueStackRing.class);
+            SymbolValueStackRing symbolValueStackUpgrade = null;
+            for (SymbolValueStackRing upgrade : symbolValueStackUpgrades) {
                 if (upgrade.getSymbol() == slotMatch.getSymbol()) {
                     symbolValueStackUpgrade = upgrade;
                     break;
                 }
             }
             if (symbolValueStackUpgrade != null) {
-//                Slot upgradeSlot = jokerBar.getSlotByUpgrade(symbolValueStackUpgrade);
-//                scheduler.scheduleImmediate(() -> {
-//                    upgradeSlot.pulse();
-//                    upgradeSlot.wobble();
-//                    PopupManager.I().spawnNumber(1, Assets.I().green(),
-//                        upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
-//                });
-//                if (symbolValueStackUpgrade.addStacks(1)) {
-//                    scheduler.schedule(() -> {
-//                        upgradeSlot.pulse();
-//                        upgradeSlot.wobble();
-//                        PopupManager.I().spawnNumber(1, Assets.I().blue(),
-//                            upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
-//                    });
-//                }
+                Slot upgradeSlot = ringBar.getSlotByRing(symbolValueStackUpgrade);
+                scheduler.scheduleImmediate(() -> {
+                    upgradeSlot.pulse();
+                    upgradeSlot.wobble();
+                    PopupManager.I().spawnNumber(1, Assets.I().green(),
+                        upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
+                });
+                if (symbolValueStackUpgrade.addStacks(1)) {
+                    scheduler.schedule(() -> {
+                        upgradeSlot.pulse();
+                        upgradeSlot.wobble();
+                        PopupManager.I().spawnNumber(1, Assets.I().blue(),
+                            upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.6f, false);
+                    });
+                }
             }
         }
     }
@@ -402,6 +415,7 @@ public class SlotScreen extends ScreenAdapter {
     private void onSpinButtonPressed() {
         slotMachine.setAlpha(1f);
         buttonBoard.setSlotMachineIsSpinning(true);
+        buttonBoard.setVisible(false);
 
         slotMachine.spin();
     }

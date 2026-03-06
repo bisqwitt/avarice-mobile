@@ -9,6 +9,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -41,15 +42,9 @@ public class DeckUi {
 
     private final Map<Card, DragableSlot> cards = new LinkedHashMap<>();
     private List<? extends Card> pendingCards;
-    private final Button returnButton = new Button(
-        this::toggleShowDeck,
-        Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.RETURN_BUTTON),
-        Assets.I().get(AssetKey.RETURN_BUTTON),
-        new Rectangle(5.5f, 0.5f, 79 / 25f, 25 / 25f), Input.Keys.ESCAPE).setLayer(25);
 
     private final Vector2 touchDownLocation = new Vector2();
-    private boolean showingDeck = false;
+    private boolean unfolded = false;
     private Card touchingCard = null;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
@@ -65,7 +60,7 @@ public class DeckUi {
             }
         }
 
-        if (showingDeck) {
+        if (unfolded) {
             if (pressed && !wasPressed) {
                 for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
                     Card card = entry.getKey();
@@ -75,7 +70,8 @@ public class DeckUi {
                         cards.get(card).targetScale = 1.3f;
                         cards.get(card).beginDrag(mouse.x, mouse.y, 0);
 
-                        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), 25);
+                        PopupMan
+                        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
                     }
                 }
             }
@@ -115,7 +111,7 @@ public class DeckUi {
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
             new Rectangle(6.8f, 0.05f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
-            6, Assets.I().shadowColor()));
+            ZIndex.DECK_UI_BOX, Assets.I().shadowColor()));
 
 //        if(showingDeck) {
 //            returnButton.draw();
@@ -132,17 +128,17 @@ public class DeckUi {
         final float scale = slot.pulseScale() * slot.getTargetScale();
         final float rotation = slot.getDragTiltDeg();
 
-        if (showingDeck) {
+        if (unfolded) {
             Pencil.I().addDrawing(new TextureDrawing(
                 jokerCardShadow,
                 new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height),
-                scale, rotation, 24, Assets.I().shadowColor()
+                scale, rotation, ZIndex.UNFOLDED_DECK_CARD, Assets.I().shadowColor()
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
             card.texture(),
             new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
-            scale, rotation, showingDeck ? 25 : 6
+            scale, rotation, unfolded ? ZIndex.UNFOLDED_DECK_CARD : ZIndex.DECK_UI_CARD
         ));
     }
 
@@ -158,8 +154,8 @@ public class DeckUi {
     }
 
     private void toggleShowDeck() {
-        Pencil.I().toggleDarkenEverythingBehindWindow();
-        if (!showingDeck) {
+        Pencil.I().toggleDarkenEverythingBehindWindow(ZIndex.UNFOLDED_DECK_BACKGROUND);
+        if (!unfolded) {
             List<Vector2> positions = new ArrayList<>();
             for (int col = 5; col > 0; col--) {
                 for (int row = 0; row < 4; row++) {
@@ -178,7 +174,7 @@ public class DeckUi {
                 }, index * 0.1f);
                 index++;
             }
-            showingDeck = true;
+            unfolded = true;
         } else {
             int index = 0;
             for (DragableSlot card : cards.values()) {
@@ -194,7 +190,7 @@ public class DeckUi {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
-                    showingDeck = false;
+                    unfolded = false;
                 }
             }, index * 0.1f);
         }

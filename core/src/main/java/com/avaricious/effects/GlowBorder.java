@@ -2,6 +2,7 @@ package com.avaricious.effects;
 
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -11,7 +12,7 @@ public class GlowBorder {
     private static float stateTime = 0f;
     private static float hover = 0f;
 
-    public static void drawGlowBorder(TextureRegion textureRegion, Rectangle r, boolean hovering, int layer, float delta) {
+    public static void drawGlowBorder(TextureRegion textureRegion, Rectangle r, boolean hovering, ZIndex layer, float delta) {
         stateTime += delta;
         hover = approach(hover, hovering ? 1f : 0f, 12f, delta);
 
@@ -38,7 +39,7 @@ public class GlowBorder {
         }
     }
 
-    private static void drawRectOutline(TextureRegion px, Rectangle r, float t, Color color, int layer) {
+    private static void drawRectOutline(TextureRegion px, Rectangle r, float t, Color color, ZIndex layer) {
         // bottom
         Pencil.I().addDrawing(new TextureDrawing(
             px, new Rectangle(r.x - t, r.y - t, r.width + 2f * t, t),

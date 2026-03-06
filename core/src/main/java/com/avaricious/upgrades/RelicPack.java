@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class RelicPack extends PackOpening {
 
-    private Relic resultRelic;
+    private Ring resultRing;
 
     public RelicPack(Rectangle buyBounds) {
         super(new Rectangle(2.75f, 7f, 32 / 23f, 32 / 23f), buyBounds);
@@ -17,19 +17,19 @@ public class RelicPack extends PackOpening {
 
     @Override
     protected TextureRegion getTexture() {
-        if (ripped) return Assets.I().get(resultRelic.ringKey().getAssetKey());
-        return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getAssetKey());
+        if (ripped) return Assets.I().get(resultRing.keySet().getTextureKey());
+        return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getTextureKey());
     }
 
     @Override
     protected TextureRegion getShadowTexture() {
-        if (ripped) return Assets.I().get(resultRelic.ringKey().getShadowKey());
+        if (ripped) return Assets.I().get(resultRing.keySet().getShadowKey());
         return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getShadowKey());
     }
 
     @Override
     protected TextureRegion getWhiteTexture() {
-        if (ripped) return Assets.I().get(resultRelic.ringKey().getWhiteKey());
+        if (ripped) return Assets.I().get(resultRing.keySet().getWhiteKey());
         return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getWhiteKey());
     }
 
@@ -40,6 +40,6 @@ public class RelicPack extends PackOpening {
 
     @Override
     protected void getResult() {
-        resultRelic = RelicBag.I().randomRelic();
+        resultRing = RelicBag.I().randomRelic();
     }
 }

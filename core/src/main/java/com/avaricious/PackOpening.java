@@ -7,19 +7,21 @@ import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.RandomUpgrade;
 import com.avaricious.upgrades.Rarity;
-import com.avaricious.upgrades.Relic;
+import com.avaricious.upgrades.Ring;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class PackOpening {
 
-    private final Relic randomRelic = new RandomUpgrade();
+    private final Ring randomRing = new RandomUpgrade();
 
     private final Rectangle bounds;
     private DragableSlot slot;
@@ -47,6 +49,14 @@ public abstract class PackOpening {
     private float beamWidth = 0.22f;     // thickness
     private float beamSpinDeg = 0f;
 
+    private boolean flashActive = false;
+    private float flashTime = 0f;
+    private float flashDuration = 0.45f;
+
+    private float screenWhiteAlpha = 0f;
+    private float coreGlowAlpha = 0f;
+    private float coreGlowScale = 0f;
+
     private static final int BEAM_COUNT = 8;
     private final Rarity[] beamRarity = new Rarity[BEAM_COUNT];
 
@@ -70,7 +80,7 @@ public abstract class PackOpening {
             slot.targetScale = 1.3f;
             slot.beginDrag(mouse.x, mouse.y, 0);
 
-            PopupManager.I().createTooltip(randomRelic, slot.getRenderPos(new Vector2()));
+            PopupManager.I().createTooltip(randomRing, slot.getRenderPos(new Vector2()));
         }
 
         if (touching && dragging) {
@@ -104,7 +114,7 @@ public abstract class PackOpening {
         final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
         final Vector2 drawPos = new Vector2(position).add(shakeOffset);
         final float drawRot = rotation + shakeRotDeg;
-        final int layer = dragging || charging || ripped ? 16 : 15;
+        final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.PACK_OPENING;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -135,9 +145,14 @@ public abstract class PackOpening {
                 layer, new Color(1f, 1f, 1f, alpha * easedWhiten)
             ));
         }
+
+        if (flashActive) {
+            drawCoreGlow(layer);
+            drawScreenFlash(layer);
+        }
     }
 
-    private void drawBeamsOrdered(Vector2 drawPos, Rectangle bounds, float scale, float drawRot, float alpha, int layer) {
+    private void drawBeamsOrdered(Vector2 drawPos, Rectangle bounds, float scale, float drawRot, float alpha, ZIndex layer) {
         float beamsDoneAt = 0.875f;
         float t = Math.min(1f, charge / beamsDoneAt);
 
@@ -167,6 +182,41 @@ public abstract class PackOpening {
                 new Color(color.r, color.g, color.b, a)
             ).usePosAsOrigin());
         }
+    }
+
+    private void drawCoreGlow(ZIndex layer) {
+        Vector2 center = slot.getCardCenter();
+
+        float size = bounds.width * coreGlowScale;
+
+        Pencil.I().addDrawing(new TextureDrawing(
+            whitePixel,
+            new Rectangle(
+                center.x - size / 2f,
+                center.y - size / 2f,
+                size,
+                size
+            ),
+            1f,
+            0f,
+            layer,
+            new Color(1f, 1f, 1f, coreGlowAlpha)
+        ).setBeforeDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
+            .setAfterDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
+    }
+
+    private void drawScreenFlash(ZIndex layer) {
+        float w = ScreenManager.getViewport().getWorldWidth();
+        float h = ScreenManager.getViewport().getWorldHeight();
+
+        Pencil.I().addDrawing(new TextureDrawing(
+            whitePixel,
+            new Rectangle(0f, 0f, w, h),
+            1f,
+            0f,
+            layer,
+            new Color(1f, 1f, 1f, screenWhiteAlpha)
+        ));
     }
 
     private void update(float delta) {
@@ -205,10 +255,39 @@ public abstract class PackOpening {
             );
             shakeRotDeg = (float) Math.sin(shakeTime * freq * 1.3f) * ampRot;
 
-            if (charge >= 1f) ripOpen();
+            if (charge >= 1f && !flashActive) {
+                startFlash();
+            }
         } else {
             shakeOffset.setZero();
             shakeRotDeg = 0f;
+        }
+
+        updateFlash(delta);
+    }
+
+    private void updateFlash(float delta) {
+        if (!flashActive) return;
+
+        flashTime += delta;
+        float t = Math.min(1f, flashTime / flashDuration);
+
+        // Smooth growth
+        float eased = t * t * (3f - 2f * t); // smoothstep
+
+        // Core glow starts strong and expands quickly
+        coreGlowAlpha = Math.min(1f, eased * 1.2f);
+        coreGlowScale = 0.6f + eased * 5.0f;
+
+        // Fullscreen white stays modest, then ramps hard near the end
+        float late = Math.max(0f, (t - 0.45f) / 0.55f);
+        late = late * late * late; // aggressive end burst
+        screenWhiteAlpha = Math.min(1f, late * 1.15f);
+
+        if (t >= 1f) {
+            flashActive = false;
+            screenWhiteAlpha = 1f; // optional short white hold
+            ripOpen();
         }
     }
 
@@ -238,13 +317,21 @@ public abstract class PackOpening {
             else rarity = upgrade ? beamRarity[i - 1].next() : beamRarity[i - 1];
             beamRarity[i] = rarity;
         }
+
+        Pencil.I().toggleDarkenEverythingBehindWindow(ZIndex.PACK_OPENING_BACKGROUND);
+    }
+
+    private void startFlash() {
+        flashActive = true;
+        flashTime = 0f;
     }
 
     protected void ripOpen() {
         ripped = true;
         getResult();
         Vector2 centerPos = slot.getCardCenter().sub(1, 1);
-        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.04f, 200, 15);
+        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.05f, ZIndex.PACK_OPENING);
+//        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
 
         slot.pulse();
         slot.wobble();

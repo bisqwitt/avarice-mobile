@@ -1,7 +1,8 @@
 package com.avaricious.components.popups;
 
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -49,7 +50,7 @@ public class StatisticPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
             new Rectangle(x - originX - 0.5f, y - originY, width, height),
-            scale, rotation, 16
+            scale, rotation, ZIndex.NUMBER_POPUP
         ));
     }
 

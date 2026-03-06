@@ -7,7 +7,7 @@ import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public class PointsPerConsecutiveHit extends PointAdditionRelic implements RelicWithActionAfterSpin {
+public class PointsPerConsecutiveHit extends PointAdditionRing implements RelicWithActionAfterSpin {
 
     private int hitNumber = 1;
 
@@ -34,7 +34,7 @@ public class PointsPerConsecutiveHit extends PointAdditionRelic implements Relic
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_32;
     }
 }

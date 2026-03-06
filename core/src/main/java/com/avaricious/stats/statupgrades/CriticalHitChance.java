@@ -1,6 +1,6 @@
 package com.avaricious.stats.statupgrades;
 
-import com.avaricious.upgrades.CriticalHitDamageRelic;
+import com.avaricious.upgrades.CriticalHitDamageRing;
 import com.avaricious.upgrades.RelicManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -19,7 +19,7 @@ public class CriticalHitChance extends Stat {
     }
 
     public int criticalHitMultiplier() {
-        return RelicManager.I().relicOwned(CriticalHitDamageRelic.class) ? 4 : 2;
+        return RelicManager.I().relicOwned(CriticalHitDamageRing.class) ? 4 : 2;
     }
 
 }

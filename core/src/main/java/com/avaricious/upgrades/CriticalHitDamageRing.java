@@ -3,14 +3,14 @@ package com.avaricious.upgrades;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
-public class CriticalHitDamageRelic extends Relic {
+public class CriticalHitDamageRing extends Ring {
     @Override
     public String description() {
         return "Double " + Assets.I().greenText("Critical Hit") + " Multiplier";
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_4;
     }
 }

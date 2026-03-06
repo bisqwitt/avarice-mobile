@@ -1,12 +1,12 @@
 package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.pointAdditions.PointAdditionRelic;
+import com.avaricious.upgrades.pointAdditions.PointAdditionRing;
 import com.avaricious.utility.Assets;
 
 import java.util.List;
 
-public abstract class SymbolValueStackRelic extends PointAdditionRelic {
+public abstract class SymbolValueStackRing extends PointAdditionRing {
 
     protected int level = 0;
     protected int stacks = 0;

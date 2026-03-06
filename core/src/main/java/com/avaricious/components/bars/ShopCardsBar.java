@@ -8,6 +8,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -102,7 +103,7 @@ public class ShopCardsBar {
             * slot.wobbleScale()
             * slot.getTargetScale();
         final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
-        final int layer = card == touchingCard ? 16 : 15;
+        final ZIndex layer = card == touchingCard ? ZIndex.SHOP_CARD_TOUCHING : ZIndex.SHOP_CARD;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(

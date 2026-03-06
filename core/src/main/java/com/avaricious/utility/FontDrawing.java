@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class FontDrawing implements Drawing {
 
-    private final int layer;
+    private final ZIndex layer;
 
     private final BitmapFont font;
     private final GlyphLayout text;
     private final Vector2 pos;
 
-    public FontDrawing(BitmapFont font, GlyphLayout txt, Vector2 pos, int layer) {
+    public FontDrawing(BitmapFont font, GlyphLayout txt, Vector2 pos, ZIndex layer) {
         this.font = font;
         this.text = txt;
         this.pos = pos;
@@ -29,7 +29,7 @@ public class FontDrawing implements Drawing {
     }
 
     @Override
-    public int getLayer() {
+    public ZIndex getZIndex() {
         return layer;
     }
 }

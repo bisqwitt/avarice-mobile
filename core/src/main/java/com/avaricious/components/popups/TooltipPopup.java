@@ -7,6 +7,7 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -28,7 +29,7 @@ public class TooltipPopup {
     private final BitmapFont smallFont;
 
     private final Upgrade upgrade;
-    private final int layer;
+    private final ZIndex layer;
 
     private Vector2 pos;
 
@@ -38,10 +39,10 @@ public class TooltipPopup {
     private Runnable onDead;
 
     public TooltipPopup(Upgrade upgrade, Vector2 pos) {
-        this(upgrade, pos, 16);
+        this(upgrade, pos, ZIndex.POPUP_DEFAULT);
     }
 
-    public TooltipPopup(Upgrade upgrade, Vector2 pos, int layer) {
+    public TooltipPopup(Upgrade upgrade, Vector2 pos, ZIndex layer) {
         this.upgrade = upgrade;
         this.pos = new Vector2(pos);
         this.layer = layer;
@@ -50,7 +51,7 @@ public class TooltipPopup {
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
-        jokerTxt.setText(bigFont, "Joker", Color.WHITE, 250f, Align.top | Align.center, true);
+        jokerTxt.setText(bigFont, upgrade.title(), Color.WHITE, 250f, Align.top | Align.center, true);
         setDescription(upgrade.description());
     }
 

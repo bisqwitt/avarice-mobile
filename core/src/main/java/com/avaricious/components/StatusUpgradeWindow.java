@@ -2,12 +2,13 @@ package com.avaricious.components;
 
 import com.avaricious.components.bars.StatusUpgradeBar;
 import com.avaricious.components.bars.UpgradeBar;
-import com.avaricious.stats.statupgrades.StatusRelic;
+import com.avaricious.stats.statupgrades.StatusRing;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -58,7 +59,7 @@ public class StatusUpgradeWindow {
     }
 
     private List<Upgrade> randomStatUpgrades() {
-        return Arrays.asList(StatusRelic.newRandom(), StatusRelic.newRandom(), StatusRelic.newRandom());
+        return Arrays.asList(StatusRing.newRandom(), StatusRing.newRandom(), StatusRing.newRandom());
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -114,7 +115,7 @@ public class StatusUpgradeWindow {
         Pencil.I().addDrawing(new TextureDrawing(window,
             new Rectangle(WINDOW_X, WINDOW_Y + windowYOffset, wWin, hWin),
             windowScale, 0f,
-            15, new Color(1f, 1f, 1f, windowAlpha)
+            ZIndex.STATUS_UPGRADE_WINDOW, new Color(1f, 1f, 1f, windowAlpha)
         ));
 
         // Draw upgrade bar and text; simplest is to just draw them with same alpha
@@ -126,7 +127,7 @@ public class StatusUpgradeWindow {
             levelUpTxt,
             new Rectangle(WINDOW_X + 1.8f, WINDOW_Y + 3.6f + windowYOffset, w, h),
             levelUpTxtScale * windowScale, 0f,
-            15
+            ZIndex.STATUS_UPGRADE_WINDOW
         ));
     }
 

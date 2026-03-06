@@ -29,4 +29,8 @@ public abstract class Card extends Upgrade {
         onApply();
     }
 
+    @Override
+    public String title() {
+        return "Card";
+    }
 }

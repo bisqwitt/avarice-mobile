@@ -13,6 +13,7 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.UiUtility;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -127,8 +128,8 @@ public class HandUi {
     }
 
     private void drawCard(Card card) {
-        Rectangle bounds = cards.get(card).getBounds();
         DragableSlot slot = cards.get(card);
+        Rectangle bounds = slot.getBounds();
 
         float scale = slot.pulseScale()
             * slot.wobbleScale()
@@ -150,13 +151,13 @@ public class HandUi {
                 bounds.width, bounds.height
             ),
             scale, rotation,
-            10, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
+            ZIndex.HAND_UI_CARD, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             card.texture(),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
             scale, rotation,
-            10, new Color(1f, 1f, 1f, alpha)
+            ZIndex.HAND_UI_CARD, new Color(1f, 1f, 1f, alpha)
         ));
     }
 
@@ -283,7 +284,7 @@ public class HandUi {
         slot.wobble();
         Vector2 pos = slot.getRenderPos(new Vector2());
 
-        ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, 9);
+        ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, ZIndex.CARD_APPLY_PARTICLES);
 
         pos.x += 1.3f;
         pos.y += 1.8f;

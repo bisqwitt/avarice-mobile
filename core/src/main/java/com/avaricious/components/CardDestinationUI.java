@@ -4,6 +4,7 @@ import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.effects.GlowBorder;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,8 +22,8 @@ public class CardDestinationUI {
         Rectangle deckHitBox = new Rectangle(deckCardBounds.x - 0.1f, deckCardBounds.y - 0.1f, deckCardBounds.width + 0.2f, deckCardBounds.height + 0.2f);
 
         if (cardIsDragging) {
-            GlowBorder.drawGlowBorder(yellowTexture, window, window.contains(cardCenterPos), 10, delta);
-            GlowBorder.drawGlowBorder(redTexture, deckHitBox, deckHitBox.contains(cardCenterPos), 10, delta);
+            GlowBorder.drawGlowBorder(yellowTexture, window, window.contains(cardCenterPos), ZIndex.GLOW_BORDER_CARD_DESTINATION, delta);
+            GlowBorder.drawGlowBorder(redTexture, deckHitBox, deckHitBox.contains(cardCenterPos), ZIndex.GLOW_BORDER_CARD_DESTINATION, delta);
         }
     }
 }

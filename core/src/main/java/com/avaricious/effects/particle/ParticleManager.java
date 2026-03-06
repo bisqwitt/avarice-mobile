@@ -3,6 +3,7 @@ package com.avaricious.effects.particle;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RunnableDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -26,10 +27,10 @@ public class ParticleManager {
 
     // TODO use layering
 
-    private final Map<ParticleEffect, Integer> particleEffects = new HashMap<>();
+    private final Map<ParticleEffect, ZIndex> particleEffects = new HashMap<>();
 
     public void draw(SpriteBatch batch, float delta) {
-        for (Map.Entry<ParticleEffect, Integer> entry : particleEffects.entrySet()) {
+        for (Map.Entry<ParticleEffect, ZIndex> entry : particleEffects.entrySet()) {
             entry.getKey().update(delta);
 
             Pencil.I().addDrawing(new RunnableDrawing(
@@ -45,7 +46,7 @@ public class ParticleManager {
         particleEffects.remove(dump);
     }
 
-    public void create(float x, float y, ParticleType type, float scale, float emissionHigh, int layer) {
+    public void create(float x, float y, ParticleType type, float scale, float emissionHigh, ZIndex layer) {
         ParticleEffect particle = new ParticleEffect();
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));
@@ -60,7 +61,7 @@ public class ParticleManager {
         particleEffects.put(particle, layer);
     }
 
-    public void create(float x, float y, ParticleType type, float scale, int layer) {
+    public void create(float x, float y, ParticleType type, float scale, ZIndex layer) {
         ParticleEffect particle = new ParticleEffect();
         particle.load(type.getFile(),
             Gdx.files.internal("particles/pngs"));

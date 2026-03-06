@@ -3,7 +3,7 @@ package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.utility.RingAssetKeys;
 
-public class CherryValueStackRelic extends SymbolValueStackRelic {
+public class CherryValueStackRing extends SymbolValueStackRing {
 
     @Override
     public Symbol getSymbol() {
@@ -11,7 +11,7 @@ public class CherryValueStackRelic extends SymbolValueStackRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_24;
     }
 }

@@ -3,8 +3,9 @@ package com.avaricious.components.background;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -50,7 +51,7 @@ public class WarpBackground {
         Pencil.I().addDrawing(new TextureDrawing(
             whiteTexture,
             new Rectangle(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()),
-            0
+            ZIndex.WARP_BACKGROUND
         ));
 
         batch.end();

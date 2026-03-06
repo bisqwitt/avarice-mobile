@@ -2,10 +2,10 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -35,8 +35,8 @@ public abstract class DisablableButton extends Button {
         TextureRegion pressedButtonTexture,
         TextureRegion hoveredButtonTexture,
         Rectangle buttonRectangle,
-        int key) {
-        super(onButtonPressedRunnable, defaultButtonTexture, pressedButtonTexture, hoveredButtonTexture, buttonRectangle, key);
+        int key, ZIndex layer) {
+        super(onButtonPressedRunnable, defaultButtonTexture, pressedButtonTexture, hoveredButtonTexture, buttonRectangle, key, layer);
         setVisibleAnimated(false, true); // start hidden (instant)
     }
 
@@ -128,13 +128,13 @@ public abstract class DisablableButton extends Button {
             Color shadowColor = Assets.I().shadowColor();
             Pencil.I().addDrawing(new TextureDrawing(
                 buttonShadow, new Rectangle(bounds.x, bounds.y - 0.1f, bounds.width, bounds.height),
-                3, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f)
+                layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f)
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
             defaultButtonTexture,
             new Rectangle(bounds.x, currentTexture == pressedButtonTexture ? bounds.y - 0.1f : bounds.y, bounds.width, bounds.height),
-            3, new Color(1f, 1f, 1f, alpha)
+            layer, new Color(1f, 1f, 1f, alpha)
         ));
     }
 

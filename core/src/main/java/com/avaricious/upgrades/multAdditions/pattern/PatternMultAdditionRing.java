@@ -1,17 +1,17 @@
 package com.avaricious.upgrades.multAdditions.pattern;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.multAdditions.MultAdditionRelic;
+import com.avaricious.upgrades.multAdditions.MultAdditionRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public abstract class PatternMultAdditionRelic extends MultAdditionRelic {
+public abstract class PatternMultAdditionRing extends MultAdditionRing {
 
     private final double patternType;
 
-    protected PatternMultAdditionRelic(long patternType) {
+    protected PatternMultAdditionRing(long patternType) {
         this.patternType = patternType;
     }
 
@@ -31,7 +31,7 @@ public abstract class PatternMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_31;
     }
 }

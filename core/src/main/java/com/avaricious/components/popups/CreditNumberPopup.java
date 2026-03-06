@@ -2,8 +2,9 @@ package com.avaricious.components.popups;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,7 +34,7 @@ public class CreditNumberPopup extends NumberPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             dollarSymbol,
             new Rectangle(bounds.x + (numberOffset * digitalNumberTextures.size()), bounds.y, bounds.width, bounds.height),
-            scale, rotation, 16, new Color(color.r, color.g, color.b, alpha)
+            scale, rotation, ZIndex.POPUP_DEFAULT, new Color(color.r, color.g, color.b, alpha)
         ));
     }
 }

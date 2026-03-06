@@ -5,7 +5,7 @@ import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public class DefaultMultAdditionRelic extends MultAdditionRelic {
+public class DefaultMultAdditionRing extends MultAdditionRing {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {
@@ -23,7 +23,7 @@ public class DefaultMultAdditionRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_19;
     }
 }

@@ -3,15 +3,15 @@ package com.avaricious.upgrades.pointAdditions.symbolValueStacker;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.utility.RingAssetKeys;
 
-public class IronValueStackRelic extends SymbolValueStackRelic {
+public class SevenValueStackRing extends SymbolValueStackRing {
 
     @Override
     public Symbol getSymbol() {
-        return Symbol.IRON;
+        return Symbol.SEVEN;
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_24;
     }
 }

@@ -1,7 +1,8 @@
 package com.avaricious;
 
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -45,7 +46,7 @@ public class TextureEcho {
         Pencil.I().addDrawing(new TextureDrawing(
             textureEcho,
             currentPos,
-            0, new Color(color.r, color.g, color.b, alpha)));
+            ZIndex.TEXTURE_ECHO, new Color(color.r, color.g, color.b, alpha)));
 
         float echoSpeed = 18f;
         float fadeSpeed = 0.2f;

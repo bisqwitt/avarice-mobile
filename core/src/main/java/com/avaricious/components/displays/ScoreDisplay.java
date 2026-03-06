@@ -7,6 +7,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -43,12 +44,13 @@ public class ScoreDisplay {
 //        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
 
         Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
-            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() - 0.1f, 37 / 13f, DIGIT_HEIGHT), 1, Assets.I().shadowColor()));
+            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() - 0.1f, 37 / 13f, DIGIT_HEIGHT),
+            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(roundTxt,
-            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), 1));
+            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
         currentRound.draw(batch, delta);
         Pencil.I().addDrawing(new TextureDrawing(colon,
-            new Rectangle(COLON_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 1));
+            new Rectangle(COLON_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
         targetScore.draw(batch, delta);
     }
 

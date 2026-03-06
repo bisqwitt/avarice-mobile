@@ -10,6 +10,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -203,12 +204,12 @@ public class SlotMachine {
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().getSymbol(symbol),
             new Rectangle(adjX + 0.05f, adjY - 0.05f, drawW, drawH),
-            1f, rotation, 10, Assets.I().shadowColor()
+            1f, rotation, ZIndex.SLOT_MACHINE, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             region,
             new Rectangle(adjX, adjY, drawW, drawH),
-            1f, rotation, 10, new Color(1f, 1f, 1f, alpha)
+            1f, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
         ));
     }
 

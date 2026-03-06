@@ -7,7 +7,7 @@ import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public class MultPerEmptyJokerSlotRelic extends MultAdditionRelic {
+public class MultPerEmptyJokerSlotRing extends MultAdditionRing {
 
     @Override
     public boolean condition(List<Symbol> selection, long count) {
@@ -26,7 +26,7 @@ public class MultPerEmptyJokerSlotRelic extends MultAdditionRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_25;
     }
 }

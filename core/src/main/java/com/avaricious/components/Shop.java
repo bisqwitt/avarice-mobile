@@ -12,6 +12,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -65,7 +66,7 @@ public class Shop {
             }
         },
             Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON),
-            new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE).setLayer(14);
+            new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE, ZIndex.SHOP);
         rerollButton.setShowShadow(false);
 
         returnButton = new Button(() -> {
@@ -74,7 +75,7 @@ public class Shop {
             onReturnedFromShop.run();
         },
             Assets.I().get(AssetKey.RETURN_BUTTON), Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED), Assets.I().get(AssetKey.RETURN_BUTTON),
-            new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER).setLayer(14);
+            new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER, ZIndex.SHOP);
         returnButton.setShowShadow(false);
     }
 
@@ -121,33 +122,33 @@ public class Shop {
         Pencil.I().addDrawing(new TextureDrawing(
             windowShadow,
             new Rectangle(WINDOW_X + 0.1f, WINDOW_Y - 0.2f + winYOffset, winW, winH),
-            14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)
+            ZIndex.SHOP, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)
         ));
 
         // Window
         Pencil.I().addDrawing(new TextureDrawing(
             window,
             new Rectangle(WINDOW_X, WINDOW_Y + winYOffset, winW, winH),
-            14, new Color(1f, 1f, 1f, winAlpha)
+            ZIndex.SHOP, new Color(1f, 1f, 1f, winAlpha)
         ));
 
         // Shop title shadow + title (fade + slide)
         Pencil.I().addDrawing(new TextureDrawing(shopTxtShadow,
             new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13f + winYOffset, 29 / 8f, 13 / 8f),
-            14, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
+            ZIndex.SHOP, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
         Pencil.I().addDrawing(new TextureDrawing(shopTxt,
             new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13.1f + winYOffset, 29 / 8f, 13 / 8f),
-            14, new Color(1f, 1f, 1f, winAlpha)));
+            ZIndex.SHOP, new Color(1f, 1f, 1f, winAlpha)));
 
         Pencil.I().addDrawing(new TextureDrawing(buyTxt,
             new Rectangle(4.3f, 3.5f, 24 / 10f, 13 / 10f),
-            14, Assets.I().shadowColor()
+            ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
         if (cards.isDragging() || cardPack.isDragging() || relicPack.isDragging()) {
             GlowBorder.drawGlowBorder(yellowTexture, buyBox,
                 buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(cardPack.getCenter()) || buyBox.contains(relicPack.getCenter()),
-                14, delta);
+                ZIndex.SHOP, delta);
         }
 
         cards.draw();

@@ -3,8 +3,9 @@ package com.avaricious;
 import com.avaricious.components.progressbar.ProgressBar;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -40,7 +41,7 @@ public class XpBar extends ProgressBar {
             Pencil.I().addDrawing(new TextureDrawing(
                 progress[i],
                 new Rectangle(X + (i * OFFSET), Y, STEP_WIDTH, STEP_HEIGHT),
-                5));
+                ZIndex.XP_BAR));
         }
 //        batch.draw(border, 14.8f, 3.7f, 14 / 70f, 310 / 70f);
 //        batch.draw(xpOrb, X - 0.175f, Y - 0.6f, 25 / 52f, 25 / 52f);

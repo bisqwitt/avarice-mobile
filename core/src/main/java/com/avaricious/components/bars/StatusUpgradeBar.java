@@ -1,7 +1,7 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.stats.statupgrades.StatusRelic;
+import com.avaricious.stats.statupgrades.StatusRing;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -22,21 +22,21 @@ public class StatusUpgradeBar extends UpgradeBar {
 //        cards.keySet().retainAll(Collections.singleton(clickedUpgrade));
 
         PopupManager.I().spawnPercentage(
-            ((StatusRelic) clickedUpgrade).getAdditionalPercentage(),
+            ((StatusRing) clickedUpgrade).getAdditionalPercentage(),
             Assets.I().green(),
             cardBounds.get(clickedUpgrade).getX() + 1f,
             cardBounds.get(clickedUpgrade).getY()).setOnFinished(() -> onCardClicked.run());
 
-        ((StatusRelic) clickedUpgrade).apply();
+        ((StatusRing) clickedUpgrade).apply();
     }
 
     @Override
     protected TextureRegion getTexture(Upgrade upgrade) {
-        return ((StatusRelic) upgrade).getStat().getTexture();
+        return ((StatusRing) upgrade).getStat().getTexture();
     }
 
     @Override
     protected TextureRegion getShadow(Upgrade upgrade) {
-        return ((StatusRelic) upgrade).getStat().getShadowTexture();
+        return ((StatusRing) upgrade).getStat().getShadowTexture();
     }
 }

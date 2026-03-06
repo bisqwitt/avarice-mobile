@@ -1,5 +1,6 @@
 package com.avaricious;
 
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.math.Rectangle;
 
 public class CreditScore extends CreditNumber {
@@ -20,7 +21,7 @@ public class CreditScore extends CreditNumber {
     }
 
     @Override
-    protected int getLayer() {
-        return 14;
+    protected ZIndex getLayer() {
+        return ZIndex.CREDIT_SCORE;
     }
 }

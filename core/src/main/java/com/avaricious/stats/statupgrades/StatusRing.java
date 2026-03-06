@@ -2,24 +2,24 @@ package com.avaricious.stats.statupgrades;
 
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.upgrades.ApplieableRelic;
-import com.avaricious.upgrades.Relic;
+import com.avaricious.upgrades.Ring;
 import com.avaricious.utility.RingAssetKeys;
 
 import java.math.BigDecimal;
 
-public class StatusRelic extends Relic implements ApplieableRelic {
+public class StatusRing extends Ring implements ApplieableRelic {
 
-    public static StatusRelic newRandom() {
+    public static StatusRing newRandom() {
 //        if (MathUtils.random(1, 20) != 1) {
 //            return null;
 //        }
-        return new StatusRelic(PlayerStats.I().getRandomStat(), new BigDecimal("0.05"));
+        return new StatusRing(PlayerStats.I().getRandomStat(), new BigDecimal("0.05"));
     }
 
     private final Stat stat;
     private final BigDecimal additionalPercentage;
 
-    private StatusRelic(Stat stat, BigDecimal percentage) {
+    private StatusRing(Stat stat, BigDecimal percentage) {
         this.stat = stat;
         this.additionalPercentage = percentage;
     }
@@ -43,7 +43,7 @@ public class StatusRelic extends Relic implements ApplieableRelic {
     }
 
     @Override
-    public RingAssetKeys ringKey() {
+    public RingAssetKeys keySet() {
         return RingAssetKeys.RING_58;
     }
 }

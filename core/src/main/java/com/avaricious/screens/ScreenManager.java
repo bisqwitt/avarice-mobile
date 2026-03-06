@@ -6,6 +6,7 @@ import com.avaricious.screens.mainscreen.MainScreen;
 import com.avaricious.upgrades.Hand;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -17,6 +18,7 @@ public class ScreenManager {
 
     private static ScreenManager instance;
 
+    private static SpriteBatch batch;
     private static ScreenViewport uiViewport;
     private static FitViewport viewport;
 
@@ -44,6 +46,14 @@ public class ScreenManager {
 
     public <T> T getScreen(Class<T> screenClass) {
         return (T) screens.get(screenClass);
+    }
+
+    public static void setBatch(SpriteBatch batch) {
+        ScreenManager.batch = batch;
+    }
+
+    public static SpriteBatch getBatch() {
+        return batch;
     }
 
     public static void setViewport(FitViewport fitViewport) {

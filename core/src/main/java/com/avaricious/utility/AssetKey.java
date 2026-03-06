@@ -184,7 +184,15 @@ public enum AssetKey {
     MYSTIC_SUMMIT_CARD("Mystic-Summit-card"),
     SPACE_JOKER_CARD("Space-Joker-card"),
     SUPERNOVA_CARD("Supernova-card"),
-    WHITE_JOKER_CARD("Joker-white");
+    WHITE_JOKER_CARD("Joker-white"),
+    RING_DOT("ringDot"),
+    SLATE_BORDER("slate-border"),
+    BACKGROUND_PIXEL("background"),
+    BACKGROUND_DARKER("background-darker"),
+    BACKGROUND_DARKEST("background-darkest"),
+    BACKGROUND_BRIGHTER("background-brighter"),
+    BACKGROUND_WHITE("background-white"),
+    BACKGROUND_WHITE_DARKER("background-white-darker");
 
     private final String path;
 

@@ -24,6 +24,7 @@ public class Main extends Game {
         batch = new SpriteBatch();
         viewport = new FitViewport(9, 18);
         uiViewport = new ScreenViewport();
+        ScreenManager.setBatch(batch);
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);
         ScreenManager.create(this).setScreen(SlotScreen.class);

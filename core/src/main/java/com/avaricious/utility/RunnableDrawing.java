@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class RunnableDrawing implements Drawing {
 
-    private final int layer;
+    private final ZIndex layer;
     private final Runnable runnable;
 
     private Color color;
 
-    public RunnableDrawing(Runnable runnable, int layer) {
+    public RunnableDrawing(Runnable runnable, ZIndex layer) {
         this.runnable = runnable;
         this.layer = layer;
     }
 
-    public RunnableDrawing(Runnable runnable, int layer, Color color) {
+    public RunnableDrawing(Runnable runnable, ZIndex layer, Color color) {
         this.runnable = runnable;
         this.layer = layer;
         this.color = color;
@@ -29,7 +29,7 @@ public class RunnableDrawing implements Drawing {
     }
 
     @Override
-    public int getLayer() {
+    public ZIndex getZIndex() {
         return layer;
     }
 }

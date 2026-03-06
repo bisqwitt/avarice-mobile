@@ -6,6 +6,6 @@ public interface Drawing {
 
     void draw(SpriteBatch batch);
 
-    int getLayer();
+    ZIndex getZIndex();
 
 }

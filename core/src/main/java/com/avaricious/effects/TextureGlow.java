@@ -1,7 +1,8 @@
 package com.avaricious.effects;
 
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -72,7 +73,7 @@ public class TextureGlow {
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
             new Rectangle(x, y, drawW, drawH),
-            1, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
+            ZIndex.TEXTURE_GLOW, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
         ).setBeforeDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
             .setAfterDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
     }

@@ -1,26 +1,27 @@
 package com.avaricious.components;
 
-import com.avaricious.upgrades.CriticalHitDamageRelic;
-import com.avaricious.upgrades.DeptRelic;
-import com.avaricious.upgrades.RandomMultAdditionRelic;
-import com.avaricious.upgrades.Relic;
-import com.avaricious.upgrades.multAdditions.MultPerEmptyJokerSlotRelic;
-import com.avaricious.upgrades.multAdditions.pattern.FiveOfAKindMultAdditionRelic;
-import com.avaricious.upgrades.multAdditions.pattern.FourOfAKindMultAdditionRelic;
-import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionRelic;
+import com.avaricious.upgrades.CriticalHitDamageRing;
+import com.avaricious.upgrades.DeptRing;
+import com.avaricious.upgrades.RandomMultAdditionRing;
+import com.avaricious.upgrades.Ring;
+import com.avaricious.upgrades.multAdditions.MultPerEmptyJokerSlotRing;
+import com.avaricious.upgrades.multAdditions.pattern.FiveOfAKindMultAdditionRing;
+import com.avaricious.upgrades.multAdditions.pattern.FourOfAKindMultAdditionRing;
+import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionRing;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.PointsPerStreak;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.BellValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CloverValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.DiamondValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.IronValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.LemonValueStackRelic;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SevenValueStackRelic;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.BellValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CloverValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.DiamondValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.IronValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.LemonValueStackRing;
+import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SevenValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -46,51 +47,51 @@ public class RelicBag {
     private final TextureRegion bagTexture = Assets.I().get(AssetKey.BAG);
     private final TextureRegion shadowTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final List<Relic> relics = new ArrayList<>();
+    private final List<Ring> rings = new ArrayList<>();
 
     public void draw(SpriteBatch batch) {
         Pencil.I().addDrawing(new TextureDrawing(
             shadowTexture,
             new Rectangle(bagBounds.x - 0.2f, bagBounds.y - 0.2f, bagBounds.width + 0.4f, bagBounds.height + 0.4f),
-            7, Assets.I().shadowColor()));
+            ZIndex.RELIC_BAG, Assets.I().shadowColor()));
 
         Pencil.I().addDrawing(new TextureDrawing(
             bagTexture,
             bagBounds,
-            7
+            ZIndex.RELIC_BAG
         ));
     }
 
-    public void addRelic(Relic relic) {
-        relics.add(relic);
+    public void addRelic(Ring ring) {
+        rings.add(ring);
     }
 
-    public Relic randomRelic() {
+    public Ring randomRelic() {
         return instantiateRelic(allRelicClasses().get((int) (Math.random() * allRelicClasses().size())));
     }
 
-    public List<Class<? extends Relic>> allRelicClasses() {
+    public List<Class<? extends Ring>> allRelicClasses() {
         return Arrays.asList(
-            CriticalHitDamageRelic.class,
-            DeptRelic.class,
-            RandomMultAdditionRelic.class,
-            MultPerEmptyJokerSlotRelic.class,
-            ThreeOfAKindMultAdditionRelic.class,
-            FourOfAKindMultAdditionRelic.class,
-            FiveOfAKindMultAdditionRelic.class,
+            CriticalHitDamageRing.class,
+            DeptRing.class,
+            RandomMultAdditionRing.class,
+            MultPerEmptyJokerSlotRing.class,
+            ThreeOfAKindMultAdditionRing.class,
+            FourOfAKindMultAdditionRing.class,
+            FiveOfAKindMultAdditionRing.class,
             PointsPerStreak.class,
-            LemonValueStackRelic.class,
-            CherryValueStackRelic.class,
-            CloverValueStackRelic.class,
-            BellValueStackRelic.class,
-            IronValueStackRelic.class,
-            DiamondValueStackRelic.class,
-            SevenValueStackRelic.class,
+            LemonValueStackRing.class,
+            CherryValueStackRing.class,
+            CloverValueStackRing.class,
+            BellValueStackRing.class,
+            IronValueStackRing.class,
+            DiamondValueStackRing.class,
+            SevenValueStackRing.class,
             PointsPerConsecutiveHit.class
         );
     }
 
-    private Relic instantiateRelic(Class<? extends Relic> relicClass) {
+    private Ring instantiateRelic(Class<? extends Ring> relicClass) {
         try {
             return relicClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
