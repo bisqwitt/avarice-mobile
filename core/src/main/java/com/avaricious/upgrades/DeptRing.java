@@ -14,4 +14,8 @@ public class DeptRing extends Ring {
     public RingAssetKeys keySet() {
         return RingAssetKeys.RING_12;
     }
+
+    @Override
+    public void hit() {
+    }
 }

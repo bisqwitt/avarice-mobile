@@ -13,4 +13,8 @@ public class CriticalHitDamageRing extends Ring {
     public RingAssetKeys keySet() {
         return RingAssetKeys.RING_4;
     }
+
+    @Override
+    public void hit() {
+    }
 }

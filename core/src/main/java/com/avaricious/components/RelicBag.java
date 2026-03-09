@@ -10,7 +10,6 @@ import com.avaricious.upgrades.multAdditions.pattern.FiveOfAKindMultAdditionRing
 import com.avaricious.upgrades.multAdditions.pattern.FourOfAKindMultAdditionRing;
 import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionRing;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
-import com.avaricious.upgrades.pointAdditions.PointsPerStreak;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.BellValueStackRing;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CloverValueStackRing;
@@ -80,7 +79,6 @@ public class RelicBag {
             ThreeOfAKindMultAdditionRing.class,
             FourOfAKindMultAdditionRing.class,
             FiveOfAKindMultAdditionRing.class,
-            PointsPerStreak.class,
             LemonValueStackRing.class,
             CherryValueStackRing.class,
             CloverValueStackRing.class,

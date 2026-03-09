@@ -5,12 +5,12 @@ import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.RandomUpgrade;
 import com.avaricious.upgrades.Rarity;
 import com.avaricious.upgrades.Ring;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RingAssetKeys;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
@@ -21,7 +21,21 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class PackOpening {
 
-    private final Ring randomRing = new RandomUpgrade();
+    private final Ring randomRing = new Ring() {
+        @Override
+        public RingAssetKeys keySet() {
+            return null;
+        }
+
+        @Override
+        public void hit() {
+        }
+
+        @Override
+        public String description() {
+            return "Random Relic";
+        }
+    };
 
     private final Rectangle bounds;
     private DragableSlot slot;

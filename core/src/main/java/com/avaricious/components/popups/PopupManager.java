@@ -25,6 +25,8 @@ public class PopupManager {
     private final List<StatisticPopup> statisticPopups = new ArrayList<>();
 
     private TooltipPopup tooltipPopup;
+    private ApplyPopup applyPopup;
+    private DiscardPopup discardPopup;
 
     public void createTooltip(Upgrade upgrade, Vector2 pos) {
         if (upgrade == null) return;
@@ -41,8 +43,36 @@ public class PopupManager {
         tooltipPopup.update(pos, visible);
     }
 
+    public void updateTooltip(Vector2 pos, boolean visible, boolean showApplyBox, boolean showDiscardBox) {
+        if (tooltipPopup == null) return;
+        if (!showApplyBox && !showDiscardBox) tooltipPopup.update(pos, visible);
+        if (applyPopup != null) applyPopup.update(pos);
+        if (discardPopup != null) discardPopup.update(pos);
+
+        if (showApplyBox && applyPopup == null) {
+            tooltipPopup.setVisible(false);
+            applyPopup = new ApplyPopup(pos);
+        }
+
+        if (!showApplyBox && (applyPopup != null && !applyPopup.isKilled())) {
+            applyPopup.kill(() -> applyPopup = null);
+            tooltipPopup.setVisible(true);
+        }
+
+        if (showDiscardBox && discardPopup == null) {
+            tooltipPopup.setVisible(false);
+            discardPopup = new DiscardPopup(pos);
+        }
+
+        if (!showDiscardBox && (discardPopup != null && !discardPopup.isKilled())) {
+            discardPopup.kill(() -> discardPopup = null);
+            tooltipPopup.setVisible(true);
+        }
+    }
+
     public void killTooltip() {
         tooltipPopup.kill(() -> tooltipPopup = null);
+        if (applyPopup != null) applyPopup.kill(() -> applyPopup = null);
     }
 
     public void spawnNumber(NumberPopup numberPopup) {
@@ -97,6 +127,8 @@ public class PopupManager {
         }
 
         if (tooltipPopup != null) tooltipPopup.render(batch, delta);
+        if (applyPopup != null) applyPopup.draw(delta);
+        if (discardPopup != null) discardPopup.draw(delta);
     }
 }
 

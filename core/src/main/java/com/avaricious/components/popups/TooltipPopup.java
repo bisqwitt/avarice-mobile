@@ -67,8 +67,6 @@ public class TooltipPopup {
 
         float boxWidth = 82 / 15f;
         float boxHeight = 41 / 15f;
-        float originX = boxWidth / 2f;
-        float originY = boxHeight / 2f;
         final float boxX = pos.x < 0.25f
             ? 0.25f : pos.x + boxWidth > worldWidth - 0.25f
             ? worldWidth - boxWidth - 0.25f : pos.x;
@@ -80,12 +78,12 @@ public class TooltipPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             boxShadow,
             new Rectangle(boxX, boxY - 0.2f, boxWidth, boxHeight),
-            1f, 0f, layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+            layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             box,
             new Rectangle(boxX, boxY, boxWidth, boxHeight),
-            1f, 0f, layer, new Color(1f, 1f, 1f, alpha)
+            layer, new Color(1f, 1f, 1f, alpha)
         ));
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
@@ -132,5 +130,9 @@ public class TooltipPopup {
 
     private void setDescription(String txt) {
         description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

@@ -11,11 +11,11 @@ import com.badlogic.gdx.math.Vector2;
 
 public class ButtonBoard {
 
-    private final float BOARD_X = 0.85f;
+    private final float BOARD_X = 0.75f;
     private final float BOARD_Y = 9f;
 
-    private final float BUTTON_W = 79 / 30f;
-    private final float BUTTON_H = 25 / 30f;
+    private final float BUTTON_W = 79 / 27f;
+    private final float BUTTON_H = 25 / 27f;
 
     private final SpinButton spinAgainButton;
     private final CashoutButton cashoutButton;

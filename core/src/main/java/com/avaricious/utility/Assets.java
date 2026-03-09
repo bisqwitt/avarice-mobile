@@ -38,6 +38,7 @@ public class Assets {
     private final Color light = new Color(0.992156f, 0.992156f, 0.992156f, 1f);
     private final Color shadow = new Color(1f, 1f, 1f, 0.25f);
     private final Color healthRed = new Color(229 / 255f, 57 / 255f, 53 / 255f, 1f);
+    private final Color applyColor = new Color(255 / 255f, 216 / 255f, 77 / 255f, 1f);
     private final Color common = new Color(1f, 1f, 1f, 1f);
     private final Color uncommon = new Color(0.30f, 0.69f, 0.31f, 1f);
     private final Color rare = new Color(0.13f, 0.59f, 0.95f, 1f);
@@ -181,6 +182,10 @@ public class Assets {
 
     public Color healthRedColor() {
         return healthRed;
+    }
+
+    public Color applyColor() {
+        return applyColor;
     }
 
     public Color getRarityColor(Rarity rarity) {

@@ -9,6 +9,10 @@ public class DoubleXpRing extends Ring {
     }
 
     @Override
+    public void hit() {
+    }
+
+    @Override
     public String description() {
         return "Gain Double XP";
     }

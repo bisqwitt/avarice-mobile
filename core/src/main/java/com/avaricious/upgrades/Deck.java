@@ -1,5 +1,6 @@
 package com.avaricious.upgrades;
 
+import com.avaricious.DevTools;
 import com.avaricious.cards.Card;
 import com.avaricious.cards.ConvertPointsToArmorCard;
 import com.avaricious.cards.DrawAndDiscardOneCard;
@@ -43,14 +44,20 @@ public class Deck extends Observable<List<? extends Card>> {
             OnePointForEveryFruitCard.class
         ));
 
-        for (int i = 0; i < 3; i++) {
-            addUpgradeToDeck(instantiateCard(FivePointsCard.class));
+        if (DevTools.allCardsInDeck) {
+            for (Class<? extends Card> cardClass : allCardClasses) {
+                addUpgradeToDeck(instantiateCard(cardClass));
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                addUpgradeToDeck(instantiateCard(FivePointsCard.class));
+            }
+            for (int i = 0; i < 3; i++) {
+                addUpgradeToDeck(instantiateCard(TwoMultCard.class));
+            }
+            addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
+            addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
         }
-        for (int i = 0; i < 3; i++) {
-            addUpgradeToDeck(instantiateCard(TwoMultCard.class));
-        }
-        addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
-        addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
     }
 
     private final List<Class<? extends Card>> allCardClasses = new ArrayList<>();

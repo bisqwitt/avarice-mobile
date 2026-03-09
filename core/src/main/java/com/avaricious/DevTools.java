@@ -14,8 +14,10 @@ public class DevTools {
 
     public static boolean audioMuted = false;
 
-    public static boolean fullscreen = true;
-
     public static boolean enableProfiler = false;
+
+    public static boolean testRings = false;
+
+    public static boolean allCardsInDeck = true;
 
 }

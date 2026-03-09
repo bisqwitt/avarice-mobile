@@ -1,13 +1,11 @@
 package com.avaricious.components;
 
-import com.avaricious.cards.Card;
+import com.avaricious.DevTools;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
-import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.DeptRing;
-import com.avaricious.upgrades.RandomMultAdditionRing;
 import com.avaricious.upgrades.Ring;
 import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionRing;
+import com.avaricious.upgrades.pointAdditions.PointsForEveryRingHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -45,9 +43,11 @@ public class RingBar {
     private Ring touchingRing = null;
 
     private RingBar() {
-        addRing(new DeptRing());
-        addRing(new ThreeOfAKindMultAdditionRing());
-        addRing(new CherryValueStackRing());
+        if (DevTools.testRings) {
+            addRing(new ThreeOfAKindMultAdditionRing());
+            addRing(new PointsForEveryRingHit());
+            addRing(new CherryValueStackRing());
+        }
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
@@ -167,28 +167,29 @@ public class RingBar {
     }
 
     public boolean ringOwned(Class<? extends Ring> ringClass) {
-        for(Ring ring : rings.keySet()) {
-            if(ringClass.isInstance(ring)) return true;
+        for (Ring ring : rings.keySet()) {
+            if (ringClass.isInstance(ring)) return true;
         }
         return false;
     }
 
     private void updateRingIndexes() {
-        for(Map.Entry<Ring, DragableSlot> entry : rings.entrySet()) {
+        for (Map.Entry<Ring, DragableSlot> entry : rings.entrySet()) {
             Ring ring = entry.getKey();
             DragableSlot slot = entry.getValue();
 
             int newRingIndex = calcRingIndex(ring);
             ringIndex.put(ring, newRingIndex);
 
-            slot.moveTo(new Vector2(firstRingBounds.x + newRingIndex * RING_OFFSET, firstRingBounds.y));
+            Vector2 newPos = new Vector2(firstRingBounds.x + newRingIndex * RING_OFFSET, firstRingBounds.y);
+            slot.moveTo(newPos);
         }
     }
 
     private int calcRingIndex(Ring ring) {
         List<Map.Entry<Ring, DragableSlot>> sorted = getEntriesSortedByX();
-        for(Map.Entry<Ring, DragableSlot> entry : sorted) {
-            if(entry.getKey() == ring) return sorted.indexOf(entry);
+        for (Map.Entry<Ring, DragableSlot> entry : sorted) {
+            if (entry.getKey() == ring) return sorted.indexOf(entry);
         }
         return -1;
     }

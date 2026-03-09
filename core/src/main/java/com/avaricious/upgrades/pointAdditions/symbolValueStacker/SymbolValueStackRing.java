@@ -45,4 +45,15 @@ public abstract class SymbolValueStackRing extends PointAdditionRing {
     }
 
     public abstract Symbol getSymbol();
+
+    @Override
+    public void hit() {
+        pulse();
+        numberPopup(Assets.I().green(), 1);
+    }
+
+    public void enoughStacks() {
+        pulse();
+        numberPopup(Assets.I().blue(), 1);
+    }
 }

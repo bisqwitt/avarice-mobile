@@ -1,7 +1,6 @@
 package com.avaricious.components;
 
 import com.avaricious.cards.Card;
-import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Deck;
@@ -10,7 +9,6 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -207,5 +205,9 @@ public class DeckUi {
 
     public Rectangle getFirstCardBounds() {
         return firstCardBounds;
+    }
+
+    public Rectangle getHitBox() {
+        return new Rectangle(firstCardBounds.x - 0.1f, firstCardBounds.y - 0.1f, firstCardBounds.width + 0.2f, firstCardBounds.height + 0.2f);
     }
 }

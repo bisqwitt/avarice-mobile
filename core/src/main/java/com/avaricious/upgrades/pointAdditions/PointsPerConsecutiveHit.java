@@ -1,5 +1,6 @@
 package com.avaricious.upgrades.pointAdditions;
 
+import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.utility.Assets;
@@ -36,5 +37,11 @@ public class PointsPerConsecutiveHit extends PointAdditionRing implements RelicW
     @Override
     public RingAssetKeys keySet() {
         return RingAssetKeys.RING_32;
+    }
+
+    @Override
+    public void hit() {
+        pulse();
+        addToPattern(PatternDisplay.Type.POINTS, getPoints());
     }
 }

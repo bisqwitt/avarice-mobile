@@ -1,5 +1,6 @@
 package com.avaricious.upgrades.multAdditions;
 
+import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.Ring;
 
@@ -11,4 +12,9 @@ public abstract class MultAdditionRing extends Ring {
 
     public abstract int getMulti();
 
+    @Override
+    public void hit() {
+        pulse();
+        addToPattern(PatternDisplay.Type.MULTI, getMulti());
+    }
 }

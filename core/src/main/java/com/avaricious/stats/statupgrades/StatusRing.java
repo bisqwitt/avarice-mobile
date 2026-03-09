@@ -46,4 +46,8 @@ public class StatusRing extends Ring implements ApplieableRelic {
     public RingAssetKeys keySet() {
         return RingAssetKeys.RING_58;
     }
+
+    @Override
+    public void hit() {
+    }
 }

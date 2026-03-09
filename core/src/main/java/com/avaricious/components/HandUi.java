@@ -94,9 +94,12 @@ public class HandUi {
         touchingSlot.dragTo(mouse.x, mouse.y, 0);
         updateCardBounds();
 
+        boolean hoveringSlotMachine = SlotMachine.windowBounds.contains(touchingSlot.getCardCenter());
+        boolean hoveringDeck = DeckUi.I().getHitBox().contains(touchingSlot.getCardCenter());
         PopupManager.I().updateTooltip(
-            new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
-            new Rectangle(0f, 0f, 9f, 8f).contains(mouse));
+            new Vector2(cardRenderPos.x - (hoveringSlotMachine || hoveringDeck ? 0.9f : 2f), cardRenderPos.y + 2.85f),
+            new Rectangle(0f, 0f, 9f, 8f).contains(mouse),
+            hoveringSlotMachine, hoveringDeck);
     }
 
     private void onCardTouchReleased(Card card) {
@@ -138,7 +141,7 @@ public class HandUi {
             + (card != touchingCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = slot.getAlpha();
-        if (DeckUi.I().getFirstCardBounds().contains(slot.getCardCenter())) alpha -= 0.5f;
+        if (DeckUi.I().getHitBox().contains(slot.getCardCenter())) alpha -= 0.5f;
 
         Vector2 position = slot.getRenderPos(new Vector2());
 

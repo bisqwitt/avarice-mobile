@@ -192,7 +192,13 @@ public enum AssetKey {
     BACKGROUND_DARKEST("background-darkest"),
     BACKGROUND_BRIGHTER("background-brighter"),
     BACKGROUND_WHITE("background-white"),
-    BACKGROUND_WHITE_DARKER("background-white-darker");
+    BACKGROUND_WHITE_DARKER("background-white-darker"),
+    APPLY_TXT("apply-txt"),
+    DISCARD_TXT("discard-txt"),
+    TXT_BOX("txt-box"),
+    TXT_BOX_SHADOW("txt-box-shadow"),
+    APPLY_TXT_BOX("apply-txt-box"),
+    DISCARD_TXT_BOX("discard-txt-box");
 
     private final String path;
 

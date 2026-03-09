@@ -29,7 +29,6 @@ import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureGlow;
 import com.avaricious.effects.particle.ParticleManager;
-import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.mainscreen.BackgroundLayer;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
@@ -38,12 +37,12 @@ import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.RelicWithActionAfterSpin;
 import com.avaricious.upgrades.multAdditions.MultAdditionRing;
+import com.avaricious.upgrades.pointAdditions.PointAdditionRing;
 import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -296,18 +295,16 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            MultAdditionRing multAdditionUpgrade = ringBar.getRingByClass(MultAdditionRing.class);
-            if (multAdditionUpgrade != null && multAdditionUpgrade.condition(null, slotMatch.getSlots().size())) {
-                int multi = multAdditionUpgrade.getMulti();
-                Slot cardSlot = ringBar.getSlotByRing(multAdditionUpgrade);
-                cardSlot.pulse();
-                cardSlot.wobble();
-                patternDisplay.addTo(PatternDisplay.Type.MULTI, multi);
-                PopupManager.I().spawnNumber(multi, Assets.I().red(),
-                    cardSlot.getPos().x + 1.1f, cardSlot.getPos().y + 1.1f,
-                    false);
-                ParticleManager.I().create(cardSlot.getPos().x + 0.625f, cardSlot.getPos().y + 0.625f,
-                    ParticleType.RAINBOW, 0.03f, ZIndex.SYMBOL_HIT_PARTICLES);
+            List<PointAdditionRing> pointAdditionRings = ringBar.getRingsByClass(PointAdditionRing.class);
+            for (PointAdditionRing pointAdditionRing : pointAdditionRings) {
+                if (pointAdditionRing.condition(null, slotMatch.getSlots().size()))
+                    pointAdditionRing.hit();
+            }
+
+            List<MultAdditionRing> multAdditionUpgrades = ringBar.getRingsByClass(MultAdditionRing.class);
+            for (MultAdditionRing multAdditionRing : multAdditionUpgrades) {
+                if (multAdditionRing.condition(null, slotMatch.getSlots().size()))
+                    multAdditionRing.hit();
             }
 
             scheduler.schedule(() -> {
@@ -367,15 +364,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = ringBar.getRingByClass(PointsPerConsecutiveHit.class);
                 if (pointsPerConsecutiveHitUpgrade != null) {
-                    int pointAddition = pointsPerConsecutiveHitUpgrade.getPoints();
-                    Slot jokerSlot = ringBar.getSlotByRing(pointsPerConsecutiveHitUpgrade);
-                    jokerSlot.pulse();
-                    jokerSlot.wobble();
-                    patternDisplay.addTo(PatternDisplay.Type.POINTS, pointAddition);
-                    PopupManager.I().spawnNumber(pointAddition, Assets.I().blue(),
-                        jokerSlot.getPos().x + 1.1f, jokerSlot.getPos().y + 1.1f, false);
-                    ParticleManager.I().create(jokerSlot.getPos().x + 0.625f, jokerSlot.getPos().y + 0.625f,
-                        ParticleType.RAINBOW, 0.03f, ZIndex.SYMBOL_HIT_PARTICLES);
+                    pointsPerConsecutiveHitUpgrade.hit();
                 }
 
                 xpBar.addXp(points);
@@ -392,32 +381,11 @@ public class SlotScreen extends ScreenAdapter {
             }
 
             List<SymbolValueStackRing> symbolValueStackUpgrades = ringBar.getRingsByClass(SymbolValueStackRing.class);
-            SymbolValueStackRing symbolValueStackUpgrade = null;
-            for (SymbolValueStackRing upgrade : symbolValueStackUpgrades) {
-                if (upgrade.getSymbol() == slotMatch.getSymbol()) {
-                    symbolValueStackUpgrade = upgrade;
-                    break;
-                }
-            }
+            SymbolValueStackRing symbolValueStackUpgrade = symbolValueStackUpgrades.stream().filter(upgrade -> upgrade.getSymbol() == slotMatch.getSymbol()).findFirst().orElse(null);
             if (symbolValueStackUpgrade != null) {
-                Slot upgradeSlot = ringBar.getSlotByRing(symbolValueStackUpgrade);
-                scheduler.scheduleImmediate(() -> {
-                    upgradeSlot.pulse();
-                    upgradeSlot.wobble();
-                    PopupManager.I().spawnNumber(1, Assets.I().green(),
-                        upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.1f, false);
-                    ParticleManager.I().create(upgradeSlot.getPos().x + 0.625f, upgradeSlot.getPos().y + 0.625f,
-                        ParticleType.RAINBOW, 0.03f, ZIndex.SYMBOL_HIT_PARTICLES);
-                });
+                scheduler.scheduleImmediate(symbolValueStackUpgrade::hit);
                 if (symbolValueStackUpgrade.addStacks(1)) {
-                    scheduler.schedule(() -> {
-                        upgradeSlot.pulse();
-                        upgradeSlot.wobble();
-                        PopupManager.I().spawnNumber(1, Assets.I().blue(),
-                            upgradeSlot.getPos().x + 1.1f, upgradeSlot.getPos().y + 1.1f, false);
-                        ParticleManager.I().create(upgradeSlot.getPos().x + 0.625f, upgradeSlot.getPos().y + 0.625f,
-                            ParticleType.RAINBOW, 0.03f, ZIndex.SYMBOL_HIT_PARTICLES);
-                    });
+                    scheduler.schedule(symbolValueStackUpgrade::enoughStacks);
                 }
             }
         }
@@ -440,10 +408,6 @@ public class SlotScreen extends ScreenAdapter {
     private void onTargetScoreReached() {
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
-//        ParticleManager.I().create(0, 0, ParticleType.RAINBOW, 0.05f, 17);
-//        ParticleManager.I().create(9, 0, ParticleType.RAINBOW, 0.05f, 17);
-//        ParticleManager.I().create(0, 16, ParticleType.RAINBOW, 0.05f, 17);
-//        ParticleManager.I().create(9, 16, ParticleType.RAINBOW, 0.05f, 17);
         healthUi.healHealth();
         shop.show();
     }

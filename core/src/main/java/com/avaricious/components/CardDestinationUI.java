@@ -19,11 +19,10 @@ public class CardDestinationUI {
 
         Rectangle window = SlotMachine.windowBounds;
         Rectangle deckCardBounds = DeckUi.I().getFirstCardBounds();
-        Rectangle deckHitBox = new Rectangle(deckCardBounds.x - 0.1f, deckCardBounds.y - 0.1f, deckCardBounds.width + 0.2f, deckCardBounds.height + 0.2f);
 
         if (cardIsDragging) {
             GlowBorder.drawGlowBorder(yellowTexture, window, window.contains(cardCenterPos), ZIndex.GLOW_BORDER_CARD_DESTINATION, delta);
-            GlowBorder.drawGlowBorder(redTexture, deckHitBox, deckHitBox.contains(cardCenterPos), ZIndex.GLOW_BORDER_CARD_DESTINATION, delta);
+//            GlowBorder.drawGlowBorder(redTexture, deckHitBox, deckHitBox.contains(cardCenterPos), ZIndex.GLOW_BORDER_CARD_DESTINATION, delta);
         }
     }
 }
