@@ -69,8 +69,6 @@ public class DeckUi {
                         touchingCard = card;
                         cards.get(card).targetScale = 1.3f;
                         cards.get(card).beginDrag(mouse.x, mouse.y, 0);
-
-                        PopupMan
                         PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
                     }
                 }

@@ -1,10 +1,13 @@
 package com.avaricious.components;
 
+import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.DeptRing;
 import com.avaricious.upgrades.RandomMultAdditionRing;
 import com.avaricious.upgrades.Ring;
+import com.avaricious.upgrades.multAdditions.pattern.ThreeOfAKindMultAdditionRing;
 import com.avaricious.upgrades.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -18,22 +21,32 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RingBar {
 
+    private static RingBar instance;
+
+    public static RingBar I() {
+        return instance == null ? instance = new RingBar() : instance;
+    }
+
     private final int MAX_RINGS = 5;
+    private final Rectangle firstRingBounds = new Rectangle(0.25f, 7.25f, 1.25f, 1.25f);
+    private final float RING_OFFSET = 1.75f;
 
     private final TextureRegion ringDot = Assets.I().get(AssetKey.RING_DOT);
     private final Map<Ring, DragableSlot> rings = new HashMap<>();
+    private final Map<Ring, Integer> ringIndex = new HashMap<>();
 
     private Ring touchingRing = null;
 
-    public RingBar() {
+    private RingBar() {
         addRing(new DeptRing());
-        addRing(new RandomMultAdditionRing());
+        addRing(new ThreeOfAKindMultAdditionRing());
         addRing(new CherryValueStackRing());
     }
 
@@ -75,6 +88,8 @@ public class RingBar {
             new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 2.85f),
             true
         );
+
+        updateRingIndexes();
     }
 
     private void onRingTouchReleased(Ring ring) {
@@ -116,17 +131,19 @@ public class RingBar {
             Assets.I().get(ring.keySet().getShadowKey()),
             new Rectangle(position.x + shadowOffset.x, position.y - (ring == touchingRing ? 0.3f : 0.2f),
                 bounds.width, bounds.height
-            ), scale, rotation, ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
+            ), scale, rotation, touchingRing == ring ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(ring.keySet().getTextureKey()),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
-            scale, rotation, ZIndex.RING_BAR, new Color(1f, 1f, 1f, alpha)
+            scale, rotation, touchingRing == ring ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(1f, 1f, 1f, alpha)
         ));
     }
 
     public void addRing(Ring ring) {
-        Rectangle bounds = new Rectangle(0.25f + rings.size() * 1.75f, 7.3f, 1.25f, 1.25f);
+        int index = rings.size();
+        Rectangle bounds = new Rectangle(firstRingBounds).setX(firstRingBounds.x + index * RING_OFFSET);
         rings.put(ring, new DragableSlot(bounds).setTilt(200f, 20f));
+        ringIndex.put(ring, index);
     }
 
     public <T extends Ring> T getRingByClass(Class<T> ringClass) {
@@ -135,6 +152,7 @@ public class RingBar {
         }
         return null;
     }
+
 
     public <T extends Ring> List<T> getRingsByClass(Class<T> ringClass) {
         List<T> result = new ArrayList<>();
@@ -146,6 +164,39 @@ public class RingBar {
 
     public DragableSlot getSlotByRing(Ring ring) {
         return rings.get(ring);
+    }
+
+    public boolean ringOwned(Class<? extends Ring> ringClass) {
+        for(Ring ring : rings.keySet()) {
+            if(ringClass.isInstance(ring)) return true;
+        }
+        return false;
+    }
+
+    private void updateRingIndexes() {
+        for(Map.Entry<Ring, DragableSlot> entry : rings.entrySet()) {
+            Ring ring = entry.getKey();
+            DragableSlot slot = entry.getValue();
+
+            int newRingIndex = calcRingIndex(ring);
+            ringIndex.put(ring, newRingIndex);
+
+            slot.moveTo(new Vector2(firstRingBounds.x + newRingIndex * RING_OFFSET, firstRingBounds.y));
+        }
+    }
+
+    private int calcRingIndex(Ring ring) {
+        List<Map.Entry<Ring, DragableSlot>> sorted = getEntriesSortedByX();
+        for(Map.Entry<Ring, DragableSlot> entry : sorted) {
+            if(entry.getKey() == ring) return sorted.indexOf(entry);
+        }
+        return -1;
+    }
+
+    private List<Map.Entry<Ring, DragableSlot>> getEntriesSortedByX() {
+        List<Map.Entry<Ring, DragableSlot>> sorted = new ArrayList<>(rings.entrySet());
+        sorted.sort(Comparator.comparingDouble(entry -> entry.getValue().getRenderPos(new Vector2()).x));
+        return sorted;
     }
 
 }

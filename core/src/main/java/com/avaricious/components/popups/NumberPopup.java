@@ -15,8 +15,8 @@ import java.util.List;
 
 public class NumberPopup {
 
-    public final static float defaultWidth = 7 / 12f;
-    public final static float defaultHeight = 11 / 12f;
+    public final static float defaultWidth = 7 / 14f;
+    public final static float defaultHeight = 11 / 14f;
 
     private enum Phase {PULSE, HOLD, EXIT, FINISHED}
 
@@ -62,7 +62,7 @@ public class NumberPopup {
         setDigitalNumberTextures(number);
         restart();
 
-        float defaultOffset = 0.6f;
+        float defaultOffset = 0.5f;
         numberOffset = bounds.width == defaultWidth && bounds.height == defaultHeight
             ? defaultOffset
             : defaultOffset + (bounds.width - defaultWidth) * 0.5f;

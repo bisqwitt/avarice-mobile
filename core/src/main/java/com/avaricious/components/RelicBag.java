@@ -2,6 +2,7 @@ package com.avaricious.components;
 
 import com.avaricious.upgrades.CriticalHitDamageRing;
 import com.avaricious.upgrades.DeptRing;
+import com.avaricious.upgrades.DoubleXpRing;
 import com.avaricious.upgrades.RandomMultAdditionRing;
 import com.avaricious.upgrades.Ring;
 import com.avaricious.upgrades.multAdditions.MultPerEmptyJokerSlotRing;
@@ -87,7 +88,8 @@ public class RelicBag {
             IronValueStackRing.class,
             DiamondValueStackRing.class,
             SevenValueStackRing.class,
-            PointsPerConsecutiveHit.class
+            PointsPerConsecutiveHit.class,
+            DoubleXpRing.class
         );
     }
 

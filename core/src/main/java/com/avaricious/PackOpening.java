@@ -186,16 +186,15 @@ public abstract class PackOpening {
 
     private void drawCoreGlow(ZIndex layer) {
         Vector2 center = slot.getCardCenter();
-
-        float size = bounds.width * coreGlowScale;
+        float width = bounds.width * coreGlowScale;
+        float height = bounds.height * coreGlowScale;
 
         Pencil.I().addDrawing(new TextureDrawing(
-            whitePixel,
+            getWhiteTexture(),
             new Rectangle(
-                center.x - size / 2f,
-                center.y - size / 2f,
-                size,
-                size
+                center.x - width / 2f,
+                center.y - height / 2f,
+                width, height
             ),
             1f,
             0f,

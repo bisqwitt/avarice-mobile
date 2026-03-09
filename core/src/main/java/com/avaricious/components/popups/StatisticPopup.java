@@ -50,7 +50,7 @@ public class StatisticPopup {
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
             new Rectangle(x - originX - 0.5f, y - originY, width, height),
-            scale, rotation, ZIndex.NUMBER_POPUP
+            scale, rotation, ZIndex.POPUP_DEFAULT
         ));
     }
 
