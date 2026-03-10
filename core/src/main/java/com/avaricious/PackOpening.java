@@ -6,7 +6,7 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Rarity;
-import com.avaricious.upgrades.Ring;
+import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -21,14 +21,10 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class PackOpening {
 
-    private final Ring randomRing = new Ring() {
+    private final AbstractRing randomRing = new AbstractRing() {
         @Override
         public RingAssetKeys keySet() {
             return null;
-        }
-
-        @Override
-        public void hit() {
         }
 
         @Override

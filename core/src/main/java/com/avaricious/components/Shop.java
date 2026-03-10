@@ -2,12 +2,12 @@ package com.avaricious.components;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
-import com.avaricious.cards.CardPack;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.effects.GlowBorder;
 import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.RelicPack;
+import com.avaricious.upgrades.cards.CardPack;
+import com.avaricious.upgrades.rings.RingPack;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -40,7 +40,7 @@ public class Shop {
     private final CreditScore creditScore;
     private final ShopCardsBar cards = new ShopCardsBar(buyBox);
     private final CardPack cardPack = new CardPack(buyBox);
-    private final RelicPack relicPack = new RelicPack(buyBox);
+    private final RingPack ringPack = new RingPack(buyBox);
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
@@ -145,15 +145,15 @@ public class Shop {
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
-        if (cards.isDragging() || cardPack.isDragging() || relicPack.isDragging()) {
+        if (cards.isDragging() || cardPack.isDragging() || ringPack.isDragging()) {
             GlowBorder.drawGlowBorder(yellowTexture, buyBox,
-                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(cardPack.getCenter()) || buyBox.contains(relicPack.getCenter()),
+                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(cardPack.getCenter()) || buyBox.contains(ringPack.getCenter()),
                 ZIndex.SHOP, delta);
         }
 
         cards.draw();
         cardPack.draw();
-        relicPack.draw();
+        ringPack.draw();
 
         returnButton.draw();
         rerollButton.draw();
@@ -176,7 +176,7 @@ public class Shop {
 
         cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        relicPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         returnButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

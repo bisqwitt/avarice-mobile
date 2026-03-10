@@ -2,8 +2,8 @@ package com.avaricious.components.bars;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditNumber;
-import com.avaricious.cards.Card;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.cards.Card;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 

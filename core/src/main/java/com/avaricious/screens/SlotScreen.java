@@ -23,8 +23,7 @@ import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
-import com.avaricious.components.slot.SymbolSlot;
-import com.avaricious.components.slot.pattern.SlotMatch;
+import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureGlow;
@@ -35,11 +34,12 @@ import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.RelicWithActionAfterSpin;
-import com.avaricious.upgrades.multAdditions.MultAdditionRing;
-import com.avaricious.upgrades.pointAdditions.PointAdditionRing;
-import com.avaricious.upgrades.pointAdditions.PointsPerConsecutiveHit;
-import com.avaricious.upgrades.pointAdditions.symbolValueStacker.SymbolValueStackRing;
+import com.avaricious.upgrades.rings.IRelicWithActionAfterSpin;
+import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
+import com.avaricious.upgrades.rings.triggerable.ITriggerablePerPatternRing;
+import com.avaricious.upgrades.rings.triggerable.ITriggerablePerSlotRing;
+import com.avaricious.upgrades.rings.triggerable.ITriggerablePerSpinRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -240,7 +240,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void runResult() {
-        List<SlotMatch> matches = slotMachine.findMatches();
+        List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
             healthUi.damage(20);
             buttonBoard.setVisible(true);
@@ -250,22 +250,24 @@ public class SlotScreen extends ScreenAdapter {
         TaskScheduler scheduler = new TaskScheduler(0.4f);
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
 
-        for (SlotMatch slotMatch : matches) {
-            List<SymbolSlot> slots = slotMatch.getSlots();
+        for (PatternHitContext patternHitContext : matches) {
+            List<Slot> slots = patternHitContext.getSlots();
             Slot middleSlot = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleImmediate(() -> {
-                for (SymbolSlot slot : slots) {
-                    slot.targetScale = 1.25f;
-                    slot.setInPatternHit(true);
+                if (ringBar.ringOwned(PointsPerPatternHit.class))
+                    ringBar.getRingByClass(PointsPerPatternHit.class).onPatternHit();
+
+                for (Slot slot : slots) {
+                    slot.beginPatternHit();
                 }
             });
 
-            triggerSeparateSlots(slotMatch, scheduler);
+            triggerSeparateSlots(matches, patternHitContext, scheduler);
             if (PlayerStats.I().rollChance(DoubleHitChance.class)) {
                 scheduler.schedule(() -> PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(DoubleHitChance.class).getTexture(),
                     middleSlot.getPos().x + 1f, middleSlot.getPos().y + 1f));
-                triggerSeparateSlots(slotMatch, scheduler);
+                triggerSeparateSlots(matches, patternHitContext, scheduler);
             }
 
             scheduler.schedule(() -> {
@@ -275,7 +277,7 @@ public class SlotScreen extends ScreenAdapter {
                     slot.pulse();
                     slot.wobble();
 
-                    EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
+                    EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                         new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                         TextureGlow.Type.SLOT);
                 }
@@ -295,36 +297,31 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            List<PointAdditionRing> pointAdditionRings = ringBar.getRingsByClass(PointAdditionRing.class);
-            for (PointAdditionRing pointAdditionRing : pointAdditionRings) {
-                if (pointAdditionRing.condition(null, slotMatch.getSlots().size()))
-                    pointAdditionRing.hit();
-            }
-
-            List<MultAdditionRing> multAdditionUpgrades = ringBar.getRingsByClass(MultAdditionRing.class);
-            for (MultAdditionRing multAdditionRing : multAdditionUpgrades) {
-                if (multAdditionRing.condition(null, slotMatch.getSlots().size()))
-                    multAdditionRing.hit();
+            for (ITriggerablePerPatternRing triggerablePerPatternRing : ringBar.getRingsOfType(ITriggerablePerPatternRing.class)) {
+                final AbstractTriggerableRing ring = ((AbstractTriggerableRing) triggerablePerPatternRing);
+                scheduler.schedule(() -> ring.trigger(matches, patternHitContext));
             }
 
             scheduler.schedule(() -> {
                 EffectManager.increaseStreak();
                 for (Slot slot : slots) {
-                    slot.targetScale = 1f;
-                    slot.setInPatternHit(false);
+                    slot.endPatternHit();
                     PopupManager.I().releaseHoldingNumbers();
                 }
             });
         }
 
+        for (ITriggerablePerSpinRing triggerablePerSpinRing : ringBar.getRingsOfType(ITriggerablePerSpinRing.class)) {
+            scheduler.schedule(() -> ((AbstractTriggerableRing) triggerablePerSpinRing).trigger(matches, null));
+        }
+
         scheduler.schedule(() -> {
             patternDisplay.addTo(PatternDisplay.Type.STREAK, 1);
-//            slotMachine.setAlpha(0.25f);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
             buttonBoard.setVisible(true);
 
-            for (RelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(RelicWithActionAfterSpin.class)) {
+            for (IRelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IRelicWithActionAfterSpin.class)) {
                 relicWithActionAfterSpin.onSpinEnded();
             }
         });
@@ -336,9 +333,9 @@ public class SlotScreen extends ScreenAdapter {
         scheduler.runTasks();
     }
 
-    private void triggerSeparateSlots(SlotMatch slotMatch, TaskScheduler scheduler) {
+    private void triggerSeparateSlots(List<PatternHitContext> matches, PatternHitContext patternHitContext, TaskScheduler scheduler) {
         symbolsHitLastSpin = 0;
-        for (Slot slot : slotMatch.getSlots()) {
+        for (Slot slot : patternHitContext.getSlots()) {
             scheduler.schedule(() -> {
                 symbolsHitLastSpin++;
 
@@ -347,7 +344,7 @@ public class SlotScreen extends ScreenAdapter {
                 ScreenShake.I().addTrauma(0.2f);
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int points = criticalHit ? slotMatch.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slotMatch.getSymbol().baseValue();
+                int points = criticalHit ? patternHitContext.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : patternHitContext.getSymbol().baseValue();
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
                     slot.getPos().x + 1.5f, slot.getPos().y + 1f, true);
@@ -356,15 +353,14 @@ public class SlotScreen extends ScreenAdapter {
                         slot.getPos().x + 1.5f, slot.getPos().y + 2f);
                 patternDisplay.addTo(PatternDisplay.Type.POINTS, points);
 
-                EffectManager.create(Assets.I().getSymbol(slotMatch.getSymbol()),
+                EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                     TextureGlow.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
 
-                PointsPerConsecutiveHit pointsPerConsecutiveHitUpgrade = ringBar.getRingByClass(PointsPerConsecutiveHit.class);
-                if (pointsPerConsecutiveHitUpgrade != null) {
-                    pointsPerConsecutiveHitUpgrade.hit();
+                for (ITriggerablePerSlotRing rings : ringBar.getRingsOfType(ITriggerablePerSlotRing.class)) {
+                    ((AbstractTriggerableRing) rings).trigger(matches, patternHitContext);
                 }
 
                 xpBar.addXp(points);
@@ -378,15 +374,6 @@ public class SlotScreen extends ScreenAdapter {
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CreditSpawnChance.class).getTexture(), x + 1f, y);
                     CreditManager.I().gain(1);
                 });
-            }
-
-            List<SymbolValueStackRing> symbolValueStackUpgrades = ringBar.getRingsByClass(SymbolValueStackRing.class);
-            SymbolValueStackRing symbolValueStackUpgrade = symbolValueStackUpgrades.stream().filter(upgrade -> upgrade.getSymbol() == slotMatch.getSymbol()).findFirst().orElse(null);
-            if (symbolValueStackUpgrade != null) {
-                scheduler.scheduleImmediate(symbolValueStackUpgrade::hit);
-                if (symbolValueStackUpgrade.addStacks(1)) {
-                    scheduler.schedule(symbolValueStackUpgrade::enoughStacks);
-                }
             }
         }
     }

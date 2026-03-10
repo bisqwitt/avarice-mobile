@@ -50,6 +50,7 @@ public class Reel {
     private float seed = MathUtils.random(0f, 1000f);
 
     private final Runnable onSpinFinished;
+    private boolean spinFinishedNotified = false;
 
     public Reel(List<Symbol> strip, int visibleRows, Runnable onSpinFinished) {
         this.strip = strip;
@@ -129,7 +130,6 @@ public class Reel {
                     settleTargetPos = stopTargetPos;
                     settleVel = vel;
                     phase = Phase.SETTLING;
-                    onSpinFinished.run();
                 }
                 break;
             }
@@ -142,6 +142,11 @@ public class Reel {
 
                 settleVel += a * dt;
                 pos += settleVel * dt;
+
+                if (Math.abs(pos - settleTargetPos) < 0.02f && Math.abs(settleVel) < 0.25f && !spinFinishedNotified) {
+                    onSpinFinished.run();
+                    spinFinishedNotified = true;
+                }
 
                 // finish when close enough
                 if (Math.abs(pos - settleTargetPos) < 0.0015f && Math.abs(settleVel) < 0.03f) {
@@ -168,6 +173,7 @@ public class Reel {
         this.cruiseVel = cruiseSpeed;
         this.stopRequested = false;
         this.phase = Phase.STARTING;
+        spinFinishedNotified = false;
         // Don't reset pos; continuity feels better.
     }
 

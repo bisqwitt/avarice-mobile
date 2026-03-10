@@ -1,6 +1,5 @@
 package com.avaricious.components;
 
-import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.components.slot.SlotMachine;
@@ -8,6 +7,7 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
+import com.avaricious.upgrades.cards.Card;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -110,8 +110,8 @@ public class HandUi {
             discardCard(card);
         } else {
             dragableSlot.endDrag(0);
+            cards.get(card).targetScale = 1f;
         }
-        cards.get(card).targetScale = 1f;
         touchingCard = null;
         PopupManager.I().killTooltip();
         updateCardBounds();

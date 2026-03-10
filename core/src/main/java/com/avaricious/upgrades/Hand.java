@@ -1,6 +1,6 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.cards.Card;
+import com.avaricious.upgrades.cards.Card;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 

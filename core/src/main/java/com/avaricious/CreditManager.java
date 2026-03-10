@@ -1,7 +1,7 @@
 package com.avaricious;
 
 import com.avaricious.components.RingBar;
-import com.avaricious.upgrades.DeptRing;
+import com.avaricious.upgrades.rings.DeptRing;
 import com.avaricious.utility.Observable;
 
 public class CreditManager extends Observable<Integer> {

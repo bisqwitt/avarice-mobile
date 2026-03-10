@@ -3,8 +3,8 @@ package com.avaricious.components.slot;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.components.slot.pattern.PatternFinder;
+import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
-import com.avaricious.components.slot.pattern.SlotMatch;
 import com.avaricious.effects.TextureGlow;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -46,7 +46,7 @@ public class SlotMachine {
     public static final Rectangle windowBounds = new Rectangle(0.05f, 8.8f, 8.85f, 5.6f);
 
     // Visual cells (for selection pulse/scale)
-    private final SymbolSlot[][] grid = new SymbolSlot[cols][rows];
+    private final Slot[][] grid = new Slot[cols][rows];
     private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
 
     // Reels (one per column)
@@ -63,15 +63,15 @@ public class SlotMachine {
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
-                if (r == 0) grid[c][r] = new SymbolSlot(new Vector2(
+                if (r == 0) grid[c][r] = new Slot(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 2 * (CELL_H + spacingY)
                 ));
-                if (r == 1) grid[c][r] = new SymbolSlot(new Vector2(
+                if (r == 1) grid[c][r] = new Slot(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 1 * (CELL_H + spacingY)
                 ));
-                if (r == 2) grid[c][r] = new SymbolSlot(new Vector2(
+                if (r == 2) grid[c][r] = new Slot(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 0 * (CELL_H + spacingY)
                 ));
@@ -130,33 +130,22 @@ public class SlotMachine {
         area.setHeight(area.height);
 
         Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
-        List<Vector2> emphasizedSymbols = drawSymbols(delta);
+        drawSymbols(delta);
         Pencil.I().endScissors();
 
         TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
-        for (Vector2 emphasizedSymbolPos : emphasizedSymbols) {
-            drawSymbol(emphasizedSymbolPos, delta);
-        }
     }
 
-    private List<Vector2> drawSymbols(float delta) {
-        List<Vector2> emphasizedSlotPositions = new ArrayList<>();
+    private void drawSymbols(float delta) {
         for (int c = 0; c < cols; c++) {
             int drawFrom = -1;
             int drawTo = rows - 1;
 
             for (int k = drawFrom; k <= drawTo; k++) {
                 Vector2 pos = new Vector2(c, k);
-                if (isInGrid(pos) && grid[c][k].isEmphasized()) {
-                    emphasizedSlotPositions.add(pos);
-                    continue;
-                }
-
                 drawSymbol(pos, delta);
             }
         }
-
-        return emphasizedSlotPositions;
     }
 
     private void drawSymbol(Vector2 gridPos, float delta) {
@@ -243,7 +232,7 @@ public class SlotMachine {
     }
 
     // Returns each matching line as a List<Slot>
-    public List<SlotMatch> findMatches() {
+    public List<PatternHitContext> findMatches() {
         Symbol[][] symbolMap = new Symbol[cols][rows];
 
         for (int c = 0; c < reels.size(); c++) {
@@ -256,22 +245,22 @@ public class SlotMachine {
         List<PatternMatch> matches = PatternFinder.findMatches(symbolMap);
 
         // Build final slot-based matches
-        List<SlotMatch> result = new ArrayList<>();
+        List<PatternHitContext> result = new ArrayList<>();
 
         for (PatternMatch match : matches) {
 
-            List<SymbolSlot> slots = new ArrayList<>();
+            List<Slot> slots = new ArrayList<>();
             for (Vector2 pos : match.getPositions()) {
-                SymbolSlot slot = grid[(int) pos.x][(int) pos.y];
+                Slot slot = grid[(int) pos.x][(int) pos.y];
 //                slot.setInPatternHit(true);
                 slots.add(slot);
             }
-            result.add(new SlotMatch(match.getSymbol(), slots));
+            result.add(new PatternHitContext(match.getSymbol(), slots));
         }
 
-        result.sort(new Comparator<SlotMatch>() {
+        result.sort(new Comparator<PatternHitContext>() {
             @Override
-            public int compare(SlotMatch o1, SlotMatch o2) {
+            public int compare(PatternHitContext o1, PatternHitContext o2) {
                 return o1.getSymbol().ordinal() - o2.getSymbol().ordinal();
             }
         });

@@ -1,18 +1,18 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.DevTools;
-import com.avaricious.cards.Card;
-import com.avaricious.cards.ConvertPointsToArmorCard;
-import com.avaricious.cards.DrawAndDiscardOneCard;
-import com.avaricious.cards.FiveMultForEveryCardDiscarded;
-import com.avaricious.cards.FivePointsCard;
-import com.avaricious.cards.FivePointsForEachCardInHandCard;
-import com.avaricious.cards.OneDollarCard;
-import com.avaricious.cards.OnePointForEveryFruitCard;
-import com.avaricious.cards.TwentyArmorCard;
-import com.avaricious.cards.TwentyDamageAndDrawTwoCards;
-import com.avaricious.cards.TwoMultCard;
-import com.avaricious.cards.TwoPointsForEverySymbolHit;
+import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
+import com.avaricious.upgrades.cards.DrawAndDiscardOneCard;
+import com.avaricious.upgrades.cards.FiveMultForEveryCardDiscarded;
+import com.avaricious.upgrades.cards.FivePointsCard;
+import com.avaricious.upgrades.cards.FivePointsForEachCardInHandCard;
+import com.avaricious.upgrades.cards.OneDollarCard;
+import com.avaricious.upgrades.cards.OnePointForEveryFruitCard;
+import com.avaricious.upgrades.cards.TwentyArmorCard;
+import com.avaricious.upgrades.cards.TwentyDamageAndDrawTwoCards;
+import com.avaricious.upgrades.cards.TwoMultCard;
+import com.avaricious.upgrades.cards.TwoPointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
 
 import java.lang.reflect.InvocationTargetException;

@@ -19,7 +19,7 @@ public class ScoreDisplay {
 
     private final float ROUND_TXT_X = 1f;
     private final float CURRENT_ROUND_X = ROUND_TXT_X + 3.25f; // 4.25f
-    private final float COLON_X = CURRENT_ROUND_X + 0.5f; // 4.75
+    private final float COLON_X = CURRENT_ROUND_X + 0.6f; // 4.75
     private final float TARGET_SCORE_X = COLON_X + 1f; // 5.5
 
     private final DigitalNumber currentRound;

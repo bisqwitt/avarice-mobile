@@ -72,8 +72,6 @@ public class TooltipPopup {
             ? worldWidth - boxWidth - 0.25f : pos.x;
         float boxY = pos.y;
 
-        // WORLD SPACE
-        batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             boxShadow,
@@ -87,16 +85,13 @@ public class TooltipPopup {
         ));
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
-        ScreenManager.getViewport().project(center);
+        center.set(center.x * 100, center.y * 100);
 
         if (alpha > 0.5f) {
             float jokerX = center.x - jokerTxt.width / 2f - 30f;
-            float jokerY = center.y + 130f;
+            float jokerY = center.y + 125f;
 
-            float textW = description.width;
-            float textH = description.height;
-
-            float textX = center.x - textW / 2f;
+            float textX = center.x - description.width / 2f;
             float textY = center.y;
 
             Pencil.I().addDrawing(new FontDrawing(

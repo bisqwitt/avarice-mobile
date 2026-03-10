@@ -45,7 +45,7 @@ public class Assets {
     private final Color epic = new Color(0.61f, 0.15f, 0.69f, 1f);
     private final Color legendary = new Color(1f, 0.60f, 0.00f, 1f);
 
-    private Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
+    private final Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
     private BitmapFont bigFont;
     private BitmapFont smallFont;
 
@@ -54,13 +54,13 @@ public class Assets {
         manager.finishLoading();
         cache(manager.get("atlases.atlas", TextureAtlas.class));
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Fabled_Font.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.size = 92;
+        param.size = 72;
         bigFont = generator.generateFont(param);
         bigFont.setUseIntegerPositions(false);
         bigFont.getData().markupEnabled = true;
-        param.size = 62;
+        param.size = 56;
         smallFont = generator.generateFont(param);
         smallFont.setUseIntegerPositions(false);
         smallFont.getData().markupEnabled = true;

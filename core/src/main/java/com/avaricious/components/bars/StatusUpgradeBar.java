@@ -1,8 +1,8 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.stats.statupgrades.StatusRing;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.rings.applicable.StatusRing;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;

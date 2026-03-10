@@ -8,7 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.HashMap;
@@ -19,7 +18,7 @@ public class ScreenManager {
     private static ScreenManager instance;
 
     private static SpriteBatch batch;
-    private static ScreenViewport uiViewport;
+    private static FitViewport uiViewport;
     private static FitViewport viewport;
 
     public static ScreenManager create(Main app) {
@@ -64,7 +63,7 @@ public class ScreenManager {
         return viewport;
     }
 
-    public static void setUiViewport(ScreenViewport viewport) {
+    public static void setUiViewport(FitViewport viewport) {
         uiViewport = viewport;
     }
 

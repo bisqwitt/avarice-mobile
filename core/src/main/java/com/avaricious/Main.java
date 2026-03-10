@@ -4,9 +4,9 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 
 /**
@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class Main extends Game {
     SpriteBatch batch;
     FitViewport viewport;
-    ScreenViewport uiViewport;
+    FitViewport uiViewport;
 
     @Override
     public void create() {
@@ -23,7 +23,8 @@ public class Main extends Game {
 
         batch = new SpriteBatch();
         viewport = new FitViewport(9, 18);
-        uiViewport = new ScreenViewport();
+        uiViewport = new FitViewport(900, 1800);
+
         ScreenManager.setBatch(batch);
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);
@@ -34,7 +35,7 @@ public class Main extends Game {
         return viewport;
     }
 
-    public ScreenViewport getUiViewport() {
+    public FitViewport getUiViewport() {
         return uiViewport;
     }
 
@@ -46,6 +47,9 @@ public class Main extends Game {
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         uiViewport.update(width, height, true);
+
+        Gdx.app.log("V", "width: " + viewport.getWorldWidth() + " height: " + viewport.getWorldHeight());
+        Gdx.app.log("SV", "width: " + uiViewport.getWorldWidth() + " height: " + uiViewport.getWorldHeight());
     }
 
     @Override

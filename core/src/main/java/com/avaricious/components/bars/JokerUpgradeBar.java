@@ -1,8 +1,8 @@
 package com.avaricious.components.bars;
 
-import com.avaricious.cards.Card;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.cards.Card;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

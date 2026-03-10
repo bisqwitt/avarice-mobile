@@ -1,9 +1,9 @@
 package com.avaricious.components;
 
-import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.cards.Card;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,7 +143,7 @@ public class DeckUi {
         cards.clear();
         for (int i = 0; i < pendingCards.size(); i++) {
             Rectangle bounds = new Rectangle(
-                firstCardBounds.x + 0.025f * i, firstCardBounds.y + 0.025f * i,
+                firstCardBounds.x + 0.015f * i, firstCardBounds.y + 0.025f * i,
                 firstCardBounds.width, firstCardBounds.height
             );
             cards.put(pendingCards.get(i), new DragableSlot(bounds).setTilt(200f, 20f));
@@ -160,28 +161,32 @@ public class DeckUi {
             }
 
             int index = 0;
-            for (DragableSlot card : cards.values()) {
+            List<DragableSlot> reversed = new ArrayList<>(cards.values());
+            Collections.reverse(reversed);
+            for (DragableSlot card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
                         card.moveTo(positions.get(finalIndex));
                     }
-                }, index * 0.1f);
+                }, index * 0.025f);
                 index++;
             }
             unfolded = true;
         } else {
-            int index = 0;
-            for (DragableSlot card : cards.values()) {
+            List<DragableSlot> reversed = new ArrayList<>(cards.values());
+            Collections.reverse(reversed);
+            int index = reversed.size() - 1;
+            for (DragableSlot card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        card.moveTo(new Vector2(firstCardBounds.x + 0.025f * finalIndex, firstCardBounds.y + 0.025f * finalIndex));
+                        card.moveTo(new Vector2(firstCardBounds.x + 0.015f * finalIndex, firstCardBounds.y + 0.025f * finalIndex));
                     }
-                }, index * 0.1f);
-                index++;
+                }, index * 0.025f);
+                index--;
             }
             Timer.schedule(new Timer.Task() {
                 @Override

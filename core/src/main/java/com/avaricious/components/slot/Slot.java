@@ -25,6 +25,7 @@ public class Slot {
     protected final Vector2 pos;
 
     private boolean isEmphasized = false;
+    private int patternHitCount = 0;
 
     public Slot(Vector2 pos) {
         this.pos = pos;
@@ -102,6 +103,20 @@ public class Slot {
         float decay = 1f - t;
         float oscill = (float) Math.sin((float) (Math.PI * 2.5 * t));
         return 1f + Math.abs(oscill) * decay * wobbleScaleAmp;
+    }
+
+    public void beginPatternHit() {
+        patternHitCount++;
+        targetScale = 1.25f;
+        setInPatternHit(true);
+    }
+
+    public void endPatternHit() {
+        patternHitCount = Math.max(0, patternHitCount - 1);
+        if (patternHitCount == 0) {
+            targetScale = 1f;
+            setInPatternHit(false);
+        }
     }
 
     public Vector2 getPos() {

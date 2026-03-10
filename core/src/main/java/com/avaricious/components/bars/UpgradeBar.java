@@ -1,9 +1,9 @@
 package com.avaricious.components.bars;
 
-import com.avaricious.cards.Card;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.cards.Card;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
