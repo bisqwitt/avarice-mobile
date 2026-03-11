@@ -4,7 +4,7 @@ import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.upgrades.rings.CriticalDamageRing;
 import com.avaricious.upgrades.rings.DeptRing;
 import com.avaricious.upgrades.rings.DoubleXpRing;
-import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyJokerSlotRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.RandomMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.FiveOfAKindMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.FourOfAKindMultiAdditionRing;
@@ -75,7 +75,7 @@ public class RelicBag {
             CriticalDamageRing.class,
             DeptRing.class,
             RandomMultiAdditionRing.class,
-            MultiPerEmptyJokerSlotRing.class,
+            MultiPerEmptyRingSlotRing.class,
             ThreeOfAKindMultiAdditionRing.class,
             FourOfAKindMultiAdditionRing.class,
             FiveOfAKindMultiAdditionRing.class,

@@ -1,15 +1,12 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions;
 
 import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.upgrades.rings.triggerable.AbstractPatternAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
 
-public abstract class AbstractPointAdditionRing extends AbstractTriggerableRing {
-
-    public abstract int getPoints();
-
+public abstract class AbstractPointAdditionRing extends AbstractPatternAdditionRing {
     @Override
-    protected void onTrigger() {
-        pulse();
-        addToPattern(PatternDisplay.Type.POINTS, getPoints());
+    protected PatternDisplay.Type getPatternType() {
+        return PatternDisplay.Type.POINTS;
     }
 }

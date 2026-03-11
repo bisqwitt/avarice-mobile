@@ -1,16 +1,15 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions;
 
 import com.avaricious.upgrades.rings.IRelicWithActionAfterSpin;
-import com.avaricious.upgrades.rings.triggerable.ITriggerablePerSpinRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
-public class PointsPerPatternHit extends AbstractPointAdditionRing implements IRelicWithActionAfterSpin, ITriggerablePerSpinRing {
+public class PointsPerPatternHit extends AbstractPointAdditionRing implements IRelicWithActionAfterSpin {
 
     private int hitNumber = 0;
 
     @Override
-    public int getPoints() {
+    public int getValue() {
         return hitNumber;
     }
 
@@ -32,5 +31,10 @@ public class PointsPerPatternHit extends AbstractPointAdditionRing implements IR
 
     public void onPatternHit() {
         hitNumber++;
+    }
+
+    @Override
+    public TriggerablePer triggerableOn() {
+        return TriggerablePer.SLOT;
     }
 }

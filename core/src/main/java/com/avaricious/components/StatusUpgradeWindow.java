@@ -56,6 +56,7 @@ public class StatusUpgradeWindow {
             state = State.EXITING;
             animT = 0f;
         });
+        upgradeBar.setzIndex(ZIndex.STATUS_UPGRADE_WINDOW);
     }
 
     private List<Upgrade> randomStatUpgrades() {

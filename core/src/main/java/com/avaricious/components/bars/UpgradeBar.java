@@ -22,6 +22,8 @@ public abstract class UpgradeBar {
     private final Rectangle cardRectangle;
     private final float offset;
 
+    private ZIndex zIndex = ZIndex.UPGRADE_BAR;
+
     protected final Map<Upgrade, Rectangle> cardBounds = new HashMap<>();
     protected final Map<Upgrade, Slot> cardAnimationManagers = new HashMap<>();
 
@@ -112,7 +114,7 @@ public abstract class UpgradeBar {
         Pencil.I().addDrawing(new TextureDrawing(
             getTexture(upgrade),
             bounds, 1f, rotation,
-            ZIndex.UPGRADE_BAR
+            zIndex
         ));
     }
 
@@ -155,5 +157,9 @@ public abstract class UpgradeBar {
 
     protected Rectangle getCardRectangle() {
         return cardRectangle;
+    }
+
+    public void setzIndex(ZIndex zIndex) {
+        this.zIndex = zIndex;
     }
 }

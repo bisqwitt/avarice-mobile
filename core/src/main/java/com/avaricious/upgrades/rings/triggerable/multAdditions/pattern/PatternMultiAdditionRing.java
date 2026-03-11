@@ -2,14 +2,13 @@ package com.avaricious.upgrades.rings.triggerable.multAdditions.pattern;
 
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.upgrades.rings.triggerable.ITriggerableOnConditionRing;
-import com.avaricious.upgrades.rings.triggerable.ITriggerablePerPatternRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.AbstractMultiAdditionRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
 import java.util.List;
 
-public abstract class PatternMultiAdditionRing extends AbstractMultiAdditionRing implements ITriggerableOnConditionRing, ITriggerablePerPatternRing {
+public abstract class PatternMultiAdditionRing extends AbstractMultiAdditionRing implements ITriggerableOnConditionRing {
 
     private final double patternType;
 
@@ -23,17 +22,22 @@ public abstract class PatternMultiAdditionRing extends AbstractMultiAdditionRing
     }
 
     @Override
-    public int getMulti() {
-        return 4;
+    public int getValue() {
+        return 3;
     }
 
     @Override
     public String description() {
-        return "Additional " + Assets.I().redText(getMulti() + "") + " to " + Assets.I().redText("multiplier") + " on " + (int) patternType + "-of-a-kind's";
+        return Assets.I().redText("+3 Multi") + " on " + (int) patternType + "-of-a-kind's";
     }
 
     @Override
     public RingAssetKeys keySet() {
         return RingAssetKeys.RING_31;
+    }
+
+    @Override
+    public TriggerablePer triggerableOn() {
+        return TriggerablePer.PATTERN;
     }
 }

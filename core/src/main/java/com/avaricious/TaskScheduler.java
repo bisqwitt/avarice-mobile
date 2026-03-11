@@ -6,12 +6,16 @@ import java.util.*;
 
 public class TaskScheduler {
 
+    private static TaskScheduler instance;
+    public static TaskScheduler I() {
+        return instance == null ? instance = new TaskScheduler() : instance;
+    }
+
 //    private final Map<Runnable, Float> tasks = new LinkedHashMap<>();
     private final LinkedList<ScheduledTask> tasks = new LinkedList<>();
-    private final float defaultDelay;
+    private final float defaultDelay = 0.4f;
 
-    public TaskScheduler(float defaultDelay) {
-        this.defaultDelay = defaultDelay;
+    private TaskScheduler() {
     }
 
     public void schedule(Runnable r) {
@@ -22,7 +26,7 @@ public class TaskScheduler {
         tasks.add(new ScheduledTask(r, delay));
     }
 
-    public void scheduleImmediate(Runnable r) {
+    public void scheduleNoDelay(Runnable r) {
         float delay = tasks.getLast().getDelay();
         tasks.getLast().setDelay(0f);
         schedule(r, delay);
@@ -34,6 +38,8 @@ public class TaskScheduler {
             Timer.schedule(create(task.runnable), delay);
             delay += (task.delay);
         }
+
+        tasks.clear();
     }
 
     private Timer.Task create(Runnable r) {

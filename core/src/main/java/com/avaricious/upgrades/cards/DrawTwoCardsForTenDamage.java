@@ -7,7 +7,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class TwentyDamageAndDrawTwoCards extends Card {
+public class DrawTwoCardsForTenDamage extends Card {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.MIME_CARD);
 
@@ -18,7 +18,7 @@ public class TwentyDamageAndDrawTwoCards extends Card {
 
     @Override
     protected void onApply() {
-        HealthUi.I().damage(20);
+        HealthUi.I().damage(10);
         Hand hand = Hand.I();
         hand.queueActions(
             hand::drawCard,
@@ -33,7 +33,6 @@ public class TwentyDamageAndDrawTwoCards extends Card {
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> {
-        };
+        return () -> {};
     }
 }
