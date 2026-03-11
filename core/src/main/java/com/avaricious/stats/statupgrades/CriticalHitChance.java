@@ -1,7 +1,7 @@
 package com.avaricious.stats.statupgrades;
 
 import com.avaricious.components.RingBar;
-import com.avaricious.upgrades.rings.CriticalHitDamageRing;
+import com.avaricious.upgrades.rings.CriticalDamageRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,7 +19,7 @@ public class CriticalHitChance extends Stat {
     }
 
     public int criticalHitMultiplier() {
-        return RingBar.I().ringOwned(CriticalHitDamageRing.class) ? 4 : 2;
+        return RingBar.I().ringOwned(CriticalDamageRing.class) ? 4 : 2;
     }
 
 }

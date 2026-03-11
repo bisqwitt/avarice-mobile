@@ -38,7 +38,7 @@ public abstract class SymbolValueStackRing extends AbstractTriggerableRing imple
     @Override
     public void onTrigger() {
         pulse();
-        createNumberPopup(Assets.I().green(), 1);
+        if (addStacks(1)) createNumberPopup(Assets.I().blue(), 1);
     }
 
     public void enoughStacks() {

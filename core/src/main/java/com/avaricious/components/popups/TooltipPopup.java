@@ -17,12 +17,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class TooltipPopup {
 
-    private final GlyphLayout jokerTxt = new GlyphLayout();
-    private final GlyphLayout description = new GlyphLayout();
 
-    private final TextureRegion box;
+    private final GlyphLayout titleTxt = new GlyphLayout();
+    private final GlyphLayout descriptionTxt = new GlyphLayout();
+
+    private final float WRAP_WIDTH = 500f;
+
+    private final Map<Integer, TextureRegion> boxes = new HashMap<>();
     private final TextureRegion boxShadow;
 
     private final BitmapFont bigFont;
@@ -47,11 +53,15 @@ public class TooltipPopup {
         this.pos = new Vector2(pos);
         this.layer = layer;
 
-        box = Assets.I().get(AssetKey.TOOLTIP_BOX);
+        boxes.put(1, Assets.I().get(AssetKey.TOOLTIP_BOX_S));
+        boxes.put(2, Assets.I().get(AssetKey.TOOLTIP_BOX_M));
+        boxes.put(3, Assets.I().get(AssetKey.TOOLTIP_BOX_L));
+        boxes.put(4, Assets.I().get(AssetKey.TOOLTIP_BOX_XL));
+
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
         smallFont = Assets.I().getSmallFont();
-        jokerTxt.setText(bigFont, upgrade.title(), Color.WHITE, 250f, Align.top | Align.center, true);
+        titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
         setDescription(upgrade.description());
     }
 
@@ -63,10 +73,11 @@ public class TooltipPopup {
 
     public void render(SpriteBatch batch, float delta) {
         updateAlpha(delta);
+        TextureRegion box = boxes.get(calcDescriptionLineAmount());
         float worldWidth = ScreenManager.getViewport().getWorldWidth();
 
         float boxWidth = 82 / 15f;
-        float boxHeight = 41 / 15f;
+        float boxHeight = box.getRegionHeight() / 15f;
         final float boxX = pos.x < 0.25f
             ? 0.25f : pos.x + boxWidth > worldWidth - 0.25f
             ? worldWidth - boxWidth - 0.25f : pos.x;
@@ -88,17 +99,19 @@ public class TooltipPopup {
         center.set(center.x * 100, center.y * 100);
 
         if (alpha > 0.5f) {
-            float jokerX = center.x - jokerTxt.width / 2f - 30f;
-            float jokerY = center.y + 125f;
+            float offset = calcTextOffset();
 
-            float textX = center.x - description.width / 2f;
-            float textY = center.y;
+            float jokerX = center.x - WRAP_WIDTH / 2f;
+            float jokerY = center.y + 105f + offset;
+
+            float textX = center.x - WRAP_WIDTH / 2f;
+            float textY = center.y + offset;
 
             Pencil.I().addDrawing(new FontDrawing(
-                bigFont, jokerTxt, new Vector2(jokerX, jokerY), layer
+                bigFont, titleTxt, new Vector2(jokerX, jokerY), layer
             ));
             Pencil.I().addDrawing(new FontDrawing(
-                smallFont, description, new Vector2(textX, textY), layer
+                smallFont, descriptionTxt, new Vector2(textX, textY), layer
             ));
         }
     }
@@ -118,13 +131,25 @@ public class TooltipPopup {
         }
     }
 
-    public void kill(Runnable onDead) {
-        this.onDead = onDead;
-        visible = false;
+    private int calcDescriptionLineAmount() {
+        if (descriptionTxt.height > 146) return 4;
+        else if (descriptionTxt.height > 90) return 3;
+        else if (descriptionTxt.height > 34) return 2;
+        else return 1;
+    }
+
+    private float calcTextOffset() {
+        int numberOfLines = calcDescriptionLineAmount();
+        return -25 + ((numberOfLines - 1) * 29);
     }
 
     private void setDescription(String txt) {
-        description.setText(smallFont, "[BLACK]" + txt + "[]", Color.WHITE, 600f, Align.top | Align.center, true);
+        descriptionTxt.setText(smallFont, "[WHITE]" + txt + "[]", Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
+    }
+
+    public void kill(Runnable onDead) {
+        this.onDead = onDead;
+        visible = false;
     }
 
     public void setVisible(boolean visible) {

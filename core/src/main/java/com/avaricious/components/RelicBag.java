@@ -1,7 +1,7 @@
 package com.avaricious.components;
 
 import com.avaricious.upgrades.rings.AbstractRing;
-import com.avaricious.upgrades.rings.CriticalHitDamageRing;
+import com.avaricious.upgrades.rings.CriticalDamageRing;
 import com.avaricious.upgrades.rings.DeptRing;
 import com.avaricious.upgrades.rings.DoubleXpRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyJokerSlotRing;
@@ -67,12 +67,12 @@ public class RelicBag {
     }
 
     public AbstractRing randomRelic() {
-        return instantiateRelic(allRelicClasses().get((int) (Math.random() * allRelicClasses().size())));
+        return instantiateRelic(allRingClasses().get((int) (Math.random() * allRingClasses().size())));
     }
 
-    public List<Class<? extends AbstractRing>> allRelicClasses() {
+    public List<Class<? extends AbstractRing>> allRingClasses() {
         return Arrays.asList(
-            CriticalHitDamageRing.class,
+            CriticalDamageRing.class,
             DeptRing.class,
             RandomMultiAdditionRing.class,
             MultiPerEmptyJokerSlotRing.class,

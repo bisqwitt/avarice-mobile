@@ -27,7 +27,7 @@ public class PointsForEveryRingHit extends AbstractPointAdditionRing implements 
         }
 
         pulse();
-        createNumberPopup(Assets.I().green(), 1);
+//        createNumberPopup(Assets.I().green(), 1);
     }
 
     @Override

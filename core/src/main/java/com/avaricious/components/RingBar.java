@@ -85,7 +85,7 @@ public class RingBar {
 
         touchingSlot.dragTo(mouse.x, mouse.y, 0);
         PopupManager.I().updateTooltip(
-            new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 2.85f),
+            new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 1.7f),
             true
         );
 

@@ -263,6 +263,11 @@ public class SlotScreen extends ScreenAdapter {
                 }
             });
 
+            for (ITriggerablePerPatternRing triggerablePerPatternRing : ringBar.getRingsOfType(ITriggerablePerPatternRing.class)) {
+                final AbstractTriggerableRing ring = ((AbstractTriggerableRing) triggerablePerPatternRing);
+                scheduler.schedule(() -> ring.trigger(matches, patternHitContext));
+            }
+
             triggerSeparateSlots(matches, patternHitContext, scheduler);
             if (PlayerStats.I().rollChance(DoubleHitChance.class)) {
                 scheduler.schedule(() -> PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(DoubleHitChance.class).getTexture(),
@@ -296,11 +301,6 @@ public class SlotScreen extends ScreenAdapter {
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
-
-            for (ITriggerablePerPatternRing triggerablePerPatternRing : ringBar.getRingsOfType(ITriggerablePerPatternRing.class)) {
-                final AbstractTriggerableRing ring = ((AbstractTriggerableRing) triggerablePerPatternRing);
-                scheduler.schedule(() -> ring.trigger(matches, patternHitContext));
-            }
 
             scheduler.schedule(() -> {
                 EffectManager.increaseStreak();

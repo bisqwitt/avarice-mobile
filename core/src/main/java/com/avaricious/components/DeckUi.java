@@ -193,7 +193,7 @@ public class DeckUi {
                 public void run() {
                     unfolded = false;
                 }
-            }, index * 0.1f);
+            }, reversed.size() * 0.025f + 0.25f);
         }
     }
 

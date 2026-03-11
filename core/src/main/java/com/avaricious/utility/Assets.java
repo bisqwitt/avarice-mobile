@@ -12,9 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Assets {
@@ -54,9 +52,9 @@ public class Assets {
         manager.finishLoading();
         cache(manager.get("atlases.atlas", TextureAtlas.class));
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Fabled_Font.ttf"));
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.size = 72;
+        param.size = 80;
         bigFont = generator.generateFont(param);
         bigFont.setUseIntegerPositions(false);
         bigFont.getData().markupEnabled = true;
@@ -69,8 +67,7 @@ public class Assets {
 
     private void cache(TextureAtlas atlas) {
         for (AssetKey key : AssetKey.values()) {
-            TextureRegion r = atlas.findRegion(key.path()); // or key.nameInAtlas
-            Gdx.app.log("ATLAS", key.path());
+            TextureRegion r = atlas.findRegion(key.path());
             if (r == null) {
                 throw new IllegalStateException(
                     "Missing region in atlas: key=" + key + " regionName=" + key.path()
@@ -82,14 +79,6 @@ public class Assets {
 
     public TextureRegion get(AssetKey key) {
         return cachedTextures.get(key);
-    }
-
-    public List<TextureRegion> getAnimationFrames(AssetAnimationKey key) {
-        List<TextureRegion> frames = new ArrayList<>();
-        for (AssetKey assetKey : key.getFrameAssetKeys()) {
-            frames.add(get(assetKey));
-        }
-        return frames;
     }
 
     public Animation<TextureRegion> getAnimation(AssetAnimationKey key, float frameDuration, Animation.PlayMode playMode) {
