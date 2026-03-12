@@ -1,16 +1,15 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions;
 
-import com.avaricious.upgrades.rings.triggerable.ITriggerablePerSpinRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
-public class PointsForEveryRingHit extends AbstractPointAdditionRing implements ITriggerablePerSpinRing {
+public class PointsForEveryRingHit extends AbstractPointAdditionRing {
 
     private int pointAddition = 5;
     private int ringHits = 0;
 
     @Override
-    public int getPoints() {
+    public int getValue() {
         return pointAddition;
     }
 
@@ -27,12 +26,16 @@ public class PointsForEveryRingHit extends AbstractPointAdditionRing implements 
         }
 
         pulse();
-//        createNumberPopup(Assets.I().green(), 1);
     }
 
     @Override
     public String description() {
         return Assets.I().blueText("+" + pointAddition + " Points") + ". Permanently increases by " + Assets.I().blueText("2") + " for every 10 Ring hits\n"
-            + "(Currently " + ringHits + " / 10)";
+            + Assets.I().greenText("(Currently " + ringHits + " / 10)");
+    }
+
+    @Override
+    public TriggerablePer triggerableOn() {
+        return TriggerablePer.SPIN;
     }
 }

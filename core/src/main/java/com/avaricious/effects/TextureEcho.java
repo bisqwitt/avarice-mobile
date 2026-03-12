@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextureGlow {
+public class TextureEcho {
 
     private final Type parentType;
     private final TextureRegion texture;
@@ -24,23 +24,23 @@ public class TextureGlow {
     private final float maxGlowScale;
     private float age = 0f;
 
-    private static final List<TextureGlow> glows = new ArrayList<>();
+    private static final List<TextureEcho> glows = new ArrayList<>();
 
     public static void create(TextureRegion texture, Rectangle spawnPoint, Type parentType, float streak) {
 //        glows.add(new TextureGlow(texture, spawnPoint, parentType, 1.5f + (0.4f * streak)));
-        glows.add(new TextureGlow(texture, spawnPoint, parentType, 3f));
+        glows.add(new TextureEcho(texture, spawnPoint, parentType, 3f));
     }
 
     public static void draw(SpriteBatch batch, float delta, Type parentType) {
-        List<TextureGlow> dump = new ArrayList<>();
-        for (TextureGlow textureGlow : glows) {
-            if (textureGlow.parentType.equals(parentType)) textureGlow._draw(batch, delta);
-            if (textureGlow.dead()) dump.add(textureGlow);
+        List<TextureEcho> dump = new ArrayList<>();
+        for (TextureEcho textureEcho : glows) {
+            if (textureEcho.parentType.equals(parentType)) textureEcho._draw(batch, delta);
+            if (textureEcho.dead()) dump.add(textureEcho);
         }
         glows.removeAll(dump);
     }
 
-    private TextureGlow(TextureRegion texture, Rectangle spawnPoint, Type parentType, float maxScale) {
+    private TextureEcho(TextureRegion texture, Rectangle spawnPoint, Type parentType, float maxScale) {
         this.texture = texture;
         this.bounds = new Rectangle(spawnPoint);
         this.parentType = parentType;

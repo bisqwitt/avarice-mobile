@@ -1,14 +1,33 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker;
 
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
-import com.avaricious.upgrades.rings.triggerable.ITriggerablePerSlotRing;
+import com.avaricious.upgrades.rings.triggerable.ITriggerableOnConditionRing;
 import com.avaricious.utility.Assets;
 
-public abstract class SymbolValueStackRing extends AbstractTriggerableRing implements ITriggerablePerSlotRing {
+import java.util.List;
+
+public abstract class SymbolValueStackRing extends AbstractTriggerableRing implements ITriggerableOnConditionRing {
 
     protected int level = 0;
     protected int stacks = 0;
+
+    public abstract Symbol getSymbol();
+
+    @Override
+    public void onTrigger() {
+        pulse();
+        if (onSymbolHit()) {
+            echo();
+            createNumberPopup(Assets.I().green(), 1);
+        }
+    }
+
+    @Override
+    public boolean condition(List<PatternHitContext> matches, PatternHitContext match) {
+        return match.getSymbol() == getSymbol();
+    }
 
     @Override
     public String description() {
@@ -18,31 +37,19 @@ public abstract class SymbolValueStackRing extends AbstractTriggerableRing imple
             + " (" + stacks + "/" + 10 + ")");
     }
 
-    public boolean addStacks(int amount) {
-        stacks += amount;
+    private boolean onSymbolHit() {
+        stacks += 1;
         if (stacks >= 10) {
             stacks = stacks - 10;
             level++;
-            addPointsToSymbolBaseValue();
+            getSymbol().setBaseValue(getSymbol().baseValue() + 1);
             return true;
         }
         return false;
     }
 
-    private void addPointsToSymbolBaseValue() {
-        getSymbol().setBaseValue(getSymbol().baseValue() + 1);
-    }
-
-    public abstract Symbol getSymbol();
-
     @Override
-    public void onTrigger() {
-        pulse();
-        if (addStacks(1)) createNumberPopup(Assets.I().blue(), 1);
-    }
-
-    public void enoughStacks() {
-        pulse();
-        createNumberPopup(Assets.I().blue(), 1);
+    public TriggerablePer triggerableOn() {
+        return TriggerablePer.SLOT;
     }
 }

@@ -5,7 +5,7 @@ import com.avaricious.Main;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
-import com.avaricious.effects.TextureGlow;
+import com.avaricious.effects.TextureEcho;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -133,7 +133,7 @@ public class SlotMachine {
         drawSymbols(delta);
         Pencil.I().endScissors();
 
-        TextureGlow.draw(batch, delta, TextureGlow.Type.SLOT);
+        TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
     }
 
     private void drawSymbols(float delta) {

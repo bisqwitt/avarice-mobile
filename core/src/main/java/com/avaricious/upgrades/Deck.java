@@ -10,7 +10,7 @@ import com.avaricious.upgrades.cards.FivePointsForEachCardInHandCard;
 import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.OnePointForEveryFruitCard;
 import com.avaricious.upgrades.cards.TwentyArmorCard;
-import com.avaricious.upgrades.cards.TwentyDamageAndDrawTwoCards;
+import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.TwoMultCard;
 import com.avaricious.upgrades.cards.TwoPointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
@@ -39,7 +39,7 @@ public class Deck extends Observable<List<? extends Card>> {
             FivePointsForEachCardInHandCard.class,
             DrawAndDiscardOneCard.class,
             FiveMultForEveryCardDiscarded.class,
-            TwentyDamageAndDrawTwoCards.class,
+            DrawTwoCardsForTenDamage.class,
             TwoPointsForEverySymbolHit.class,
             OnePointForEveryFruitCard.class
         ));

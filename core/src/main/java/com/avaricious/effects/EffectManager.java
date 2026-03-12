@@ -10,10 +10,10 @@ public class EffectManager {
 
     public static float streak = 0f;
 
-    public static void create(TextureRegion texture, Rectangle bounds, TextureGlow.Type parentType) {
+    public static void create(TextureRegion texture, Rectangle bounds, TextureEcho.Type parentType) {
         ParticleManager.I().create(bounds.x, bounds.y, ParticleType.RAINBOW, 0.03f, 50, ZIndex.SYMBOL_HIT_PARTICLES);
 //        TextureEcho.create(texture, bounds, new Color(1f, 1f, 1f, 1f), streak);
-        TextureGlow.create(texture, bounds, parentType, streak);
+        TextureEcho.create(texture, bounds, parentType, streak);
         BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.RAINBOW);
     }
 
