@@ -18,8 +18,8 @@ import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.displays.PatternDisplay;
 import com.avaricious.components.displays.ScoreDisplay;
+import com.avaricious.components.displays.TargetScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
@@ -34,7 +34,8 @@ import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.rings.IRelicWithActionAfterSpin;
+import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
+import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
 import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.utility.AssetKey;
@@ -62,8 +63,8 @@ public class SlotScreen extends ScreenAdapter {
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
 
-    private final ScoreDisplay scoreDisplay = new ScoreDisplay();
-    private final PatternDisplay patternDisplay = PatternDisplay.I();
+    private final TargetScoreDisplay targetScoreDisplay = new TargetScoreDisplay();
+    private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
 //    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
 
@@ -107,9 +108,9 @@ public class SlotScreen extends ScreenAdapter {
         screenShake = ScreenShake.I().setCamera(app.getViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
 
-        scoreDisplay.setOnInternalScoreDisplayed(() -> {
+        targetScoreDisplay.setOnInternalScoreDisplayed(() -> {
             AudioManager.I().endPayout();
-            if (scoreDisplay.targetScoreReached()) onTargetScoreReached();
+            if (targetScoreDisplay.targetScoreReached()) onTargetScoreReached();
         });
 
         if (DevTools.enableProfiler) Profiler.start();
@@ -156,8 +157,8 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        targetScoreDisplay.draw(batch, delta);
         scoreDisplay.draw(batch, delta);
-        patternDisplay.draw(batch, delta);
         buttonBoard.draw(batch, delta);
         ringBar.draw();
 
@@ -293,13 +294,14 @@ public class SlotScreen extends ScreenAdapter {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         middleSlot.getPos().x + 2.5f, middleSlot.getPos().y + 1f);
-                patternDisplay.addTo(PatternDisplay.Type.MULTI, mult);
+                scoreDisplay.addTo(ScoreDisplay.Type.MULTI, mult);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
             scheduler.schedule(() -> {
-                if(matches.indexOf(patternHitContext) != matches.size() -1) EffectManager.increaseStreak();
+                if (matches.indexOf(patternHitContext) != matches.size() - 1)
+                    EffectManager.increaseStreak();
                 for (Slot slot : slots) {
                     slot.endPatternHit();
                     PopupManager.I().releaseHoldingNumbers();
@@ -309,19 +311,16 @@ public class SlotScreen extends ScreenAdapter {
 
         int index = 0;
         for (AbstractTriggerableRing triggerableRing : ringBar.getRingsOfType(AbstractTriggerableRing.class)) {
-            if(triggerableRing.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SPIN) triggerableRing.scheduleTrigger(matches, null, index == 0);
+            if (triggerableRing.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SPIN)
+                triggerableRing.scheduleTrigger(matches, null, index == 0);
             index++;
         }
 
         scheduler.schedule(() -> {
-            patternDisplay.addTo(PatternDisplay.Type.STREAK, 1);
+            scoreDisplay.addTo(ScoreDisplay.Type.STREAK, 1);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
             buttonBoard.setVisible(true);
-
-            for (IRelicWithActionAfterSpin relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IRelicWithActionAfterSpin.class)) {
-                relicWithActionAfterSpin.onSpinEnded();
-            }
         });
 
         if (DevTools.autoSpin) {
@@ -349,7 +348,7 @@ public class SlotScreen extends ScreenAdapter {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         slot.getPos().x + 1.5f, slot.getPos().y + 2f);
-                patternDisplay.addTo(PatternDisplay.Type.POINTS, points);
+                scoreDisplay.addTo(ScoreDisplay.Type.POINTS, points);
 
                 EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
@@ -358,6 +357,9 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
 
                 xpBar.addXp(points);
+
+                LifestealForEveryFruitHitCard card = Hand.I().getCardOfClass(LifestealForEveryFruitHitCard.class);
+                if (card != null && patternHitContext.getSymbol().isFruit()) card.onFruitHit();
             });
 
             ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
@@ -382,12 +384,16 @@ public class SlotScreen extends ScreenAdapter {
         buttonBoard.setVisible(false);
 
         slotMachine.spin();
+
+        for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
+            relicWithActionAfterSpin.onSpinButtonPressed();
+        }
     }
 
     private void onCashoutButtonPressed() {
-        int score = patternDisplay.calcScore();
-        scoreDisplay.addToScore(score);
-        patternDisplay.clearNumbers();
+        int score = scoreDisplay.calcScore();
+        targetScoreDisplay.addToScore(score);
+        scoreDisplay.clearNumbers();
     }
 
     private void onTargetScoreReached() {
@@ -406,7 +412,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
-        scoreDisplay.resetScore();
+        targetScoreDisplay.resetScore();
         drawStartingHand();
     }
 

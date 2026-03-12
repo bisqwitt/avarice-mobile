@@ -30,8 +30,6 @@ public class XpBar extends ProgressBar {
         super(207, Assets.I().get(AssetKey.XP_PIXEL), Assets.I().get(AssetKey.EMPTY_PIXEL));
         setMaxValue(xpPerLevel(level));
 
-        addXp(99);
-
         this.onLevelUp = onLevelUp;
     }
 

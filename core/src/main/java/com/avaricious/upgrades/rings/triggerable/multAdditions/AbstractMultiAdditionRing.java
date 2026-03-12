@@ -1,15 +1,11 @@
 package com.avaricious.upgrades.rings.triggerable.multAdditions;
 
-import com.avaricious.audio.AudioManager;
-import com.avaricious.components.ScreenShake;
-import com.avaricious.components.displays.PatternDisplay;
-import com.avaricious.effects.EffectManager;
-import com.avaricious.upgrades.rings.triggerable.AbstractPatternAdditionRing;
-import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
+import com.avaricious.components.displays.ScoreDisplay;
+import com.avaricious.upgrades.rings.triggerable.AbstractScoreAdditionRing;
 
-public abstract class AbstractMultiAdditionRing extends AbstractPatternAdditionRing {
+public abstract class AbstractMultiAdditionRing extends AbstractScoreAdditionRing {
     @Override
-    protected PatternDisplay.Type getPatternType() {
-        return PatternDisplay.Type.MULTI;
+    protected ScoreDisplay.Type getPatternType() {
+        return ScoreDisplay.Type.MULTI;
     }
 }

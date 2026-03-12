@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
@@ -22,7 +22,7 @@ public class FiveMultForEveryCardDiscarded extends Card {
     @Override
     protected void onApply() {
         mult = Hand.I().getCardsDiscarded() * 5;
-        PatternDisplay.I().addTo(PatternDisplay.Type.MULTI, mult);
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, mult);
     }
 
     @Override

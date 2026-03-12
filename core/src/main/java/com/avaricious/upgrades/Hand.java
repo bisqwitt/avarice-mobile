@@ -1,6 +1,7 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 
@@ -18,6 +19,7 @@ public class Hand extends Observable<List<? extends Card>> {
     }
 
     private Hand() {
+        addCardToHand(Deck.I().drawCard(LifestealForEveryFruitHitCard.class));
     }
 
     private final List<Card> hand = new ArrayList<>();
@@ -48,7 +50,7 @@ public class Hand extends Observable<List<? extends Card>> {
         return out;
     }
 
-    public <T> T getUpgradeOfClass(Class<T> upgradeClass) {
+    public <T> T getCardOfClass(Class<T> upgradeClass) {
         for (Card upgrade : hand) {
             if (upgradeClass.isInstance(upgrade)) return (T) upgrade;
         }

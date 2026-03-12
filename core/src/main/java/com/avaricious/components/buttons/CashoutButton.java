@@ -1,6 +1,6 @@
 package com.avaricious.components.buttons;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -15,7 +15,7 @@ public class CashoutButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return PatternDisplay.I().isClear() || slotMachineIsRunning;
+        return ScoreDisplay.I().isClear() || slotMachineIsRunning;
     }
 
     public void setSlotMachineIsRunning(boolean slotMachineIsRunning) {

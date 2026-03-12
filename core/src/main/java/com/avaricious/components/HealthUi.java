@@ -1,6 +1,6 @@
 package com.avaricious.components;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
@@ -92,11 +92,11 @@ public class HealthUi {
             damageArmor(damage);
             if (spill > 0) {
                 damageHealth(damage);
-                PatternDisplay.I().clearNumbers();
+                ScoreDisplay.I().clearNumbers();
             }
         } else {
             damageHealth(damage);
-            PatternDisplay.I().clearNumbers();
+            ScoreDisplay.I().clearNumbers();
         }
 
         if (health.getScore() <= 0) {
@@ -106,6 +106,10 @@ public class HealthUi {
 
     public void healHealth() {
         setHealth(100);
+    }
+
+    public void healFor(int amount) {
+        setHealth(health.getScore() + amount);
     }
 
     public void addArmor(int amount) {

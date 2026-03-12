@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
@@ -16,14 +16,14 @@ public class OnePointForEveryFruitCard extends Card {
 
     @Override
     public String description() {
-        return Assets.I().blueText("+1 Point") + " for every fruit\n"
+        return Assets.I().blueText("+1 Point") + " for every fruit displayed\n"
             + "(" + countFruits() + ")";
     }
 
     @Override
     protected void onApply() {
         points = countFruits();
-        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class OnePointForEveryFruitCard extends Card {
         Symbol[][] symbolMap = SlotMachine.I().getSymbolMap();
         for (Symbol[] row : symbolMap) {
             for (Symbol symbol : row) {
-                if (symbol == Symbol.LEMON || symbol == Symbol.CHERRY) fruitCount++;
+                if (symbol.isFruit()) fruitCount++;
             }
         }
         return fruitCount;

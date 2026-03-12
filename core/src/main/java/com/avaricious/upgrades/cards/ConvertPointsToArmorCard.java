@@ -1,7 +1,7 @@
 package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.HealthUi;
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -16,14 +16,14 @@ public class ConvertPointsToArmorCard extends Card {
     @Override
     public String description() {
         return "Converts " + Assets.I().blueText("Points") + " ("
-            + Assets.I().blueText(((int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS)) + "") + ")\nto "
+            + Assets.I().blueText(((int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS)) + "") + ")\nto "
             + Assets.I().silverText("Armor");
     }
 
     @Override
     protected void onApply() {
-        points = (int) PatternDisplay.I().getValueOf(PatternDisplay.Type.POINTS);
-        PatternDisplay.I().setValueOf(PatternDisplay.Type.POINTS, 0);
+        points = (int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS);
+        ScoreDisplay.I().setValueOf(ScoreDisplay.Type.POINTS, 0);
         HealthUi.I().addArmor(points);
     }
 

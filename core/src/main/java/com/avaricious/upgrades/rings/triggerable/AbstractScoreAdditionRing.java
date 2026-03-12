@@ -2,13 +2,13 @@ package com.avaricious.upgrades.rings.triggerable;
 
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ScreenShake;
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.utility.Assets;
 
-public abstract class AbstractPatternAdditionRing extends AbstractTriggerableRing {
+public abstract class AbstractScoreAdditionRing extends AbstractTriggerableRing {
 
-    protected abstract PatternDisplay.Type getPatternType();
+    protected abstract ScoreDisplay.Type getPatternType();
 
     public abstract int getValue();
 
@@ -21,8 +21,8 @@ public abstract class AbstractPatternAdditionRing extends AbstractTriggerableRin
         AudioManager.I().playHit(EffectManager.streak);
     }
 
-    private void addToPattern(PatternDisplay.Type type, int value) {
-        PatternDisplay.I().addTo(type, value);
-        createNumberPopup(type == PatternDisplay.Type.POINTS ? Assets.I().blue() : Assets.I().red(), value);
+    private void addToPattern(ScoreDisplay.Type type, int value) {
+        ScoreDisplay.I().addTo(type, value);
+        createNumberPopup(type == ScoreDisplay.Type.POINTS ? Assets.I().blue() : Assets.I().red(), value);
     }
 }

@@ -4,13 +4,15 @@ import com.avaricious.DevTools;
 import com.avaricious.upgrades.cards.Card;
 import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
 import com.avaricious.upgrades.cards.DrawAndDiscardOneCard;
+import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
+import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
 import com.avaricious.upgrades.cards.FiveMultForEveryCardDiscarded;
 import com.avaricious.upgrades.cards.FivePointsCard;
 import com.avaricious.upgrades.cards.FivePointsForEachCardInHandCard;
+import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
 import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.OnePointForEveryFruitCard;
 import com.avaricious.upgrades.cards.TwentyArmorCard;
-import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.TwoMultCard;
 import com.avaricious.upgrades.cards.TwoPointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
@@ -41,7 +43,9 @@ public class Deck extends Observable<List<? extends Card>> {
             FiveMultForEveryCardDiscarded.class,
             DrawTwoCardsForTenDamage.class,
             TwoPointsForEverySymbolHit.class,
-            OnePointForEveryFruitCard.class
+            OnePointForEveryFruitCard.class,
+            EitherDoublePointsOrHalveMulti.class,
+            LifestealForEveryFruitHitCard.class
         ));
 
         if (DevTools.allCardsInDeck) {
@@ -113,6 +117,12 @@ public class Deck extends Observable<List<? extends Card>> {
 
     public Card drawRandomCard() {
         return removeCard((int) (Math.random() * deck.size()));
+    }
+
+    public Card drawCard(Class<? extends Card> cardClass) {
+        return removeCard(deck.indexOf(deck.stream()
+            .filter(card -> cardClass.isInstance(card))
+            .findFirst().get()));
     }
 
     public boolean upgradeIsInDeck(Class<? extends Card> upgradeClass) {

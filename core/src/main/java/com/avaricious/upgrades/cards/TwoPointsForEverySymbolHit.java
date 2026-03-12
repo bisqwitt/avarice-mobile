@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
@@ -23,7 +23,7 @@ public class TwoPointsForEverySymbolHit extends Card {
     @Override
     protected void onApply() {
         points = ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() * 2;
-        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override

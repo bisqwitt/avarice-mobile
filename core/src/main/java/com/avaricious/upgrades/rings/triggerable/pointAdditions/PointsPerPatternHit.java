@@ -1,10 +1,10 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions;
 
-import com.avaricious.upgrades.rings.IRelicWithActionAfterSpin;
+import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 
-public class PointsPerPatternHit extends AbstractPointAdditionRing implements IRelicWithActionAfterSpin {
+public class PointsPerPatternHit extends AbstractPointAdditionRing implements IUpgradeWithActionOnSpinButtonPressed {
 
     private int hitNumber = 0;
 
@@ -20,7 +20,7 @@ public class PointsPerPatternHit extends AbstractPointAdditionRing implements IR
     }
 
     @Override
-    public void onSpinEnded() {
+    public void onSpinButtonPressed() {
         hitNumber = 0;
     }
 

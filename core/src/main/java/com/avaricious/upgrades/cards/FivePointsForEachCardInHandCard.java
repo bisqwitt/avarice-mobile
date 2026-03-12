@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
@@ -22,7 +22,7 @@ public class FivePointsForEachCardInHandCard extends Card {
     @Override
     protected void onApply() {
         points = Hand.I().cardsHeldInHand() * 5;
-        PatternDisplay.I().addTo(PatternDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override

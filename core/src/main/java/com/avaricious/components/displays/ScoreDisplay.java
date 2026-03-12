@@ -1,7 +1,5 @@
 package com.avaricious.components.displays;
 
-import com.avaricious.RoundsManager;
-import com.avaricious.audio.AudioManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -14,62 +12,82 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class ScoreDisplay {
 
-    private final float DIGIT_WIDTH = 7 / 13f;
-    private final float DIGIT_HEIGHT = 11 / 13f;
+    private static ScoreDisplay instance;
 
-    private final float ROUND_TXT_X = 1f;
-    private final float CURRENT_ROUND_X = ROUND_TXT_X + 3.25f; // 4.25f
-    private final float COLON_X = CURRENT_ROUND_X + 0.6f; // 4.75
-    private final float TARGET_SCORE_X = COLON_X + 1f; // 5.5
-
-    private final DigitalNumber currentRound;
-    private final DigitalNumber targetScore;
-
-    private final TextureRegion roundTxt = Assets.I().get(AssetKey.ROUND_TXT);
-    private final TextureRegion roundTxtShadow = Assets.I().get(AssetKey.ROUND_TXT_SHADOW);
-    private final TextureRegion colon = Assets.I().get(AssetKey.COLON);
-
-    public ScoreDisplay() {
-        currentRound = new DigitalNumber(RoundsManager.I().getCurrentRound(), Assets.I().lightColor(),
-            new Rectangle(CURRENT_ROUND_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 0.9f);
-        targetScore = new DigitalNumber(RoundsManager.I().getCurrentTargetScore(), Assets.I().lightColor(),
-            new Rectangle(TARGET_SCORE_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 0.75f);
+    public static ScoreDisplay I() {
+        return instance == null ? instance = new ScoreDisplay() : instance;
     }
+
+    private ScoreDisplay() {
+    }
+
+    private final TextureRegion xSymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
+
+    private final float DIGIT_Y = 15.25f;
+    private final float DIGIT_WIDTH = 7 / 15f;
+    private final float DIGIT_HEIGHT = 11 / 15f;
+    private final float DIGIT_OFFSET = 0.7f;
+
+    private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
+        new Rectangle(0.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
+
+    private final DigitalNumber multiNumber = new DigitalNumber(0, Assets.I().red(), 3,
+        new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
+
+    private final DigitalNumber streakNumber = new DigitalNumber(0, Assets.I().red(), 2,
+        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
     public void draw(SpriteBatch batch, float delta) {
-//        progressBar.draw(batch);
-//        batch.draw(backgroundBox, 4.5f, 6.3f, 273 / 40f, 88 / 40f);
+        float xSymbolSize = 11 / 25f;
 
-//        batch.draw(whiteTexture, 2.25f, 6.8f, 11.25f, 0.1f);
-//        batch.draw(darkGreenTexture, 2.6f, 7.2f, 10.75f, 1.5f);
-
-        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
-            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY() - 0.1f, 37 / 13f, DIGIT_HEIGHT),
-            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()));
-        Pencil.I().addDrawing(new TextureDrawing(roundTxt,
-            new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
-        currentRound.draw(batch, delta);
-        Pencil.I().addDrawing(new TextureDrawing(colon,
-            new Rectangle(COLON_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
-        targetScore.draw(batch, delta);
+        pointsNumber.draw(batch, delta);
+        Pencil.I().addDrawing(new TextureDrawing(
+            xSymbol, new Rectangle(pointsNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
+            ZIndex.PATTERN_DISPLAY
+        ));
+        multiNumber.draw(batch, delta);
+        Pencil.I().addDrawing(new TextureDrawing(
+            xSymbol, new Rectangle(multiNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
+            ZIndex.PATTERN_DISPLAY
+        ));
+        streakNumber.draw(batch, delta);
     }
 
-    public void addToScore(int amount) {
-        AudioManager.I().startPayout();
-        targetScore.setScore(Math.max(targetScore.getScore() - amount, 0));
+    public void addTo(Type type, float amount) {
+        setValueOf(type, getValueOf(type) + amount);
     }
 
-    public void resetScore() {
-        targetScore.setScore(RoundsManager.I().getCurrentTargetScore());
-        currentRound.setScore(RoundsManager.I().getCurrentRound());
+    public void setValueOf(Type type, float value) {
+        getNumberOf(type).setScore((int) value);
     }
 
-    public boolean targetScoreReached() {
-        return targetScore.getScore() == 0;
+    public float getValueOf(Type type) {
+        return getNumberOf(type).getScore();
     }
 
-    public void setOnInternalScoreDisplayed(Runnable onInternalScoreDisplayed) {
-        targetScore.setOnInternalScoreDisplayed(onInternalScoreDisplayed);
+    public void clearNumbers() {
+        setValueOf(Type.POINTS, 0);
+        setValueOf(Type.MULTI, 0);
+        setValueOf(Type.STREAK, 0);
+    }
+
+    public boolean isClear() {
+        return getValueOf(Type.POINTS) == 0 && getValueOf(Type.MULTI) == 0 && getValueOf(Type.STREAK) == 0;
+    }
+
+    public int calcScore() {
+        return Math.round(getValueOf(ScoreDisplay.Type.POINTS) * getValueOf(Type.MULTI) * getValueOf(Type.STREAK));
+    }
+
+    private DigitalNumber getNumberOf(Type type) {
+        return type == Type.POINTS ? pointsNumber :
+            type == Type.MULTI ? multiNumber : streakNumber;
+    }
+
+    public enum Type {
+        POINTS,
+        MULTI,
+        STREAK
     }
 
 }

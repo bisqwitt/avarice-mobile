@@ -173,6 +173,10 @@ public class Assets {
         return healthRed;
     }
 
+    public String healthRedText(String txt) {
+        return "[#E53935]" + txt + "[]";
+    }
+
     public Color applyColor() {
         return applyColor;
     }

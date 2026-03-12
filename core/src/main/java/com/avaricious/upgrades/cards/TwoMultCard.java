@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.PatternDisplay;
+import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -18,7 +18,7 @@ public class TwoMultCard extends Card {
 
     @Override
     public void onApply() {
-        PatternDisplay.I().addTo(PatternDisplay.Type.MULTI, 2);
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, 2);
     }
 
     @Override
