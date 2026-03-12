@@ -25,7 +25,7 @@ public class DiscardPopup extends TextBoxPopup {
 
         Color discardColor = Assets.I().healthRedColor();
         Pencil.I().addDrawing(new TextureDrawing(discardTxt,
-            new Rectangle(calcBoxX() + 0.45f, pos.y + 0.3f, 54 / 20f, 13 / 20f),
+            new Rectangle(calcBoxX() + 0.45f, pos.y + 0.2f, 50 / 20f, 15 / 20f),
             ZIndex.POPUP_DEFAULT, new Color(discardColor.r, discardColor.g, discardColor.b, alpha)));
     }
 

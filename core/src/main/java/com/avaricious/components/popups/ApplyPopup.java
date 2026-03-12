@@ -25,7 +25,7 @@ public class ApplyPopup extends TextBoxPopup {
 
         Color applyColor = Assets.I().applyColor();
         Pencil.I().addDrawing(new TextureDrawing(applyTxt,
-            new Rectangle(calcBoxX() + 0.85f, pos.y + 0.3f, 36 / 20f, 13 / 20f),
+            new Rectangle(calcBoxX() + 0.9f, pos.y + 0.3f, 34 / 20f, 15 / 20f),
             ZIndex.POPUP_DEFAULT, new Color(applyColor.r, applyColor.g, applyColor.b, alpha)));
     }
 
