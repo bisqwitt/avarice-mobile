@@ -15,7 +15,7 @@ public class CardPack extends PackOpening {
     private Card resultCard;
 
     public CardPack(Rectangle buyBounds) {
-        super(new Rectangle(4.75f, 6.75f, 142 / 85f, 190 / 85f), buyBounds);
+        super(new Rectangle(4.85f, 8.1f, 142 / 85f, 190 / 85f), buyBounds);
     }
 
     @Override
@@ -61,4 +61,5 @@ public class CardPack extends PackOpening {
             AssetKey.SUPERNOVA_CARD
         );
     }
+
 }

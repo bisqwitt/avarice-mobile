@@ -154,13 +154,13 @@ public class HandUi {
                 bounds.width, bounds.height
             ),
             scale, rotation,
-            touchingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
+            touchingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             card.texture(),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
             scale, rotation,
-            touchingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(1f, 1f, 1f, alpha)
+            touchingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(1f, 1f, 1f, alpha)
         ));
     }
 

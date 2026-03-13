@@ -4,7 +4,7 @@ import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
-import com.avaricious.effects.GlowBorder;
+import com.avaricious.components.buttons.NextRoundButton;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.cards.CardPack;
 import com.avaricious.upgrades.rings.RingPack;
@@ -14,50 +14,52 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 public class Shop {
 
-    private final float WINDOW_X = 0.15f;
-    private final float WINDOW_Y = 1f;
+    private static final float WINDOW_X = -1f;
+    private static final float WINDOW_Y = 4.85f;
+    private static final float WINDOW_WIDTH = 375 / 35f;
+    public static final float WINDOW_HEIGHT = 534 / 35f;
+
+    // fully above the screen
+    private static final float OFFSCREEN_TOP_Y = WINDOW_Y + WINDOW_HEIGHT + 2f;
+
+    // units per second
+    private float currentWindowY = OFFSCREEN_TOP_Y;
 
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
-    private final TextureRegion windowShadow = Assets.I().get(AssetKey.SHOP_WINDOW_SHADOW);
     private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
     private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
-    private final TextureRegion buyTxt = Assets.I().get(AssetKey.BUY_TXT);
     private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
 
-    private final Button returnButton;
+    private final Button nextRoundButton;
     private final Button rerollButton;
 
-    private final Rectangle buyBox = new Rectangle(3.75f, 2.75f, 3.75f, 3f);
-
+    private final BuyBox buyBox = new BuyBox();
     private final CreditScore creditScore;
-    private final ShopCardsBar cards = new ShopCardsBar(buyBox);
-    private final CardPack cardPack = new CardPack(buyBox);
-    private final RingPack ringPack = new RingPack(buyBox);
+    private final ShopCardsBar cards = new ShopCardsBar(buyBox.getBounds());
+    private final CardPack cardPack = new CardPack(buyBox.getBounds());
+    private final RingPack ringPack = new RingPack(buyBox.getBounds());
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
     private State state = State.HIDDEN;
 
-    private float animT = 0f;
-
-    private static final float ENTER_DUR = 0.18f;
-    private static final float EXIT_DUR = 0.14f;
-
-    private float winScale = 1f;
-    private float winAlpha = 1f;
-    private float winYOffset = 0f;
+    private static final float GRAVITY_ENTER = -55f;
+    private static final float GRAVITY_EXIT = 70f;
+    private static final float BOUNCE_DAMPING = 0.28f;
+    private static final float MIN_BOUNCE_VELOCITY = 4f;
+    private float windowVelocityY = 0f;
 
     public Shop(Runnable onReturnedFromShop) {
         creditScore = new CreditScore(0,
-            new Rectangle(WINDOW_X + 1.6f, WINDOW_Y + 3.75f, 0.32f, 0.56f), 0.35f);
+            new Rectangle(0.4f, 0.85f, 7 / 10f, 11 / 10f), 0.9f);
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
@@ -66,105 +68,120 @@ public class Shop {
             }
         },
             Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON),
-            new Rectangle(WINDOW_X + 0.9f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.SPACE, ZIndex.SHOP);
+            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 30f, 25 / 30f), Input.Keys.SPACE, ZIndex.SHOP);
         rerollButton.setShowShadow(false);
 
-        returnButton = new Button(() -> {
+        nextRoundButton = new NextRoundButton(() -> {
             state = State.EXITING;
-            animT = 0f;
-            onReturnedFromShop.run();
-        },
-            Assets.I().get(AssetKey.RETURN_BUTTON), Assets.I().get(AssetKey.RETURN_BUTTON_PRESSED), Assets.I().get(AssetKey.RETURN_BUTTON),
-            new Rectangle(WINDOW_X + 4.1f, WINDOW_Y + 0.75f, 79 / 30f, 25 / 30f), Input.Keys.ENTER, ZIndex.SHOP);
-        returnButton.setShowShadow(false);
+            windowVelocityY = 0f;
+            onReturnedFromShop.run(); // ideally delay this until fully hidden
+            HealthUi.I().moveIn();
+        }, new Rectangle(2.4f, 0.25f, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
     }
 
     public void draw(SpriteBatch batch, float delta) {
         if (state == State.HIDDEN) return;
+        updateAnimation(delta);
 
-        // Animate
-        if (state == State.ENTERING) {
-            animT += delta;
-            float p = clamp01(animT / ENTER_DUR);
-
-            winScale = lerp(0.86f, 1.00f, easeOutBack(p));
-            winAlpha = lerp(0.00f, 1.00f, p);
-            winYOffset = lerp(-0.35f, 0.00f, p);
-
-            if (p >= 1f) {
-                state = State.SHOWN;
-                animT = 0f;
-            }
-        } else if (state == State.EXITING) {
-            animT += delta;
-            float p = clamp01(animT / EXIT_DUR);
-
-            winScale = lerp(1.00f, 0.92f, easeInQuad(p));
-            winAlpha = lerp(1.00f, 0.00f, p);
-            winYOffset = lerp(0.00f, -0.20f, p);
-
-            if (p >= 1f) {
-                state = State.HIDDEN;
-                animT = 0f;
-                return;
-            }
-        } else { // SHOWN
-            winScale = 1f;
-            winAlpha = 1f;
-            winYOffset = 0f;
-        }
-
-        float winW = 303 / 35f;
-        float winH = 534 / 35f;
-
-        // Window shadow
-        Color shadowColor = Assets.I().shadowColor();
-        Pencil.I().addDrawing(new TextureDrawing(
-            windowShadow,
-            new Rectangle(WINDOW_X + 0.1f, WINDOW_Y - 0.2f + winYOffset, winW, winH),
-            ZIndex.SHOP, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)
-        ));
-
-        // Window
         Pencil.I().addDrawing(new TextureDrawing(
             window,
-            new Rectangle(WINDOW_X, WINDOW_Y + winYOffset, winW, winH),
-            ZIndex.SHOP, new Color(1f, 1f, 1f, winAlpha)
+            new Rectangle(WINDOW_X, currentWindowY, WINDOW_WIDTH, WINDOW_HEIGHT),
+            ZIndex.SHOP
         ));
 
-        // Shop title shadow + title (fade + slide)
-        Pencil.I().addDrawing(new TextureDrawing(shopTxtShadow,
-            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13f + winYOffset, 29 / 8f, 13 / 8f),
-            ZIndex.SHOP, new Color(shadowColor.r, shadowColor.g, shadowColor.b, winAlpha)));
-        Pencil.I().addDrawing(new TextureDrawing(shopTxt,
-            new Rectangle(WINDOW_X + 2.5f, WINDOW_Y + 13.1f + winYOffset, 29 / 8f, 13 / 8f),
-            ZIndex.SHOP, new Color(1f, 1f, 1f, winAlpha)));
-
-        Pencil.I().addDrawing(new TextureDrawing(buyTxt,
-            new Rectangle(4.3f, 3.5f, 24 / 10f, 13 / 10f),
-            ZIndex.SHOP, Assets.I().shadowColor()
+        Pencil.I().addDrawing(new TextureDrawing(
+            shopTxtShadow,
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 10.95f, 29 / 8f, 13 / 8f),
+            ZIndex.SHOP,
+            Assets.I().shadowColor()
         ));
 
-        if (cards.isDragging() || cardPack.isDragging() || ringPack.isDragging()) {
-            GlowBorder.drawGlowBorder(yellowTexture, buyBox,
-                buyBox.contains(cards.getDraggingCardsCenter()) || buyBox.contains(cardPack.getCenter()) || buyBox.contains(ringPack.getCenter()),
-                ZIndex.SHOP, delta);
-        }
+        Pencil.I().addDrawing(new TextureDrawing(
+            shopTxt,
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 11.05f, 29 / 8f, 13 / 8f),
+            ZIndex.SHOP
+        ));
+
+        buyBox.setVisible(cards.isDragging() || cardPack.isDragging() || ringPack.isDragging());
 
         cards.draw();
         cardPack.draw();
         ringPack.draw();
 
-        returnButton.draw();
         rerollButton.draw();
         creditScore.draw(batch, delta);
+        nextRoundButton.draw();
+        buyBox.draw(delta);
     }
 
     public void show() {
         cards.loadCards(Deck.I().randomUpgrades(3));
-
+        currentWindowY = OFFSCREEN_TOP_Y;
+        windowVelocityY = 0f;
         state = State.ENTERING;
-        animT = 0f;
+
+        HealthUi.I().moveOut();
+    }
+
+    private void updateAnimation(float delta) {
+        switch (state) {
+            case ENTERING:
+                // falling down
+                windowVelocityY += GRAVITY_ENTER * delta;
+                currentWindowY += windowVelocityY * delta;
+
+                // hit the resting position -> bounce
+                if (currentWindowY <= WINDOW_Y) {
+                    currentWindowY = WINDOW_Y;
+
+                    if (Math.abs(windowVelocityY) < MIN_BOUNCE_VELOCITY) {
+                        windowVelocityY = 0f;
+                        state = State.SHOWN;
+
+                        cards.showCards();
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                ringPack.showPack();
+                            }
+                        }, 0.6f);
+                        Timer.schedule(new Timer.Task() {
+                            @Override
+                            public void run() {
+                                cardPack.showPack();
+                            }
+                        }, 0.8f);
+                    } else {
+                        windowVelocityY = -windowVelocityY * BOUNCE_DAMPING;
+                    }
+                }
+                break;
+
+            case EXITING:
+                // accelerate upward
+                windowVelocityY += GRAVITY_EXIT * delta;
+                currentWindowY += windowVelocityY * delta;
+
+                if (currentWindowY >= OFFSCREEN_TOP_Y) {
+                    currentWindowY = OFFSCREEN_TOP_Y;
+                    windowVelocityY = 0f;
+                    state = State.HIDDEN;
+                }
+                break;
+
+            case SHOWN:
+            case HIDDEN:
+            default:
+                break;
+        }
+
+        if (state == State.ENTERING || state == State.EXITING) {
+            rerollButton.getButtonRectangle().setY(currentWindowY + 6.4f);
+        }
+    }
+
+    private float getWindowOffsetY() {
+        return currentWindowY - WINDOW_Y;
     }
 
     public boolean isShowing() {
@@ -177,29 +194,8 @@ public class Shop {
         cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        returnButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
-
-    private static float clamp01(float x) {
-        return Math.max(0f, Math.min(1f, x));
-    }
-
-    private static float easeOutBack(float t) {
-        t = clamp01(t);
-        float c1 = 1.70158f;
-        float c3 = c1 + 1f;
-        return 1f + c3 * (float) Math.pow(t - 1f, 3) + c1 * (float) Math.pow(t - 1f, 2);
-    }
-
-    private static float easeInQuad(float t) {
-        t = clamp01(t);
-        return t * t;
-    }
-
-    private static float lerp(float a, float b, float t) {
-        return a + (b - a) * t;
-    }
-
 
 }

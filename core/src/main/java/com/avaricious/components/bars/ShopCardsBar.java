@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.Map;
 public class ShopCardsBar {
 
     private final Rectangle buyBounds;
-    private final Rectangle firstCardBounds = new Rectangle(1.65f, 10.8f, 142 / 85f, 190 / 85f);
+    private final Rectangle firstCardBounds = new Rectangle(1.65f, 12.85f, 142 / 85f, 190 / 85f);
     private final float CARD_OFFSET = 2f;
 
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
@@ -29,9 +30,12 @@ public class ShopCardsBar {
     private final Map<Card, DragableSlot> cards = new HashMap<>();
     private Card touchingCard = null;
 
+    private final Map<Card, Boolean> cardVisibility = new HashMap<>();
+    private boolean showCards = false;
+
     public ShopCardsBar(Rectangle buyBounds) {
-        this.buyBounds = buyBounds;
         loadCards(Deck.I().randomUpgrades(3));
+        this.buyBounds = buyBounds;
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
@@ -94,6 +98,8 @@ public class ShopCardsBar {
     }
 
     private void drawCard(Card card) {
+        if (!cardVisibility.get(card)) return;
+
         Rectangle bounds = cards.get(card).getBounds();
         DragableSlot slot = cards.get(card);
 
@@ -139,6 +145,7 @@ public class ShopCardsBar {
             slot.wobble();
 
             this.cards.put(card, slot);
+            this.cardVisibility.put(card, showCards);
             index++;
         }
     }
@@ -148,13 +155,24 @@ public class ShopCardsBar {
         cards.remove(card);
     }
 
-    public boolean isDragging() {
-        return touchingCard != null;
+    public void showCards() {
+        showCards = true;
+        int index = 0;
+        for (Card card : cards.keySet()) {
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    cardVisibility.put(card, true);
+                    cards.get(card).wobble();
+                    cards.get(card).pulse();
+                }
+            }, index * 0.2f);
+            index++;
+        }
     }
 
-    public Vector2 getDraggingCardsCenter() {
-        if (touchingCard == null) return new Vector2(-10, -10);
-        return cards.get(touchingCard).getCardCenter();
+    public boolean isDragging() {
+        return touchingCard != null;
     }
 
 }

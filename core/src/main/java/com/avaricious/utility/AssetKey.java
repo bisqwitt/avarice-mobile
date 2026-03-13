@@ -130,8 +130,10 @@ public enum AssetKey {
     ROUND_TXT_SHADOW("round-txt-shadow"),
     LIGHT_BULB_ON("light-bulb-on"),
     LIGHT_BULB_OFF("light-bulb-off"),
-    BUY_TXT("buy-txt"),
+    BUY_TXT("buyTxt"),
     BUY_BOX("buy-box"),
+    BUY_BOX_WHITE("buy-box-white"),
+    BUY_BOX_BLACK("buy-box-black"),
     RING_4("ring4"),
     RING_4_SHADOW("ring4-shadow"),
     RING_4_WHITE("ring4-white"),
@@ -214,7 +216,10 @@ public enum AssetKey {
     TXT_BOX("txt-box"),
     TXT_BOX_SHADOW("txt-box-shadow"),
     APPLY_TXT_BOX("apply-txt-box"),
-    DISCARD_TXT_BOX("discard-txt-box");
+    DISCARD_TXT_BOX("discard-txt-box"),
+    NEXT_ROUND_BUTTON("next-round-button"),
+    NEXT_ROUND_BUTTON_PRESSED("next-round-button-pressed"),
+    NEXT_ROUND_TXT("next-round-txt");
 
     private final String path;
 

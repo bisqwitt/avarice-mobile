@@ -2,8 +2,6 @@ package com.avaricious.components;
 
 import com.avaricious.components.buttons.CashoutButton;
 import com.avaricious.components.buttons.SpinButton;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,15 +20,9 @@ public class ButtonBoard {
 
     public ButtonBoard(Runnable onSpinButtonPressed, Runnable onCashoutButtonPressed) {
         spinAgainButton = new SpinButton(onSpinButtonPressed,
-            Assets.I().get(AssetKey.SPIN_BUTTON),
-            Assets.I().get(AssetKey.SPIN_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.SPIN_BUTTON),
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
         cashoutButton = new CashoutButton(onCashoutButtonPressed,
-            Assets.I().get(AssetKey.CASHOUT_BUTTON),
-            Assets.I().get(AssetKey.CASHOUT_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.CASHOUT_BUTTON),
             new Rectangle(BOARD_X + 0.3f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
     }
 

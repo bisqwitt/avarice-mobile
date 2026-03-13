@@ -12,7 +12,7 @@ public class RingPack extends PackOpening {
     private AbstractRing resultRing;
 
     public RingPack(Rectangle buyBounds) {
-        super(new Rectangle(2.75f, 7f, 32 / 23f, 32 / 23f), buyBounds);
+        super(new Rectangle(2.65f, 8.5f, 32 / 23f, 32 / 23f), buyBounds);
     }
 
     @Override

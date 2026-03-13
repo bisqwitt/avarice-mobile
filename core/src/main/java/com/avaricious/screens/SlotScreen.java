@@ -130,6 +130,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
+                shop.show();
             }
         }, 1);
     }
@@ -268,10 +269,6 @@ public class SlotScreen extends ScreenAdapter {
                 triggerSeparateSlots(matches, patternHitContext, scheduler);
             }
 
-            ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
-                .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
-                .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, false));
-
             scheduler.scheduleNoDelay(() -> PopupManager.I().releaseHoldingNumbers());
 
             scheduler.schedule(() -> {
@@ -298,6 +295,10 @@ public class SlotScreen extends ScreenAdapter {
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
+
+            ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
+                .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
+                .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, false));
 
             scheduler.schedule(() -> {
                 if (matches.indexOf(patternHitContext) != matches.size() - 1)

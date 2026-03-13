@@ -73,6 +73,8 @@ public abstract class PackOpening {
     protected boolean ripped = false;
     private boolean dragging = false;
 
+    private boolean showPack = false;
+
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
         slot = new DragableSlot(bounds);
@@ -116,6 +118,8 @@ public abstract class PackOpening {
     }
 
     public void draw() {
+        if (!showPack) return;
+
         Rectangle bounds = slot.getBounds();
 
         final Vector2 position = slot.getRenderPos(new Vector2());
@@ -344,6 +348,12 @@ public abstract class PackOpening {
 
         slot.pulse();
         slot.wobble();
+    }
+
+    public void showPack() {
+        showPack = true;
+        slot.wobble();
+        slot.pulse();
     }
 
     protected abstract TextureRegion getTexture();

@@ -96,6 +96,10 @@ public class Button {
         onButtonPressedRunnable.run();
     }
 
+    public Rectangle getButtonRectangle() {
+        return buttonRectangle;
+    }
+
     public void setShowShadow(boolean showShadow) {
         this.showShadow = showShadow;
     }
