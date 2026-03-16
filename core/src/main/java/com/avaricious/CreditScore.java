@@ -13,13 +13,6 @@ public class CreditScore extends CreditNumber {
         creditListener = CreditManager.I().onChange(this::setScore);
     }
 
-    public void dispose() {
-        try {
-            creditListener.close();
-        } catch (Exception ignore) {
-        }
-    }
-
     @Override
     protected ZIndex getLayer() {
         return ZIndex.CREDIT_SCORE;

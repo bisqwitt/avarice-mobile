@@ -2,6 +2,7 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.PackOpening;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -40,8 +41,13 @@ public class CardPack extends PackOpening {
     }
 
     @Override
-    protected void getResult() {
-        resultCard = Deck.I().randomUpgrade();
+    protected Upgrade getResult() {
+        return resultCard = Deck.I().randomUpgrade();
+    }
+
+    @Override
+    protected float getTooltipYOffset() {
+        return 2.85f;
     }
 
     private List<AssetKey> cardAssetKeys() {

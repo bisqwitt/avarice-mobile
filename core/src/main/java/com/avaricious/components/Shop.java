@@ -1,5 +1,7 @@
 package com.avaricious.components;
 
+import static com.badlogic.gdx.math.MathUtils.lerp;
+
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.bars.ShopCardsBar;
@@ -16,6 +18,7 @@ import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -30,7 +33,6 @@ public class Shop {
     // fully above the screen
     private static final float OFFSCREEN_TOP_Y = WINDOW_Y + WINDOW_HEIGHT + 2f;
 
-    // units per second
     private float currentWindowY = OFFSCREEN_TOP_Y;
 
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
@@ -47,8 +49,9 @@ public class Shop {
     private final CardPack cardPack = new CardPack(buyBox.getBounds());
     private final RingPack ringPack = new RingPack(buyBox.getBounds());
 
-    private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
+    private final Runnable onReturnedFromShop;
 
+    private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
     private State state = State.HIDDEN;
 
     private static final float GRAVITY_ENTER = -55f;
@@ -57,9 +60,29 @@ public class Shop {
     private static final float MIN_BOUNCE_VELOCITY = 4f;
     private float windowVelocityY = 0f;
 
+    // ===== shop UI movement like HealthUi =====
+    private boolean isUiMoving = false;
+    private float uiMoveTime = 0f;
+    private final float uiMoveDuration = 0.45f;
+    private final float uiMoveDistance = 5f;
+
+    private final float baseCreditScoreY = 0.85f;
+    private final float baseNextRoundButtonY = 0.25f;
+
+    private float startCreditScoreY;
+    private float startNextRoundButtonY;
+    private float targetCreditScoreY;
+    private float targetNextRoundButtonY;
+    // ==========================================
+
     public Shop(Runnable onReturnedFromShop) {
-        creditScore = new CreditScore(0,
-            new Rectangle(0.4f, 0.85f, 7 / 10f, 11 / 10f), 0.9f);
+        this.onReturnedFromShop = onReturnedFromShop;
+
+        creditScore = new CreditScore(
+            0,
+            new Rectangle(0.4f, baseCreditScoreY, 7 / 10f, 11 / 10f),
+            0.9f
+        );
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
@@ -67,21 +90,32 @@ public class Shop {
                 CreditManager.I().pay(3);
             }
         },
-            Assets.I().get(AssetKey.REROLL_BUTTON), Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED), Assets.I().get(AssetKey.REROLL_BUTTON),
-            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 30f, 25 / 30f), Input.Keys.SPACE, ZIndex.SHOP);
+            Assets.I().get(AssetKey.REROLL_BUTTON),
+            Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.REROLL_BUTTON),
+            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 30f, 25 / 30f),
+            Input.Keys.SPACE,
+            ZIndex.SHOP
+        );
         rerollButton.setShowShadow(false);
 
         nextRoundButton = new NextRoundButton(() -> {
             state = State.EXITING;
             windowVelocityY = 0f;
-            onReturnedFromShop.run(); // ideally delay this until fully hidden
+            moveInUi();
             HealthUi.I().moveIn();
-        }, new Rectangle(2.4f, 0.25f, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
+        }, new Rectangle(2.4f, baseNextRoundButtonY, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
+
+        // start hidden below like HealthUi.moveOut() result
+        creditScore.getBounds().y = baseCreditScoreY - uiMoveDistance;
+        nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
     }
 
     public void draw(SpriteBatch batch, float delta) {
         if (state == State.HIDDEN) return;
+
         updateAnimation(delta);
+        updateUiMovement(delta);
 
         Pencil.I().addDrawing(new TextureDrawing(
             window,
@@ -116,9 +150,14 @@ public class Shop {
 
     public void show() {
         cards.loadCards(Deck.I().randomUpgrades(3));
+
         currentWindowY = OFFSCREEN_TOP_Y;
         windowVelocityY = 0f;
         state = State.ENTERING;
+
+        // keep them out while entering
+        creditScore.getBounds().y = baseCreditScoreY - uiMoveDistance;
+        nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
 
         HealthUi.I().moveOut();
     }
@@ -126,11 +165,9 @@ public class Shop {
     private void updateAnimation(float delta) {
         switch (state) {
             case ENTERING:
-                // falling down
                 windowVelocityY += GRAVITY_ENTER * delta;
                 currentWindowY += windowVelocityY * delta;
 
-                // hit the resting position -> bounce
                 if (currentWindowY <= WINDOW_Y) {
                     currentWindowY = WINDOW_Y;
 
@@ -138,13 +175,17 @@ public class Shop {
                         windowVelocityY = 0f;
                         state = State.SHOWN;
 
+                        moveOutUi(); // animate shop UI in when shop finishes entering
+
                         cards.showCards();
+
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
                                 ringPack.showPack();
                             }
                         }, 0.6f);
+
                         Timer.schedule(new Timer.Task() {
                             @Override
                             public void run() {
@@ -158,13 +199,13 @@ public class Shop {
                 break;
 
             case EXITING:
-                // accelerate upward
                 windowVelocityY += GRAVITY_EXIT * delta;
                 currentWindowY += windowVelocityY * delta;
 
                 if (currentWindowY >= OFFSCREEN_TOP_Y) {
                     currentWindowY = OFFSCREEN_TOP_Y;
                     windowVelocityY = 0f;
+                    onReturnedFromShop.run();
                     state = State.HIDDEN;
                 }
                 break;
@@ -180,8 +221,43 @@ public class Shop {
         }
     }
 
-    private float getWindowOffsetY() {
-        return currentWindowY - WINDOW_Y;
+    private void moveOutUi() {
+        startCreditScoreY = creditScore.getBounds().y;
+        startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
+
+        targetCreditScoreY = baseCreditScoreY;
+        targetNextRoundButtonY = baseNextRoundButtonY;
+
+        uiMoveTime = 0f;
+        isUiMoving = true;
+    }
+
+    private void moveInUi() {
+        startCreditScoreY = creditScore.getBounds().y;
+        startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
+
+        targetCreditScoreY = baseCreditScoreY - uiMoveDistance;
+        targetNextRoundButtonY = baseNextRoundButtonY - uiMoveDistance;
+
+        uiMoveTime = 0f;
+        isUiMoving = true;
+    }
+
+    private void updateUiMovement(float delta) {
+        if (!isUiMoving) return;
+
+        uiMoveTime += delta;
+        float progress = Math.min(uiMoveTime / uiMoveDuration, 1f);
+        float eased = Interpolation.smooth.apply(progress);
+
+        creditScore.getBounds().y = lerp(startCreditScoreY, targetCreditScoreY, eased);
+        nextRoundButton.getButtonRectangle().y = lerp(startNextRoundButtonY, targetNextRoundButtonY, eased);
+
+        if (progress >= 1f) {
+            creditScore.getBounds().y = targetCreditScoreY;
+            nextRoundButton.getButtonRectangle().y = targetNextRoundButtonY;
+            isUiMoving = false;
+        }
     }
 
     public boolean isShowing() {
@@ -197,5 +273,4 @@ public class Shop {
         nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
-
 }

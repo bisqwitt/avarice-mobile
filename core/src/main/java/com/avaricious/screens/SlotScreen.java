@@ -221,17 +221,14 @@ public class SlotScreen extends ScreenAdapter {
         app.getViewport().unproject(mouse);
         boolean leftClickPressed = Gdx.input.isTouched();
 
-        if (shop.isShowing()) {
-            shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-            leftClickWasPressed = leftClickPressed;
-            return;
-        }
         statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-
-        buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        else {
+            buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+            ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        }
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 

@@ -6,6 +6,8 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Rarity;
+import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.cards.CardPack;
 import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -18,6 +20,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
+import com.badlogic.gdx.utils.Timer;
 
 public abstract class PackOpening {
 
@@ -100,7 +104,7 @@ public abstract class PackOpening {
 
             slot.dragTo(mouse.x, mouse.y, 0);
             PopupManager.I().updateTooltip(
-                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
+                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
                 true
             );
         }
@@ -128,7 +132,7 @@ public abstract class PackOpening {
         final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
         final Vector2 drawPos = new Vector2(position).add(shakeOffset);
         final float drawRot = rotation + shakeRotDeg;
-        final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.PACK_OPENING;
+        final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.SHOP;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -341,13 +345,23 @@ public abstract class PackOpening {
 
     protected void ripOpen() {
         ripped = true;
-        getResult();
+        Upgrade upgrade = getResult();
         Vector2 centerPos = slot.getCardCenter().sub(1, 1);
         ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.05f, ZIndex.PACK_OPENING);
 //        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
 
         slot.pulse();
         slot.wobble();
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                Vector2 renderPos = slot.getRenderPos(new Vector2());
+                PopupManager.I().createTooltip(upgrade, new Vector2(
+                    renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
+                    ZIndex.PACK_OPENING_SELECTED).setVisible(true);
+            }
+        }, 0.2f);
     }
 
     public void showPack() {
@@ -364,7 +378,9 @@ public abstract class PackOpening {
 
     protected abstract int getTextureAmount();
 
-    protected abstract void getResult();
+    protected abstract Upgrade getResult();
+
+    protected abstract float getTooltipYOffset();
 
     public boolean isDragging() {
         return dragging;

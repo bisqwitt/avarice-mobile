@@ -2,6 +2,7 @@ package com.avaricious.upgrades.rings;
 
 import com.avaricious.PackOpening;
 import com.avaricious.components.RelicBag;
+import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RingAssetKeys;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -39,7 +40,12 @@ public class RingPack extends PackOpening {
     }
 
     @Override
-    protected void getResult() {
-        resultRing = RelicBag.I().randomRelic();
+    protected float getTooltipYOffset() {
+        return 1.85f;
+    }
+
+    @Override
+    protected Upgrade getResult() {
+        return resultRing = RelicBag.I().randomRelic();
     }
 }

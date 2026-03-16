@@ -15,9 +15,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopCardsBar {
 
@@ -157,18 +159,20 @@ public class ShopCardsBar {
 
     public void showCards() {
         showCards = true;
-        int index = 0;
-        for (Card card : cards.keySet()) {
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    cardVisibility.put(card, true);
-                    cards.get(card).wobble();
-                    cards.get(card).pulse();
-                }
-            }, index * 0.2f);
-            index++;
-        }
+        AtomicInteger index = new AtomicInteger();
+        cards.entrySet().stream()
+            .sorted(Comparator.comparingDouble(entry -> entry.getValue().getRenderPos(new Vector2()).x))
+            .forEach(entry -> {
+                Timer.schedule(new Timer.Task() {
+                    @Override
+                    public void run() {
+                        cardVisibility.put(entry.getKey(), true);
+                        entry.getValue().wobble();
+                        entry.getValue().pulse();
+                    }
+                }, index.get() * 0.2f);
+                index.getAndIncrement();
+            });
     }
 
     public boolean isDragging() {
