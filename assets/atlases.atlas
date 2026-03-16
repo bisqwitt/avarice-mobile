@@ -6,56 +6,56 @@ filter: Nearest, Nearest
 repeat: none
 0
   rotate: false
-  xy: 403, 3
+  xy: 1030, 160
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 0-shadow
   rotate: false
-  xy: 493, 3
+  xy: 1088, 50
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 1
   rotate: false
-  xy: 412, 3
+  xy: 1030, 147
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 1-shadow
   rotate: false
-  xy: 502, 3
+  xy: 2046, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 2
   rotate: false
-  xy: 421, 3
+  xy: 1066, 3
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 2-shadow
   rotate: false
-  xy: 511, 3
+  xy: 2055, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 3
   rotate: false
-  xy: 430, 3
+  xy: 1075, 3
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 3-shadow
   rotate: false
-  xy: 520, 3
+  xy: 2064, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -69,63 +69,63 @@ repeat: none
   index: -1
 4
   rotate: false
-  xy: 439, 3
+  xy: 1084, 3
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 4-shadow
   rotate: false
-  xy: 529, 3
+  xy: 2073, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 5
   rotate: false
-  xy: 448, 3
+  xy: 1088, 115
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 5-shadow
   rotate: false
-  xy: 1090, 162
+  xy: 2082, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 6
   rotate: false
-  xy: 457, 3
+  xy: 1088, 102
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 6-shadow
   rotate: false
-  xy: 1090, 149
+  xy: 2091, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 7
   rotate: false
-  xy: 466, 3
+  xy: 1088, 89
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 7-shadow
   rotate: false
-  xy: 1090, 136
+  xy: 2100, 6
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 8
   rotate: false
-  xy: 475, 3
+  xy: 1088, 76
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -139,21 +139,21 @@ repeat: none
   index: -1
 8-shadow
   rotate: false
-  xy: 1066, 3
+  xy: 2109, 10
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 9
   rotate: false
-  xy: 484, 3
+  xy: 1088, 63
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 9-shadow
   rotate: false
-  xy: 1075, 3
+  xy: 2118, 10
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -585,6 +585,20 @@ UpgradeWindow-shadow
   orig: 225, 163
   offset: 0, 0
   index: -1
+ante-txt
+  rotate: false
+  xy: 385, 3
+  size: 31, 11
+  orig: 31, 11
+  offset: 0, 0
+  index: -1
+ante-txt-shadow
+  rotate: false
+  xy: 418, 3
+  size: 31, 11
+  orig: 31, 11
+  offset: 0, 0
+  index: -1
 apply-txt
   rotate: false
   xy: 1345, 456
@@ -601,21 +615,21 @@ apply-txt-box
   index: -1
 arm-txt
   rotate: false
-  xy: 257, 3
+  xy: 451, 3
   size: 31, 11
   orig: 31, 11
   offset: 0, 0
   index: -1
 arm-txt-shadow
   rotate: false
-  xy: 290, 3
+  xy: 484, 3
   size: 31, 11
   orig: 31, 11
   offset: 0, 0
   index: -1
 armor
   rotate: false
-  xy: 533, 66
+  xy: 533, 53
   size: 16, 13
   orig: 16, 13
   offset: 0, 0
@@ -790,7 +804,7 @@ buyTxt
   index: -1
 cable
   rotate: false
-  xy: 538, 99
+  xy: 537, 99
   size: 14, 34
   orig: 14, 34
   offset: 0, 0
@@ -853,9 +867,16 @@ coin-shadow
   index: -1
 colon
   rotate: false
-  xy: 1084, 3
+  xy: 2127, 10
   size: 7, 11
   orig: 7, 11
+  offset: 0, 0
+  index: -1
+combo-txt
+  rotate: false
+  xy: 226, 3
+  size: 42, 11
+  orig: 42, 11
   offset: 0, 0
   index: -1
 critical hit
@@ -937,14 +958,14 @@ discard-txt-box
   index: -1
 dollar
   rotate: false
-  xy: 1030, 175
+  xy: 2136, 10
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 dot
   rotate: false
-  xy: 1030, 162
+  xy: 2145, 10
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -993,21 +1014,21 @@ health-red-pixel
   index: -1
 heart
   rotate: false
-  xy: 363, 3
+  xy: 537, 40
   size: 12, 11
   orig: 12, 11
   offset: 0, 0
   index: -1
 hp-txt
   rotate: false
-  xy: 323, 3
+  xy: 517, 3
   size: 18, 11
   orig: 18, 11
   offset: 0, 0
   index: -1
 hp-txt-shadow
   rotate: false
-  xy: 343, 3
+  xy: 533, 86
   size: 18, 11
   orig: 18, 11
   offset: 0, 0
@@ -1035,7 +1056,7 @@ lemon
   index: -1
 levelup
   rotate: false
-  xy: 1040, 190
+  xy: 1039, 190
   size: 55, 13
   orig: 55, 13
   offset: 0, 0
@@ -1084,21 +1105,21 @@ metal-texture
   index: -1
 minus-symbol
   rotate: false
-  xy: 538, 49
+  xy: 537, 10
   size: 9, 15
   orig: 9, 15
   offset: 0, 0
   index: -1
 mult
   rotate: false
-  xy: 377, 3
+  xy: 537, 27
   size: 11, 11
   orig: 11, 11
   offset: 0, 0
   index: -1
 mult-shadow
   rotate: false
-  xy: 390, 3
+  xy: 1088, 128
   size: 11, 11
   orig: 11, 11
   offset: 0, 0
@@ -1115,6 +1136,13 @@ multi-shadow
   xy: 2367, 105
   size: 42, 42
   orig: 42, 42
+  offset: 0, 0
+  index: -1
+multi-txt
+  rotate: false
+  xy: 348, 3
+  size: 35, 11
+  orig: 35, 11
   offset: 0, 0
   index: -1
 next-round-button
@@ -1140,28 +1168,35 @@ next-round-txt
   index: -1
 percentage
   rotate: false
-  xy: 533, 17
+  xy: 1089, 141
   size: 8, 13
   orig: 8, 13
   offset: 0, 0
   index: -1
 plus
   rotate: false
-  xy: 538, 32
+  xy: 1089, 173
   size: 9, 15
   orig: 9, 15
   offset: 0, 0
   index: -1
 plus-shadow
   rotate: false
-  xy: 543, 15
+  xy: 1089, 156
   size: 9, 15
   orig: 9, 15
   offset: 0, 0
   index: -1
+points-txt
+  rotate: false
+  xy: 179, 3
+  size: 45, 11
+  orig: 45, 11
+  offset: 0, 0
+  index: -1
 quest-scroll
   rotate: false
-  xy: 1040, 144
+  xy: 1039, 144
   size: 48, 44
   orig: 48, 44
   offset: 0, 0
@@ -1511,14 +1546,14 @@ ringDot
   index: -1
 round-txt
   rotate: false
-  xy: 179, 3
+  xy: 270, 3
   size: 37, 11
   orig: 37, 11
   offset: 0, 0
   index: -1
 round-txt-shadow
   rotate: false
-  xy: 218, 3
+  xy: 309, 3
   size: 37, 11
   orig: 37, 11
   offset: 0, 0
@@ -1560,14 +1595,14 @@ silver-pixel
   index: -1
 slash-symbol
   rotate: false
-  xy: 1090, 175
+  xy: 1030, 173
   size: 7, 13
   orig: 7, 13
   offset: 0, 0
   index: -1
 slate-border
   rotate: false
-  xy: 538, 2
+  xy: 537, 2
   size: 500, 6
   orig: 500, 6
   offset: 0, 0
@@ -1714,7 +1749,7 @@ xp-pixel
   index: -1
 xporb
   rotate: false
-  xy: 533, 81
+  xy: 533, 68
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

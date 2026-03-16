@@ -6,8 +6,11 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+
+import org.w3c.dom.Text;
 
 public class ScoreDisplay {
 
@@ -21,6 +24,10 @@ public class ScoreDisplay {
     }
 
     private final TextureRegion xSymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
+    private final TextureRegion whitePixel = Assets.I().get(AssetKey.WHITE_JOKER_CARD);
+    private final TextureRegion pointsTxt = Assets.I().get(AssetKey.POINTS_TXT);
+    private final TextureRegion multiTxt = Assets.I().get(AssetKey.MULTI_TXT);
+    private final TextureRegion comboTxt = Assets.I().get(AssetKey.COMBO_TXT);
 
     private final float DIGIT_Y = 15.25f;
     private final float DIGIT_WIDTH = 7 / 15f;
@@ -36,18 +43,27 @@ public class ScoreDisplay {
     private final DigitalNumber streakNumber = new DigitalNumber(0, Assets.I().red(), 2,
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
-    public void draw(float delta) {
-        float xSymbolSize = 11 / 25f;
+    public void draw(float delta, float unfoldAmount) {
+        boolean folded = unfoldAmount == 0;
+        ZIndex zIndex = folded ? ZIndex.PATTERN_DISPLAY : ZIndex.ROUND_INFO_PANEL_UNFOLDED;
+        pointsNumber.setZIndex(zIndex);
+        multiNumber.setZIndex(zIndex);
+        streakNumber.setZIndex(zIndex);
+
+        float digitY = folded ? DIGIT_Y : DIGIT_Y - 1.1f;
+        pointsNumber.getBounds().y = digitY;
+        multiNumber.getBounds().y = digitY;
+        streakNumber.getBounds().y = digitY;
 
         pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
-            xSymbol, new Rectangle(pointsNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
-            ZIndex.PATTERN_DISPLAY
+            xSymbol, new Rectangle(pointsNumber.getBounds().x + 2.25f, digitY, 11 / 25f, 11 / 25f),
+            zIndex
         ));
         multiNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
-            xSymbol, new Rectangle(multiNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
-            ZIndex.PATTERN_DISPLAY
+            xSymbol, new Rectangle(multiNumber.getBounds().x + 2.25f, digitY, 11 / 25f, 11 / 25f),
+            zIndex
         ));
         streakNumber.draw(delta);
     }

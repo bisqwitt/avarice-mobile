@@ -220,7 +220,12 @@ public enum AssetKey {
     NEXT_ROUND_BUTTON("next-round-button"),
     NEXT_ROUND_BUTTON_PRESSED("next-round-button-pressed"),
     NEXT_ROUND_TXT("next-round-txt"),
-    JOKER_CARD_BACK("jokercard-back");
+    JOKER_CARD_BACK("jokercard-back"),
+    ANTE_TXT("ante-txt"),
+    ANTE_TXT_SHADOW("ante-txt-shadow"),
+    POINTS_TXT("points-txt"),
+    MULTI_TXT("multi-txt"),
+    COMBO_TXT("combo-txt");
 
     private final String path;
 

@@ -21,6 +21,8 @@ public class DigitalNumber {
     protected final Rectangle rectangle;
     protected final float offset;
 
+    private ZIndex zIndex = ZIndex.DIGITAL_NUMBER;
+
     private int score;
     private int displayedScore;
 
@@ -132,6 +134,10 @@ public class DigitalNumber {
     }
 
     protected ZIndex getLayer() {
-        return ZIndex.DIGITAL_NUMBER;
+        return zIndex;
+    }
+
+    public void setZIndex(ZIndex zIndex) {
+        this.zIndex = zIndex;
     }
 }
