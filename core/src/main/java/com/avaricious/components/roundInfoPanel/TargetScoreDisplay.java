@@ -1,4 +1,4 @@
-package com.avaricious.components.displays;
+package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.RoundsManager;
 import com.avaricious.audio.AudioManager;
@@ -8,7 +8,6 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -36,7 +35,7 @@ public class TargetScoreDisplay {
             new Rectangle(TARGET_SCORE_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), 0.75f);
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
 //        progressBar.draw(batch);
 //        batch.draw(backgroundBox, 4.5f, 6.3f, 273 / 40f, 88 / 40f);
 
@@ -48,10 +47,10 @@ public class TargetScoreDisplay {
             ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(roundTxt,
             new Rectangle(ROUND_TXT_X, currentRound.calcHoverY(), 37 / 13f, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
-        currentRound.draw(batch, delta);
+        currentRound.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(colon,
             new Rectangle(COLON_X, 16.4f, DIGIT_WIDTH, DIGIT_HEIGHT), ZIndex.SCORE_DISPLAY));
-        targetScore.draw(batch, delta);
+        targetScore.draw(delta);
     }
 
     public void addToScore(int amount) {

@@ -1,4 +1,4 @@
-package com.avaricious.components.displays;
+package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
@@ -6,7 +6,6 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -37,20 +36,20 @@ public class ScoreDisplay {
     private final DigitalNumber streakNumber = new DigitalNumber(0, Assets.I().red(), 2,
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         float xSymbolSize = 11 / 25f;
 
-        pointsNumber.draw(batch, delta);
+        pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             xSymbol, new Rectangle(pointsNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
             ZIndex.PATTERN_DISPLAY
         ));
-        multiNumber.draw(batch, delta);
+        multiNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             xSymbol, new Rectangle(multiNumber.getBounds().x + 2.25f, DIGIT_Y, xSymbolSize, xSymbolSize),
             ZIndex.PATTERN_DISPLAY
         ));
-        streakNumber.draw(batch, delta);
+        streakNumber.draw(delta);
     }
 
     public void addTo(Type type, float amount) {

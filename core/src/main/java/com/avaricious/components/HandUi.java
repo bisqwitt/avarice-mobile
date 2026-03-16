@@ -40,7 +40,7 @@ public class HandUi {
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final Map<Card, DragableSlot> cards = new HashMap<>();
+    private final List<Card> cards = new ArrayList<>();
     private final Map<Card, Integer> cardIndexLastRender = new HashMap<>();
 
     private Card touchingCard = null;
@@ -60,11 +60,11 @@ public class HandUi {
         }
 
         if (pressed && !wasPressed) {
-            List<Map.Entry<Card, DragableSlot>> sorted = getEntriesSortedByX();
+            List<Card> sorted = getEntriesSortedByX();
             Collections.reverse(sorted);
-            for (Map.Entry<Card, DragableSlot> entry : sorted) {
-                if (entry.getValue().getBounds().contains(mouse)) {
-                    onCardTouchDown(entry.getKey(), mouse);
+            for (Card card : sorted) {
+                if (card.getBody().getBounds().contains(mouse)) {
+                    onCardTouchDown(card, mouse);
                     break;
                 }
             }
@@ -81,21 +81,21 @@ public class HandUi {
 
     private void onCardTouchDown(Card card, Vector2 mouse) {
         touchingCard = card;
-        cards.get(card).targetScale = 1.3f;
-        cards.get(card).beginDrag(mouse.x, mouse.y, 0);
+        card.getBody().targetScale = 1.3f;
+        card.getBody().beginDrag(mouse.x, mouse.y, 0);
 
-        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()));
+        PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
     private void onCardTouching(Card card, Vector2 mouse) {
-        DragableSlot touchingSlot = cards.get(card);
-        Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
+        DragableSlot body = card.getBody();
+        Vector2 cardRenderPos = body.getRenderPos(new Vector2());
 
-        touchingSlot.dragTo(mouse.x, mouse.y, 0);
+        body.dragTo(mouse.x, mouse.y, 0);
         updateCardBounds();
 
-        boolean hoveringSlotMachine = SlotMachine.windowBounds.contains(touchingSlot.getCardCenter());
-        boolean hoveringDeck = DeckUi.I().getHitBox().contains(touchingSlot.getCardCenter());
+        boolean hoveringSlotMachine = SlotMachine.windowBounds.contains(body.getCardCenter());
+        boolean hoveringDeck = DeckUi.I().getHitBox().contains(body.getCardCenter());
         PopupManager.I().updateTooltip(
             new Vector2(cardRenderPos.x - (hoveringSlotMachine || hoveringDeck ? 0.9f : 2f), cardRenderPos.y + 2.85f),
             new Rectangle(0f, 0f, 9f, 8f).contains(mouse),
@@ -103,14 +103,14 @@ public class HandUi {
     }
 
     private void onCardTouchReleased(Card card) {
-        DragableSlot dragableSlot = cards.get(card);
-        if (SlotMachine.windowBounds.contains(dragableSlot.getCardCenter())) {
+        DragableSlot body = card.getBody();
+        if (SlotMachine.windowBounds.contains(body.getCardCenter())) {
             applyCard(card);
-        } else if (DeckUi.I().getFirstCardBounds().contains(dragableSlot.getCardCenter())) {
+        } else if (DeckUi.I().getFirstCardBounds().contains(body.getCardCenter())) {
             discardCard(card);
         } else {
-            dragableSlot.endDrag(0);
-            cards.get(card).targetScale = 1f;
+            body.endDrag(0);
+            body.targetScale = 1f;
         }
         touchingCard = null;
         PopupManager.I().killTooltip();
@@ -118,35 +118,35 @@ public class HandUi {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        for (DragableSlot slot : cards.values()) slot.update(delta);
+        cards.forEach(card -> card.getBody().update(delta));
 
-        Vector2 touchingCardCenter = touchingCard != null ? cards.get(touchingCard).getCardCenter() : new Vector2();
+        Vector2 touchingCardCenter = touchingCard != null ? touchingCard.getBody().getCardCenter() : new Vector2();
         cardDestinationUI.draw(batch, delta, touchingCardCenter, touchingCard != null);
 
-        for (Map.Entry<Card, DragableSlot> entry : getEntriesSortedByX()) {
-            if (touchingCard != entry.getKey()) drawCard(entry.getKey());
+        for (Card card : getEntriesSortedByX()) {
+            if (touchingCard != card) drawCard(card);
         }
 
         if (touchingCard != null) drawCard(touchingCard);
     }
 
     private void drawCard(Card card) {
-        DragableSlot slot = cards.get(card);
-        Rectangle bounds = slot.getBounds();
+        DragableSlot body = card.getBody();
+        Rectangle bounds = body.getBounds();
 
-        float scale = slot.pulseScale()
-            * slot.wobbleScale()
-            * slot.getTargetScale();
-        final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg()
+        float scale = body.pulseScale()
+            * body.wobbleScale()
+            * body.getTargetScale();
+        final float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg()
             + (card != touchingCard && card != applyingCard ? getHandRotation(card) : 0);
 
-        float alpha = slot.getAlpha();
-        if (DeckUi.I().getHitBox().contains(slot.getCardCenter())) alpha -= 0.5f;
+        float alpha = body.getAlpha();
+        if (DeckUi.I().getHitBox().contains(body.getCardCenter())) alpha -= 0.5f;
 
-        Vector2 position = slot.getRenderPos(new Vector2());
+        Vector2 position = body.getRenderPos(new Vector2());
 
         Color shadowColor = Assets.I().shadowColor();
-        Vector2 shadowOffset = UiUtility.calcShadowOffset(slot.getCardCenter());
+        Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
             new Rectangle(
@@ -167,7 +167,7 @@ public class HandUi {
     private void loadCards(List<? extends Card> newHand) {
         // Add new Cards
         for (Card card : newHand) {
-            if (!cards.containsKey(card)) {
+            if (!cards.contains(card)) {
 
                 // 1) Start at deck position
                 Vector2 deckSpawn = DeckUi.I().getTopCardSpawnPos();
@@ -177,21 +177,23 @@ public class HandUi {
                     CARD_WIDTH, CARD_HEIGHT
                 );
 
-                DragableSlot slot = new DragableSlot(initialBounds)
+                DragableSlot body = new DragableSlot(initialBounds)
                     .setTilt(200f, 20f);
 
                 // Optional: make the draw feel juicy
 //                slot.targetScale = 1.15f;  // slight pop while flying
-                slot.pulse();
-                slot.wobble();
+                body.pulse();
+                body.wobble();
 
-                cards.put(card, slot);
+                card.setBody(body);
+
+                cards.add(card);
             }
         }
 
         // Remove old Cards
         List<Card> cardsToRemove = new ArrayList<>();
-        for (Card card : cards.keySet()) {
+        for (Card card : cards) {
             if (!newHand.contains(card)) {
                 cardsToRemove.add(card);
             }
@@ -205,17 +207,14 @@ public class HandUi {
     }
 
     private void updateCardBounds() {
-        for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
-            Card card = entry.getKey();
-            DragableSlot slot = entry.getValue();
-
+        for (Card card : cards) {
             int newCardIndex = calcCardIndex(card);
 //            if (cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card))
 //                slot.wobble();
             cardIndexLastRender.put(card, newCardIndex);
 
             if (card == touchingCard) continue;
-            slot.moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
+            card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
     }
 
@@ -233,16 +232,16 @@ public class HandUi {
     }
 
     private int calcCardIndex(Card card) {
-        List<Map.Entry<Card, DragableSlot>> sorted = getEntriesSortedByX();
-        for (Map.Entry<Card, DragableSlot> entry : sorted) {
-            if (entry.getKey() == card) return sorted.indexOf(entry);
+        List<Card> sorted = getEntriesSortedByX();
+        for (Card c : sorted) {
+            if (c == card) return sorted.indexOf(c);
         }
         return -1;
     }
 
-    private List<Map.Entry<Card, DragableSlot>> getEntriesSortedByX() {
-        List<Map.Entry<Card, DragableSlot>> sorted = new ArrayList<>(cards.entrySet());
-        sorted.sort(Comparator.comparingDouble(entry -> entry.getValue().getRenderPos(new Vector2()).x));
+    private List<Card> getEntriesSortedByX() {
+        List<Card> sorted = new ArrayList<>(cards);
+        sorted.sort(Comparator.comparingDouble(card -> card.getBody().getRenderPos(new Vector2()).x));
         return sorted;
     }
 
@@ -282,10 +281,10 @@ public class HandUi {
         card.apply();
         applyingCard = card;
 
-        DragableSlot slot = cards.get(card);
-        slot.pulse();
-        slot.wobble();
-        Vector2 pos = slot.getRenderPos(new Vector2());
+        DragableSlot body = card.getBody();
+        body.pulse();
+        body.wobble();
+        Vector2 pos = body.getRenderPos(new Vector2());
 
         ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, ZIndex.CARD_APPLY_PARTICLES);
 
@@ -296,7 +295,7 @@ public class HandUi {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                slot.startApplyAnimation(0.6f, () -> {
+                body.startApplyAnimation(0.6f, () -> {
                     Hand.I().removeCardFromHand(card);
                 });
             }
@@ -305,10 +304,14 @@ public class HandUi {
 
     public void discardCard(Card card) {
         discardingCard = card;
-        cards.get(card).startApplyAnimation(0.6f, () -> {
+        card.getBody().startApplyAnimation(0.6f, () -> {
             discardingCard = null;
             Hand.I().discardCard(card);
         });
+    }
+
+    public void discardAllCards() {
+        cards.forEach(this::discardCard);
     }
 
 }

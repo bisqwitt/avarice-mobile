@@ -5,7 +5,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -55,7 +54,7 @@ public class DigitalNumber {
         updateDigitalNumbers(score);
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         if (displayedScore < score) {
             long diff = score - displayedScore;
             displayedScore += (int) Math.ceil(diff * 0.025);

@@ -75,13 +75,15 @@ public class TooltipPopup {
         updateAlpha(delta);
         TextureRegion box = boxes.get(calcDescriptionLineAmount());
         float worldWidth = ScreenManager.getViewport().getWorldWidth();
+        float worldHeight = ScreenManager.getViewport().getWorldHeight();
 
         float boxWidth = 82 / 15f;
         float boxHeight = box.getRegionHeight() / 15f;
         final float boxX = pos.x < 0.25f
             ? 0.25f : pos.x + boxWidth > worldWidth - 0.25f
             ? worldWidth - boxWidth - 0.25f : pos.x;
-        float boxY = pos.y;
+        float boxY = pos.y + boxHeight > worldHeight - 0.25f
+            ? worldHeight - boxHeight - 0.25f : pos.y;
 
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(

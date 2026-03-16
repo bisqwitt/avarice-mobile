@@ -18,9 +18,9 @@ import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.displays.ScoreDisplay;
-import com.avaricious.components.displays.TargetScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.PatternHitContext;
@@ -63,8 +63,7 @@ public class SlotScreen extends ScreenAdapter {
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
 
-    private final TargetScoreDisplay targetScoreDisplay = new TargetScoreDisplay();
-    private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
+    private final RoundInfoPanel roundInfoPanel = new RoundInfoPanel();
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
 //    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
 
@@ -108,11 +107,6 @@ public class SlotScreen extends ScreenAdapter {
         screenShake = ScreenShake.I().setCamera(app.getViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
 
-        targetScoreDisplay.setOnInternalScoreDisplayed(() -> {
-            AudioManager.I().endPayout();
-            if (targetScoreDisplay.targetScoreReached()) onTargetScoreReached();
-        });
-
         if (DevTools.enableProfiler) Profiler.start();
     }
 
@@ -130,7 +124,6 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
             }
         }, 1);
     }
@@ -158,13 +151,12 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        targetScoreDisplay.draw(batch, delta);
-        scoreDisplay.draw(batch, delta);
+        roundInfoPanel.draw(delta);
         buttonBoard.draw(batch, delta);
         ringBar.draw();
 
 //        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);
-        healthUi.draw(batch, delta);
+        healthUi.draw(delta);
         xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw();
@@ -185,7 +177,6 @@ public class SlotScreen extends ScreenAdapter {
 
         batch.begin();
         batch.draw(backgroundDarkest, 0, 6, 10, 10);
-        batch.draw(backgroundPixel, -3, 14.5f, 15, 6);
         batch.draw(backgroundPixel, -3, -3, 15, 11.75f);
         batch.draw(backgroundPixelDarker, -3, 3, 15, 3.85f);
 
@@ -224,12 +215,13 @@ public class SlotScreen extends ScreenAdapter {
         statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         else {
+            roundInfoPanel.handleInput(mouse, leftClickPressed, leftClickWasPressed);
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
             ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         }
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
@@ -266,9 +258,9 @@ public class SlotScreen extends ScreenAdapter {
                 triggerSeparateSlots(matches, patternHitContext, scheduler);
             }
 
-            scheduler.scheduleNoDelay(() -> PopupManager.I().releaseHoldingNumbers());
-
             scheduler.schedule(() -> {
+                PopupManager.I().releaseHoldingNumbers();
+
                 for (Slot slot : slots) {
                     slot.pulse();
                     slot.wobble();
@@ -280,15 +272,16 @@ public class SlotScreen extends ScreenAdapter {
                 ScreenShake.I().addTrauma(0.3f);
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int mult = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
+                int multi = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
 
-                PopupManager.I().spawnNumber(mult, Assets.I().red(),
+                PopupManager.I().spawnNumber(multi, Assets.I().red(),
                     middleSlot.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleSlot.getPos().y + 1f,
                     true);
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         middleSlot.getPos().x + 2.5f, middleSlot.getPos().y + 1f);
-                scoreDisplay.addTo(ScoreDisplay.Type.MULTI, mult);
+
+                roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.MULTI, multi);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
@@ -315,7 +308,7 @@ public class SlotScreen extends ScreenAdapter {
         }
 
         scheduler.schedule(() -> {
-            scoreDisplay.addTo(ScoreDisplay.Type.STREAK, 1);
+            roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.STREAK, 1);
             slotMachine.setRunningResults(false);
             EffectManager.endStreak();
             buttonBoard.setVisible(true);
@@ -346,7 +339,7 @@ public class SlotScreen extends ScreenAdapter {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         slot.getPos().x + 1.5f, slot.getPos().y + 2f);
-                scoreDisplay.addTo(ScoreDisplay.Type.POINTS, points);
+                roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.POINTS, points);
 
                 EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                     new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
@@ -389,15 +382,16 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onCashoutButtonPressed() {
-        int score = scoreDisplay.calcScore();
-        targetScoreDisplay.addToScore(score);
-        scoreDisplay.clearNumbers();
+        int score = roundInfoPanel.getScoreDisplay().calcScore();
+        roundInfoPanel.getTargetScoreDisplay().addToScore(score);
+        roundInfoPanel.getScoreDisplay().clearNumbers();
     }
 
-    private void onTargetScoreReached() {
+    public void onTargetScoreReached() {
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
         healthUi.healHealth();
+        handUi.discardAllCards();
         shop.show();
     }
 
@@ -410,7 +404,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
-        targetScoreDisplay.resetScore();
+        roundInfoPanel.getTargetScoreDisplay().resetScore();
         drawStartingHand();
     }
 

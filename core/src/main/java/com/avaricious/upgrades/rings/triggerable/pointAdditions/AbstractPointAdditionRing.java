@@ -1,6 +1,6 @@
 package com.avaricious.upgrades.rings.triggerable.pointAdditions;
 
-import com.avaricious.components.displays.ScoreDisplay;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.upgrades.rings.triggerable.AbstractScoreAdditionRing;
 
 public abstract class AbstractPointAdditionRing extends AbstractScoreAdditionRing {

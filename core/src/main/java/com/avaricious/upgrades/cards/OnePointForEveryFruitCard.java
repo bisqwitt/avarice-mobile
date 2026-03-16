@@ -1,7 +1,7 @@
 package com.avaricious.upgrades.cards;
 
-import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.utility.AssetKey;

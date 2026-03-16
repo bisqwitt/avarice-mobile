@@ -219,7 +219,8 @@ public enum AssetKey {
     DISCARD_TXT_BOX("discard-txt-box"),
     NEXT_ROUND_BUTTON("next-round-button"),
     NEXT_ROUND_BUTTON_PRESSED("next-round-button-pressed"),
-    NEXT_ROUND_TXT("next-round-txt");
+    NEXT_ROUND_TXT("next-round-txt"),
+    JOKER_CARD_BACK("jokercard-back");
 
     private final String path;
 

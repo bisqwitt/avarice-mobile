@@ -2,7 +2,7 @@ package com.avaricious.upgrades.rings.triggerable;
 
 import com.avaricious.audio.AudioManager;
 import com.avaricious.components.ScreenShake;
-import com.avaricious.components.displays.ScoreDisplay;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.utility.Assets;
 

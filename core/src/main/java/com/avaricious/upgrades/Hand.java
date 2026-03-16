@@ -64,7 +64,7 @@ public class Hand extends Observable<List<? extends Card>> {
 
     public void removeCardFromHand(Card upgrade) {
         hand.remove(upgrade);
-        Deck.I().addUpgradeToDeck(upgrade);
+        Deck.I().addCardToDeck(upgrade);
         notifyChanged(snapshot());
     }
 

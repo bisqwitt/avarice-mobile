@@ -1,6 +1,7 @@
 package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.popups.NumberPopup;
+import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Upgrade;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class Card extends Upgrade {
+
+    protected DragableSlot body = null;
 
     public abstract String description();
 
@@ -32,5 +35,13 @@ public abstract class Card extends Upgrade {
     @Override
     public String title() {
         return "Card";
+    }
+
+    public void setBody(DragableSlot body) {
+        this.body = body;
+    }
+
+    public DragableSlot getBody() {
+        return body;
     }
 }

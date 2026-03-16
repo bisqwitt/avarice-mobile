@@ -2,8 +2,8 @@ package com.avaricious.components;
 
 import static com.badlogic.gdx.math.MathUtils.lerp;
 
-import com.avaricious.components.displays.ScoreDisplay;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.stats.PlayerStats;
@@ -13,7 +13,6 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -62,7 +61,7 @@ public class HealthUi {
             new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.55f);
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         updateMovement(delta);
 
         Pencil.I().addDrawing(new TextureDrawing(
@@ -76,12 +75,12 @@ public class HealthUi {
             ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
 
-        armor.draw(batch, delta);
+        armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
             new Rectangle(txtX - 0.15f, armor.calcHoverY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().silver()));
 
-        health.draw(batch, delta);
+        health.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxt,
             new Rectangle(txtX, health.calcHoverY(), 18 / hpSizeRatio, 11 / hpSizeRatio),

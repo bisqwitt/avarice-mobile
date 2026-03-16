@@ -1,6 +1,6 @@
 package com.avaricious.components.buttons;
 
-import com.avaricious.components.displays.ScoreDisplay;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;

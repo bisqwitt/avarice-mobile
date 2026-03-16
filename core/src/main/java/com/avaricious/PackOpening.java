@@ -7,7 +7,6 @@ import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Rarity;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.CardPack;
 import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.TooltipManager;
 import com.badlogic.gdx.utils.Timer;
 
 public abstract class PackOpening {
@@ -38,7 +36,7 @@ public abstract class PackOpening {
     };
 
     private final Rectangle bounds;
-    private DragableSlot slot;
+    private DragableSlot body;
 
     private final Rectangle buyBounds;
 
@@ -77,32 +75,30 @@ public abstract class PackOpening {
     protected boolean ripped = false;
     private boolean dragging = false;
 
-    private boolean showPack = false;
-
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
-        slot = new DragableSlot(bounds);
+        body = new DragableSlot(bounds);
 
         this.buyBounds = buyBounds;
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
         update(delta);
-        slot.update(delta);
+        body.update(delta);
         if (bought) return;
 
-        if (touching && !wasTouching && slot.getBounds().contains(mouse)) {
+        if (touching && !wasTouching && body.getBounds().contains(mouse)) {
             this.dragging = true;
-            slot.targetScale = 1.3f;
-            slot.beginDrag(mouse.x, mouse.y, 0);
+            body.targetScale = 1.3f;
+            body.beginDrag(mouse.x, mouse.y, 0);
 
-            PopupManager.I().createTooltip(randomRing, slot.getRenderPos(new Vector2()));
+            PopupManager.I().createTooltip(randomRing, body.getRenderPos(new Vector2()));
         }
 
         if (touching && dragging) {
-            Vector2 cardRenderPos = slot.getRenderPos(new Vector2());
+            Vector2 cardRenderPos = body.getRenderPos(new Vector2());
 
-            slot.dragTo(mouse.x, mouse.y, 0);
+            body.dragTo(mouse.x, mouse.y, 0);
             PopupManager.I().updateTooltip(
                 new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
                 true
@@ -110,11 +106,11 @@ public abstract class PackOpening {
         }
 
         if (!touching && wasTouching && dragging) {
-            if (buyBounds.contains(slot.getCardCenter())) {
+            if (buyBounds.contains(body.getCardCenter())) {
                 buy();
             } else {
-                slot.targetScale = 1f;
-                slot.endDrag(0);
+                body.targetScale = 1f;
+                body.endDrag(0);
             }
             dragging = false;
             PopupManager.I().killTooltip();
@@ -122,14 +118,12 @@ public abstract class PackOpening {
     }
 
     public void draw() {
-        if (!showPack) return;
+        Rectangle bounds = body.getBounds();
 
-        Rectangle bounds = slot.getBounds();
-
-        final Vector2 position = slot.getRenderPos(new Vector2());
-        final float alpha = slot.getAlpha();
-        final float scale = slot.pulseScale() * slot.wobbleScale() * slot.getTargetScale();
-        final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
+        final Vector2 position = body.getRenderPos(new Vector2());
+        final float alpha = body.getAlpha();
+        final float scale = body.pulseScale() * body.wobbleScale() * body.getTargetScale();
+        final float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg();
         final Vector2 drawPos = new Vector2(position).add(shakeOffset);
         final float drawRot = rotation + shakeRotDeg;
         final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.SHOP;
@@ -138,7 +132,7 @@ public abstract class PackOpening {
         Pencil.I().addDrawing(new TextureDrawing(
             getShadowTexture(),
             new Rectangle(
-                drawPos.x, drawPos.y - 0.2f * slot.targetScale,
+                drawPos.x, drawPos.y - 0.2f * body.targetScale,
                 bounds.width, bounds.height
             ), scale, drawRot,
             layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
@@ -203,7 +197,7 @@ public abstract class PackOpening {
     }
 
     private void drawCoreGlow(ZIndex layer) {
-        Vector2 center = slot.getCardCenter();
+        Vector2 center = body.getCardCenter();
         float width = bounds.width * coreGlowScale;
         float height = bounds.height * coreGlowScale;
 
@@ -310,14 +304,14 @@ public abstract class PackOpening {
 
     private void buy() {
         bought = true;
-        Vector2 pos = slot.getRenderPos(new Vector2());
+        Vector2 pos = body.getRenderPos(new Vector2());
         Rectangle initialBounds = new Rectangle(pos.x, pos.y, bounds.width, bounds.height);
-        slot = new DragableSlot(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
+        body = new DragableSlot(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
         float screenHeight = ScreenManager.getViewport().getWorldHeight();
-        slot.moveTo(new Vector2(screenWidth / 2f - (bounds.width / 2f), screenHeight / 2f - (bounds.height / 2f)));
-        slot.targetScale = 2f;
+        body.moveTo(new Vector2(screenWidth / 2f - (bounds.width / 2f), screenHeight / 2f - (bounds.height / 2f)));
+        body.targetScale = 2f;
 
         whitening = true;
         whiten = 0f;
@@ -346,28 +340,26 @@ public abstract class PackOpening {
     protected void ripOpen() {
         ripped = true;
         Upgrade upgrade = getResult();
-        Vector2 centerPos = slot.getCardCenter().sub(1, 1);
+        Vector2 centerPos = body.getCardCenter().sub(1, 1);
         ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.05f, ZIndex.PACK_OPENING);
 //        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
 
-        slot.pulse();
-        slot.wobble();
+        body.pulse();
+        body.wobble();
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                Vector2 renderPos = slot.getRenderPos(new Vector2());
+                Vector2 renderPos = body.getRenderPos(new Vector2());
                 PopupManager.I().createTooltip(upgrade, new Vector2(
-                    renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
+                        renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
                     ZIndex.PACK_OPENING_SELECTED).setVisible(true);
             }
         }, 0.2f);
     }
 
-    public void showPack() {
-        showPack = true;
-        slot.wobble();
-        slot.pulse();
+    public DragableSlot getBody() {
+        return body;
     }
 
     protected abstract TextureRegion getTexture();
@@ -387,7 +379,7 @@ public abstract class PackOpening {
     }
 
     public Vector2 getCenter() {
-        return slot.getCardCenter();
+        return body.getCardCenter();
     }
 
 }

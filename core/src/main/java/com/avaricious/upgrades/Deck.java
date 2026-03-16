@@ -50,17 +50,17 @@ public class Deck extends Observable<List<? extends Card>> {
 
         if (DevTools.allCardsInDeck) {
             for (Class<? extends Card> cardClass : allCardClasses) {
-                addUpgradeToDeck(instantiateCard(cardClass));
+                addCardToDeck(instantiateCard(cardClass));
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                addUpgradeToDeck(instantiateCard(FivePointsCard.class));
+                addCardToDeck(instantiateCard(FivePointsCard.class));
             }
             for (int i = 0; i < 3; i++) {
-                addUpgradeToDeck(instantiateCard(TwoMultCard.class));
+                addCardToDeck(instantiateCard(TwoMultCard.class));
             }
-            addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
-            addUpgradeToDeck(instantiateCard(TwentyArmorCard.class));
+            addCardToDeck(instantiateCard(TwentyArmorCard.class));
+            addCardToDeck(instantiateCard(TwentyArmorCard.class));
         }
     }
 
@@ -132,7 +132,7 @@ public class Deck extends Observable<List<? extends Card>> {
         return false;
     }
 
-    public void addUpgradeToDeck(Card upgrade) {
+    public void addCardToDeck(Card upgrade) {
         deck.add(upgrade);
         notifyChanged(snapshot());
     }

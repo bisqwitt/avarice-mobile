@@ -36,7 +36,7 @@ public class DeckUi {
     private final float CARD_HEIGHT = 190 / 85f;
     private final Rectangle firstCardBounds = new Rectangle(7f, 0.25f, CARD_WIDTH, CARD_HEIGHT);
 
-    private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
+    private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new LinkedHashMap<>();
@@ -133,7 +133,7 @@ public class DeckUi {
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
-            card.texture(),
+            unfolded ? card.texture() : jokerCardBack,
             new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
             scale, rotation, unfolded ? ZIndex.UNFOLDED_DECK_CARD : ZIndex.DECK_UI_CARD
         ));

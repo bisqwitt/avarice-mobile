@@ -21,14 +21,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
 
 public class Shop {
 
     private static final float WINDOW_X = -1f;
-    private static final float WINDOW_Y = 4.85f;
+    private static final float WINDOW_Y = 2.85f;
     private static final float WINDOW_WIDTH = 375 / 35f;
-    public static final float WINDOW_HEIGHT = 534 / 35f;
+    public static final float WINDOW_HEIGHT = 650 / 35f;
 
     // fully above the screen
     private static final float OFFSCREEN_TOP_Y = WINDOW_Y + WINDOW_HEIGHT + 2f;
@@ -52,6 +51,7 @@ public class Shop {
     private final Runnable onReturnedFromShop;
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
+
     private State state = State.HIDDEN;
 
     private static final float GRAVITY_ENTER = -55f;
@@ -102,7 +102,7 @@ public class Shop {
         nextRoundButton = new NextRoundButton(() -> {
             state = State.EXITING;
             windowVelocityY = 0f;
-            moveInUi();
+            moveOutUi();
             HealthUi.I().moveIn();
         }, new Rectangle(2.4f, baseNextRoundButtonY, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
 
@@ -125,14 +125,13 @@ public class Shop {
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxtShadow,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 10.95f, 29 / 8f, 13 / 8f),
-            ZIndex.SHOP,
-            Assets.I().shadowColor()
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 12.65f, 29 / 8f, 13 / 8f),
+            ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxt,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 11.05f, 29 / 8f, 13 / 8f),
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 12.75f, 29 / 8f, 13 / 8f),
             ZIndex.SHOP
         ));
 
@@ -143,7 +142,7 @@ public class Shop {
         ringPack.draw();
 
         rerollButton.draw();
-        creditScore.draw(batch, delta);
+        creditScore.draw(delta);
         nextRoundButton.draw();
         buyBox.draw(delta);
     }
@@ -160,6 +159,7 @@ public class Shop {
         nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
 
         HealthUi.I().moveOut();
+        moveInUi();
     }
 
     private void updateAnimation(float delta) {
@@ -170,28 +170,11 @@ public class Shop {
 
                 if (currentWindowY <= WINDOW_Y) {
                     currentWindowY = WINDOW_Y;
+                    ScreenShake.I().addTrauma(Math.abs(windowVelocityY * 0.01f));
 
                     if (Math.abs(windowVelocityY) < MIN_BOUNCE_VELOCITY) {
                         windowVelocityY = 0f;
                         state = State.SHOWN;
-
-                        moveOutUi(); // animate shop UI in when shop finishes entering
-
-                        cards.showCards();
-
-                        Timer.schedule(new Timer.Task() {
-                            @Override
-                            public void run() {
-                                ringPack.showPack();
-                            }
-                        }, 0.6f);
-
-                        Timer.schedule(new Timer.Task() {
-                            @Override
-                            public void run() {
-                                cardPack.showPack();
-                            }
-                        }, 0.8f);
                     } else {
                         windowVelocityY = -windowVelocityY * BOUNCE_DAMPING;
                     }
@@ -216,12 +199,16 @@ public class Shop {
                 break;
         }
 
+        // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
-            rerollButton.getButtonRectangle().setY(currentWindowY + 6.4f);
+            cards.setY(currentWindowY + 9.15f);
+            rerollButton.getButtonRectangle().setY(currentWindowY + 7.65f);
+            cardPack.getBody().getPos().y = currentWindowY + 4.4f;
+            ringPack.getBody().getPos().y = currentWindowY + 4.75f;
         }
     }
 
-    private void moveOutUi() {
+    private void moveInUi() {
         startCreditScoreY = creditScore.getBounds().y;
         startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
 
@@ -232,7 +219,7 @@ public class Shop {
         isUiMoving = true;
     }
 
-    private void moveInUi() {
+    private void moveOutUi() {
         startCreditScoreY = creditScore.getBounds().y;
         startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
 

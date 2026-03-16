@@ -13,27 +13,21 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopCardsBar {
 
     private final Rectangle buyBounds;
-    private final Rectangle firstCardBounds = new Rectangle(1.65f, 12.85f, 142 / 85f, 190 / 85f);
+    private final Rectangle firstCardBounds = new Rectangle(1.55f, 12.725f, 142 / 80f, 190 / 80f);
     private final float CARD_OFFSET = 2f;
 
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<Card, DragableSlot> cards = new HashMap<>();
     private Card touchingCard = null;
-
-    private final Map<Card, Boolean> cardVisibility = new HashMap<>();
-    private boolean showCards = false;
 
     public ShopCardsBar(Rectangle buyBounds) {
         loadCards(Deck.I().randomUpgrades(3));
@@ -100,8 +94,6 @@ public class ShopCardsBar {
     }
 
     private void drawCard(Card card) {
-        if (!cardVisibility.get(card)) return;
-
         Rectangle bounds = cards.get(card).getBounds();
         DragableSlot slot = cards.get(card);
 
@@ -147,32 +139,17 @@ public class ShopCardsBar {
             slot.wobble();
 
             this.cards.put(card, slot);
-            this.cardVisibility.put(card, showCards);
             index++;
         }
     }
 
     private void buyCard(Card card) {
-        Deck.I().addUpgradeToDeck(card);
+        Deck.I().addCardToDeck(card);
         cards.remove(card);
     }
 
-    public void showCards() {
-        showCards = true;
-        AtomicInteger index = new AtomicInteger();
-        cards.entrySet().stream()
-            .sorted(Comparator.comparingDouble(entry -> entry.getValue().getRenderPos(new Vector2()).x))
-            .forEach(entry -> {
-                Timer.schedule(new Timer.Task() {
-                    @Override
-                    public void run() {
-                        cardVisibility.put(entry.getKey(), true);
-                        entry.getValue().wobble();
-                        entry.getValue().pulse();
-                    }
-                }, index.get() * 0.2f);
-                index.getAndIncrement();
-            });
+    public void setY(float y) {
+        cards.values().forEach(body -> body.getPos().y = y);
     }
 
     public boolean isDragging() {
