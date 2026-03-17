@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HandUi {
 
@@ -207,11 +208,11 @@ public class HandUi {
     private void updateCardBounds() {
         for (AbstractCard card : cards) {
             int newCardIndex = calcCardIndex(card);
-//            if (cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card))
-//                slot.wobble();
             cardIndexLastRender.put(card, newCardIndex);
 
             if (card == touchingCard) continue;
+            if (newCardIndex < 0) continue; // excluded from layout
+
             card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
     }
@@ -221,7 +222,8 @@ public class HandUi {
     }
 
     private float calcFistX() {
-        int n = cards.size();
+        List<AbstractCard> layoutCards = getCardsForLayout();
+        int n = layoutCards.size();
         if (n == 0) return 0;
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
@@ -230,23 +232,29 @@ public class HandUi {
     }
 
     private int calcCardIndex(AbstractCard card) {
-        List<AbstractCard> sorted = getEntriesSortedByX();
-        for (AbstractCard c : sorted) {
-            if (c == card) return sorted.indexOf(c);
+        List<AbstractCard> sorted = getEntriesSortedByX(getCardsForLayout());
+        for (int i = 0; i < sorted.size(); i++) {
+            if (sorted.get(i) == card) return i;
         }
         return -1;
     }
 
     private List<AbstractCard> getEntriesSortedByX() {
-        List<AbstractCard> sorted = new ArrayList<>(cards);
+        return getEntriesSortedByX(cards);
+    }
+
+    private List<AbstractCard> getEntriesSortedByX(List<AbstractCard> source) {
+        List<AbstractCard> sorted = new ArrayList<>(source);
         sorted.sort(Comparator.comparingDouble(card -> card.getBody().getRenderPos(new Vector2()).x));
         return sorted;
     }
-
     private float getHandRotation(AbstractCard card) {
-        int i = calcCardIndex(card);
-        int n = cards.size();
+        List<AbstractCard> layoutCards = getCardsForLayout();
+        int n = layoutCards.size();
         if (n <= 1) return 0f;
+
+        int i = layoutCards.indexOf(card);
+        if (i < 0) return 0f;
 
         float t = (i / (float) (n - 1)) * 2f - 1f; // [-1..+1]
 
@@ -256,23 +264,38 @@ public class HandUi {
         float curve = t * t * t;
 
         int h = card.hashCode();
-        float jitter01 = (h & 0xFFFF) / 65535f;   // [0,1]
-        float jitter = jitter01 * 2f - 1f;        // [-1,1]
+        float jitter01 = (h & 0xFFFF) / 65535f;
+        float jitter = jitter01 * 2f - 1f;
 
-        // NOTE: '-' flips the arc direction (down instead of up)
         return (-curve * fanMaxDeg) + (jitter * jitterMaxDeg);
     }
 
     private float getHandYOffset(AbstractCard card) {
-        int i = calcCardIndex(card);
-        int n = cards.size();
+        List<AbstractCard> layoutCards = getCardsForLayout();
+        int n = layoutCards.size();
         if (n <= 1) return 0f;
 
-        float t = (i / (float) (n - 1)) * 2f - 1f; // [-1..+1]
-        float arc = 0.15f; // tune (world units)
+        int i = layoutCards.indexOf(card);
+        if (i < 0) return 0f;
 
-        // parabola: center highest (t=0), edges lowest (t=±1)
+        float t = (i / (float) (n - 1)) * 2f - 1f;
+        float arc = 0.15f;
+
         return arc * (1f - t * t);
+    }
+
+    private List<AbstractCard> getCardsForLayout() {
+        List<AbstractCard> layoutCards = new ArrayList<>(cards);
+
+        boolean touchingOverSlotMachine =
+            touchingCard != null &&
+                SlotMachine.windowBounds.contains(touchingCard.getBody().getCardCenter());
+
+        if (touchingOverSlotMachine) {
+            layoutCards.remove(touchingCard);
+        }
+
+        return layoutCards;
     }
 
     public void applyCard(AbstractCard card) {

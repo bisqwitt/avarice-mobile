@@ -18,6 +18,6 @@ public class DevTools {
 
     public static boolean testRings = true;
 
-    public static boolean allCardsInDeck = true;
+    public static boolean allCardsInDeck = false;
 
 }

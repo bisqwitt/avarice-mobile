@@ -1,5 +1,6 @@
 package com.avaricious.effects;
 
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -124,27 +125,38 @@ public class BorderPulseMesh {
     }
 
     private void renderInternal() {
-        final float W = ScreenManager.getViewport().getWorldWidth();
-        final float H = ScreenManager.getViewport().getWorldHeight();
+        final float screenW = ScreenManager.getViewport().getWorldWidth();
+        final float screenH = ScreenManager.getViewport().getWorldHeight();
 
-        ensureResources(W, H);
+        float x, y, w, h;
+
+        if (type == Type.RAINBOW) {
+            x = SlotMachine.windowBounds.x;
+            y = SlotMachine.windowBounds.y;
+            w = SlotMachine.windowBounds.width;
+            h = SlotMachine.windowBounds.height;
+        } else {
+            x = 0f;
+            y = 0f;
+            w = screenW;
+            h = screenH;
+        }
+
+        ensureResources(w, h);
 
         float u = (duration <= 0f) ? 1f : (t / duration);
-        float pulse = easeOutCubic(1f - Math.abs(2f * u - 1f)); // 0..1 peak in middle
+        float pulse = easeOutCubic(1f - Math.abs(2f * u - 1f));
         float alpha = 0.15f + 0.85f * pulse;
         float thickness = baseThickness + pulseExtraThickness * pulse;
 
-        // Hue phase: random per trigger + continuous scroll
         float phase = (phaseOffset + (phaseSpeed * globalTime)) % 1f;
 
-        // Build vertices each frame because thickness & alpha change during pulse
-        buildBorderRingVertices(W, H, thickness, alpha, phase);
+        buildBorderRingVertices(x, y, w, h, thickness, alpha, phase);
 
         mesh.setVertices(vertices);
         mesh.setIndices(indices);
 
-        // Screen-space ortho projection (pixel coords)
-        proj.setToOrtho2D(0, 0, W, H);
+        proj.setToOrtho2D(0, 0, screenW, screenH);
 
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -243,7 +255,7 @@ public class BorderPulseMesh {
      * - left:    i=1..S-1  (excludes (0,H) and (0,0))
      * then duplicates start point to close strip.
      */
-    private void buildBorderRingVertices(float W, float H, float thickness, float alpha, float phase) {
+    private void buildBorderRingVertices(float startX, float startY, float W, float H, float thickness, float alpha, float phase) {
         float P = 2f * (W + H); // perimeter
 
         // Clamp thickness so it never eats whole screen (safety)
@@ -296,45 +308,57 @@ public class BorderPulseMesh {
 
         // Bottom edge (0,0) -> (W,0)
         for (int i = 0; i <= S; i++) {
-            float x = (W * i) / S;
-            float y = 0f;
+            float localX = (W * i) / S;
+            float localY = 0f;
 
-            float s = x; // along bottom
-            w.write(x, y, x, y + thickness, s);
+            float px = startX + localX;
+            float py = startY + localY;
+
+            float s = localX;
+            w.write(px, py, px, py + thickness, s);
         }
 
         // Right edge (W,0) -> (W,H), skip first corner
         for (int i = 1; i <= S; i++) {
-            float x = W;
-            float y = (H * i) / S;
+            float localX = W;
+            float localY = (H * i) / S;
 
-            float s = W + y;
-            w.write(x, y, x - thickness, y, s);
+            float px = startX + localX;
+            float py = startY + localY;
+
+            float s = W + localY;
+            w.write(px, py, px - thickness, py, s);
         }
 
         // Top edge (W,H) -> (0,H), skip first corner
         for (int i = 1; i <= S; i++) {
-            float x = W - (W * i) / S;
-            float y = H;
+            float localX = W - (W * i) / S;
+            float localY = H;
 
-            float s = W + H + (W - x);
-            w.write(x, y, x, y - thickness, s);
+            float px = startX + localX;
+            float py = startY + localY;
+
+            float s = W + H + (W - localX);
+            w.write(px, py, px, py - thickness, s);
         }
 
         // Left edge (0,H) -> (0,0), skip both corners
         for (int i = 1; i <= S - 1; i++) {
-            float x = 0f;
-            float y = H - (H * i) / S;
+            float localX = 0f;
+            float localY = H - (H * i) / S;
 
-            float s = 2f * W + H + (H - y);
-            w.write(x, y, x + thickness, y, s);
+            float px = startX + localX;
+            float py = startY + localY;
+
+            float s = 2f * W + H + (H - localY);
+            w.write(px, py, px + thickness, py, s);
         }
 
         // Close the loop by duplicating the first point (0,0)
         {
-            float x = 0f, y = 0f;
+            float px = startX, py = startY;
             float s = 0f;
-            w.write(x, y, x, y + thickness, s);
+            w.write(px, py, px, py + thickness, s);
         }
     }
 
