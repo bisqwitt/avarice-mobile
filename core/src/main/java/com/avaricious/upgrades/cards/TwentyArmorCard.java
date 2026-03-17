@@ -7,7 +7,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class TwentyArmorCard extends Card {
+public class TwentyArmorCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.DUSK_CARD);
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CardPack extends PackOpening {
 
-    private Card resultCard;
+    private AbstractCard resultCard;
 
     public CardPack(Rectangle buyBounds) {
         super(new Rectangle(4.85f, 8.1f, 142 / 80f, 190 / 80f), buyBounds);

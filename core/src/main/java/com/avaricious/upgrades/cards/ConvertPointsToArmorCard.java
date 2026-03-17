@@ -8,7 +8,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class ConvertPointsToArmorCard extends Card {
+public class ConvertPointsToArmorCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.BALL8_CARD);
     private int points;

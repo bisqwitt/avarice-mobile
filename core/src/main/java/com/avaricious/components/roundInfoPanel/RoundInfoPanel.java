@@ -1,5 +1,6 @@
 package com.avaricious.components.roundInfoPanel;
 
+import com.avaricious.RoundsManager;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
@@ -12,9 +13,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-
-import javassist.compiler.ast.Symbol;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 public class RoundInfoPanel {
 
@@ -38,8 +36,11 @@ public class RoundInfoPanel {
     public RoundInfoPanel() {
         targetScoreDisplay.setOnInternalScoreDisplayed(() -> {
             AudioManager.I().endPayout();
-            if (targetScoreDisplay.targetScoreReached())
-                ScreenManager.I().getScreen(SlotScreen.class).onTargetScoreReached();
+            if (targetScoreDisplay.targetScoreReached()) {
+                if (RoundsManager.I().isBossRound())
+                    ScreenManager.I().getScreen(SlotScreen.class).openBossLootWindow();
+                else ScreenManager.I().getScreen(SlotScreen.class).onTargetScoreReached();
+            }
         });
     }
 
@@ -99,9 +100,9 @@ public class RoundInfoPanel {
         targetScoreDisplay.draw(delta, unfoldAmount);
         scoreDisplay.draw(delta, unfoldAmount);
 
-        if(unfoldAmount != 0) {
-            symbolValueDisplay.draw(delta);
-        }
+//        if(unfoldAmount != 0) {
+//            symbolValueDisplay.draw(delta);
+//        }
     }
 
     public TargetScoreDisplay getTargetScoreDisplay() {

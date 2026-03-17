@@ -3,7 +3,7 @@ package com.avaricious.components.bars;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -143,11 +143,11 @@ public abstract class UpgradeBar {
         return cardBounds.get(hoveringKey);
     }
 
-    public Slot getSlotByCard(Card Card) {
+    public Slot getSlotByCard(AbstractCard Card) {
         return cardAnimationManagers.get(Card);
     }
 
-    public Rectangle getRectangleByCard(Card Card) {
+    public Rectangle getRectangleByCard(AbstractCard Card) {
         return cardBounds.get(Card);
     }
 

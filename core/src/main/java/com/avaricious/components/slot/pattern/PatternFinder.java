@@ -1,5 +1,7 @@
 package com.avaricious.components.slot.pattern;
 
+import com.avaricious.RoundsManager;
+import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.slot.Symbol;
 import com.badlogic.gdx.math.Vector2;
 
@@ -68,6 +70,9 @@ public class PatternFinder {
                 }
             }
         }
+
+        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss)
+            matches.removeIf(match -> match.getSymbol() == Symbol.LEMON);
 
         return matches;
     }

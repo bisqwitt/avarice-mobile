@@ -1,7 +1,7 @@
 package com.avaricious;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
@@ -36,7 +36,7 @@ public abstract class PackOpening {
     };
 
     private final Rectangle bounds;
-    private DragableSlot body;
+    private DragableBody body;
 
     private final Rectangle buyBounds;
 
@@ -77,7 +77,7 @@ public abstract class PackOpening {
 
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
-        body = new DragableSlot(bounds);
+        body = new DragableBody(bounds);
 
         this.buyBounds = buyBounds;
     }
@@ -306,7 +306,7 @@ public abstract class PackOpening {
         bought = true;
         Vector2 pos = body.getRenderPos(new Vector2());
         Rectangle initialBounds = new Rectangle(pos.x, pos.y, bounds.width, bounds.height);
-        body = new DragableSlot(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
+        body = new DragableBody(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
         float screenHeight = ScreenManager.getViewport().getWorldHeight();
@@ -358,7 +358,7 @@ public abstract class PackOpening {
         }, 0.2f);
     }
 
-    public DragableSlot getBody() {
+    public DragableBody getBody() {
         return body;
     }
 

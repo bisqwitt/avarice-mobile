@@ -32,7 +32,7 @@ public class TooltipPopup {
     private final TextureRegion boxShadow;
 
     private final BitmapFont bigFont;
-    private final BitmapFont smallFont;
+    private final BitmapFont mediumFont;
 
     private final Upgrade upgrade;
     private final ZIndex layer;
@@ -60,7 +60,7 @@ public class TooltipPopup {
 
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
         bigFont = Assets.I().getBigFont();
-        smallFont = Assets.I().getSmallFont();
+        mediumFont = Assets.I().getMediumFont();
         titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
         setDescription(upgrade.description());
     }
@@ -113,7 +113,7 @@ public class TooltipPopup {
                 bigFont, titleTxt, new Vector2(jokerX, jokerY), layer
             ));
             Pencil.I().addDrawing(new FontDrawing(
-                smallFont, descriptionTxt, new Vector2(textX, textY), layer
+                mediumFont, descriptionTxt, new Vector2(textX, textY), layer
             ));
         }
     }
@@ -146,7 +146,7 @@ public class TooltipPopup {
     }
 
     private void setDescription(String txt) {
-        descriptionTxt.setText(smallFont, "[WHITE]" + txt + "[]", Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
+        descriptionTxt.setText(mediumFont, "[WHITE]" + txt + "[]", Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
     }
 
     public void kill(Runnable onDead) {

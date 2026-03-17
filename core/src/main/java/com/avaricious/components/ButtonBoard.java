@@ -44,9 +44,4 @@ public class ButtonBoard {
         spinAgainButton.setVisibleAnimated(visible);
         cashoutButton.setVisibleAnimated(visible);
     }
-
-    public void setSlotMachineIsSpinning(boolean slotMachineIsSpinning) {
-        spinAgainButton.setSlotMachineIsRunning(slotMachineIsSpinning);
-        cashoutButton.setSlotMachineIsRunning(slotMachineIsSpinning);
-    }
 }

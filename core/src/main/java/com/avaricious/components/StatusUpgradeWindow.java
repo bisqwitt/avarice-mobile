@@ -56,7 +56,7 @@ public class StatusUpgradeWindow {
             state = State.EXITING;
             animT = 0f;
         });
-        upgradeBar.setzIndex(ZIndex.STATUS_UPGRADE_WINDOW);
+        upgradeBar.setzIndex(ZIndex.WINDOW_ON_TOP);
     }
 
     private List<Upgrade> randomStatUpgrades() {
@@ -116,7 +116,7 @@ public class StatusUpgradeWindow {
         Pencil.I().addDrawing(new TextureDrawing(window,
             new Rectangle(WINDOW_X, WINDOW_Y + windowYOffset, wWin, hWin),
             windowScale, 0f,
-            ZIndex.STATUS_UPGRADE_WINDOW, new Color(1f, 1f, 1f, windowAlpha)
+            ZIndex.WINDOW_ON_TOP, new Color(1f, 1f, 1f, windowAlpha)
         ));
 
         // Draw upgrade bar and text; simplest is to just draw them with same alpha
@@ -128,7 +128,7 @@ public class StatusUpgradeWindow {
             levelUpTxt,
             new Rectangle(WINDOW_X + 1.8f, WINDOW_Y + 3.6f + windowYOffset, w, h),
             levelUpTxtScale * windowScale, 0f,
-            ZIndex.STATUS_UPGRADE_WINDOW
+            ZIndex.WINDOW_ON_TOP
         ));
     }
 

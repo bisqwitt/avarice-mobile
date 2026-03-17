@@ -6,7 +6,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class DrawAndDiscardOneCard extends Card {
+public class DrawAndDiscardOneCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.BANNER_CARD);
 

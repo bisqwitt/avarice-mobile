@@ -2,6 +2,8 @@ package com.avaricious.components.slot;
 
 import com.avaricious.DevTools;
 import com.avaricious.Main;
+import com.avaricious.RoundsManager;
+import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
@@ -58,6 +60,8 @@ public class SlotMachine {
 
     private Runnable onLastReelFinished;
     private int spinningReels = 0;
+
+    private boolean stale = true;
 
     private SlotMachine() {
         // build visual cells
@@ -178,6 +182,8 @@ public class SlotMachine {
             symbolsScale = slot.scale * slot.pulseScale() * slot.wobbleScale();
             if (runningResults && !slot.isInPatternHit()) alpha = 0.5f;
         }
+        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
+            alpha = 0.5f;
 
         float drawW = CELL_W * symbolsScale;
         float drawH = CELL_H * symbolsScale;
@@ -205,6 +211,7 @@ public class SlotMachine {
     // --- spin control (organic staggered start/stop, aligned to center row) ---
     public void spin() {
         spinningReels = 5;
+        stale = false;
 
         float startSpeed = 16f;
         float startStagger = 0.1f;
@@ -284,16 +291,12 @@ public class SlotMachine {
         desiredAlpha = value;
     }
 
-    public List<Reel> getReels() {
-        return reels;
-    }
-
-    public boolean isRunningResults() {
-        return runningResults;
-    }
-
     public void setRunningResults(boolean runningResults) {
         this.runningResults = runningResults;
+    }
+
+    public void setStale(boolean stale) {
+        this.stale = stale;
     }
 
     public Symbol[][] getSymbolMap() {
@@ -308,5 +311,9 @@ public class SlotMachine {
 
     public void setOnLastReelFinished(Runnable onLastReelFinished) {
         this.onLastReelFinished = onLastReelFinished;
+    }
+
+    public boolean isStale() {
+        return stale;
     }
 }

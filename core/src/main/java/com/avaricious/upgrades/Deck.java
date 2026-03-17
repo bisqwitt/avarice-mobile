@@ -1,7 +1,7 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.DevTools;
-import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
 import com.avaricious.upgrades.cards.DrawAndDiscardOneCard;
 import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Deck extends Observable<List<? extends Card>> {
+public class Deck extends Observable<List<? extends AbstractCard>> {
 
     private static Deck instance;
 
@@ -49,7 +49,7 @@ public class Deck extends Observable<List<? extends Card>> {
         ));
 
         if (DevTools.allCardsInDeck) {
-            for (Class<? extends Card> cardClass : allCardClasses) {
+            for (Class<? extends AbstractCard> cardClass : allCardClasses) {
                 addCardToDeck(instantiateCard(cardClass));
             }
         } else {
@@ -64,18 +64,18 @@ public class Deck extends Observable<List<? extends Card>> {
         }
     }
 
-    private final List<Class<? extends Card>> allCardClasses = new ArrayList<>();
-    private final List<Card> deck = new ArrayList<>();
+    private final List<Class<? extends AbstractCard>> allCardClasses = new ArrayList<>();
+    private final List<AbstractCard> deck = new ArrayList<>();
 
-    public List<? extends Card> randomUpgrades(int amount) {
-        List<Card> result = new ArrayList<>();
+    public List<? extends AbstractCard> randomUpgrades(int amount) {
+        List<AbstractCard> result = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             result.add(randomUpgrade());
         }
         return result;
     }
 
-    public Card randomUpgrade() {
+    public AbstractCard randomUpgrade() {
         try {
             return randomUpgradeClass().getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException |
@@ -84,7 +84,7 @@ public class Deck extends Observable<List<? extends Card>> {
         }
     }
 
-    private Card instantiateCard(Class<? extends Card> cardClass) {
+    private AbstractCard instantiateCard(Class<? extends AbstractCard> cardClass) {
         try {
             return cardClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
@@ -93,7 +93,7 @@ public class Deck extends Observable<List<? extends Card>> {
         }
     }
 
-    private Class<? extends Card> randomUpgradeClass() {
+    private Class<? extends AbstractCard> randomUpgradeClass() {
         return allCardClasses.get((int) (Math.random() * allCardClasses.size()));
     }
 
@@ -109,41 +109,41 @@ public class Deck extends Observable<List<? extends Card>> {
     }
 
     public <T> T getUpgradeOfClass(Class<T> upgradeClass) {
-        for (Card upgrade : deck) {
+        for (AbstractCard upgrade : deck) {
             if (upgradeClass.isInstance(upgrade)) return (T) upgrade;
         }
         return null;
     }
 
-    public Card drawRandomCard() {
+    public AbstractCard drawRandomCard() {
         return removeCard((int) (Math.random() * deck.size()));
     }
 
-    public Card drawCard(Class<? extends Card> cardClass) {
+    public AbstractCard drawCard(Class<? extends AbstractCard> cardClass) {
         return removeCard(deck.indexOf(deck.stream()
             .filter(card -> cardClass.isInstance(card))
             .findFirst().get()));
     }
 
-    public boolean upgradeIsInDeck(Class<? extends Card> upgradeClass) {
-        for (Card upgrade : deck) {
+    public boolean upgradeIsInDeck(Class<? extends AbstractCard> upgradeClass) {
+        for (AbstractCard upgrade : deck) {
             if (upgradeClass.isInstance(upgrade)) return true;
         }
         return false;
     }
 
-    public void addCardToDeck(Card upgrade) {
+    public void addCardToDeck(AbstractCard upgrade) {
         deck.add(upgrade);
         notifyChanged(snapshot());
     }
 
-    public Card removeCard(int index) {
-        Card card = deck.remove(index);
+    public AbstractCard removeCard(int index) {
+        AbstractCard card = deck.remove(index);
         notifyChanged(snapshot());
         return card;
     }
 
-    public List<Card> getDeck() {
+    public List<AbstractCard> getDeck() {
         return deck;
     }
 
@@ -152,7 +152,7 @@ public class Deck extends Observable<List<? extends Card>> {
     }
 
     @Override
-    protected List<? extends Card> snapshot() {
+    protected List<? extends AbstractCard> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(deck));
     }
 }

@@ -1,7 +1,6 @@
 package com.avaricious.upgrades;
 
-import com.avaricious.upgrades.cards.Card;
-import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 
@@ -10,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class Hand extends Observable<List<? extends Card>> {
+public class Hand extends Observable<List<? extends AbstractCard>> {
 
     private static Hand instance;
 
@@ -19,21 +18,21 @@ public class Hand extends Observable<List<? extends Card>> {
     }
 
     private Hand() {
-        addCardToHand(Deck.I().drawCard(LifestealForEveryFruitHitCard.class));
+//        addCardToHand(Deck.I().drawCard(LifestealForEveryFruitHitCard.class));
     }
 
-    private final List<Card> hand = new ArrayList<>();
+    private final List<AbstractCard> hand = new ArrayList<>();
     private int startingHandSize = 3;
 
     private int cardsDiscarded = 0;
 
     @Override
-    protected List<? extends Card> snapshot() {
+    protected List<? extends AbstractCard> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(hand));
     }
 
     public void drawCard() {
-        Card upgrade = Deck.I().drawRandomCard();
+        AbstractCard upgrade = Deck.I().drawRandomCard();
         if (upgrade == null) return;
 
         addCardToHand(upgrade);
@@ -51,24 +50,24 @@ public class Hand extends Observable<List<? extends Card>> {
     }
 
     public <T> T getCardOfClass(Class<T> upgradeClass) {
-        for (Card upgrade : hand) {
+        for (AbstractCard upgrade : hand) {
             if (upgradeClass.isInstance(upgrade)) return (T) upgrade;
         }
         return null;
     }
 
-    private void addCardToHand(Card upgrade) {
+    private void addCardToHand(AbstractCard upgrade) {
         hand.add(upgrade);
         notifyChanged(snapshot());
     }
 
-    public void removeCardFromHand(Card upgrade) {
+    public void removeCardFromHand(AbstractCard upgrade) {
         hand.remove(upgrade);
         Deck.I().addCardToDeck(upgrade);
         notifyChanged(snapshot());
     }
 
-    public void discardCard(Card card) {
+    public void discardCard(AbstractCard card) {
         cardsDiscarded++;
         removeCardFromHand(card);
     }
@@ -94,11 +93,11 @@ public class Hand extends Observable<List<? extends Card>> {
         return hand.size();
     }
 
-    public List<Card> getHand() {
+    public List<AbstractCard> getHand() {
         return hand;
     }
 
-    public Card getRandomCard() {
+    public AbstractCard getRandomCard() {
         return hand.get(new Random().nextInt(hand.size()));
     }
 

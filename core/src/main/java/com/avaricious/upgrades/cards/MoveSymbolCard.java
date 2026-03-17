@@ -3,7 +3,7 @@ package com.avaricious.upgrades.cards;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class MoveSymbolCard extends Card {
+public class MoveSymbolCard extends AbstractCard {
     @Override
     public String description() {
         return "";

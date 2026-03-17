@@ -45,6 +45,7 @@ public class Assets {
 
     private final Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
     private BitmapFont bigFont;
+    private BitmapFont mediumFont;
     private BitmapFont smallFont;
 
     public void load() {
@@ -54,14 +55,22 @@ public class Assets {
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
         param.size = 80;
         bigFont = generator.generateFont(param);
         bigFont.setUseIntegerPositions(false);
         bigFont.getData().markupEnabled = true;
+
         param.size = 56;
+        mediumFont = generator.generateFont(param);
+        mediumFont.setUseIntegerPositions(false);
+        mediumFont.getData().markupEnabled = true;
+
+        param.size = 40;
         smallFont = generator.generateFont(param);
         smallFont.setUseIntegerPositions(false);
         smallFont.getData().markupEnabled = true;
+
         generator.dispose();
     }
 
@@ -115,6 +124,10 @@ public class Assets {
 
     public BitmapFont getBigFont() {
         return bigFont;
+    }
+
+    public BitmapFont getMediumFont() {
+        return mediumFont;
     }
 
     public BitmapFont getSmallFont() {

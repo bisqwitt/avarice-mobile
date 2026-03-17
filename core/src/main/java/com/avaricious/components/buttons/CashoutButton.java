@@ -1,14 +1,13 @@
 package com.avaricious.components.buttons;
 
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.math.Rectangle;
 
 public class CashoutButton extends DisablableButton {
-
-    private boolean slotMachineIsRunning = false;
 
     public CashoutButton(Runnable onButtonPressedRunnable, Rectangle buttonRectangle, int key) {
         super(onButtonPressedRunnable,
@@ -20,10 +19,6 @@ public class CashoutButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return ScoreDisplay.I().isClear() || slotMachineIsRunning;
-    }
-
-    public void setSlotMachineIsRunning(boolean slotMachineIsRunning) {
-        this.slotMachineIsRunning = slotMachineIsRunning;
+        return ScoreDisplay.I().isClear() || !SlotMachine.I().isStale();
     }
 }

@@ -7,7 +7,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class DrawTwoCardsForTenDamage extends Card {
+public class DrawTwoCardsForTenDamage extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.MIME_CARD);
 
@@ -33,6 +33,7 @@ public class DrawTwoCardsForTenDamage extends Card {
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> {};
+        return () -> {
+        };
     }
 }

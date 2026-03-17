@@ -2,7 +2,6 @@ package com.avaricious.upgrades.rings;
 
 import com.avaricious.components.RingBar;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.upgrades.Upgrade;
@@ -14,14 +13,23 @@ import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.UiUtility;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public abstract class AbstractRing extends Upgrade {
 
-    protected DragableSlot body = null;
-
     public abstract RingAssetKeys keySet();
+
+    @Override
+    public TextureRegion texture() {
+        return Assets.I().get(keySet().getTextureKey());
+    }
+
+    @Override
+    public TextureRegion shadowTexture() {
+        return Assets.I().get(keySet().getShadowKey());
+    }
 
     @Override
     public String title() {
@@ -74,11 +82,8 @@ public abstract class AbstractRing extends Upgrade {
             false);
     }
 
-    public void addBody(Rectangle initialBounds) {
-        body = new DragableSlot(initialBounds).setTilt(200f, 20f);
-    }
-
-    public DragableSlot getBody() {
-        return body;
+    @Override
+    public int price() {
+        return 3;
     }
 }

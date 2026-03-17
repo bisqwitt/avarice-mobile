@@ -1,9 +1,9 @@
 package com.avaricious.components;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -39,12 +39,12 @@ public class DeckUi {
     private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final Map<Card, DragableSlot> cards = new LinkedHashMap<>();
-    private List<? extends Card> pendingCards;
+    private final Map<AbstractCard, DragableBody> cards = new LinkedHashMap<>();
+    private List<? extends AbstractCard> pendingCards;
 
     private final Vector2 touchDownLocation = new Vector2();
     private boolean unfolded = false;
-    private Card touchingCard = null;
+    private AbstractCard touchingCard = null;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         update(delta);
@@ -61,8 +61,8 @@ public class DeckUi {
 
         if (unfolded) {
             if (pressed && !wasPressed) {
-                for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
-                    Card card = entry.getKey();
+                for (Map.Entry<AbstractCard, DragableBody> entry : cards.entrySet()) {
+                    AbstractCard card = entry.getKey();
 
                     if (entry.getValue().getBounds().contains(mouse)) {
                         touchingCard = card;
@@ -74,7 +74,7 @@ public class DeckUi {
             }
 
             if (pressed && touchingCard != null) {
-                DragableSlot touchingSlot = cards.get(touchingCard);
+                DragableBody touchingSlot = cards.get(touchingCard);
                 Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
 
                 touchingSlot.dragTo(mouse.x, mouse.y, 0);
@@ -85,8 +85,8 @@ public class DeckUi {
             }
 
             if (!pressed && wasPressed && touchingCard != null) {
-                DragableSlot dragableSlot = cards.get(touchingCard);
-                dragableSlot.endDrag(0);
+                DragableBody dragableBody = cards.get(touchingCard);
+                dragableBody.endDrag(0);
                 cards.get(touchingCard).targetScale = 1f;
                 touchingCard = null;
                 PopupManager.I().killTooltip();
@@ -99,7 +99,7 @@ public class DeckUi {
             loadPendingCards();
             pendingCards = null;
         }
-        for (DragableSlot slot : cards.values()) {
+        for (DragableBody slot : cards.values()) {
             slot.update(delta);
         }
     }
@@ -113,14 +113,14 @@ public class DeckUi {
 //        if(showingDeck) {
 //            returnButton.draw();
 //        }
-        for (Card card : cards.keySet()) {
+        for (AbstractCard card : cards.keySet()) {
             if (card != touchingCard) drawCard(card);
         }
         if (touchingCard != null) drawCard(touchingCard);
     }
 
-    public void drawCard(Card card) {
-        DragableSlot slot = cards.get(card);
+    public void drawCard(AbstractCard card) {
+        DragableBody slot = cards.get(card);
         Vector2 pos = slot.getRenderPos(new Vector2());
         final float scale = slot.pulseScale() * slot.getTargetScale();
         final float rotation = slot.getDragTiltDeg();
@@ -146,7 +146,7 @@ public class DeckUi {
                 firstCardBounds.x + 0.015f * i, firstCardBounds.y + 0.025f * i,
                 firstCardBounds.width, firstCardBounds.height
             );
-            cards.put(pendingCards.get(i), new DragableSlot(bounds).setTilt(200f, 20f));
+            cards.put(pendingCards.get(i), new DragableBody(bounds).setTilt(200f, 20f));
         }
     }
 
@@ -161,9 +161,9 @@ public class DeckUi {
             }
 
             int index = 0;
-            List<DragableSlot> reversed = new ArrayList<>(cards.values());
+            List<DragableBody> reversed = new ArrayList<>(cards.values());
             Collections.reverse(reversed);
-            for (DragableSlot card : reversed) {
+            for (DragableBody card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override
@@ -175,10 +175,10 @@ public class DeckUi {
             }
             unfolded = true;
         } else {
-            List<DragableSlot> reversed = new ArrayList<>(cards.values());
+            List<DragableBody> reversed = new ArrayList<>(cards.values());
             Collections.reverse(reversed);
             int index = reversed.size() - 1;
-            for (DragableSlot card : reversed) {
+            for (DragableBody card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override

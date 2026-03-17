@@ -3,7 +3,7 @@ package com.avaricious.upgrades.cards;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class DisableNegativeCardEffectsUntilNextSpinCard extends Card {
+public class DisableNegativeCardEffectsUntilNextSpinCard extends AbstractCard {
     @Override
     public String description() {
         return "";

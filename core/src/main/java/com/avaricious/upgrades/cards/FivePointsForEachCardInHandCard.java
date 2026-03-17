@@ -8,7 +8,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class FivePointsForEachCardInHandCard extends Card {
+public class FivePointsForEachCardInHandCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.DELAYED_GRATIFICATION_CARD);
     private int points = 0;

@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
  * <p>
  * Rendering should use getRenderPos() instead of getPos().
  */
-public class DragableSlot extends Slot {
+public class DragableBody extends Slot {
 
     // --- Size for hit-testing (set to your card sprite size in world units) ---
     private float width;
@@ -68,7 +68,7 @@ public class DragableSlot extends Slot {
     private final Vector2 tmp = new Vector2();
     private final Vector2 renderPos = new Vector2();
 
-    public DragableSlot(Rectangle bounds) {
+    public DragableBody(Rectangle bounds) {
         super(new Vector2(bounds.x, bounds.y));
         this.width = bounds.width;
         this.height = bounds.height;
@@ -263,7 +263,7 @@ public class DragableSlot extends Slot {
         return dragging ? dragScaleMul : 1f;
     }
 
-    public DragableSlot setMoveToSpeed(float moveToSpeed) {
+    public DragableBody setMoveToSpeed(float moveToSpeed) {
         this.moveToSpeed = moveToSpeed;
         return this;
     }
@@ -280,25 +280,25 @@ public class DragableSlot extends Slot {
         this.targetPosition = targetPosition;
     }
 
-    public DragableSlot setFollow(float dragFollowSpeed, float returnSpeed) {
+    public DragableBody setFollow(float dragFollowSpeed, float returnSpeed) {
         this.dragFollowSpeed = dragFollowSpeed;
         this.returnSpeed = returnSpeed;
         return this;
     }
 
-    public DragableSlot setTilt(float maxTiltDeg, float tiltResponsiveness) {
+    public DragableBody setTilt(float maxTiltDeg, float tiltResponsiveness) {
         this.maxTiltDeg = maxTiltDeg;
         this.tiltResponsiveness = tiltResponsiveness;
         return this;
     }
 
     @Override
-    public DragableSlot setTargetScaleSpeed(float value) {
+    public DragableBody setTargetScaleSpeed(float value) {
         super.setTargetScaleSpeed(value);
         return this;
     }
 
-    public DragableSlot setDragScale(float dragScaleMul) {
+    public DragableBody setDragScale(float dragScaleMul) {
         this.dragScaleMul = dragScaleMul;
         return this;
     }

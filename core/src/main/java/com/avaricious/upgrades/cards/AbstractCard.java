@@ -1,22 +1,19 @@
 package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.popups.NumberPopup;
-import com.avaricious.components.slot.DragableSlot;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class Card extends Upgrade {
-
-    protected DragableSlot body = null;
+public abstract class AbstractCard extends Upgrade {
 
     public abstract String description();
 
     protected abstract void onApply();
-
-    public abstract TextureRegion texture();
 
     public abstract Runnable createPopupRunnable(Vector2 pos);
 
@@ -33,15 +30,17 @@ public abstract class Card extends Upgrade {
     }
 
     @Override
+    public TextureRegion shadowTexture() {
+        return Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
+    }
+
+    @Override
     public String title() {
         return "Card";
     }
 
-    public void setBody(DragableSlot body) {
-        this.body = body;
-    }
-
-    public DragableSlot getBody() {
-        return body;
+    @Override
+    public int price() {
+        return 3;
     }
 }

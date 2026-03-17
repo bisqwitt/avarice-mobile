@@ -8,7 +8,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class FiveMultForEveryCardDiscarded extends Card {
+public class FiveMultForEveryCardDiscarded extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.BLACKBOARD_CARD);
     private int mult;

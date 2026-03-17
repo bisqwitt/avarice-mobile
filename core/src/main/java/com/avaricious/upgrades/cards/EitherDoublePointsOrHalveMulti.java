@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class EitherDoublePointsOrHalveMulti extends Card {
+public class EitherDoublePointsOrHalveMulti extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.ABSTRACT_JOKER_CARD);
 

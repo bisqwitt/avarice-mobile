@@ -225,7 +225,18 @@ public enum AssetKey {
     ANTE_TXT_SHADOW("ante-txt-shadow"),
     POINTS_TXT("points-txt"),
     MULTI_TXT("multi-txt"),
-    COMBO_TXT("combo-txt");
+    COMBO_TXT("combo-txt"),
+    BOSS_TXT("boss-txt"),
+    BOSS_TXT_SHADOW("boss-txt-shadow"),
+    BOSS_DEFEATED_TXT("boss-defeated-txt"),
+    BOSS_DEFEATED_TXT_SHADOW("boss-defeated-txt-shadow"),
+    REWARDS_TXT("rewards-txt"),
+    REWARDS_TXT_SHADOW("rewards-txt-shadow"),
+    BOSS_LOOT_WINDOW("boss-loot-window"),
+    SELL_BUTTON("sell-button"),
+    SELL_BUTTON_PRESSED("sell-button-pressed"),
+    CLAIM_BUTTON("claim-button"),
+    CLAIM_BUTTON_PRESSED("claim-button-pressed");
 
     private final String path;
 

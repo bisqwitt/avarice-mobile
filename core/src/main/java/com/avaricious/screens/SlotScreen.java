@@ -9,6 +9,7 @@ import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
+import com.avaricious.components.BossLootWindow;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
@@ -67,6 +68,7 @@ public class SlotScreen extends ScreenAdapter {
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
 //    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
 
+    private final BossLootWindow bossLootWindow = new BossLootWindow(this::onTargetScoreReached);
     private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
     });
 
@@ -113,10 +115,7 @@ public class SlotScreen extends ScreenAdapter {
     @Override
     public void show() {
         backgroundLayer.init();
-        slotMachine.setOnLastReelFinished(() -> {
-            buttonBoard.setSlotMachineIsSpinning(false);
-            runResult();
-        });
+        slotMachine.setOnLastReelFinished(this::runResult);
 
         drawStartingHand();
 
@@ -173,6 +172,7 @@ public class SlotScreen extends ScreenAdapter {
 
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
+        bossLootWindow.draw(delta);
         PopupManager.I().draw(batch, delta);
 
         batch.begin();
@@ -213,8 +213,9 @@ public class SlotScreen extends ScreenAdapter {
         boolean leftClickPressed = Gdx.input.isTouched();
 
         statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        bossLootWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        else {
+        else if (!bossLootWindow.isShown()) {
             roundInfoPanel.handleInput(mouse, leftClickPressed, leftClickWasPressed);
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
             ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -232,6 +233,7 @@ public class SlotScreen extends ScreenAdapter {
         if (matches.isEmpty()) {
             healthUi.damage(20);
             buttonBoard.setVisible(true);
+            slotMachine.setStale(true);
             return;
         }
 
@@ -310,6 +312,7 @@ public class SlotScreen extends ScreenAdapter {
         scheduler.schedule(() -> {
             roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.STREAK, 1);
             slotMachine.setRunningResults(false);
+            slotMachine.setStale(true);
             EffectManager.endStreak();
             buttonBoard.setVisible(true);
         });
@@ -371,7 +374,6 @@ public class SlotScreen extends ScreenAdapter {
 
     private void onSpinButtonPressed() {
         slotMachine.setAlpha(1f);
-        buttonBoard.setSlotMachineIsSpinning(true);
         buttonBoard.setVisible(false);
 
         slotMachine.spin();
@@ -424,5 +426,9 @@ public class SlotScreen extends ScreenAdapter {
 
     public int getSymbolsHitLastSpin() {
         return symbolsHitLastSpin;
+    }
+
+    public void openBossLootWindow() {
+        bossLootWindow.show();
     }
 }

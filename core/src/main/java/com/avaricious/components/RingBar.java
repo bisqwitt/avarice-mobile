@@ -2,18 +2,13 @@ package com.avaricious.components;
 
 import com.avaricious.DevTools;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.UiUtility;
-import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -82,7 +77,7 @@ public class RingBar {
     }
 
     private void onRingTouching(AbstractRing ring, Vector2 mouse) {
-        DragableSlot body = ring.getBody();
+        DragableBody body = ring.getBody();
         Vector2 ringRenderPos = body.getRenderPos(new Vector2());
 
         body.dragTo(mouse.x, mouse.y, 0);
@@ -95,7 +90,7 @@ public class RingBar {
     }
 
     private void onRingTouchReleased(AbstractRing ring) {
-        DragableSlot body = ring.getBody();
+        DragableBody body = ring.getBody();
         body.endDrag(0);
         body.targetScale = 1f;
         touchingRing = null;

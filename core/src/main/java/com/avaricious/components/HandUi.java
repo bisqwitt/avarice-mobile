@@ -1,13 +1,13 @@
 package com.avaricious.components;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.components.slot.DragableBody;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -40,14 +40,14 @@ public class HandUi {
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final List<Card> cards = new ArrayList<>();
-    private final Map<Card, Integer> cardIndexLastRender = new HashMap<>();
+    private final List<AbstractCard> cards = new ArrayList<>();
+    private final Map<AbstractCard, Integer> cardIndexLastRender = new HashMap<>();
 
-    private Card touchingCard = null;
-    private Card applyingCard = null;
-    private Card discardingCard = null;
+    private AbstractCard touchingCard = null;
+    private AbstractCard applyingCard = null;
+    private AbstractCard discardingCard = null;
 
-    private List<? extends Card> pendingHand;
+    private List<? extends AbstractCard> pendingHand;
 
     public HandUi() {
         Hand.I().onChange(newHand -> pendingHand = newHand);
@@ -60,9 +60,9 @@ public class HandUi {
         }
 
         if (pressed && !wasPressed) {
-            List<Card> sorted = getEntriesSortedByX();
+            List<AbstractCard> sorted = getEntriesSortedByX();
             Collections.reverse(sorted);
-            for (Card card : sorted) {
+            for (AbstractCard card : sorted) {
                 if (card.getBody().getBounds().contains(mouse)) {
                     onCardTouchDown(card, mouse);
                     break;
@@ -79,7 +79,7 @@ public class HandUi {
         }
     }
 
-    private void onCardTouchDown(Card card, Vector2 mouse) {
+    private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
         touchingCard = card;
         card.getBody().targetScale = 1.3f;
         card.getBody().beginDrag(mouse.x, mouse.y, 0);
@@ -87,8 +87,8 @@ public class HandUi {
         PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
-    private void onCardTouching(Card card, Vector2 mouse) {
-        DragableSlot body = card.getBody();
+    private void onCardTouching(AbstractCard card, Vector2 mouse) {
+        DragableBody body = card.getBody();
         Vector2 cardRenderPos = body.getRenderPos(new Vector2());
 
         body.dragTo(mouse.x, mouse.y, 0);
@@ -102,8 +102,8 @@ public class HandUi {
             hoveringSlotMachine, hoveringDeck);
     }
 
-    private void onCardTouchReleased(Card card) {
-        DragableSlot body = card.getBody();
+    private void onCardTouchReleased(AbstractCard card) {
+        DragableBody body = card.getBody();
         if (SlotMachine.windowBounds.contains(body.getCardCenter())) {
             applyCard(card);
         } else if (DeckUi.I().getFirstCardBounds().contains(body.getCardCenter())) {
@@ -123,15 +123,15 @@ public class HandUi {
         Vector2 touchingCardCenter = touchingCard != null ? touchingCard.getBody().getCardCenter() : new Vector2();
         cardDestinationUI.draw(batch, delta, touchingCardCenter, touchingCard != null);
 
-        for (Card card : getEntriesSortedByX()) {
+        for (AbstractCard card : getEntriesSortedByX()) {
             if (touchingCard != card) drawCard(card);
         }
 
         if (touchingCard != null) drawCard(touchingCard);
     }
 
-    private void drawCard(Card card) {
-        DragableSlot body = card.getBody();
+    private void drawCard(AbstractCard card) {
+        DragableBody body = card.getBody();
         Rectangle bounds = body.getBounds();
 
         float scale = body.pulseScale()
@@ -164,9 +164,9 @@ public class HandUi {
         ));
     }
 
-    private void loadCards(List<? extends Card> newHand) {
+    private void loadCards(List<? extends AbstractCard> newHand) {
         // Add new Cards
-        for (Card card : newHand) {
+        for (AbstractCard card : newHand) {
             if (!cards.contains(card)) {
 
                 // 1) Start at deck position
@@ -177,28 +177,26 @@ public class HandUi {
                     CARD_WIDTH, CARD_HEIGHT
                 );
 
-                DragableSlot body = new DragableSlot(initialBounds)
-                    .setTilt(200f, 20f);
+                card.addBody(initialBounds);
 
                 // Optional: make the draw feel juicy
 //                slot.targetScale = 1.15f;  // slight pop while flying
-                body.pulse();
-                body.wobble();
+                card.getBody().pulse();
+                card.getBody().wobble();
 
-                card.setBody(body);
 
                 cards.add(card);
             }
         }
 
         // Remove old Cards
-        List<Card> cardsToRemove = new ArrayList<>();
-        for (Card card : cards) {
+        List<AbstractCard> cardsToRemove = new ArrayList<>();
+        for (AbstractCard card : cards) {
             if (!newHand.contains(card)) {
                 cardsToRemove.add(card);
             }
         }
-        for (Card card : cardsToRemove) {
+        for (AbstractCard card : cardsToRemove) {
             cards.remove(card);
             cardIndexLastRender.remove(card);
         }
@@ -207,7 +205,7 @@ public class HandUi {
     }
 
     private void updateCardBounds() {
-        for (Card card : cards) {
+        for (AbstractCard card : cards) {
             int newCardIndex = calcCardIndex(card);
 //            if (cardIndexLastRender.containsKey(card) && newCardIndex != cardIndexLastRender.get(card))
 //                slot.wobble();
@@ -218,7 +216,7 @@ public class HandUi {
         }
     }
 
-    private float calcCardX(Card card) {
+    private float calcCardX(AbstractCard card) {
         return calcFistX() + calcCardIndex(card) * CARD_OFFSET;
     }
 
@@ -231,21 +229,21 @@ public class HandUi {
         return (screenWidth - handWidth) / 2f;
     }
 
-    private int calcCardIndex(Card card) {
-        List<Card> sorted = getEntriesSortedByX();
-        for (Card c : sorted) {
+    private int calcCardIndex(AbstractCard card) {
+        List<AbstractCard> sorted = getEntriesSortedByX();
+        for (AbstractCard c : sorted) {
             if (c == card) return sorted.indexOf(c);
         }
         return -1;
     }
 
-    private List<Card> getEntriesSortedByX() {
-        List<Card> sorted = new ArrayList<>(cards);
+    private List<AbstractCard> getEntriesSortedByX() {
+        List<AbstractCard> sorted = new ArrayList<>(cards);
         sorted.sort(Comparator.comparingDouble(card -> card.getBody().getRenderPos(new Vector2()).x));
         return sorted;
     }
 
-    private float getHandRotation(Card card) {
+    private float getHandRotation(AbstractCard card) {
         int i = calcCardIndex(card);
         int n = cards.size();
         if (n <= 1) return 0f;
@@ -265,7 +263,7 @@ public class HandUi {
         return (-curve * fanMaxDeg) + (jitter * jitterMaxDeg);
     }
 
-    private float getHandYOffset(Card card) {
+    private float getHandYOffset(AbstractCard card) {
         int i = calcCardIndex(card);
         int n = cards.size();
         if (n <= 1) return 0f;
@@ -277,11 +275,11 @@ public class HandUi {
         return arc * (1f - t * t);
     }
 
-    public void applyCard(Card card) {
+    public void applyCard(AbstractCard card) {
         card.apply();
         applyingCard = card;
 
-        DragableSlot body = card.getBody();
+        DragableBody body = card.getBody();
         body.pulse();
         body.wobble();
         Vector2 pos = body.getRenderPos(new Vector2());
@@ -302,7 +300,7 @@ public class HandUi {
         }, 0.5f);
     }
 
-    public void discardCard(Card card) {
+    public void discardCard(AbstractCard card) {
         discardingCard = card;
         card.getBody().startApplyAnimation(0.6f, () -> {
             discardingCard = null;

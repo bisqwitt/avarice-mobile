@@ -28,9 +28,9 @@ public class PopupManager {
     private ApplyPopup applyPopup;
     private DiscardPopup discardPopup;
 
-    public TooltipPopup createTooltip(Upgrade upgrade, Vector2 pos) {
-        if (upgrade == null) return null;
-        return tooltipPopup = new TooltipPopup(upgrade, pos);
+    public void createTooltip(Upgrade upgrade, Vector2 pos) {
+        if (upgrade == null) return;
+        tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
     public TooltipPopup createTooltip(Upgrade upgrade, Vector2 pos, ZIndex layer) {

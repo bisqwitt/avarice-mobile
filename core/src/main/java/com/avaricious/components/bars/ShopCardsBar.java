@@ -1,9 +1,9 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.DragableSlot;
+import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.cards.Card;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -26,8 +26,8 @@ public class ShopCardsBar {
 
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final Map<Card, DragableSlot> cards = new HashMap<>();
-    private Card touchingCard = null;
+    private final Map<AbstractCard, DragableBody> cards = new HashMap<>();
+    private AbstractCard touchingCard = null;
 
     public ShopCardsBar(Rectangle buyBounds) {
         loadCards(Deck.I().randomUpgrades(3));
@@ -35,10 +35,10 @@ public class ShopCardsBar {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
-        for (DragableSlot slot : cards.values()) slot.update(delta);
+        for (DragableBody slot : cards.values()) slot.update(delta);
 
         if (touching && !wasTouching) {
-            for (Map.Entry<Card, DragableSlot> entry : cards.entrySet()) {
+            for (Map.Entry<AbstractCard, DragableBody> entry : cards.entrySet()) {
                 if (entry.getValue().getBounds().contains(mouse)) {
                     onCardTouchDown(entry.getKey(), mouse);
                     break;
@@ -55,7 +55,7 @@ public class ShopCardsBar {
         }
     }
 
-    private void onCardTouchDown(Card card, Vector2 mouse) {
+    private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
         touchingCard = card;
         cards.get(card).targetScale = 1.3f;
         cards.get(card).beginDrag(mouse.x, mouse.y, 0);
@@ -63,8 +63,8 @@ public class ShopCardsBar {
         PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()));
     }
 
-    private void onCardTouching(Card card, Vector2 mouse) {
-        DragableSlot touchingSlot = cards.get(card);
+    private void onCardTouching(AbstractCard card, Vector2 mouse) {
+        DragableBody touchingSlot = cards.get(card);
         Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
 
         touchingSlot.dragTo(mouse.x, mouse.y, 0);
@@ -74,12 +74,12 @@ public class ShopCardsBar {
         );
     }
 
-    private void onCardTouchReleased(Card card) {
-        DragableSlot dragableSlot = cards.get(card);
-        if (buyBounds.contains(dragableSlot.getCardCenter())) {
+    private void onCardTouchReleased(AbstractCard card) {
+        DragableBody dragableBody = cards.get(card);
+        if (buyBounds.contains(dragableBody.getCardCenter())) {
             buyCard(card);
         } else {
-            dragableSlot.endDrag(0);
+            dragableBody.endDrag(0);
             cards.get(card).targetScale = 1f;
         }
         touchingCard = null;
@@ -87,15 +87,15 @@ public class ShopCardsBar {
     }
 
     public void draw() {
-        for (Card card : cards.keySet()) {
+        for (AbstractCard card : cards.keySet()) {
             if (touchingCard != card) drawCard(card);
         }
         if (touchingCard != null) drawCard(touchingCard);
     }
 
-    private void drawCard(Card card) {
+    private void drawCard(AbstractCard card) {
         Rectangle bounds = cards.get(card).getBounds();
-        DragableSlot slot = cards.get(card);
+        DragableBody slot = cards.get(card);
 
         final Vector2 position = slot.getRenderPos(new Vector2());
         final float alpha = slot.getAlpha();
@@ -123,16 +123,16 @@ public class ShopCardsBar {
         ));
     }
 
-    public void loadCards(List<? extends Card> cards) {
+    public void loadCards(List<? extends AbstractCard> cards) {
         this.cards.clear();
         int index = 0;
-        for (Card card : cards) {
+        for (AbstractCard card : cards) {
             Rectangle bounds = new Rectangle(
                 firstCardBounds.x + index * CARD_OFFSET, firstCardBounds.y,
                 firstCardBounds.width, firstCardBounds.height
             );
 
-            DragableSlot slot = new DragableSlot(bounds)
+            DragableBody slot = new DragableBody(bounds)
                 .setTilt(200f, 20f);
 
             slot.pulse();
@@ -143,7 +143,7 @@ public class ShopCardsBar {
         }
     }
 
-    private void buyCard(Card card) {
+    private void buyCard(AbstractCard card) {
         Deck.I().addCardToDeck(card);
         cards.remove(card);
     }

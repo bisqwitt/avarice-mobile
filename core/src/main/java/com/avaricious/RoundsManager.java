@@ -1,5 +1,7 @@
 package com.avaricious;
 
+import com.avaricious.bosses.AbstractBoss;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +12,8 @@ public class RoundsManager {
     public static RoundsManager I() {
         return instance == null ? (instance = new RoundsManager()) : instance;
     }
+
+    private AbstractBoss boss;
 
     private RoundsManager() {
         currentRound = 1;
@@ -43,6 +47,16 @@ public class RoundsManager {
     public void nextRound() {
         currentRound++;
         currentTargetScore = targetScorePerRound.get(currentRound);
+        if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
+        else if (isBossRound()) boss = null;
+    }
+
+    public boolean isBossRound() {
+        return boss != null;
+    }
+
+    public AbstractBoss getBoss() {
+        return boss;
     }
 
     public Integer getCurrentRound() {

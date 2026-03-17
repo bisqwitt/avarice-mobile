@@ -3,7 +3,7 @@ package com.avaricious.upgrades.cards;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class SuffleSymbolCard extends Card {
+public class SuffleSymbolCard extends AbstractCard {
     @Override
     public String description() {
         return "";
