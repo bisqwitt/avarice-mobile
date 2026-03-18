@@ -2,14 +2,14 @@ package com.avaricious.upgrades.rings;
 
 import com.avaricious.utility.RingAssetKeys;
 
-public class PlusOneCardAtStartOfRoundRing extends AbstractRing {
+public class OneMoreCardAtStartOfRoundRing extends AbstractRing {
     @Override
     public RingAssetKeys keySet() {
-        return null;
+        return RingAssetKeys.RING_93;
     }
 
     @Override
     public String description() {
-        return "";
+        return "Draw one more Card at the start of round";
     }
 }

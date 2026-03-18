@@ -1,12 +1,16 @@
 package com.avaricious;
 
+import com.avaricious.components.RingBar;
+import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
+import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.Rarity;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -14,6 +18,7 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RingAssetKeys;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -74,6 +79,30 @@ public abstract class PackOpening {
 
     protected boolean ripped = false;
     private boolean dragging = false;
+    private boolean closed = false;
+
+    private Upgrade result;
+
+    private Button sellButton = new Button(() -> {
+        CreditManager.I().gain(result.price());
+        close();
+    },
+        Assets.I().get(AssetKey.SELL_BUTTON),
+        Assets.I().get(AssetKey.SELL_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.SELL_BUTTON),
+        new Rectangle(1, 5, 79 / 25f, 25 / 25f),
+        Input.Keys.BACKSPACE, ZIndex.PACK_OPENING_SELECTED);
+
+    private Button claimButton = new Button(() -> {
+        if (result instanceof AbstractRing) RingBar.I().addRing((AbstractRing) result);
+        else Deck.I().addCardToDeck((AbstractCard) result);
+        close();
+    },
+        Assets.I().get(AssetKey.CLAIM_BUTTON),
+        Assets.I().get(AssetKey.CLAIM_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.CLAIM_BUTTON),
+        new Rectangle(4.9f, 5f, 79 / 25f, 25 / 25f),
+        Input.Keys.ENTER, ZIndex.PACK_OPENING_SELECTED);
 
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
@@ -83,8 +112,15 @@ public abstract class PackOpening {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
+        if (closed) return;
         update(delta);
         body.update(delta);
+
+        if (ripped) {
+            sellButton.handleInput(mouse, touching, wasTouching);
+            claimButton.handleInput(mouse, touching, wasTouching);
+        }
+
         if (bought) return;
 
         if (touching && !wasTouching && body.getBounds().contains(mouse)) {
@@ -118,6 +154,7 @@ public abstract class PackOpening {
     }
 
     public void draw() {
+        if (closed) return;
         Rectangle bounds = body.getBounds();
 
         final Vector2 position = body.getRenderPos(new Vector2());
@@ -161,6 +198,11 @@ public abstract class PackOpening {
         if (flashActive) {
             drawCoreGlow(layer);
             drawScreenFlash(layer);
+        }
+
+        if (ripped) {
+            sellButton.draw();
+            claimButton.draw();
         }
     }
 
@@ -329,7 +371,7 @@ public abstract class PackOpening {
             beamRarity[i] = rarity;
         }
 
-        Pencil.I().toggleDarkenEverythingBehindWindow(ZIndex.PACK_OPENING_BACKGROUND);
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING_BACKGROUND);
     }
 
     private void startFlash() {
@@ -339,7 +381,7 @@ public abstract class PackOpening {
 
     protected void ripOpen() {
         ripped = true;
-        Upgrade upgrade = getResult();
+        result = getResult();
         Vector2 centerPos = body.getCardCenter().sub(1, 1);
         ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.05f, ZIndex.PACK_OPENING);
 //        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
@@ -351,11 +393,17 @@ public abstract class PackOpening {
             @Override
             public void run() {
                 Vector2 renderPos = body.getRenderPos(new Vector2());
-                PopupManager.I().createTooltip(upgrade, new Vector2(
+                PopupManager.I().createTooltip(result, new Vector2(
                         renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
                     ZIndex.PACK_OPENING_SELECTED).setVisible(true);
             }
         }, 0.2f);
+    }
+
+    private void close() {
+        PopupManager.I().killTooltip();
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING_BACKGROUND);
+        closed = true;
     }
 
     public DragableBody getBody() {

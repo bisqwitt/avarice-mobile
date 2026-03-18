@@ -1,5 +1,6 @@
 package com.avaricious.components.popups;
 
+import com.avaricious.effects.PulseEffect;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -48,6 +49,8 @@ public class NumberPopup {
 
     private Runnable onFinished;
 
+    private PulseEffect pulseEffect = new PulseEffect();
+
     public NumberPopup(int number, Color color, float x, float y, boolean asPercentage, boolean manualHold) {
         this(number, color, new Rectangle(x, y, defaultWidth, defaultHeight), asPercentage, manualHold);
     }
@@ -66,6 +69,8 @@ public class NumberPopup {
         numberOffset = bounds.width == defaultWidth && bounds.height == defaultHeight
             ? defaultOffset
             : defaultOffset + (bounds.width - defaultWidth) * 0.5f;
+
+        pulseEffect.pulse();
     }
 
     public void release() {
@@ -99,6 +104,7 @@ public class NumberPopup {
 
     public void update(float delta) {
         if (phase == Phase.FINISHED) return;
+        pulseEffect.update(delta);
 
         timeInPhase += delta;
 
@@ -132,8 +138,10 @@ public class NumberPopup {
     public void render(SpriteBatch batch, float delta) {
         if (phase == Phase.FINISHED) return;
 
-        float scale = getScale();
-        float rotation = getRotation();
+//        float scale = getScale();
+//        float rotation = getRotation();
+        float scale = pulseEffect.getScale();
+        float rotation = pulseEffect.getRotation();
         float alpha = getAlpha();
 
         if (alpha <= 0f || scale <= 0f) return;
@@ -186,7 +194,7 @@ public class NumberPopup {
             float t = clamp01(timeInPhase / pulseTime);
 
             // Overshoot amount (tune)
-            float overshoot = 0.28f;
+            float overshoot = 0.4f;
 
             // getPulseCurve() is ~1 at rest end, >1 at overshoot
             // We want scale to start at ~0.85 and end at 1.0 with overshoot.

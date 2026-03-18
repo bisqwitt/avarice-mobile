@@ -3,7 +3,7 @@ package com.avaricious.bosses;
 import com.avaricious.upgrades.Upgrade;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class AbstractBoss {
@@ -13,8 +13,10 @@ public abstract class AbstractBoss {
     public abstract Upgrade loot();
 
     public static AbstractBoss getRandomBoss() {
-        List<Class<? extends AbstractBoss>> allBossClasses = Collections.singletonList(
-            LemonDebuffBoss.class
+        List<Class<? extends AbstractBoss>> allBossClasses = Arrays.asList(
+            LemonDebuffBoss.class,
+            OneLessCardBoss.class,
+            DoubleDamageBoss.class
         );
 
         try {

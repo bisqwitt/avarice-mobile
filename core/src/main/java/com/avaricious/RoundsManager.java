@@ -21,17 +21,17 @@ public class RoundsManager {
     }
 
     private final Map<Integer, Integer> targetScorePerRound = new HashMap<Integer, Integer>() {{
-        put(1, 300);
-        put(2, 450);
-        put(3, 600);
+        put(1, 150);
+        put(2, 225);
+        put(3, 300);
 
-        put(4, 800);
-        put(5, 1200);
-        put(6, 1600);
+        put(4, 500);
+        put(5, 750);
+        put(6, 1000);
 
-        put(7, 2000);
-        put(8, 3000);
-        put(9, 4000);
+        put(7, 1400);
+        put(8, 2100);
+        put(9, 2800);
 
         put(10, 5000);
         put(11, 7500);
@@ -40,9 +40,6 @@ public class RoundsManager {
 
     private Integer currentRound;
     private int currentTargetScore;
-
-    private Integer handsLeft;
-    private Integer spinsLeft;
 
     public void nextRound() {
         currentRound++;
@@ -65,21 +62,5 @@ public class RoundsManager {
 
     public int getCurrentTargetScore() {
         return currentTargetScore;
-    }
-
-    public void minusOneHand() {
-        handsLeft--;
-    }
-
-    public void minusOneSpin() {
-        spinsLeft--;
-    }
-
-    public Integer getAppliesLeft() {
-        return handsLeft;
-    }
-
-    public Integer getSpinsLeft() {
-        return spinsLeft;
     }
 }

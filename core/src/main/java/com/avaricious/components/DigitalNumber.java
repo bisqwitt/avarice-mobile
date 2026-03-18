@@ -1,5 +1,6 @@
 package com.avaricious.components;
 
+import com.avaricious.effects.PulseEffect;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -32,6 +33,8 @@ public class DigitalNumber {
 
     private Runnable onInternalScoreDisplayed;
 
+    private final PulseEffect pulseEffect = new PulseEffect();
+
     public DigitalNumber(int initialScore, Color color, Rectangle rectangle, float offset) {
         setScore(initialScore);
         displayedScore = score;
@@ -57,6 +60,8 @@ public class DigitalNumber {
     }
 
     public void draw(float delta) {
+        pulseEffect.update(delta);
+
         if (displayedScore < score) {
             long diff = score - displayedScore;
             displayedScore += (int) Math.ceil(diff * 0.025);
@@ -72,17 +77,19 @@ public class DigitalNumber {
 
         hoverTime += delta;
         float numberBaseY = calcHoverY();
+        float scale = pulseEffect.getScale();
+        float rotation = pulseEffect.getRotation();
 
         for (int i = 0; i < numberTextures.size(); i++) {
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
                 new Rectangle(rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height),
-                getLayer(), Assets.I().shadowColor()
+                scale, rotation, getLayer(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
                 new Rectangle(rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height),
-                getLayer(), color
+                scale, rotation, getLayer(), color
             ));
         }
     }
@@ -108,6 +115,9 @@ public class DigitalNumber {
             numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
         internalScoreIsDisplayed = false;
+
+        updateDigitalNumbers(score);
+        pulseEffect.pulse();
     }
 
     public float calcHoverY() {

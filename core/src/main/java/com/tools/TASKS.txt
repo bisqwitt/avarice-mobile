@@ -22,3 +22,6 @@ CREATE FOR SPACE BY:
 - pull down top window
 
 EASTER EGGS
+
+
+fade alpha of symbols in/out when showing spin results

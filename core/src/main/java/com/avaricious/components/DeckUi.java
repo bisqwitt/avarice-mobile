@@ -151,7 +151,7 @@ public class DeckUi {
     }
 
     private void toggleShowDeck() {
-        Pencil.I().toggleDarkenEverythingBehindWindow(ZIndex.UNFOLDED_DECK_BACKGROUND);
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.UNFOLDED_DECK_BACKGROUND);
         if (!unfolded) {
             List<Vector2> positions = new ArrayList<>();
             for (int col = 5; col > 0; col--) {

@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.effects.PulseEffect;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -14,7 +15,7 @@ public class Slot {
     private float pulseTime = 0f;
     private final float pulseDuration = 0.15f;
     private final float pulseAmp = 0.2f;
-    private float targetScaleSpeed = 15f;
+    private float targetScaleSpeed = 10f;
 
     // --- NEW: hover wobble state ---
     private boolean wasHovered = false;
@@ -26,6 +27,8 @@ public class Slot {
 
     private boolean isEmphasized = false;
     private int patternHitCount = 0;
+
+    protected final PulseEffect pulseEffect = new PulseEffect();
 
     public Slot(Vector2 pos) {
         this.pos = pos;
@@ -41,6 +44,7 @@ public class Slot {
     }
 
     public void updatePulse(boolean isSelected, float delta) {
+        pulseEffect.update(delta);
         // selection entry wobble
         if (isSelected && !wasSelected) {
             pulseTime = 0f;
@@ -81,6 +85,15 @@ public class Slot {
 
     public void pulse() {
         pulseTime = 0f;
+        pulseEffect.pulse();
+    }
+
+    public float getPulseEffectScale() {
+        return pulseEffect.getScale();
+    }
+
+    public float getPulseEffectRotation() {
+        return pulseEffect.getRotation();
     }
 
     /**

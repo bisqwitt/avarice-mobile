@@ -236,7 +236,9 @@ public enum AssetKey {
     SELL_BUTTON("sell-button"),
     SELL_BUTTON_PRESSED("sell-button-pressed"),
     CLAIM_BUTTON("claim-button"),
-    CLAIM_BUTTON_PRESSED("claim-button-pressed");
+    CLAIM_BUTTON_PRESSED("claim-button-pressed"),
+    BOUGHT_TXT("bought-txt"),
+    SOLD_TXT("sold-txt");
 
     private final String path;
 

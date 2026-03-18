@@ -70,7 +70,7 @@ public class Pencil {
         drawings.add(drawing);
     }
 
-    public void toggleDarkenEverythingBehindWindow(ZIndex layer) {
+    public void toggleDarkenEverythingBehindLayer(ZIndex layer) {
         dimBackground = !dimBackground;
         dimLayer = layer;
     }

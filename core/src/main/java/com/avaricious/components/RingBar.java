@@ -7,9 +7,6 @@ import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -33,8 +30,6 @@ public class RingBar {
 
     private final Rectangle firstRingBounds = new Rectangle(0.35f, 7.25f, 1.25f, 1.25f);
     private final float RING_OFFSET = 1.75f;
-
-    private final TextureRegion shadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();

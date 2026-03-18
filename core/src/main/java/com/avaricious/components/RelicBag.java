@@ -4,6 +4,7 @@ import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.upgrades.rings.CriticalDamageRing;
 import com.avaricious.upgrades.rings.DeptRing;
 import com.avaricious.upgrades.rings.DoubleXpRing;
+import com.avaricious.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.RandomMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.FiveOfAKindMultiAdditionRing;
@@ -87,7 +88,8 @@ public class RelicBag {
             DiamondValueStackRing.class,
             SevenValueStackRing.class,
             PointsPerPatternHit.class,
-            DoubleXpRing.class
+            DoubleXpRing.class,
+            OneMoreCardAtStartOfRoundRing.class
         );
     }
 

@@ -8,7 +8,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class LifestealForEveryFruitHitCard extends AbstractCard implements IUpgradeWithActionOnSpinButtonPressed {
+public class HealForEveryFruitHitCard extends AbstractCard implements IUpgradeWithActionOnSpinButtonPressed {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.GROS_MICHEL);
     private int fruitsHit = 0;

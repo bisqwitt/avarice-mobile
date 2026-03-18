@@ -179,7 +179,7 @@ public class SlotMachine {
 
             // wobble on HOVER entry even if selected
             slot.updateHoverWobble(hovered, delta);
-            symbolsScale = slot.scale * slot.pulseScale() * slot.wobbleScale();
+            symbolsScale = slot.scale;
             if (runningResults && !slot.isInPatternHit()) alpha = 0.5f;
         }
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
@@ -194,17 +194,19 @@ public class SlotMachine {
         region = Assets.I().getSymbol(symbol);
 
         // NEW: rotate around center using current wobble angle
-        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
+//        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
+        float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getPulseEffectScale() : 1f;
+        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getPulseEffectRotation() : 0f;
 
-        Pencil.I().addDrawing(new TextureDrawing(
-            Assets.I().getSymbol(symbol),
-            new Rectangle(adjX + 0.05f, adjY - 0.05f, drawW, drawH),
-            1f, rotation, ZIndex.SLOT_MACHINE, Assets.I().shadowColor()
-        ));
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            Assets.I().getSymbol(symbol),
+//            new Rectangle(adjX + 0.05f, adjY - 0.05f, drawW, drawH),
+//            scale, rotation, ZIndex.SLOT_MACHINE, Assets.I().shadowColor()
+//        ));
         Pencil.I().addDrawing(new TextureDrawing(
             region,
             new Rectangle(adjX, adjY, drawW, drawH),
-            1f, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
+            scale, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
         ));
     }
 

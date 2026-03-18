@@ -9,7 +9,7 @@ import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
 import com.avaricious.upgrades.cards.FiveMultForEveryCardDiscarded;
 import com.avaricious.upgrades.cards.FivePointsCard;
 import com.avaricious.upgrades.cards.FivePointsForEachCardInHandCard;
-import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
+import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.OnePointForEveryFruitCard;
 import com.avaricious.upgrades.cards.TwentyArmorCard;
@@ -45,7 +45,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             TwoPointsForEverySymbolHit.class,
             OnePointForEveryFruitCard.class,
             EitherDoublePointsOrHalveMulti.class,
-            LifestealForEveryFruitHitCard.class
+            HealForEveryFruitHitCard.class
         ));
 
         if (DevTools.allCardsInDeck) {

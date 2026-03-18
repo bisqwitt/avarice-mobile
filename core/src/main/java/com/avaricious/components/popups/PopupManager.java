@@ -23,6 +23,7 @@ public class PopupManager {
 
     private final List<NumberPopup> numberPopups = new ArrayList<>();
     private final List<StatisticPopup> statisticPopups = new ArrayList<>();
+    private final List<TextPopup> textPopups = new ArrayList<>();
 
     private TooltipPopup tooltipPopup;
     private ApplyPopup applyPopup;
@@ -83,6 +84,10 @@ public class PopupManager {
         spawnNumber(new NumberPopup(number, color, x, y, false, manualHold));
     }
 
+    public void spawnTextPopup(TextPopup textPopup) {
+        textPopups.add(textPopup);
+    }
+
     public void releaseHoldingNumbers() {
         for (NumberPopup numberPopup : numberPopups) {
             if (numberPopup.isManualHold()) numberPopup.release();
@@ -124,6 +129,10 @@ public class PopupManager {
         }
         for (StatisticPopup p : statisticPopups) {
             p.render(batch);
+        }
+        for (TextPopup textPopup : textPopups) {
+            textPopup.update(delta);
+            textPopup.draw();
         }
 
         if (tooltipPopup != null) tooltipPopup.render(batch, delta);

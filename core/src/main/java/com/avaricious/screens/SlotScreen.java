@@ -9,6 +9,7 @@ import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
+import com.avaricious.bosses.OneLessCardBoss;
 import com.avaricious.components.BossLootWindow;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
@@ -19,13 +20,13 @@ import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
+import com.avaricious.components.popups.BoughtPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.Slot;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.PatternHitContext;
-import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.effects.particle.ParticleManager;
@@ -36,12 +37,13 @@ import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
-import com.avaricious.upgrades.cards.LifestealForEveryFruitHitCard;
+import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -123,6 +125,8 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
+//                shop.show();
+                PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2(3, 7.5f), ZIndex.PACK_OPENING));
             }
         }, 1);
     }
@@ -190,7 +194,7 @@ public class SlotScreen extends ScreenAdapter {
 //        batch.draw(backgroundWhiteDarker, -3, 2.8f, 15, 0.05f);
         batch.draw(backgroundBrighter, -3, 6.8f, 15, 0.1f);
 //        batch.draw(backgroundWhiteDarker, -3, 6.75f, 15, 0.05f);
-        BorderPulseMesh.I().render(batch, delta);
+//        BorderPulseMesh.I().render(batch, delta);
         Pencil.I().draw(batch);
         batch.end();
 
@@ -352,7 +356,7 @@ public class SlotScreen extends ScreenAdapter {
 
                 xpBar.addXp(points);
 
-                LifestealForEveryFruitHitCard card = Hand.I().getCardOfClass(LifestealForEveryFruitHitCard.class);
+                HealForEveryFruitHitCard card = Hand.I().getCardOfClass(HealForEveryFruitHitCard.class);
                 if (card != null && patternHitContext.getSymbol().isFruit()) card.onFruitHit();
             });
 
@@ -415,11 +419,18 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 Hand hand = Hand.I();
-                hand.queueActions(
-                    hand::drawCard,
-                    hand::drawCard,
-                    hand::drawCard
-                );
+                if (RoundsManager.I().getBoss() instanceof OneLessCardBoss) {
+                    hand.queueActions(
+                        hand::drawCard,
+                        hand::drawCard
+                    );
+                } else {
+                    hand.queueActions(
+                        hand::drawCard,
+                        hand::drawCard,
+                        hand::drawCard
+                    );
+                }
             }
         }, 0.25f);
     }
