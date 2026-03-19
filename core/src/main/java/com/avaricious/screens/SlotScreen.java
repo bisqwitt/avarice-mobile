@@ -387,6 +387,12 @@ public class SlotScreen extends ScreenAdapter {
         int score = roundInfoPanel.getScoreDisplay().calcScore();
         roundInfoPanel.getTargetScoreDisplay().addToScore(score);
         roundInfoPanel.getScoreDisplay().clearNumbers();
+
+        AudioManager.I().endPayout();
+        if(!roundInfoPanel.getTargetScoreDisplay().targetScoreReached()) return;
+
+        if (RoundsManager.I().isBossRound()) openBossLootWindow();
+        else onTargetScoreReached();
     }
 
     public void onTargetScoreReached() {

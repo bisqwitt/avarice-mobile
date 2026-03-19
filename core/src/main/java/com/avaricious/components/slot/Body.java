@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.effects.PulseEffect;
 import com.badlogic.gdx.math.Vector2;
@@ -17,6 +18,7 @@ public class Body {
 
     protected final PulseEffect pulseEffect = new PulseEffect();
     protected final IdleSwayEffect idleSwayEffect = new IdleSwayEffect();
+    protected final IdleFloatEffect idleFloatEffect = new IdleFloatEffect(0.04f, 0.3f);
 
     public Body(Vector2 pos) {
         this.pos = pos;
@@ -25,6 +27,7 @@ public class Body {
     public void update(float delta) {
         pulseEffect.update(delta);
         idleSwayEffect.update(delta);
+        idleFloatEffect.update(delta);
 
         scale += (targetScale - scale) * Math.min(1f, targetScaleSpeed * delta);
     }
@@ -72,6 +75,10 @@ public class Body {
     public Body setTargetScaleSpeed(float value) {
         this.targetScaleSpeed = value;
         return this;
+    }
+
+    public float getIdleFloatYOffset() {
+        return idleFloatEffect.getYOffset();
     }
 
     public void setIdleSwayEffectEnabled(boolean enabled) {

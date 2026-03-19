@@ -78,10 +78,10 @@ public class TargetScoreDisplay {
             RoundsManager.I().isBossRound() ? bossTxtShadow : roundTxtShadow,
             new Rectangle(
                 ROUND_TXT_X,
-                currentRoundNumber.calcHoverY() - 0.1f,
+                currentRoundNumber.getNumberY() - 0.1f,
                 37f / 13f,
                 DIGIT_HEIGHT
-            ),
+            ), 1f, currentRoundNumber.getRotation(),
             ZIndex.ROUND_INFO_PANEL_UNFOLDED,
             Assets.I().shadowColor()
         ));
@@ -90,10 +90,10 @@ public class TargetScoreDisplay {
             RoundsManager.I().isBossRound() ? bossTxt : roundTxt,
             new Rectangle(
                 ROUND_TXT_X,
-                currentRoundNumber.calcHoverY(),
+                currentRoundNumber.getNumberY(),
                 37f / 13f,
                 DIGIT_HEIGHT
-            ),
+            ), 1f, currentRoundNumber.getRotation(),
             ZIndex.ROUND_INFO_PANEL_UNFOLDED
         ));
 
@@ -103,7 +103,7 @@ public class TargetScoreDisplay {
             colon,
             new Rectangle(
                 COLON_X,
-                currentRoundNumber.calcHoverY(),
+                currentRoundNumber.getNumberY(),
                 DIGIT_WIDTH,
                 DIGIT_HEIGHT
             ),
@@ -133,7 +133,7 @@ public class TargetScoreDisplay {
 
             float screenCenter = (ScreenManager.getViewport().getWorldWidth() / 2f) * 100;
             float textX = screenCenter - 1000f / 2f;
-            float textY = (currentRoundNumber.calcHoverY() - 2.5f) * 100;
+            float textY = (currentRoundNumber.getNumberY() - 2.5f) * 100;
 
             Pencil.I().addDrawing(new FontDrawing(font, bossDescription,
                 new Vector2(textX, textY),
@@ -145,7 +145,7 @@ public class TargetScoreDisplay {
                 anteTxtShadow,
                 new Rectangle(
                     2.5f,
-                    currentAnteNumber.calcHoverY() - 0.1f,
+                    currentAnteNumber.getNumberY() - 0.1f,
                     31f / 13f,
                     11f / 13f
                 ),
@@ -157,7 +157,7 @@ public class TargetScoreDisplay {
                 anteTxt,
                 new Rectangle(
                     2.5f,
-                    currentAnteNumber.calcHoverY(),
+                    currentAnteNumber.getNumberY(),
                     31f / 13f,
                     11f / 13f
                 ),
@@ -180,10 +180,6 @@ public class TargetScoreDisplay {
 
     public boolean targetScoreReached() {
         return targetScoreNumber.getScore() == 0;
-    }
-
-    public void setOnInternalScoreDisplayed(Runnable onInternalScoreDisplayed) {
-        targetScoreNumber.setOnInternalScoreDisplayed(onInternalScoreDisplayed);
     }
 
 }

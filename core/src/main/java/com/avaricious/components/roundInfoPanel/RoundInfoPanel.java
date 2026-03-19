@@ -33,17 +33,6 @@ public class RoundInfoPanel {
 
     private float unfoldAmount = 0f;
 
-    public RoundInfoPanel() {
-        targetScoreDisplay.setOnInternalScoreDisplayed(() -> {
-            AudioManager.I().endPayout();
-            if (targetScoreDisplay.targetScoreReached()) {
-                if (RoundsManager.I().isBossRound())
-                    ScreenManager.I().getScreen(SlotScreen.class).openBossLootWindow();
-                else ScreenManager.I().getScreen(SlotScreen.class).onTargetScoreReached();
-            }
-        });
-    }
-
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
         if (touching && !wasTouching) {
             if (currentPanelBounds.contains(mouse)) {

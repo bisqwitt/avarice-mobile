@@ -1,5 +1,7 @@
 package com.avaricious.components;
 
+import com.avaricious.effects.IdleFloatEffect;
+import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.effects.PulseEffect;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -19,37 +21,30 @@ public class DigitalNumber {
     protected final List<TextureRegion> numberShadowTextures = new ArrayList<>();
 
     protected final Color color;
-    protected final Rectangle rectangle;
+    protected final Rectangle bounds;
     protected final float offset;
 
     private ZIndex zIndex = ZIndex.DIGITAL_NUMBER;
 
     private int score;
-    private int displayedScore;
-
-    private boolean internalScoreIsDisplayed = true;
-
-    private float hoverTime = 0f;
-
-    private Runnable onInternalScoreDisplayed;
 
     private final PulseEffect pulseEffect = new PulseEffect();
+    private final IdleFloatEffect floatEffect = new IdleFloatEffect();
+    private final IdleSwayEffect swayEffect = new IdleSwayEffect(1.2f, 0.4f);
 
-    public DigitalNumber(int initialScore, Color color, Rectangle rectangle, float offset) {
+    public DigitalNumber(int initialScore, Color color, Rectangle bounds, float offset) {
         setScore(initialScore);
-        displayedScore = score;
         this.color = color;
-        this.rectangle = rectangle;
+        this.bounds = bounds;
         this.offset = offset;
 
         updateDigitalNumbers(initialScore);
     }
 
-    public DigitalNumber(int initialScore, Color color, int setLength, Rectangle rectangle, float offset) {
+    public DigitalNumber(int initialScore, Color color, int setLength, Rectangle bounds, float offset) {
         score = initialScore;
-        displayedScore = initialScore;
         this.color = color;
-        this.rectangle = rectangle;
+        this.bounds = bounds;
         this.offset = offset;
 
         for (int i = 0; i < setLength; i++) {
@@ -60,35 +55,23 @@ public class DigitalNumber {
     }
 
     public void draw(float delta) {
+        floatEffect.update(delta);
+        swayEffect.update(delta);
         pulseEffect.update(delta);
 
-        if (displayedScore < score) {
-            long diff = score - displayedScore;
-            displayedScore += (int) Math.ceil(diff * 0.025);
-            updateDigitalNumbers(displayedScore);
-        } else if (displayedScore > score) {
-            long diff = displayedScore - score;
-            displayedScore -= (int) Math.ceil(diff * 0.025);
-            updateDigitalNumbers(displayedScore);
-        } else if (!internalScoreIsDisplayed) {
-            internalScoreIsDisplayed = true;
-            if (onInternalScoreDisplayed != null) onInternalScoreDisplayed.run();
-        }
-
-        hoverTime += delta;
-        float numberBaseY = calcHoverY();
+        float numberY = getNumberY();
         float scale = pulseEffect.getScale();
-        float rotation = pulseEffect.getRotation();
+        float rotation = pulseEffect.getRotation() + swayEffect.getRotation();
 
         for (int i = 0; i < numberTextures.size(); i++) {
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
-                new Rectangle(rectangle.x + (i * offset), numberBaseY - 0.1f, rectangle.width, rectangle.height),
+                new Rectangle(bounds.x + (i * offset), numberY - 0.1f, bounds.width, bounds.height),
                 scale, rotation, getLayer(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
-                new Rectangle(rectangle.x + (i * offset), numberBaseY, rectangle.width, rectangle.height),
+                new Rectangle(bounds.x + (i * offset), numberY, bounds.width, bounds.height),
                 scale, rotation, getLayer(), color
             ));
         }
@@ -114,33 +97,25 @@ public class DigitalNumber {
             numberTextures.add(Assets.I().getDigitalNumber(0));
             numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
-        internalScoreIsDisplayed = false;
 
         updateDigitalNumbers(score);
         pulseEffect.pulse();
-    }
-
-    public float calcHoverY() {
-        float hoverSpeed = 1.5f;
-        float hoverStrength = 0.03f;
-        float hoverOffset = (float) Math.sin(hoverTime * hoverSpeed) * hoverStrength;
-        return rectangle.y + hoverOffset;
     }
 
     public int getScore() {
         return score;
     }
 
-    public void setOnInternalScoreDisplayed(Runnable onInternalScoreDisplayed) {
-        this.onInternalScoreDisplayed = onInternalScoreDisplayed;
-    }
-
     public Rectangle getBounds() {
-        return rectangle;
+        return bounds;
     }
 
-    private Vector2 getNumberCenter(float index) {
-        return new Vector2((rectangle.x + index * offset) + rectangle.width / 2, rectangle.y + rectangle.height / 2);
+    public float getNumberY() {
+        return bounds.y + floatEffect.getYOffset();
+    }
+
+    public float getRotation() {
+        return swayEffect.getRotation();
     }
 
     protected ZIndex getLayer() {

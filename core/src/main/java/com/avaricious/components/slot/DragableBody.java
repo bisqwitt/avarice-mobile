@@ -225,7 +225,7 @@ public class DragableBody extends Body {
      */
     public Vector2 getRenderPos(Vector2 out) {
         Vector2 base = super.getPos();
-        return out.set(base.x + offset.x, base.y + offset.y);
+        return out.set(base.x + offset.x, base.y + offset.y + idleFloatEffect.getYOffset());
     }
 
     /**

@@ -173,28 +173,19 @@ public class SlotMachine {
         final float topY = originY + (rows - 1) * stepY;
         float drawY = topY - (gridPos.y + reel.frac()) * stepY;
 
-        boolean selected = false;
-        boolean hovered = false;
-        float symbolsScale = 1f;
-        float alpha = this.alpha;
-
-        TextureRegion region;
-
-        if (isInGrid) {
-            Body body = grid[(int) gridPos.x][(int) gridPos.y];
-            symbolsScale = body.scale;
-            if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
-        }
-        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
-            alpha = 0.5f;
-
         float drawW = CELL_W;
         float drawH = CELL_H;
         float adjX = colX - (drawW - CELL_W) / 2f;
         float adjY = drawY - (drawH - CELL_H) / 2f;
+        float alpha = this.alpha;
 
-        // choose frame (keeps your animated border when selected)
-        region = Assets.I().getSymbol(symbol);
+        if (isInGrid) {
+            Body body = grid[(int) gridPos.x][(int) gridPos.y];
+            adjY += body.getIdleFloatYOffset();
+            if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
+        }
+        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
+            alpha = 0.5f;
 
         // NEW: rotate around center using current wobble angle
 //        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
@@ -202,7 +193,7 @@ public class SlotMachine {
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 
         Pencil.I().addDrawing(new TextureDrawing(
-            region,
+            Assets.I().getSymbol(symbol),
             new Rectangle(adjX, adjY, drawW, drawH),
             scale, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
         ));
