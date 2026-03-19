@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
  * <p>
  * Rendering should use getRenderPos() instead of getPos().
  */
-public class DragableBody extends Slot {
+public class DragableBody extends Body {
 
     // --- Size for hit-testing (set to your card sprite size in world units) ---
     private float width;
@@ -38,8 +38,6 @@ public class DragableBody extends Slot {
     private final Vector2 lastMouse = new Vector2();
     private float dragVelX = 0f;
 
-
-    // --- Feel knobs ---
     private float dragFollowSpeed = 28f;     // higher = snappier to cursor
     private float returnSpeed = 18f;         // higher = snappier return to origin
     private float maxTiltDeg = 12f;          // max drag tilt
@@ -78,12 +76,10 @@ public class DragableBody extends Slot {
         lastRenderPos.set(renderPos);
     }
 
-    // --- Public API ---
-
-    /**
-     * Call every frame.
-     */
+    @Override
     public void update(float delta) {
+        super.update(delta);
+
         if (applying) {
             applyTime += delta;
             float t = Math.min(1f, applyTime / applyDuration);
@@ -100,10 +96,7 @@ public class DragableBody extends Slot {
 
             if (t >= 1f) {
                 applying = false;
-                alpha = 1f;
                 extraScaleMul = 1f;
-                offset.setZero();
-                targetOffset.setZero();
                 tiltDeg = 0f;
 
                 if (onApplyFinished != null) {
@@ -137,7 +130,7 @@ public class DragableBody extends Slot {
         }
 
         if (targetPosition != null) {
-            Vector2 pos = getPos(); // must be a mutable Vector2 reference you can set back
+            Vector2 pos = getPos();
             float t = 1f - (float) Math.exp(-moveToSpeed * delta);
 
             pos.lerp(targetPosition, t);
@@ -148,19 +141,13 @@ public class DragableBody extends Slot {
                 targetPosition = null; // optional: stop moving
             }
         }
-
-        tickScale(delta);
-        updatePulse(true, delta);
-        updateHoverWobble(false, delta);
     }
 
-    /**
-     * Begin dragging if not already dragging. worldX/worldY are WORLD coords.
-     */
     public boolean beginDrag(float worldX, float worldY, int pointer) {
         if (dragging) return false;
         dragging = true;
         draggingPointer = pointer;
+        setIdleSwayEffectEnabled(false);
 
         lastMouse.set(worldX, worldY);
         dragVelX = 0f;
@@ -195,7 +182,6 @@ public class DragableBody extends Slot {
 
         // dx is world-units per frame, convert to "per second"
         dragVelX = dx / Math.max(1e-6f, Gdx.graphics.getDeltaTime());
-
     }
 
     /**
@@ -204,12 +190,13 @@ public class DragableBody extends Slot {
     public void endDrag(int pointer) {
         if (!dragging || pointer != draggingPointer) return;
 
+        setIdleSwayEffectEnabled(true);
         targetOffset.setZero();
         dragging = false;
         draggingPointer = -1;
 
         if (dropWobble > 0f) {
-            wobble();
+//            wobble();
         }
     }
 
@@ -226,16 +213,8 @@ public class DragableBody extends Slot {
         this.draggingPointer = -1;
     }
 
-    public boolean isApplying() {
-        return applying;
-    }
-
     public float getAlpha() {
         return alpha;
-    }
-
-    public float getExtraScaleMul() {
-        return extraScaleMul;
     }
 
     // --- Rendering helpers ---
@@ -256,20 +235,9 @@ public class DragableBody extends Slot {
         return dragging ? tiltDeg : tiltDeg * 0.25f; // keep a tiny residual if you like
     }
 
-    /**
-     * Additional scale while dragging. Combine with Slot.pulseScale()/wobbleScale().
-     */
-    public float getDragScaleMul() {
-        return dragging ? dragScaleMul : 1f;
-    }
-
     public DragableBody setMoveToSpeed(float moveToSpeed) {
         this.moveToSpeed = moveToSpeed;
         return this;
-    }
-
-    public boolean isDragging() {
-        return dragging;
     }
 
     public Vector2 getCardCenter() {
@@ -278,12 +246,6 @@ public class DragableBody extends Slot {
 
     public void moveTo(Vector2 targetPosition) {
         this.targetPosition = targetPosition;
-    }
-
-    public DragableBody setFollow(float dragFollowSpeed, float returnSpeed) {
-        this.dragFollowSpeed = dragFollowSpeed;
-        this.returnSpeed = returnSpeed;
-        return this;
     }
 
     public DragableBody setTilt(float maxTiltDeg, float tiltResponsiveness) {
@@ -298,12 +260,12 @@ public class DragableBody extends Slot {
         return this;
     }
 
-    public DragableBody setDragScale(float dragScaleMul) {
-        this.dragScaleMul = dragScaleMul;
-        return this;
-    }
-
     public Rectangle getBounds() {
         return new Rectangle(pos.x, pos.y, width, height);
+    }
+
+    @Override
+    public float getRotation() {
+        return super.getRotation() + getDragTiltDeg();
     }
 }

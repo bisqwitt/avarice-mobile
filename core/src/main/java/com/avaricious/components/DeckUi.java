@@ -122,8 +122,8 @@ public class DeckUi {
     public void drawCard(AbstractCard card) {
         DragableBody slot = cards.get(card);
         Vector2 pos = slot.getRenderPos(new Vector2());
-        final float scale = slot.pulseScale() * slot.getTargetScale();
-        final float rotation = slot.getDragTiltDeg();
+        final float scale = slot.getScale();
+        final float rotation = slot.getRotation();
 
         if (unfolded) {
             Pencil.I().addDrawing(new TextureDrawing(
@@ -147,6 +147,7 @@ public class DeckUi {
                 firstCardBounds.width, firstCardBounds.height
             );
             cards.put(pendingCards.get(i), new DragableBody(bounds).setTilt(200f, 20f));
+            cards.get(pendingCards.get(i)).setIdleSwayEffectEnabled(false);
         }
     }
 

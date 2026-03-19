@@ -159,8 +159,8 @@ public abstract class PackOpening {
 
         final Vector2 position = body.getRenderPos(new Vector2());
         final float alpha = body.getAlpha();
-        final float scale = body.pulseScale() * body.wobbleScale() * body.getTargetScale();
-        final float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg();
+        final float scale = body.getScale();
+        final float rotation = body.getRotation();
         final Vector2 drawPos = new Vector2(position).add(shakeOffset);
         final float drawRot = rotation + shakeRotDeg;
         final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.SHOP;
@@ -387,8 +387,6 @@ public abstract class PackOpening {
 //        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
 
         body.pulse();
-        body.wobble();
-
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {

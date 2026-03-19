@@ -99,10 +99,8 @@ public class ShopCardsBar {
 
         final Vector2 position = slot.getRenderPos(new Vector2());
         final float alpha = slot.getAlpha();
-        final float scale = slot.pulseScale()
-            * slot.wobbleScale()
-            * slot.getTargetScale();
-        final float rotation = slot.wobbleAngleDeg() + slot.getDragTiltDeg();
+        final float scale = slot.getScale();
+        final float rotation = slot.getRotation();
         final ZIndex layer = card == touchingCard ? ZIndex.SHOP_CARD_TOUCHING : ZIndex.SHOP_CARD;
 
         final Color shadowColor = Assets.I().shadowColor();
@@ -136,7 +134,6 @@ public class ShopCardsBar {
                 .setTilt(200f, 20f);
 
             slot.pulse();
-            slot.wobble();
 
             this.cards.put(card, slot);
             index++;

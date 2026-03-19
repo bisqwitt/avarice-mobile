@@ -39,10 +39,8 @@ public abstract class AbstractRing extends Upgrade {
     public void draw(boolean isTouching) {
         Rectangle bounds = body.getBounds();
 
-        float scale = body.pulseScale()
-            * body.wobbleScale()
-            * body.getTargetScale();
-        float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg();
+        float scale = body.getScale();
+        float rotation = body.getRotation();
 
         float alpha = body.getAlpha();
         Vector2 position = body.getRenderPos(new Vector2());
@@ -63,7 +61,6 @@ public abstract class AbstractRing extends Upgrade {
 
     protected void pulse() {
         body.pulse();
-        body.wobble();
 
         PointsForEveryRingHit pointsForEveryRingHit = RingBar.I().getRingByClass(PointsForEveryRingHit.class);
         if (pointsForEveryRingHit != null && !(this instanceof PointsForEveryRingHit))

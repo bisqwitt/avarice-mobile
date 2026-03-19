@@ -23,8 +23,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class SlotMachine {
 
@@ -48,7 +50,7 @@ public class SlotMachine {
     public static final Rectangle windowBounds = new Rectangle(0.05f, 8.8f, 8.85f, 5.6f);
 
     // Visual cells (for selection pulse/scale)
-    private final Slot[][] grid = new Slot[cols][rows];
+    private final Body[][] grid = new Body[cols][rows];
     private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
 
     // Reels (one per column)
@@ -67,15 +69,15 @@ public class SlotMachine {
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
-                if (r == 0) grid[c][r] = new Slot(new Vector2(
+                if (r == 0) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 2 * (CELL_H + spacingY)
                 ));
-                if (r == 1) grid[c][r] = new Slot(new Vector2(
+                if (r == 1) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 1 * (CELL_H + spacingY)
                 ));
-                if (r == 2) grid[c][r] = new Slot(new Vector2(
+                if (r == 2) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 0 * (CELL_H + spacingY)
                 ));
@@ -117,6 +119,12 @@ public class SlotMachine {
         for (int c = 0; c < cols; c++) {
             reels.get(c).update(delta);
         }
+        Arrays.stream(grid)
+            .flatMap(Arrays::stream)
+            .filter(Objects::nonNull)
+            .forEach(body -> {
+                body.update(delta);
+            });
 
         if (desiredAlpha != alpha) {
             float speed = 10f; // higher = faster convergence
@@ -173,20 +181,15 @@ public class SlotMachine {
         TextureRegion region;
 
         if (isInGrid) {
-            Slot slot = grid[(int) gridPos.x][(int) gridPos.y];
-            slot.updatePulse(selected, delta);
-            slot.tickScale(delta);
-
-            // wobble on HOVER entry even if selected
-            slot.updateHoverWobble(hovered, delta);
-            symbolsScale = slot.scale;
-            if (runningResults && !slot.isInPatternHit()) alpha = 0.5f;
+            Body body = grid[(int) gridPos.x][(int) gridPos.y];
+            symbolsScale = body.scale;
+            if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
             alpha = 0.5f;
 
-        float drawW = CELL_W * symbolsScale;
-        float drawH = CELL_H * symbolsScale;
+        float drawW = CELL_W;
+        float drawH = CELL_H;
         float adjX = colX - (drawW - CELL_W) / 2f;
         float adjY = drawY - (drawH - CELL_H) / 2f;
 
@@ -195,14 +198,9 @@ public class SlotMachine {
 
         // NEW: rotate around center using current wobble angle
 //        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
-        float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getPulseEffectScale() : 1f;
-        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getPulseEffectRotation() : 0f;
+        float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
+        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 
-//        Pencil.I().addDrawing(new TextureDrawing(
-//            Assets.I().getSymbol(symbol),
-//            new Rectangle(adjX + 0.05f, adjY - 0.05f, drawW, drawH),
-//            scale, rotation, ZIndex.SLOT_MACHINE, Assets.I().shadowColor()
-//        ));
         Pencil.I().addDrawing(new TextureDrawing(
             region,
             new Rectangle(adjX, adjY, drawW, drawH),
@@ -258,13 +256,13 @@ public class SlotMachine {
 
         for (PatternMatch match : matches) {
 
-            List<Slot> slots = new ArrayList<>();
+            List<Body> bodies = new ArrayList<>();
             for (Vector2 pos : match.getPositions()) {
-                Slot slot = grid[(int) pos.x][(int) pos.y];
+                Body body = grid[(int) pos.x][(int) pos.y];
 //                slot.setInPatternHit(true);
-                slots.add(slot);
+                bodies.add(body);
             }
-            result.add(new PatternHitContext(match.getSymbol(), slots));
+            result.add(new PatternHitContext(match.getSymbol(), bodies));
         }
 
         result.sort(new Comparator<PatternHitContext>() {

@@ -74,6 +74,7 @@ public class PopupManager {
     public void killTooltip() {
         tooltipPopup.kill(() -> tooltipPopup = null);
         if (applyPopup != null) applyPopup.kill(() -> applyPopup = null);
+        if (discardPopup != null) discardPopup.kill(() -> discardPopup = null);
     }
 
     public void spawnNumber(NumberPopup numberPopup) {

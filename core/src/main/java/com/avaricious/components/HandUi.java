@@ -24,9 +24,7 @@ import com.badlogic.gdx.utils.Timer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class HandUi {
@@ -42,7 +40,6 @@ public class HandUi {
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final List<AbstractCard> cards = new ArrayList<>();
-    private final Map<AbstractCard, Integer> cardIndexLastRender = new HashMap<>();
 
     private AbstractCard touchingCard = null;
     private AbstractCard applyingCard = null;
@@ -129,16 +126,15 @@ public class HandUi {
         }
 
         if (touchingCard != null) drawCard(touchingCard);
+        if (applyingCard != null) drawCard(applyingCard);
     }
 
     private void drawCard(AbstractCard card) {
         DragableBody body = card.getBody();
         Rectangle bounds = body.getBounds();
 
-        float scale = body.pulseScale()
-            * body.wobbleScale()
-            * body.getTargetScale();
-        final float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg()
+        float scale = body.getScale();
+        final float rotation = body.getRotation()
             + (card != touchingCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
@@ -179,13 +175,7 @@ public class HandUi {
                 );
 
                 card.addBody(initialBounds);
-
-                // Optional: make the draw feel juicy
-//                slot.targetScale = 1.15f;  // slight pop while flying
                 card.getBody().pulse();
-                card.getBody().wobble();
-
-
                 cards.add(card);
             }
         }
@@ -199,7 +189,6 @@ public class HandUi {
         }
         for (AbstractCard card : cardsToRemove) {
             cards.remove(card);
-            cardIndexLastRender.remove(card);
         }
 
         updateCardBounds();
@@ -207,12 +196,7 @@ public class HandUi {
 
     private void updateCardBounds() {
         for (AbstractCard card : cards) {
-            int newCardIndex = calcCardIndex(card);
-            cardIndexLastRender.put(card, newCardIndex);
-
             if (card == touchingCard) continue;
-            if (newCardIndex < 0) continue; // excluded from layout
-
             card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
     }
@@ -232,7 +216,7 @@ public class HandUi {
     }
 
     private int calcCardIndex(AbstractCard card) {
-        List<AbstractCard> sorted = getEntriesSortedByX(getCardsForLayout());
+        List<AbstractCard> sorted = getEntriesSortedByX();
         for (int i = 0; i < sorted.size(); i++) {
             if (sorted.get(i) == card) return i;
         }
@@ -240,16 +224,13 @@ public class HandUi {
     }
 
     private List<AbstractCard> getEntriesSortedByX() {
-        return getEntriesSortedByX(cards);
-    }
-
-    private List<AbstractCard> getEntriesSortedByX(List<AbstractCard> source) {
-        List<AbstractCard> sorted = new ArrayList<>(source);
+        List<AbstractCard> sorted = new ArrayList<>(getCardsForLayout());
         sorted.sort(Comparator.comparingDouble(card -> card.getBody().getRenderPos(new Vector2()).x));
         return sorted;
     }
+
     private float getHandRotation(AbstractCard card) {
-        List<AbstractCard> layoutCards = getCardsForLayout();
+        List<AbstractCard> layoutCards = getEntriesSortedByX();
         int n = layoutCards.size();
         if (n <= 1) return 0f;
 
@@ -271,7 +252,7 @@ public class HandUi {
     }
 
     private float getHandYOffset(AbstractCard card) {
-        List<AbstractCard> layoutCards = getCardsForLayout();
+        List<AbstractCard> layoutCards = getEntriesSortedByX();
         int n = layoutCards.size();
         if (n <= 1) return 0f;
 
@@ -285,17 +266,15 @@ public class HandUi {
     }
 
     private List<AbstractCard> getCardsForLayout() {
-        List<AbstractCard> layoutCards = new ArrayList<>(cards);
-
         boolean touchingOverSlotMachine =
             touchingCard != null &&
-                SlotMachine.windowBounds.contains(touchingCard.getBody().getCardCenter());
+                (SlotMachine.windowBounds.contains(touchingCard.getBody().getCardCenter())
+                    || DeckUi.I().getFirstCardBounds().contains(touchingCard.getBody().getCardCenter()));
 
-        if (touchingOverSlotMachine) {
-            layoutCards.remove(touchingCard);
-        }
-
-        return layoutCards;
+        return cards.stream()
+            .filter(card -> !(touchingOverSlotMachine && card == touchingCard))
+            .filter(card -> card != applyingCard)
+            .collect(Collectors.toList());
     }
 
     public void applyCard(AbstractCard card) {
@@ -304,7 +283,6 @@ public class HandUi {
 
         DragableBody body = card.getBody();
         body.pulse();
-        body.wobble();
         Vector2 pos = body.getRenderPos(new Vector2());
 
         ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, ZIndex.CARD_APPLY_PARTICLES);
@@ -318,6 +296,7 @@ public class HandUi {
             public void run() {
                 body.startApplyAnimation(0.6f, () -> {
                     Hand.I().removeCardFromHand(card);
+                    applyingCard = null;
                 });
             }
         }, 0.5f);

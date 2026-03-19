@@ -1,7 +1,7 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.slot.Slot;
+import com.avaricious.components.slot.Body;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.Assets;
@@ -25,7 +25,7 @@ public abstract class UpgradeBar {
     private ZIndex zIndex = ZIndex.UPGRADE_BAR;
 
     protected final Map<Upgrade, Rectangle> cardBounds = new HashMap<>();
-    protected final Map<Upgrade, Slot> cardAnimationManagers = new HashMap<>();
+    protected final Map<Upgrade, Body> cardAnimationManagers = new HashMap<>();
 
     private Upgrade hoveringKey = null;
 
@@ -42,7 +42,7 @@ public abstract class UpgradeBar {
         for (int i = 0; i < Cards.size(); i++) {
             Upgrade upgrade = Cards.get(i);
             cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
-            cardAnimationManagers.put(upgrade, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
+            cardAnimationManagers.put(upgrade, new Body(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
     }
 
@@ -56,13 +56,11 @@ public abstract class UpgradeBar {
             boolean hovered = rectangle.contains(mouse);
             boolean selected = wasPressed && !pressed && rectangle.contains(mouse);
 
-            Slot cardSlot = cardAnimationManagers.get(upgrade);
-            cardSlot.targetScale = pressed && rectangle.contains(mouse) ? 1.2f
+            Body cardBody = cardAnimationManagers.get(upgrade);
+            cardBody.targetScale = pressed && rectangle.contains(mouse) ? 1.2f
                 : hovered ? 1.075f : 1f;
 
-            cardSlot.updatePulse(false, delta);
-            cardSlot.updateHoverWobble(hovered, delta);
-            cardSlot.tickScale(delta);
+            cardBody.update(delta);
 
             if (hovered) hoveringKey = upgrade;
             if (selected) clickedCard[0] = hoveringKey;
@@ -86,10 +84,8 @@ public abstract class UpgradeBar {
             Upgrade upgrade = entry.getKey();
             Rectangle rectangle = entry.getValue();
 
-            Slot cardSlot = cardAnimationManagers.get(upgrade);
-            float s = cardSlot.scale
-                * cardSlot.pulseScale()
-                * cardSlot.wobbleScale();
+            Body cardBody = cardAnimationManagers.get(upgrade);
+            float s = cardBody.getScale();
 
             float drawW = rectangle.width * s;
             float drawH = rectangle.height * s;
@@ -98,7 +94,7 @@ public abstract class UpgradeBar {
             float adjX = rectangle.x - (drawW - rectangle.width) / 2f;
             float adjY = rectangle.y - (drawH - rectangle.height) / 2f;
 
-            float rotation = cardSlot.wobbleAngleDeg();
+            float rotation = cardBody.getRotation();
 
             drawCard(batch, upgrade, new Rectangle(adjX, adjY, drawW, drawH), s, rotation);
         }
@@ -125,7 +121,7 @@ public abstract class UpgradeBar {
         for (int i = 0; i < upgrades.size(); i++) {
             Upgrade Card = upgrades.get(i);
             cardBounds.put(Card, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
-            cardAnimationManagers.put(Card, new Slot(new Vector2(cardRectangle.x, cardRectangle.y)));
+            cardAnimationManagers.put(Card, new Body(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
     }
 
@@ -143,7 +139,7 @@ public abstract class UpgradeBar {
         return cardBounds.get(hoveringKey);
     }
 
-    public Slot getSlotByCard(AbstractCard Card) {
+    public Body getSlotByCard(AbstractCard Card) {
         return cardAnimationManagers.get(Card);
     }
 

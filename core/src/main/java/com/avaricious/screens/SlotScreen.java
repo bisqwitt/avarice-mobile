@@ -20,11 +20,10 @@ import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.popups.BoughtPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
-import com.avaricious.components.slot.Slot;
+import com.avaricious.components.slot.Body;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.effects.EffectManager;
@@ -43,7 +42,6 @@ import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPattern
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -126,7 +124,7 @@ public class SlotScreen extends ScreenAdapter {
             public void run() {
                 buttonBoard.setVisible(true);
 //                shop.show();
-                PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2(3, 7.5f), ZIndex.PACK_OPENING));
+//                PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2(3, 7.5f), ZIndex.PACK_OPENING));
             }
         }, 1);
     }
@@ -245,34 +243,33 @@ public class SlotScreen extends ScreenAdapter {
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
 
         for (PatternHitContext patternHitContext : matches) {
-            List<Slot> slots = patternHitContext.getSlots();
-            Slot middleSlot = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
+            List<Body> slots = patternHitContext.getSlots();
+            Body middleBody = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleNoDelay(() -> {
                 if (ringBar.ringOwned(PointsPerPatternHit.class))
                     ringBar.getRingByClass(PointsPerPatternHit.class).onPatternHit();
 
-                for (Slot slot : slots) {
-                    slot.beginPatternHit();
+                for (Body body : slots) {
+                    body.beginPatternHit();
                 }
             });
 
             triggerSeparateSlots(matches, patternHitContext, scheduler);
             if (PlayerStats.I().rollChance(DoubleHitChance.class)) {
                 scheduler.schedule(() -> PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(DoubleHitChance.class).getTexture(),
-                    middleSlot.getPos().x + 1f, middleSlot.getPos().y + 1f));
+                    middleBody.getPos().x + 1f, middleBody.getPos().y + 1f));
                 triggerSeparateSlots(matches, patternHitContext, scheduler);
             }
 
             scheduler.schedule(() -> {
                 PopupManager.I().releaseHoldingNumbers();
 
-                for (Slot slot : slots) {
-                    slot.pulse();
-                    slot.wobble();
+                for (Body body : slots) {
+                    body.pulse();
 
                     EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
-                        new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
+                        new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                         TextureEcho.Type.SLOT);
                 }
                 ScreenShake.I().addTrauma(0.3f);
@@ -281,11 +278,11 @@ public class SlotScreen extends ScreenAdapter {
                 int multi = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
 
                 PopupManager.I().spawnNumber(multi, Assets.I().red(),
-                    middleSlot.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleSlot.getPos().y + 1f,
+                    middleBody.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleBody.getPos().y + 1f,
                     true);
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
-                        middleSlot.getPos().x + 2.5f, middleSlot.getPos().y + 1f);
+                        middleBody.getPos().x + 2.5f, middleBody.getPos().y + 1f);
 
                 roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.MULTI, multi);
 
@@ -299,8 +296,8 @@ public class SlotScreen extends ScreenAdapter {
             scheduler.schedule(() -> {
                 if (matches.indexOf(patternHitContext) != matches.size() - 1)
                     EffectManager.increaseStreak();
-                for (Slot slot : slots) {
-                    slot.endPatternHit();
+                for (Body body : slots) {
+                    body.endPatternHit();
                     PopupManager.I().releaseHoldingNumbers();
                 }
             });
@@ -330,26 +327,25 @@ public class SlotScreen extends ScreenAdapter {
 
     private void triggerSeparateSlots(List<PatternHitContext> matches, PatternHitContext patternHitContext, TaskScheduler scheduler) {
         symbolsHitLastSpin = 0;
-        for (Slot slot : patternHitContext.getSlots()) {
+        for (Body body : patternHitContext.getSlots()) {
             scheduler.schedule(() -> {
                 symbolsHitLastSpin++;
 
-                slot.pulse();
-                slot.wobble();
+                body.pulse();
                 ScreenShake.I().addTrauma(0.2f);
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
                 int points = criticalHit ? patternHitContext.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : patternHitContext.getSymbol().baseValue();
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
-                    slot.getPos().x + 1.5f, slot.getPos().y + 1f, true);
+                    body.getPos().x + 1.5f, body.getPos().y + 1f, true);
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
-                        slot.getPos().x + 1.5f, slot.getPos().y + 2f);
+                        body.getPos().x + 1.5f, body.getPos().y + 2f);
                 roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.POINTS, points);
 
                 EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
-                    new Rectangle(slot.getPos().x, slot.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
+                    new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                     TextureEcho.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
@@ -366,8 +362,8 @@ public class SlotScreen extends ScreenAdapter {
 
             if (PlayerStats.I().rollChance(CreditSpawnChance.class)) {
                 scheduler.schedule(() -> {
-                    float x = slot.getPos().x + 1f;
-                    float y = slot.getPos().y + 1f;
+                    float x = body.getPos().x + 1f;
+                    float y = body.getPos().y + 1f;
                     PopupManager.I().spawnNumber(1, Assets.I().yellow(), x, y, false);
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CreditSpawnChance.class).getTexture(), x + 1f, y);
                     CreditManager.I().gain(1);

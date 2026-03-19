@@ -107,10 +107,8 @@ public class BossLootWindow {
         Vector2 renderPos = body.getRenderPos(new Vector2());
         float width = getTextureWidth();
         float height = getTextureHeight();
-        float scale = body.pulseScale()
-            * body.wobbleScale()
-            * body.getTargetScale();
-        float rotation = body.wobbleAngleDeg() + body.getDragTiltDeg();
+        float scale = body.getScale();
+        float rotation = body.getRotation();
 
         Pencil.I().addDrawing(new TextureDrawing(loot.shadowTexture(),
             new Rectangle(renderPos.x, renderPos.y - 0.1f, width, height),
