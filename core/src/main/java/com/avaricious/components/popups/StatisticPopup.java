@@ -3,11 +3,10 @@ package com.avaricious.components.popups;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
-public class StatisticPopup {
+public class StatisticPopup implements IPopup {
 
     private final TextureRegion texture;
 
@@ -22,6 +21,7 @@ public class StatisticPopup {
         this.y = y;
     }
 
+    @Override
     public void update(float delta) {
         timeAlive += delta;
         if (timeAlive > lifetime) {
@@ -29,7 +29,8 @@ public class StatisticPopup {
         }
     }
 
-    public void render(SpriteBatch batch) {
+    @Override
+    public void draw() {
         float pulseCurve = getPulseCurve();
 
         // Scale
@@ -72,6 +73,7 @@ public class StatisticPopup {
         return pulseCurve;
     }
 
+    @Override
     public boolean isFinished() {
         return timeAlive >= lifetime;
     }

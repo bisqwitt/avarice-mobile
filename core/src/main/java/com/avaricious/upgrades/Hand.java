@@ -32,6 +32,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     public void drawCard() {
+        if (hand.size() == 7) return;
         AbstractCard upgrade = Deck.I().drawRandomCard();
         if (upgrade == null) return;
 

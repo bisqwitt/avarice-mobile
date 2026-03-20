@@ -202,7 +202,7 @@ public class HandUi {
     }
 
     private float calcCardX(AbstractCard card) {
-        return calcFistX() + calcCardIndex(card) * CARD_OFFSET;
+        return calcFistX() + calcCardIndex(card) * (cards.size() != 7 ? CARD_OFFSET : CARD_OFFSET - 0.2f);
     }
 
     private float calcFistX() {
@@ -211,7 +211,7 @@ public class HandUi {
         if (n == 0) return 0;
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
-        float handWidth = (n - 1) * CARD_OFFSET + CARD_WIDTH;
+        float handWidth = (n - 1) * (cards.size() != 7 ? CARD_OFFSET : CARD_OFFSET - 0.2f) + CARD_WIDTH;
         return (screenWidth - handWidth) / 2f;
     }
 

@@ -10,7 +10,6 @@ import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,24 +54,26 @@ public class DigitalNumber {
     }
 
     public void draw(float delta) {
+        draw(delta, pulseEffect.getScale(), calcScale() + calcRotation());
+    }
+
+    public void draw(float delta, float scale, float rotation) {
         floatEffect.update(delta);
         swayEffect.update(delta);
         pulseEffect.update(delta);
 
-        float numberY = getNumberY();
-        float scale = pulseEffect.getScale();
-        float rotation = pulseEffect.getRotation() + swayEffect.getRotation();
+        float numberY = calcNumberY();
 
         for (int i = 0; i < numberTextures.size(); i++) {
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
                 new Rectangle(bounds.x + (i * offset), numberY - 0.1f, bounds.width, bounds.height),
-                scale, rotation, getLayer(), Assets.I().shadowColor()
+                scale, rotation, getZIndex(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
                 new Rectangle(bounds.x + (i * offset), numberY, bounds.width, bounds.height),
-                scale, rotation, getLayer(), color
+                scale, rotation, getZIndex(), color
             ));
         }
     }
@@ -110,15 +111,23 @@ public class DigitalNumber {
         return bounds;
     }
 
-    public float getNumberY() {
+    public float calcNumberY() {
         return bounds.y + floatEffect.getYOffset();
+    }
+
+    public float calcScale() {
+        return pulseEffect.getScale();
+    }
+
+    public float calcRotation() {
+        return pulseEffect.getRotation() + swayEffect.getRotation();
     }
 
     public float getRotation() {
         return swayEffect.getRotation();
     }
 
-    protected ZIndex getLayer() {
+    protected ZIndex getZIndex() {
         return zIndex;
     }
 

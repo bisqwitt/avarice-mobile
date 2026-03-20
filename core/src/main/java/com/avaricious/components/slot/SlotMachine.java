@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -103,6 +104,7 @@ public class SlotMachine {
             baseStrip.add(Symbol.SEVEN);
             baseStrip.add(Symbol.SEVEN);
         }
+        Collections.shuffle(baseStrip);
 
         for (int c = 0; c < cols; c++) {
             reels.add(new Reel(baseStrip, rows, () -> {
@@ -256,12 +258,7 @@ public class SlotMachine {
             result.add(new PatternHitContext(match.getSymbol(), bodies));
         }
 
-        result.sort(new Comparator<PatternHitContext>() {
-            @Override
-            public int compare(PatternHitContext o1, PatternHitContext o2) {
-                return o1.getSymbol().ordinal() - o2.getSymbol().ordinal();
-            }
-        });
+        result.sort(Comparator.comparingInt(o -> o.getSymbol().ordinal()));
         return result;
     }
 

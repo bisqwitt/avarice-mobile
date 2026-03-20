@@ -124,7 +124,6 @@ public class SlotScreen extends ScreenAdapter {
             public void run() {
                 buttonBoard.setVisible(true);
 //                shop.show();
-//                PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2(3, 7.5f), ZIndex.PACK_OPENING));
             }
         }, 1);
     }
@@ -389,7 +388,7 @@ public class SlotScreen extends ScreenAdapter {
         roundInfoPanel.getScoreDisplay().clearNumbers();
 
         AudioManager.I().endPayout();
-        if(!roundInfoPanel.getTargetScoreDisplay().targetScoreReached()) return;
+        if (!roundInfoPanel.getTargetScoreDisplay().targetScoreReached()) return;
 
         if (RoundsManager.I().isBossRound()) openBossLootWindow();
         else onTargetScoreReached();
@@ -399,7 +398,6 @@ public class SlotScreen extends ScreenAdapter {
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
         healthUi.healHealth();
-        handUi.discardAllCards();
         shop.show();
     }
 

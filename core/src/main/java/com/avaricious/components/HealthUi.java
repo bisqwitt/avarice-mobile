@@ -66,24 +66,24 @@ public class HealthUi {
 
         Pencil.I().addDrawing(new TextureDrawing(
             armTxtShadow,
-            new Rectangle(txtX - 0.15f, armor.getNumberY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
+            new Rectangle(txtX - 0.15f, armor.calcNumberY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxtShadow,
-            new Rectangle(txtX, health.getNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
+            new Rectangle(txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
 
         armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            new Rectangle(txtX - 0.15f, armor.getNumberY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
+            new Rectangle(txtX - 0.15f, armor.calcNumberY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxt,
-            new Rectangle(txtX, health.getNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
+            new Rectangle(txtX, health.calcNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().healthRedColor()
         ));
     }

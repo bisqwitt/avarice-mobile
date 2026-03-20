@@ -10,13 +10,13 @@ public class DevTools {
 
     public static boolean onlyLemon = false;
 
-    public static boolean lemonCherry = true;
+    public static boolean lemonCherry = false;
 
     public static boolean audioMuted = false;
 
     public static boolean enableProfiler = false;
 
-    public static boolean testRings = true;
+    public static boolean testRings = false;
 
     public static boolean allCardsInDeck = true;
 

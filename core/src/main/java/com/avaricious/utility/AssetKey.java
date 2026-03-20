@@ -238,7 +238,10 @@ public enum AssetKey {
     CLAIM_BUTTON("claim-button"),
     CLAIM_BUTTON_PRESSED("claim-button-pressed"),
     BOUGHT_TXT("bought-txt"),
-    SOLD_TXT("sold-txt");
+    BOUGHT_TXT_SHADOW("bought-txt-shadow"),
+    SOLD_TXT("sold-txt"),
+    PRICE_BOX("price-box"),
+    WOOD_TEXTURE("wood-texture");
 
     private final String path;
 

@@ -174,7 +174,6 @@ public class Reel {
         this.stopRequested = false;
         this.phase = Phase.STARTING;
         spinFinishedNotified = false;
-        // Don't reset pos; continuity feels better.
     }
 
     /**
@@ -233,12 +232,9 @@ public class Reel {
         return strip.get(mod(idx, stripLen));
     }
 
-    public Phase phase() {
-        return phase;
-    }
-
-    public float velocity() {
-        return vel;
+    private void setSymbolAtRow(int row, Symbol symbol) {
+        int idx = (int) Math.floor(pos + row);
+        strip.set(mod(idx, stripLen), symbol);
     }
 
     private static int mod(int x, int m) {

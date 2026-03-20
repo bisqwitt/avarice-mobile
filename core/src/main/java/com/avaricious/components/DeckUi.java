@@ -147,7 +147,7 @@ public class DeckUi {
                 firstCardBounds.width, firstCardBounds.height
             );
             cards.put(pendingCards.get(i), new DragableBody(bounds).setTilt(200f, 20f));
-            cards.get(pendingCards.get(i)).setIdleSwayEffectEnabled(false);
+            cards.get(pendingCards.get(i)).setIdleEffectsEnabled(false);
         }
     }
 

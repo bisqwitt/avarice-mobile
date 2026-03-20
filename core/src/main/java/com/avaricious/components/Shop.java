@@ -44,9 +44,10 @@ public class Shop {
 
     private final BuyBox buyBox = new BuyBox();
     private final CreditScore creditScore;
+
     private final ShopCardsBar cards = new ShopCardsBar(buyBox.getBounds());
-    private final CardPack cardPack = new CardPack(buyBox.getBounds());
-    private final RingPack ringPack = new RingPack(buyBox.getBounds());
+    private CardPack cardPack = new CardPack(buyBox.getBounds());
+    private RingPack ringPack = new RingPack(buyBox.getBounds());
 
     private final Runnable onReturnedFromShop;
 
@@ -137,9 +138,9 @@ public class Shop {
 
         buyBox.setVisible(cards.isDragging() || cardPack.isDragging() || ringPack.isDragging());
 
-        cards.draw();
-        cardPack.draw();
-        ringPack.draw();
+        cards.draw(delta);
+        cardPack.draw(delta);
+        ringPack.draw(delta);
 
         rerollButton.draw();
         creditScore.draw(delta);
@@ -149,6 +150,8 @@ public class Shop {
 
     public void show() {
         cards.loadCards(Deck.I().randomUpgrades(3));
+        cardPack = new CardPack(buyBox.getBounds());
+        ringPack = new RingPack(buyBox.getBounds());
 
         currentWindowY = OFFSCREEN_TOP_Y;
         windowVelocityY = 0f;

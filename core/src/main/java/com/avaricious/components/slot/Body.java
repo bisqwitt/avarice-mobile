@@ -48,7 +48,7 @@ public class Body {
         patternHitCount++;
         targetScale = 1.25f;
         setInPatternHit(true);
-        setIdleSwayEffectEnabled(false);
+        setIdleEffectsEnabled(false);
     }
 
     public void endPatternHit() {
@@ -56,7 +56,7 @@ public class Body {
         if (patternHitCount == 0) {
             targetScale = 1f;
             setInPatternHit(false);
-            setIdleSwayEffectEnabled(true);
+            setIdleEffectsEnabled(true);
         }
     }
 
@@ -81,8 +81,9 @@ public class Body {
         return idleFloatEffect.getYOffset();
     }
 
-    public void setIdleSwayEffectEnabled(boolean enabled) {
+    public void setIdleEffectsEnabled(boolean enabled) {
         idleSwayEffect.setEnabled(enabled);
+        idleFloatEffect.setEnabled(enabled);
     }
 
 }

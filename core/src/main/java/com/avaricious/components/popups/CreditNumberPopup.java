@@ -6,7 +6,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -23,8 +22,8 @@ public class CreditNumberPopup extends NumberPopup {
     }
 
     @Override
-    public void render(SpriteBatch batch, float delta) {
-        super.render(batch, delta);
+    public void draw() {
+        super.draw();
 
         float scale = getScale();
         float rotation = getRotation();

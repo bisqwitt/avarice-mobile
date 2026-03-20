@@ -7,14 +7,13 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NumberPopup {
+public class NumberPopup implements IPopup {
 
     public final static float defaultWidth = 7 / 14f;
     public final static float defaultHeight = 11 / 14f;
@@ -94,14 +93,12 @@ public class NumberPopup {
         timeInPhase = 0f;
     }
 
+    @Override
     public boolean isFinished() {
         return phase == Phase.FINISHED;
     }
 
-    public boolean isHolding() {
-        return phase == Phase.HOLD;
-    }
-
+    @Override
     public void update(float delta) {
         if (phase == Phase.FINISHED) return;
         pulseEffect.update(delta);
@@ -135,7 +132,8 @@ public class NumberPopup {
         }
     }
 
-    public void render(SpriteBatch batch, float delta) {
+    @Override
+    public void draw() {
         if (phase == Phase.FINISHED) return;
 
 //        float scale = getScale();

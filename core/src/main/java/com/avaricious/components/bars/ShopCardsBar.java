@@ -1,5 +1,8 @@
 package com.avaricious.components.bars;
 
+import com.avaricious.CreditManager;
+import com.avaricious.CreditNumber;
+import com.avaricious.components.popups.BoughtPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +29,11 @@ public class ShopCardsBar {
     private final float CARD_OFFSET = 2f;
 
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
+    private final TextureRegion priceBox = Assets.I().get(AssetKey.PRICE_BOX);
 
-    private final Map<AbstractCard, DragableBody> cards = new HashMap<>();
+    private final Map<AbstractCard, CreditNumber> cardPriceMap = new HashMap<>();
     private AbstractCard touchingCard = null;
+    private AbstractCard boughtCard = null;
 
     public ShopCardsBar(Rectangle buyBounds) {
         loadCards(Deck.I().randomUpgrades(3));
@@ -35,12 +41,13 @@ public class ShopCardsBar {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
-        for (DragableBody slot : cards.values()) slot.update(delta);
+        for (AbstractCard card : cardPriceMap.keySet()) card.getBody().update(delta);
+        if (boughtCard != null) boughtCard.getBody().update(delta);
 
         if (touching && !wasTouching) {
-            for (Map.Entry<AbstractCard, DragableBody> entry : cards.entrySet()) {
-                if (entry.getValue().getBounds().contains(mouse)) {
-                    onCardTouchDown(entry.getKey(), mouse);
+            for (AbstractCard card : cardPriceMap.keySet()) {
+                if (card.getBody().getBounds().contains(mouse)) {
+                    onCardTouchDown(card, mouse);
                     break;
                 }
             }
@@ -57,17 +64,17 @@ public class ShopCardsBar {
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
         touchingCard = card;
-        cards.get(card).targetScale = 1.3f;
-        cards.get(card).beginDrag(mouse.x, mouse.y, 0);
+        card.getBody().targetScale = 1.3f;
+        card.getBody().beginDrag(mouse.x, mouse.y, 0);
 
-        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()));
+        PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
     private void onCardTouching(AbstractCard card, Vector2 mouse) {
-        DragableBody touchingSlot = cards.get(card);
-        Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
+        DragableBody body = card.getBody();
+        Vector2 cardRenderPos = body.getRenderPos(new Vector2());
 
-        touchingSlot.dragTo(mouse.x, mouse.y, 0);
+        body.dragTo(mouse.x, mouse.y, 0);
         PopupManager.I().updateTooltip(
             new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
             true
@@ -75,32 +82,33 @@ public class ShopCardsBar {
     }
 
     private void onCardTouchReleased(AbstractCard card) {
-        DragableBody dragableBody = cards.get(card);
-        if (buyBounds.contains(dragableBody.getCardCenter())) {
+        DragableBody body = card.getBody();
+        if (buyBounds.contains(body.getCardCenter())) {
             buyCard(card);
         } else {
-            dragableBody.endDrag(0);
-            cards.get(card).targetScale = 1f;
+            body.endDrag(0);
+            body.targetScale = 1f;
         }
         touchingCard = null;
         PopupManager.I().killTooltip();
     }
 
-    public void draw() {
-        for (AbstractCard card : cards.keySet()) {
-            if (touchingCard != card) drawCard(card);
+    public void draw(float delta) {
+        for (AbstractCard card : cardPriceMap.keySet()) {
+            if (touchingCard != card) drawCard(card, delta);
         }
-        if (touchingCard != null) drawCard(touchingCard);
+        if (touchingCard != null) drawCard(touchingCard, delta);
+        if (boughtCard != null) drawCard(boughtCard, delta);
     }
 
-    private void drawCard(AbstractCard card) {
-        Rectangle bounds = cards.get(card).getBounds();
-        DragableBody slot = cards.get(card);
+    private void drawCard(AbstractCard card, float delta) {
+        Rectangle bounds = card.getBody().getBounds();
+        DragableBody body = card.getBody();
 
-        final Vector2 position = slot.getRenderPos(new Vector2());
-        final float alpha = slot.getAlpha();
-        final float scale = slot.getScale();
-        final float rotation = slot.getRotation();
+        final Vector2 position = body.getRenderPos(new Vector2());
+        final float alpha = body.getAlpha();
+        final float scale = body.getScale();
+        final float rotation = body.getRotation();
         final ZIndex layer = card == touchingCard ? ZIndex.SHOP_CARD_TOUCHING : ZIndex.SHOP_CARD;
 
         final Color shadowColor = Assets.I().shadowColor();
@@ -109,8 +117,7 @@ public class ShopCardsBar {
             new Rectangle(
                 position.x, position.y - (card == touchingCard ? 0.3f : 0.2f),
                 bounds.width, bounds.height
-            ),
-            scale, rotation,
+            ), scale, rotation,
             layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
@@ -119,10 +126,15 @@ public class ShopCardsBar {
             scale, rotation,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
+        if (card != touchingCard && card != boughtCard) {
+            cardPriceMap.get(card).setZIndex(layer);
+            cardPriceMap.get(card).getBounds().y = position.y + 2.6f;
+            cardPriceMap.get(card).draw(delta, 1f, rotation);
+        }
     }
 
     public void loadCards(List<? extends AbstractCard> cards) {
-        this.cards.clear();
+        this.cardPriceMap.clear();
         int index = 0;
         for (AbstractCard card : cards) {
             Rectangle bounds = new Rectangle(
@@ -130,23 +142,33 @@ public class ShopCardsBar {
                 firstCardBounds.width, firstCardBounds.height
             );
 
-            DragableBody slot = new DragableBody(bounds)
-                .setTilt(200f, 20f);
+            card.addBody(bounds);
 
-            slot.pulse();
-
-            this.cards.put(card, slot);
+            this.cardPriceMap.put(card, new CreditNumber(card.price(), new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f));
             index++;
         }
     }
 
     private void buyCard(AbstractCard card) {
         Deck.I().addCardToDeck(card);
-        cards.remove(card);
+        CreditManager.I().pay(card.price());
+        boughtCard = card;
+        cardPriceMap.remove(card);
+
+        card.getBody().pulse();
+
+        Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
+        PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2((renderPos.x + card.getBody().getBounds().width / 2f) - BoughtPopup.WIDTH / 2f, renderPos.y + 3f), ZIndex.SHOP_CARD_TOUCHING));
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                boughtCard = null;
+            }
+        }, 1);
     }
 
     public void setY(float y) {
-        cards.values().forEach(body -> body.getPos().y = y);
+        cardPriceMap.keySet().forEach(body -> body.getBody().getPos().y = y);
     }
 
     public boolean isDragging() {

@@ -42,6 +42,7 @@ public abstract class PackOpening {
 
     private final Rectangle bounds;
     private DragableBody body;
+    private final CreditNumber price;
 
     private final Rectangle buyBounds;
 
@@ -83,7 +84,7 @@ public abstract class PackOpening {
 
     private Upgrade result;
 
-    private Button sellButton = new Button(() -> {
+    private final Button sellButton = new Button(() -> {
         CreditManager.I().gain(result.price());
         close();
     },
@@ -93,7 +94,7 @@ public abstract class PackOpening {
         new Rectangle(1, 5, 79 / 25f, 25 / 25f),
         Input.Keys.BACKSPACE, ZIndex.PACK_OPENING_SELECTED);
 
-    private Button claimButton = new Button(() -> {
+    private final Button claimButton = new Button(() -> {
         if (result instanceof AbstractRing) RingBar.I().addRing((AbstractRing) result);
         else Deck.I().addCardToDeck((AbstractCard) result);
         close();
@@ -107,6 +108,8 @@ public abstract class PackOpening {
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
         body = new DragableBody(bounds);
+
+        price = new CreditNumber(5, new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f);
 
         this.buyBounds = buyBounds;
     }
@@ -153,7 +156,7 @@ public abstract class PackOpening {
         }
     }
 
-    public void draw() {
+    public void draw(float delta) {
         if (closed) return;
         Rectangle bounds = body.getBounds();
 
@@ -164,6 +167,9 @@ public abstract class PackOpening {
         final Vector2 drawPos = new Vector2(position).add(shakeOffset);
         final float drawRot = rotation + shakeRotDeg;
         final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.SHOP;
+
+        price.setZIndex(layer);
+        price.getBounds().y = position.y - 1f;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -184,6 +190,8 @@ public abstract class PackOpening {
             scale, drawRot,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
+        if (!dragging && !charging && !ripped)
+            price.draw(delta, 1f, rotation);
 
         if (whiten > 0f && !ripped) {
             float easedWhiten = whiten * whiten * (3f - 2f * whiten);
@@ -345,6 +353,7 @@ public abstract class PackOpening {
     }
 
     private void buy() {
+        CreditManager.I().pay(3);
         bought = true;
         Vector2 pos = body.getRenderPos(new Vector2());
         Rectangle initialBounds = new Rectangle(pos.x, pos.y, bounds.width, bounds.height);

@@ -1,9 +1,5 @@
 package com.avaricious.components.roundInfoPanel;
 
-import com.avaricious.RoundsManager;
-import com.avaricious.audio.AudioManager;
-import com.avaricious.screens.ScreenManager;
-import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -17,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 public class RoundInfoPanel {
 
     private final TextureRegion backgroundTexture = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
+    private final TextureRegion woodTexture = Assets.I().get(AssetKey.WOOD_TEXTURE);
 
     private final TargetScoreDisplay targetScoreDisplay = new TargetScoreDisplay();
     private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
@@ -86,6 +83,7 @@ public class RoundInfoPanel {
 
         Pencil.I().addDrawing(new TextureDrawing(backgroundTexture,
             drawBounds, unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
+
         targetScoreDisplay.draw(delta, unfoldAmount);
         scoreDisplay.draw(delta, unfoldAmount);
 

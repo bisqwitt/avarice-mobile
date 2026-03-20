@@ -78,7 +78,7 @@ public class TargetScoreDisplay {
             RoundsManager.I().isBossRound() ? bossTxtShadow : roundTxtShadow,
             new Rectangle(
                 ROUND_TXT_X,
-                currentRoundNumber.getNumberY() - 0.1f,
+                currentRoundNumber.calcNumberY() - 0.1f,
                 37f / 13f,
                 DIGIT_HEIGHT
             ), 1f, currentRoundNumber.getRotation(),
@@ -90,7 +90,7 @@ public class TargetScoreDisplay {
             RoundsManager.I().isBossRound() ? bossTxt : roundTxt,
             new Rectangle(
                 ROUND_TXT_X,
-                currentRoundNumber.getNumberY(),
+                currentRoundNumber.calcNumberY(),
                 37f / 13f,
                 DIGIT_HEIGHT
             ), 1f, currentRoundNumber.getRotation(),
@@ -103,7 +103,7 @@ public class TargetScoreDisplay {
             colon,
             new Rectangle(
                 COLON_X,
-                currentRoundNumber.getNumberY(),
+                currentRoundNumber.calcNumberY(),
                 DIGIT_WIDTH,
                 DIGIT_HEIGHT
             ),
@@ -133,7 +133,7 @@ public class TargetScoreDisplay {
 
             float screenCenter = (ScreenManager.getViewport().getWorldWidth() / 2f) * 100;
             float textX = screenCenter - 1000f / 2f;
-            float textY = (currentRoundNumber.getNumberY() - 2.5f) * 100;
+            float textY = (currentRoundNumber.calcNumberY() - 2.5f) * 100;
 
             Pencil.I().addDrawing(new FontDrawing(font, bossDescription,
                 new Vector2(textX, textY),
@@ -145,7 +145,7 @@ public class TargetScoreDisplay {
                 anteTxtShadow,
                 new Rectangle(
                     2.5f,
-                    currentAnteNumber.getNumberY() - 0.1f,
+                    currentAnteNumber.calcNumberY() - 0.1f,
                     31f / 13f,
                     11f / 13f
                 ),
@@ -157,7 +157,7 @@ public class TargetScoreDisplay {
                 anteTxt,
                 new Rectangle(
                     2.5f,
-                    currentAnteNumber.getNumberY(),
+                    currentAnteNumber.calcNumberY(),
                     31f / 13f,
                     11f / 13f
                 ),
