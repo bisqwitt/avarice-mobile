@@ -5,11 +5,21 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.rings.AbstractRing;
+import com.avaricious.upgrades.rings.DoubleXpRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,9 +42,11 @@ public class RingBar {
 
     private final Rectangle firstRingBounds = new Rectangle(0.35f, 7.4f, 1.25f, 1.25f);
     private final float RING_OFFSET = 1.75f;
+    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
+    private final GlyphLayout ringsHoldingTxt = new GlyphLayout();
 
     private AbstractRing touchingRing = null;
     private AbstractRing selectedRing = null;
@@ -47,6 +59,8 @@ public class RingBar {
             addRing(new ThreeOfAKindMultiAdditionRing());
             addRing(new PointsForEveryRingHit());
             addRing(new CherryValueStackRing());
+            addRing(new MultiPerEmptyRingSlotRing());
+            addRing(new DoubleXpRing());
         }
     }
 
@@ -58,7 +72,7 @@ public class RingBar {
                 .filter(ring -> ring.getBody().getBounds().contains(mouse))
                 .findFirst();
 
-            if(r.isPresent()) onRingTouchDown(r.get(), mouse);
+            if (r.isPresent()) onRingTouchDown(r.get(), mouse);
             else deselectRing(true);
 
         }
@@ -71,7 +85,7 @@ public class RingBar {
             onRingTouchReleased(touchingRing, mouse);
         }
 
-        if(touchingRing != null || selectedRing != null) {
+        if (touchingRing != null || selectedRing != null) {
             AbstractRing ring = touchingRing == null ? selectedRing : touchingRing;
             Vector2 ringRenderPos = ring.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
@@ -82,7 +96,7 @@ public class RingBar {
     }
 
     private void onRingTouchDown(AbstractRing ring, Vector2 mouse) {
-        if(selectedRing != null && ring != selectedRing) deselectRing(false);
+        if (selectedRing != null && ring != selectedRing) deselectRing(false);
         touchingRing = ring;
         ring.getBody().targetScale = 1.3f;
         ring.getBody().setIdleEffectsEnabled(false);
@@ -103,10 +117,10 @@ public class RingBar {
         DragableBody body = ring.getBody();
         body.endDrag(0);
         boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
-        if(isClick) {
-            if(selectedRing == ring) deselectRing(true);
+        if (isClick) {
+            if (selectedRing == ring) deselectRing(true);
             else {
-                if(selectedRing != null) deselectRing(false);
+                if (selectedRing != null) deselectRing(false);
                 selectedRing = ring;
             }
         } else selectedRing = ring;
@@ -115,6 +129,10 @@ public class RingBar {
 
     public void draw() {
         rings.forEach(ring -> ring.draw(ring == touchingRing));
+
+        Vector2 ringsHoldingPos = new Vector2(7.25f * 100, 7.4f * 100f);
+        ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
+        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }
 
     public void addRing(AbstractRing ring) {
@@ -179,11 +197,11 @@ public class RingBar {
     }
 
     public void deselectRing(boolean killTooltip) {
-        if(selectedRing == null) return;
+        if (selectedRing == null) return;
         selectedRing.getBody().targetScale = 1f;
         selectedRing.getBody().setIdleEffectsEnabled(true);
         selectedRing = null;
-        if(killTooltip) {
+        if (killTooltip) {
             PopupManager.I().killTooltip(tooltipPopup);
             tooltipPopup = null;
         }

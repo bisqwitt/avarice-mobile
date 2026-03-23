@@ -68,7 +68,7 @@ public class ShopCardsBar {
             onCardTouchReleased(touchingCard, mouse);
         }
 
-        if(touchingCard != null || selectedCard != null) {
+        if (touchingCard != null || selectedCard != null) {
             AbstractCard card = touchingCard == null ? selectedCard : touchingCard;
             Vector2 cardRenderPos = card.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
@@ -79,7 +79,7 @@ public class ShopCardsBar {
     }
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
-        if(selectedCard != null && card != selectedCard) deselectCard(false);
+        if (selectedCard != null && card != selectedCard) deselectCard(false);
         touchingCard = card;
         card.getBody().targetScale = 1.3f;
         card.getBody().setIdleEffectsEnabled(false);
@@ -96,18 +96,22 @@ public class ShopCardsBar {
 
     private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
         DragableBody body = card.getBody();
-        if (buyBounds.contains(body.getCardCenter())) {
+        if (buyBounds.contains(body.getCardCenter()) && CreditManager.I().enoughCredit(card.price())) {
             buyCard(card);
         } else {
+            if (buyBounds.contains(body.getCardCenter())) CreditManager.I().pulse();
             body.endDrag(0);
             boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
-            if(isClick) {
-                if(selectedCard == card) deselectCard(true);
+            if (isClick) {
+                if (selectedCard == card) deselectCard(true);
                 else {
-                    if(selectedCard != null) deselectCard(false);
+                    if (selectedCard != null) deselectCard(false);
                     selectedCard = card;
                 }
-            } else selectedCard = card;
+            } else {
+                selectedCard = card;
+                deselectCard(true);
+            }
         }
         touchingCard = null;
     }
@@ -171,6 +175,7 @@ public class ShopCardsBar {
     private void buyCard(AbstractCard card) {
         Deck.I().addCardToDeck(card);
         CreditManager.I().pay(card.price());
+        PopupManager.I().killTooltip(tooltipPopup);
         boughtCard = card;
         cardPriceMap.remove(card);
 
@@ -187,11 +192,11 @@ public class ShopCardsBar {
     }
 
     private void deselectCard(boolean killTooltip) {
-        if(selectedCard == null) return;
+        if (selectedCard == null) return;
         selectedCard.getBody().targetScale = 1f;
         selectedCard.getBody().setIdleEffectsEnabled(true);
         selectedCard = null;
-        if(killTooltip) PopupManager.I().killTooltip(tooltipPopup);
+        if (killTooltip) PopupManager.I().killTooltip(tooltipPopup);
     }
 
     public void setY(float y) {
@@ -200,6 +205,10 @@ public class ShopCardsBar {
 
     public boolean isDragging() {
         return touchingCard != null;
+    }
+
+    public boolean isSelected() {
+        return selectedCard != null;
     }
 
 }

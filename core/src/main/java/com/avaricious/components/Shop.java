@@ -37,7 +37,6 @@ public class Shop {
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
     private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
     private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
-    private final TextureRegion yellowTexture = Assets.I().get(AssetKey.YELLOW_PIXEL);
 
     private final Button nextRoundButton;
     private final Button rerollButton;
@@ -136,7 +135,9 @@ public class Shop {
             ZIndex.SHOP
         ));
 
-        buyBox.setVisible(cards.isDragging() || cardPack.isDragging() || ringPack.isDragging());
+        buyBox.setVisible(cards.isDragging() || cards.isSelected()
+            || cardPack.isDragging() || cardPack.isSelected()
+            || ringPack.isDragging() || ringPack.isSelected());
 
         cards.draw(delta);
         cardPack.draw(delta);

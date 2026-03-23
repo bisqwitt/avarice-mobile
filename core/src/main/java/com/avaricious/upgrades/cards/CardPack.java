@@ -47,7 +47,7 @@ public class CardPack extends PackOpening {
 
     @Override
     protected float getTooltipYOffset() {
-        return 2.85f;
+        return 3f;
     }
 
     private List<AssetKey> cardAssetKeys() {

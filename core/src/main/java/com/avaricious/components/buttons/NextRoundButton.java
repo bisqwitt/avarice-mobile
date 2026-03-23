@@ -24,8 +24,8 @@ public class NextRoundButton extends Button {
         super.drawAt(bounds);
 
         float txtX = (bounds.x + bounds.width / 2f) - txtWidth / 2f;
-        float txtY = (bounds.y + bounds.height / 2f) - txtHeight / 2f;
-        if (currentTexture == pressedButtonTexture) txtY -= 0.025f;
+        float txtY = (bounds.y + 0.1f + bounds.height / 2f) - txtHeight / 2f;
+        if (currentTexture == pressedButtonTexture) txtY -= 0.075f;
 
         Pencil.I().addDrawing(new TextureDrawing(nextRoundTxt,
             new Rectangle(txtX, txtY, txtWidth, txtHeight), layer));

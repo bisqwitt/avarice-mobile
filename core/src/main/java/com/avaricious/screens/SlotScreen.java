@@ -106,7 +106,7 @@ public class SlotScreen extends ScreenAdapter {
         slotMachine = SlotMachine.I();
         xpBar = new XpBar(statusUpgradeWindow::show);
 
-        screenShake = ScreenShake.I().setCamera(app.getViewport().getCamera());
+        screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
 
         if (DevTools.enableProfiler) Profiler.start();

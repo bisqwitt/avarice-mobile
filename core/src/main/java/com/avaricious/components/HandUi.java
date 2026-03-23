@@ -1,5 +1,7 @@
 package com.avaricious.components;
 
+import com.avaricious.RoundsManager;
+import com.avaricious.bosses.DiscardACardAfterEveryPlayedCardBoss;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
@@ -11,15 +13,18 @@ import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.UiUtility;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
@@ -31,6 +36,7 @@ import java.util.stream.Collectors;
 public class HandUi {
 
     private static HandUi instance;
+
     public static HandUi I() {
         return instance == null ? instance = new HandUi() : instance;
     }
@@ -46,6 +52,7 @@ public class HandUi {
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final List<AbstractCard> cards = new ArrayList<>();
+    private final GlyphLayout cardsHoldingTxt = new GlyphLayout();
 
     private AbstractCard draggingCard = null;
     private AbstractCard selectedCard = null;
@@ -54,6 +61,7 @@ public class HandUi {
     private List<? extends AbstractCard> pendingHand;
     private TooltipPopup tooltipPopup;
     private final Vector2 mouseTouchdownLocation = new Vector2();
+
     private HandUi() {
         Hand.I().onChange(newHand -> pendingHand = newHand);
     }
@@ -86,7 +94,7 @@ public class HandUi {
             onCardTouchReleased(draggingCard, mouse);
         }
 
-        if(draggingCard != null || selectedCard != null) {
+        if (draggingCard != null || selectedCard != null) {
             AbstractCard card = draggingCard == null ? selectedCard : draggingCard;
             Vector2 cardRenderPos = card.getBody().getRenderPos(new Vector2());
             boolean hoveringSlotMachine = SlotMachine.windowBounds.contains(card.getBody().getCardCenter());
@@ -99,14 +107,15 @@ public class HandUi {
     }
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
-        if(selectedCard != null && card != selectedCard) deselectCard(false);
+        if (selectedCard != null && card != selectedCard) deselectCard(false);
         draggingCard = card;
         card.getBody().targetScale = 1.3f;
         card.getBody().setIdleEffectsEnabled(false);
         card.getBody().beginDrag(mouse.x, mouse.y, 0);
 
         mouseTouchdownLocation.set(mouse);
-        if(selectedCard == null) tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
+        if (selectedCard == null)
+            tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
     private void onCardTouching(AbstractCard card, Vector2 mouse) {
@@ -125,10 +134,10 @@ public class HandUi {
         } else {
             body.endDrag(0);
             boolean isClick = mouseTouchdownLocation.dst2(mouse) <= 0.2f * 0.2f;
-            if(isClick) {
-                if(selectedCard == card) deselectCard(true);
+            if (isClick) {
+                if (selectedCard == card) deselectCard(true);
                 else {
-                    if(selectedCard != null) deselectCard(false);
+                    if (selectedCard != null) deselectCard(false);
                     selectedCard = card;
                 }
             } else selectedCard = card;
@@ -150,6 +159,10 @@ public class HandUi {
         if (draggingCard != null) drawCard(draggingCard);
         if (selectedCard != null) drawCard(selectedCard);
         if (applyingCard != null) drawCard(applyingCard);
+
+        Vector2 cardsHoldingPos = new Vector2(7.25f * 100f, 3.5f * 100f);
+        cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
+        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
     }
 
     private void drawCard(AbstractCard card) {
@@ -221,7 +234,7 @@ public class HandUi {
         for (AbstractCard card : cards) {
             if (card == draggingCard
                 && (SlotMachine.windowBounds.contains(card.getBody().getCardCenter())
-                    || DeckUi.I().getHitBox().contains(card.getBody().getCardCenter()))) continue;
+                || DeckUi.I().getHitBox().contains(card.getBody().getCardCenter()))) continue;
             card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
     }
@@ -303,11 +316,11 @@ public class HandUi {
     }
 
     public void deselectCard(boolean killTooltip) {
-        if(selectedCard == null) return;
+        if (selectedCard == null) return;
         selectedCard.getBody().targetScale = 1f;
         selectedCard.getBody().setIdleEffectsEnabled(true);
         selectedCard = null;
-        if(killTooltip) {
+        if (killTooltip) {
             PopupManager.I().killTooltip(tooltipPopup);
             tooltipPopup = null;
         }
@@ -326,6 +339,7 @@ public class HandUi {
         pos.x += 1.3f;
         pos.y += 1.8f;
         card.createPopupRunnable(pos).run();
+        PopupManager.I().killTooltip(tooltipPopup);
 
         Timer.schedule(new Timer.Task() {
             @Override
@@ -336,6 +350,9 @@ public class HandUi {
                 });
             }
         }, 0.5f);
+
+        if (RoundsManager.I().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
+            Hand.I().discardRandomCard();
     }
 
     public void discardCard(AbstractCard card) {

@@ -132,8 +132,8 @@ public abstract class DisablableButton extends Button {
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
-            defaultButtonTexture,
-            new Rectangle(bounds.x, currentTexture == pressedButtonTexture ? bounds.y - 0.1f : bounds.y, bounds.width, bounds.height),
+            currentTexture,
+            new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height),
             layer, new Color(1f, 1f, 1f, alpha)
         ));
     }

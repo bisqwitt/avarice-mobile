@@ -2,7 +2,9 @@ package com.avaricious;
 
 import com.avaricious.components.RingBar;
 import com.avaricious.components.buttons.Button;
+import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.SoldPopup;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
@@ -82,15 +84,24 @@ public abstract class PackOpening {
     protected boolean selected = false;
     protected boolean ripped = false;
     private boolean dragging = false;
+    private boolean closing = false;
     private boolean closed = false;
 
     private Upgrade result;
-    private Vector2 mouseTouchdownLocation = new Vector2();
+    private final Vector2 mouseTouchdownLocation = new Vector2();
     private TooltipPopup tooltipPopup = null;
 
     private final Button sellButton = new Button(() -> {
         CreditManager.I().gain(result.price());
-        close();
+        PopupManager.I().killTooltip(tooltipPopup);
+        closing = true;
+        PopupManager.I().spawnTextPopup(new SoldPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                close();
+            }
+        }, 1);
     },
         Assets.I().get(AssetKey.SELL_BUTTON),
         Assets.I().get(AssetKey.SELL_BUTTON_PRESSED),
@@ -101,7 +112,15 @@ public abstract class PackOpening {
     private final Button claimButton = new Button(() -> {
         if (result instanceof AbstractRing) RingBar.I().addRing((AbstractRing) result);
         else Deck.I().addCardToDeck((AbstractCard) result);
-        close();
+        PopupManager.I().killTooltip(tooltipPopup);
+        closing = true;
+        PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                close();
+            }
+        }, 1);
     },
         Assets.I().get(AssetKey.CLAIM_BUTTON),
         Assets.I().get(AssetKey.CLAIM_BUTTON_PRESSED),
@@ -130,8 +149,8 @@ public abstract class PackOpening {
 
         if (bought) return;
 
-        if (touching && !wasTouching && body.getBounds().contains(mouse)) {
-            if(body.getBounds().contains(mouse)) {
+        if (touching && !wasTouching) {
+            if (body.getBounds().contains(mouse)) {
                 this.dragging = true;
                 body.targetScale = 1.3f;
                 body.setIdleEffectsEnabled(false);
@@ -147,20 +166,24 @@ public abstract class PackOpening {
         }
 
         if (!touching && wasTouching && dragging) {
-            if (buyBounds.contains(body.getCardCenter())) {
+            if (buyBounds.contains(body.getCardCenter()) && CreditManager.I().enoughCredit(randomRing.price())) {
                 buy();
             } else {
+                if (buyBounds.contains(body.getCardCenter())) CreditManager.I().pulse();
                 body.endDrag(0);
                 boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
-                if(isClick) {
-                    if(selected) deselect(true);
+                if (isClick) {
+                    if (selected) deselect(true);
                     else selected = true;
-                } else selected = true;
+                } else {
+                    selected = true;
+                    deselect(true);
+                }
             }
             dragging = false;
         }
 
-        if(touching || selected) {
+        if (dragging || selected) {
             Vector2 cardRenderPos = body.getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
                 new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
@@ -173,7 +196,7 @@ public abstract class PackOpening {
         body.targetScale = 1f;
         body.setIdleEffectsEnabled(true);
         selected = false;
-        if(killTooltip) {
+        if (killTooltip) {
             PopupManager.I().killTooltip(tooltipPopup);
             tooltipPopup = null;
         }
@@ -231,7 +254,7 @@ public abstract class PackOpening {
             drawScreenFlash(layer);
         }
 
-        if (ripped) {
+        if (ripped && !closing) {
             sellButton.draw();
             claimButton.draw();
         }
@@ -378,6 +401,8 @@ public abstract class PackOpening {
     private void buy() {
         CreditManager.I().pay(3);
         bought = true;
+        PopupManager.I().killTooltip(tooltipPopup);
+
         Vector2 pos = body.getRenderPos(new Vector2());
         Rectangle initialBounds = new Rectangle(pos.x, pos.y, bounds.width, bounds.height);
         body = new DragableBody(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
@@ -454,6 +479,10 @@ public abstract class PackOpening {
 
     public boolean isDragging() {
         return dragging;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 
     public Vector2 getCenter() {

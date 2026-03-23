@@ -34,6 +34,10 @@ public class CreditManager extends Observable<Integer> {
         return credits;
     }
 
+    public void pulse() {
+        setCredits(getCredits());
+    }
+
     private void setCredits(int newValue) {
         credits = newValue;
         notifyChanged(newValue);

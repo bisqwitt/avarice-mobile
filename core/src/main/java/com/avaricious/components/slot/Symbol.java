@@ -1,5 +1,7 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.RoundsManager;
+import com.avaricious.bosses.DecreaseSymbolValueBoss;
 import com.avaricious.utility.AssetKey;
 
 public enum Symbol {
@@ -26,7 +28,9 @@ public enum Symbol {
     }
 
     public Integer baseValue() {
-        return baseValue;
+        return RoundsManager.I().getBoss() instanceof DecreaseSymbolValueBoss
+            ? baseValue - 1
+            : baseValue;
     }
 
     public void setBaseValue(int value) {

@@ -15,8 +15,11 @@ public abstract class AbstractBoss {
     public static AbstractBoss getRandomBoss() {
         List<Class<? extends AbstractBoss>> allBossClasses = Arrays.asList(
             LemonDebuffBoss.class,
+            CherryDebuffBoss.class,
             OneLessCardBoss.class,
-            DoubleDamageBoss.class
+            DoubleDamageBoss.class,
+            DecreaseSymbolValueBoss.class,
+            DiscardACardAfterEveryPlayedCardBoss.class
         );
 
         try {

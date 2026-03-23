@@ -6,7 +6,7 @@ import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStack
 public class LemonDebuffBoss extends AbstractBoss {
     @Override
     public String description() {
-        return "Lemon's are debuffed";
+        return "Lemons are debuffed";
     }
 
     @Override

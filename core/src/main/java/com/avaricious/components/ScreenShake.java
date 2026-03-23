@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class ScreenShake {
 
     private static ScreenShake instance;
@@ -16,11 +19,12 @@ public final class ScreenShake {
     private ScreenShake() {
     }
 
-    private Camera camera;
+    private Camera viewportCamera;
+    private Camera uiViewportCamera;
 
     // Baseline
-    private final Vector2 basePos = new Vector2();
-    private final Vector3 baseUp = new Vector3();
+    private final Map<Camera, Vector2> basePos = new HashMap<>();
+    private final Map<Camera, Vector3> baseUp = new HashMap<>();
     private boolean baseCaptured = false;
 
     // Trauma model (0..1)
@@ -42,8 +46,9 @@ public final class ScreenShake {
     // Track current roll so we can undo cleanly
     private float currentRollDeg = 0f;
 
-    public ScreenShake setCamera(Camera camera) {
-        this.camera = camera;
+    public ScreenShake setCameras(Camera viewportCamera, Camera uiViewportCamera) {
+        this.viewportCamera = viewportCamera;
+        this.uiViewportCamera = uiViewportCamera;
         this.baseCaptured = false; // recapture baseline next update
         this.currentRollDeg = 0f;
         return this;
@@ -57,15 +62,14 @@ public final class ScreenShake {
      * Call after resize or whenever you "snap" the camera to a new base.
      */
     public void captureBaseNow() {
-        if (camera == null) return;
-        basePos.set(camera.position.x, camera.position.y);
-        baseUp.set(camera.up);
+        basePos.put(viewportCamera, new Vector2(viewportCamera.position.x, viewportCamera.position.y));
+        baseUp.put(viewportCamera, new Vector3(viewportCamera.up));
+        basePos.put(uiViewportCamera, new Vector2(uiViewportCamera.position.x, uiViewportCamera.position.y));
+        baseUp.put(uiViewportCamera, new Vector3(uiViewportCamera.up));
         baseCaptured = true;
     }
 
     public void update(float delta) {
-        if (camera == null) return;
-
         if (!baseCaptured) {
             captureBaseNow();
         }
@@ -93,11 +97,15 @@ public final class ScreenShake {
         float offsetY = oscY * (maxOffsetPixels * shake);
 
         // Translation
-        camera.position.set(basePos.x + offsetX, basePos.y + offsetY, camera.position.z);
+        viewportCamera.position.set(basePos.get(viewportCamera).x + offsetX, basePos.get(viewportCamera).y + offsetY, viewportCamera.position.z);
+        uiViewportCamera.position.set(basePos.get(uiViewportCamera).x + offsetX * 100, basePos.get(uiViewportCamera).y + offsetY * 100, uiViewportCamera.position.z);
 
         // Roll (rotate UP around the camera's forward axis)
         float targetRoll = (nr - 0.5f) * 2f * (maxRollDeg * shake);
         applyRoll(targetRoll);
+
+        viewportCamera.update();
+        uiViewportCamera.update();
     }
 
     public boolean isShaking() {
@@ -126,18 +134,22 @@ public final class ScreenShake {
 
     private void restore() {
         // Restore orientation and position
-        camera.up.set(baseUp);
+        viewportCamera.up.set(baseUp.get(viewportCamera));
+        uiViewportCamera.up.set(baseUp.get(uiViewportCamera));
         currentRollDeg = 0f;
-        camera.position.set(basePos.x, basePos.y, camera.position.z);
+        viewportCamera.position.set(basePos.get(viewportCamera).x, basePos.get(viewportCamera).y, viewportCamera.position.z);
+        uiViewportCamera.position.set(basePos.get(uiViewportCamera).x, basePos.get(uiViewportCamera).y, uiViewportCamera.position.z);
     }
 
     private void applyRoll(float targetRollDeg) {
         // Reset to base up, then apply target roll (prevents drift)
-        camera.up.set(baseUp);
+        viewportCamera.up.set(baseUp.get(viewportCamera));
+        uiViewportCamera.up.set(baseUp.get(uiViewportCamera));
 
         if (Math.abs(targetRollDeg) > 0.0001f) {
             // Rotate UP vector around the forward axis (direction)
-            camera.up.rotate(camera.direction, targetRollDeg);
+            viewportCamera.up.rotate(viewportCamera.direction, targetRollDeg);
+            uiViewportCamera.up.rotate(uiViewportCamera.direction, targetRollDeg);
         }
         currentRollDeg = targetRollDeg;
     }
