@@ -4,6 +4,7 @@ import com.avaricious.components.RingBar;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
 import com.avaricious.utility.Assets;
@@ -34,6 +35,11 @@ public abstract class AbstractRing extends Upgrade {
     @Override
     public String title() {
         return "Ring";
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return RingType.PASSIVE;
     }
 
     public void draw(boolean isTouching) {

@@ -46,9 +46,9 @@ public class SlotMachine {
     public static final float spacingY = 0.15f;
 
     public static final float originX = 0.2f;
-    public static final float originY = 8.9f;
+    public static final float originY = 9.26f;
 
-    public static final Rectangle windowBounds = new Rectangle(0.05f, 8.8f, 8.85f, 5.6f);
+    public static final Rectangle windowBounds = new Rectangle(0.05f, 9.16f, 8.85f, 5.6f);
 
     // Visual cells (for selection pulse/scale)
     private final Body[][] grid = new Body[cols][rows];

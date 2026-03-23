@@ -241,7 +241,10 @@ public enum AssetKey {
     BOUGHT_TXT_SHADOW("bought-txt-shadow"),
     SOLD_TXT("sold-txt"),
     PRICE_BOX("price-box"),
-    WOOD_TEXTURE("wood-texture");
+    WOOD_TEXTURE("wood-texture"),
+    CARD_TYPE_BOX_RED("card-type-box-red"),
+    CARD_TYPE_BOX_BLUE("card-type-box-blue"),
+    CARD_TYPE_BOX_GREEN("card-type-box-green");
 
     private final String path;
 

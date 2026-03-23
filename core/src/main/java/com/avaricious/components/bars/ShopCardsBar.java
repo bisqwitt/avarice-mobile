@@ -4,6 +4,7 @@ import com.avaricious.CreditManager;
 import com.avaricious.CreditNumber;
 import com.avaricious.components.popups.BoughtPopup;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.cards.AbstractCard;
@@ -33,7 +34,11 @@ public class ShopCardsBar {
 
     private final Map<AbstractCard, CreditNumber> cardPriceMap = new HashMap<>();
     private AbstractCard touchingCard = null;
+    private AbstractCard selectedCard = null;
     private AbstractCard boughtCard = null;
+
+    private Vector2 mouseTouchdownLocation = new Vector2();
+    private TooltipPopup tooltipPopup = null;
 
     public ShopCardsBar(Rectangle buyBounds) {
         loadCards(Deck.I().randomUpgrades(3));
@@ -48,9 +53,11 @@ public class ShopCardsBar {
             for (AbstractCard card : cardPriceMap.keySet()) {
                 if (card.getBody().getBounds().contains(mouse)) {
                     onCardTouchDown(card, mouse);
-                    break;
+                    return;
                 }
             }
+
+            deselectCard(true);
         }
 
         if (touching && touchingCard != null) {
@@ -58,39 +65,51 @@ public class ShopCardsBar {
         }
 
         if (!touching && wasTouching && touchingCard != null) {
-            onCardTouchReleased(touchingCard);
+            onCardTouchReleased(touchingCard, mouse);
+        }
+
+        if(touchingCard != null || selectedCard != null) {
+            AbstractCard card = touchingCard == null ? selectedCard : touchingCard;
+            Vector2 cardRenderPos = card.getBody().getRenderPos(new Vector2());
+            PopupManager.I().updateTooltip(
+                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
+                true
+            );
         }
     }
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
+        if(selectedCard != null && card != selectedCard) deselectCard(false);
         touchingCard = card;
         card.getBody().targetScale = 1.3f;
+        card.getBody().setIdleEffectsEnabled(false);
         card.getBody().beginDrag(mouse.x, mouse.y, 0);
 
-        PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
+        mouseTouchdownLocation.set(mouse);
+        tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
     private void onCardTouching(AbstractCard card, Vector2 mouse) {
         DragableBody body = card.getBody();
-        Vector2 cardRenderPos = body.getRenderPos(new Vector2());
-
         body.dragTo(mouse.x, mouse.y, 0);
-        PopupManager.I().updateTooltip(
-            new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
-            true
-        );
     }
 
-    private void onCardTouchReleased(AbstractCard card) {
+    private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
         DragableBody body = card.getBody();
         if (buyBounds.contains(body.getCardCenter())) {
             buyCard(card);
         } else {
             body.endDrag(0);
-            body.targetScale = 1f;
+            boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
+            if(isClick) {
+                if(selectedCard == card) deselectCard(true);
+                else {
+                    if(selectedCard != null) deselectCard(false);
+                    selectedCard = card;
+                }
+            } else selectedCard = card;
         }
         touchingCard = null;
-        PopupManager.I().killTooltip();
     }
 
     public void draw(float delta) {
@@ -165,6 +184,14 @@ public class ShopCardsBar {
                 boughtCard = null;
             }
         }, 1);
+    }
+
+    private void deselectCard(boolean killTooltip) {
+        if(selectedCard == null) return;
+        selectedCard.getBody().targetScale = 1f;
+        selectedCard.getBody().setIdleEffectsEnabled(true);
+        selectedCard = null;
+        if(killTooltip) PopupManager.I().killTooltip(tooltipPopup);
     }
 
     public void setY(float y) {

@@ -2,28 +2,34 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
-import com.avaricious.components.slot.SlotMachine;
-import com.avaricious.components.slot.Symbol;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class OnePointForEveryFruitCard extends AbstractCard {
+public class PointsForEverySymbolHit extends AbstractCard {
 
-    private final TextureRegion texture = Assets.I().get(AssetKey.DNA_CARD);
-    int points = 0;
+    private final TextureRegion texture = Assets.I().get(AssetKey.SPACE_JOKER_CARD);
+    private int points = 0;
 
     @Override
     public String description() {
-        return Assets.I().blueText("+1 Point") + " for every fruit displayed\n"
-            + "(" + countFruits() + ")";
+        return Assets.I().blueText("+2 Points") + " for every symbol hit last spin\n"
+            + "(" + ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() + ")";
     }
 
     @Override
     protected void onApply() {
-        points = countFruits();
+        points = ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() * 2;
         ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.ATTACK;
     }
 
     @Override
@@ -34,16 +40,5 @@ public class OnePointForEveryFruitCard extends AbstractCard {
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
         return () -> PopupManager.I().spawnNumber(createNumberPopup(points, pos, Assets.I().blue()));
-    }
-
-    private int countFruits() {
-        int fruitCount = 0;
-        Symbol[][] symbolMap = SlotMachine.I().getSymbolMap();
-        for (Symbol[] row : symbolMap) {
-            for (Symbol symbol : row) {
-                if (symbol.isFruit()) fruitCount++;
-            }
-        }
-        return fruitCount;
     }
 }

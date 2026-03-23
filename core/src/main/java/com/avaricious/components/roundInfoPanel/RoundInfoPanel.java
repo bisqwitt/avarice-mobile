@@ -12,14 +12,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class RoundInfoPanel {
 
-    private final TextureRegion backgroundTexture = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
-    private final TextureRegion woodTexture = Assets.I().get(AssetKey.WOOD_TEXTURE);
+    private final TextureRegion borderWhite = Assets.I().get(AssetKey.WHITE_PIXEL);
 
     private final TargetScoreDisplay targetScoreDisplay = new TargetScoreDisplay();
     private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
     private final SymbolValueDisplay symbolValueDisplay = new SymbolValueDisplay();
 
-    private final Rectangle panelBoundsFolded = new Rectangle(0, 14.5f, 9f, 9f);
+    private final Rectangle panelBoundsFolded = new Rectangle(0, 14.7f, 9f, 9f);
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
@@ -81,8 +80,9 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
-        Pencil.I().addDrawing(new TextureDrawing(backgroundTexture,
-            drawBounds, unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
+        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
+            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),
+            unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
 
         targetScoreDisplay.draw(delta, unfoldAmount);
         scoreDisplay.draw(delta, unfoldAmount);

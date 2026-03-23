@@ -2,6 +2,7 @@ package com.avaricious.components;
 
 import com.avaricious.DevTools;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.rings.AbstractRing;
 import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
@@ -15,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -28,13 +30,17 @@ public class RingBar {
 
     public final int MAX_RINGS = 5;
 
-    private final Rectangle firstRingBounds = new Rectangle(0.35f, 7.25f, 1.25f, 1.25f);
+    private final Rectangle firstRingBounds = new Rectangle(0.35f, 7.4f, 1.25f, 1.25f);
     private final float RING_OFFSET = 1.75f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
 
     private AbstractRing touchingRing = null;
+    private AbstractRing selectedRing = null;
+
+    private final Vector2 mouseTouchdownLocation = new Vector2();
+    private TooltipPopup tooltipPopup = null;
 
     private RingBar() {
         if (DevTools.testRings) {
@@ -48,10 +54,13 @@ public class RingBar {
         rings.stream().map(AbstractRing::getBody).forEach(ring -> ring.update(delta));
 
         if (pressed && !wasPressed) {
-            rings.stream()
+            Optional<AbstractRing> r = rings.stream()
                 .filter(ring -> ring.getBody().getBounds().contains(mouse))
-                .findFirst()
-                .ifPresent(ring -> onRingTouchDown(ring, mouse));
+                .findFirst();
+
+            if(r.isPresent()) onRingTouchDown(r.get(), mouse);
+            else deselectRing(true);
+
         }
 
         if (pressed && touchingRing != null) {
@@ -59,37 +68,49 @@ public class RingBar {
         }
 
         if (!pressed && wasPressed && touchingRing != null) {
-            onRingTouchReleased(touchingRing);
+            onRingTouchReleased(touchingRing, mouse);
+        }
+
+        if(touchingRing != null || selectedRing != null) {
+            AbstractRing ring = touchingRing == null ? selectedRing : touchingRing;
+            Vector2 ringRenderPos = ring.getBody().getRenderPos(new Vector2());
+            PopupManager.I().updateTooltip(
+                new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 1.7f),
+                true
+            );
         }
     }
 
     private void onRingTouchDown(AbstractRing ring, Vector2 mouse) {
+        if(selectedRing != null && ring != selectedRing) deselectRing(false);
         touchingRing = ring;
         ring.getBody().targetScale = 1.3f;
+        ring.getBody().setIdleEffectsEnabled(false);
         ring.getBody().beginDrag(mouse.x, mouse.y, 0);
 
-        PopupManager.I().createTooltip(ring, ring.getBody().getRenderPos(new Vector2()));
+        mouseTouchdownLocation.set(mouse);
+        tooltipPopup = PopupManager.I().createTooltip(ring, ring.getBody().getRenderPos(new Vector2()));
     }
 
     private void onRingTouching(AbstractRing ring, Vector2 mouse) {
         DragableBody body = ring.getBody();
-        Vector2 ringRenderPos = body.getRenderPos(new Vector2());
 
         body.dragTo(mouse.x, mouse.y, 0);
-        PopupManager.I().updateTooltip(
-            new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 1.7f),
-            true
-        );
-
         updateRingIndexes();
     }
 
-    private void onRingTouchReleased(AbstractRing ring) {
+    private void onRingTouchReleased(AbstractRing ring, Vector2 mouse) {
         DragableBody body = ring.getBody();
         body.endDrag(0);
-        body.targetScale = 1f;
+        boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
+        if(isClick) {
+            if(selectedRing == ring) deselectRing(true);
+            else {
+                if(selectedRing != null) deselectRing(false);
+                selectedRing = ring;
+            }
+        } else selectedRing = ring;
         touchingRing = null;
-        PopupManager.I().killTooltip();
     }
 
     public void draw() {
@@ -125,6 +146,10 @@ public class RingBar {
             .anyMatch(ringClass::isInstance);
     }
 
+    public List<AbstractRing> getRings() {
+        return rings;
+    }
+
     public int size() {
         return rings.size();
     }
@@ -151,6 +176,17 @@ public class RingBar {
         List<AbstractRing> sorted = new ArrayList<>(rings);
         sorted.sort(Comparator.comparingDouble(ring -> ring.getBody().getRenderPos(new Vector2()).x));
         return sorted;
+    }
+
+    public void deselectRing(boolean killTooltip) {
+        if(selectedRing == null) return;
+        selectedRing.getBody().targetScale = 1f;
+        selectedRing.getBody().setIdleEffectsEnabled(true);
+        selectedRing = null;
+        if(killTooltip) {
+            PopupManager.I().killTooltip(tooltipPopup);
+            tooltipPopup = null;
+        }
     }
 
 }

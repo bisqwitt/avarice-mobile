@@ -2,6 +2,7 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,6 +19,11 @@ public class EitherDoublePointsOrHalveMulti extends AbstractCard {
     @Override
     public String description() {
         return "1/2 Chance, either Double " + Assets.I().blueText("Points") + " or Halve " + Assets.I().redText("Multi");
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.ATTACK;
     }
 
     @Override

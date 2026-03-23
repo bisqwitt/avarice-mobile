@@ -2,12 +2,13 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class TwoMultCard extends AbstractCard {
+public class MultiCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.MYSTIC_SUMMIT_CARD);
 
@@ -19,6 +20,11 @@ public class TwoMultCard extends AbstractCard {
     @Override
     public void onApply() {
         ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, 2);
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.ATTACK;
     }
 
     @Override

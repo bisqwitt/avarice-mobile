@@ -2,12 +2,13 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.HealthUi;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class TwentyArmorCard extends AbstractCard {
+public class ArmorCard extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.DUSK_CARD);
 
@@ -19,6 +20,11 @@ public class TwentyArmorCard extends AbstractCard {
     @Override
     protected void onApply() {
         HealthUi.I().addArmor(20);
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.DEFENCE;
     }
 
     @Override

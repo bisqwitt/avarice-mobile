@@ -21,18 +21,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TooltipPopup {
-
-
-    private final GlyphLayout titleTxt = new GlyphLayout();
-    private final GlyphLayout descriptionTxt = new GlyphLayout();
-
-    private final float WRAP_WIDTH = 500f;
-
     private final Map<Integer, TextureRegion> boxes = new HashMap<>();
     private final TextureRegion boxShadow;
 
     private final BitmapFont bigFont;
     private final BitmapFont mediumFont;
+    private final BitmapFont smallFont;
+    private final GlyphLayout titleTxt = new GlyphLayout();
+    private final GlyphLayout descriptionTxt = new GlyphLayout();
+    private final GlyphLayout typeTxt = new GlyphLayout();
+    private final float BOX_WRAP_WIDTH = 500f;
+    private final float TYPE_BOX_WRAP_WIDTH = 150f;
 
     private final Upgrade upgrade;
     private final ZIndex layer;
@@ -41,8 +40,6 @@ public class TooltipPopup {
 
     private float alpha = 0f;
     private boolean visible = false;
-
-    private Runnable onDead;
 
     public TooltipPopup(Upgrade upgrade, Vector2 pos) {
         this(upgrade, pos, ZIndex.POPUP_DEFAULT);
@@ -57,12 +54,15 @@ public class TooltipPopup {
         boxes.put(2, Assets.I().get(AssetKey.TOOLTIP_BOX_M));
         boxes.put(3, Assets.I().get(AssetKey.TOOLTIP_BOX_L));
         boxes.put(4, Assets.I().get(AssetKey.TOOLTIP_BOX_XL));
-
         boxShadow = Assets.I().get(AssetKey.TOOLTIP_BOX_SHADOW);
+
         bigFont = Assets.I().getBigFont();
         mediumFont = Assets.I().getMediumFont();
-        titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
+        smallFont = Assets.I().getSmallFont();
+
+        titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, BOX_WRAP_WIDTH, Align.top | Align.center, true);
         setDescription(upgrade.description());
+        typeTxt.setText(smallFont, upgrade.type().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
     }
 
     public void update(Vector2 pos, boolean visible) {
@@ -97,23 +97,37 @@ public class TooltipPopup {
             layer, new Color(1f, 1f, 1f, alpha)
         ));
 
+        float typeBoxWidth = 79 / 45f;
+        float typeBoxHeight = 23 / 45f;
+        Pencil.I().addDrawing(new TextureDrawing(
+            upgrade.type().getTypeBox(),
+            new Rectangle((boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+            layer, new Color(1f, 1f, 1f, alpha)
+        ));
+
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
-        center.set(center.x * 100, center.y * 100);
+        center.set(center.x * 100, center.y * 100); // Convert to UIViewport
 
         if (alpha > 0.5f) {
             float offset = calcTextOffset();
 
-            float jokerX = center.x - WRAP_WIDTH / 2f;
-            float jokerY = center.y + 105f + offset;
+            float titleX = center.x - BOX_WRAP_WIDTH / 2f;
+            float titleY = center.y + 140f + offset;
 
-            float textX = center.x - WRAP_WIDTH / 2f;
-            float textY = center.y + offset;
+            float descriptionX = center.x - BOX_WRAP_WIDTH / 2f;
+            float descriptionY = center.y + 35f + offset;
+
+            float typeX = center.x - TYPE_BOX_WRAP_WIDTH / 2f;
+            float typeY = (boxY * 100f) + 60f;
 
             Pencil.I().addDrawing(new FontDrawing(
-                bigFont, titleTxt, new Vector2(jokerX, jokerY), layer
+                bigFont, titleTxt, new Vector2(titleX, titleY), layer
             ));
             Pencil.I().addDrawing(new FontDrawing(
-                mediumFont, descriptionTxt, new Vector2(textX, textY), layer
+                mediumFont, descriptionTxt, new Vector2(descriptionX, descriptionY), layer
+            ));
+            Pencil.I().addDrawing(new FontDrawing(
+                smallFont, typeTxt, new Vector2(typeX, typeY), layer
             ));
         }
     }
@@ -129,7 +143,6 @@ public class TooltipPopup {
         // optional: snap when extremely close
         if (Math.abs(targetAlpha - alpha) < 0.001f) {
             alpha = targetAlpha;
-            if (onDead != null) onDead.run();
         }
     }
 
@@ -146,15 +159,15 @@ public class TooltipPopup {
     }
 
     private void setDescription(String txt) {
-        descriptionTxt.setText(mediumFont, "[WHITE]" + txt + "[]", Color.WHITE, WRAP_WIDTH, Align.top | Align.center, true);
+        descriptionTxt.setText(mediumFont, "[WHITE]" + txt + "[]", Color.WHITE, BOX_WRAP_WIDTH, Align.top | Align.center, true);
     }
 
-    public void kill(Runnable onDead) {
-        this.onDead = onDead;
-        visible = false;
-    }
-
-    public void setVisible(boolean visible) {
+    public TooltipPopup setVisible(boolean visible) {
         this.visible = visible;
+        return this;
+    }
+
+    public Upgrade getUpgrade() {
+        return upgrade;
     }
 }

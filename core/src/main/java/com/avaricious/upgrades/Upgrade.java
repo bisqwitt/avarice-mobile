@@ -12,6 +12,8 @@ public abstract class Upgrade {
 
     public abstract String description();
 
+    public abstract IUpgradeType type();
+
     public abstract int price();
 
     public abstract TextureRegion texture();

@@ -32,3 +32,6 @@ X   X
 
 
 fade alpha of symbols in/out when showing spin results
+
+BUGS:
+- In shop: PackOpenings are "Passive" do "?"

@@ -2,6 +2,7 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.HealthUi;
 import com.avaricious.upgrades.Hand;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -24,6 +25,11 @@ public class DrawTwoCardsForTenDamage extends AbstractCard {
             hand::drawCard,
             hand::drawCard
         );
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.UTILITY;
     }
 
     @Override

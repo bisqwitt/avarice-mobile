@@ -18,7 +18,7 @@ public class Body {
 
     protected final PulseEffect pulseEffect = new PulseEffect();
     protected final IdleSwayEffect idleSwayEffect = new IdleSwayEffect();
-    protected final IdleFloatEffect idleFloatEffect = new IdleFloatEffect(0.04f, 0.3f);
+    protected final IdleFloatEffect idleFloatEffect = new IdleFloatEffect(0.04f, 0.4f);
 
     public Body(Vector2 pos) {
         this.pos = pos;

@@ -6,15 +6,16 @@ import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
 import com.avaricious.upgrades.cards.DrawAndDiscardOneCard;
 import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
-import com.avaricious.upgrades.cards.FiveMultForEveryCardDiscarded;
-import com.avaricious.upgrades.cards.FivePointsCard;
-import com.avaricious.upgrades.cards.FivePointsForEachCardInHandCard;
+import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
+import com.avaricious.upgrades.cards.PointsCard;
+import com.avaricious.upgrades.cards.PointsForEachCardInHandCard;
 import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
+import com.avaricious.upgrades.cards.MultiForEveryAttackInHandCard;
 import com.avaricious.upgrades.cards.OneDollarCard;
-import com.avaricious.upgrades.cards.OnePointForEveryFruitCard;
-import com.avaricious.upgrades.cards.TwentyArmorCard;
-import com.avaricious.upgrades.cards.TwoMultCard;
-import com.avaricious.upgrades.cards.TwoPointsForEverySymbolHit;
+import com.avaricious.upgrades.cards.PointsForEveryFruitCard;
+import com.avaricious.upgrades.cards.ArmorCard;
+import com.avaricious.upgrades.cards.MultiCard;
+import com.avaricious.upgrades.cards.PointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -33,19 +34,20 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
 
     private Deck() {
         allCardClasses.addAll(Arrays.asList(
-            FivePointsCard.class,
-            TwoMultCard.class,
-            TwentyArmorCard.class,
+            PointsCard.class,
+            MultiCard.class,
+            ArmorCard.class,
             OneDollarCard.class,
             ConvertPointsToArmorCard.class,
-            FivePointsForEachCardInHandCard.class,
+            PointsForEachCardInHandCard.class,
             DrawAndDiscardOneCard.class,
-            FiveMultForEveryCardDiscarded.class,
+            MultiForEveryCardDiscarded.class,
             DrawTwoCardsForTenDamage.class,
-            TwoPointsForEverySymbolHit.class,
-            OnePointForEveryFruitCard.class,
+            PointsForEverySymbolHit.class,
+            PointsForEveryFruitCard.class,
             EitherDoublePointsOrHalveMulti.class,
-            HealForEveryFruitHitCard.class
+            HealForEveryFruitHitCard.class,
+            MultiForEveryAttackInHandCard.class
         ));
 
         if (DevTools.allCardsInDeck) {
@@ -54,13 +56,13 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateCard(FivePointsCard.class));
+                addCardToDeck(instantiateCard(PointsCard.class));
             }
             for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateCard(TwoMultCard.class));
+                addCardToDeck(instantiateCard(MultiCard.class));
             }
-            addCardToDeck(instantiateCard(TwentyArmorCard.class));
-            addCardToDeck(instantiateCard(TwentyArmorCard.class));
+            addCardToDeck(instantiateCard(ArmorCard.class));
+            addCardToDeck(instantiateCard(ArmorCard.class));
         }
     }
 
@@ -121,7 +123,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
 
     public AbstractCard drawCard(Class<? extends AbstractCard> cardClass) {
         return removeCard(deck.indexOf(deck.stream()
-            .filter(card -> cardClass.isInstance(card))
+            .filter(cardClass::isInstance)
             .findFirst().get()));
     }
 

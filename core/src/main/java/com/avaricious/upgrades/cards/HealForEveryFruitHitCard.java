@@ -2,6 +2,7 @@ package com.avaricious.upgrades.cards;
 
 import com.avaricious.components.HealthUi;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -22,6 +23,11 @@ public class HealForEveryFruitHitCard extends AbstractCard implements IUpgradeWi
     @Override
     protected void onApply() {
         HealthUi.I().healFor(fruitsHit);
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.DEFENCE;
     }
 
     @Override

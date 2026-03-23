@@ -4,6 +4,7 @@ import com.avaricious.CreditManager;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.Upgrade;
@@ -43,6 +44,7 @@ public class BossLootWindow {
 
     private Upgrade loot;
     private boolean touchingLoot = false;
+    private TooltipPopup tooltipPopup = null;
 
     private boolean shown = false;
 
@@ -61,7 +63,7 @@ public class BossLootWindow {
                 loot.getBody().targetScale = 1.3f;
                 loot.getBody().beginDrag(mouse.x, mouse.y, 0);
 
-                PopupManager.I().createTooltip(loot, new Vector2(), ZIndex.WINDOW_ON_TOP).setVisible(true);
+                tooltipPopup = PopupManager.I().createTooltip(loot, new Vector2(), ZIndex.WINDOW_ON_TOP).setVisible(true);
             }
         }
 
@@ -78,7 +80,7 @@ public class BossLootWindow {
             loot.getBody().endDrag(0);
             loot.getBody().targetScale = 1f;
             touchingLoot = false;
-            PopupManager.I().killTooltip();
+            PopupManager.I().killTooltip(tooltipPopup);
         }
 
         sellButton.handleInput(mouse, touching, wasTouching);

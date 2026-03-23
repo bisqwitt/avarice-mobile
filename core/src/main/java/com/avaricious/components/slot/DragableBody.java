@@ -147,7 +147,6 @@ public class DragableBody extends Body {
         if (dragging) return false;
         dragging = true;
         draggingPointer = pointer;
-        setIdleEffectsEnabled(false);
 
         lastMouse.set(worldX, worldY);
         dragVelX = 0f;
@@ -190,7 +189,6 @@ public class DragableBody extends Body {
     public void endDrag(int pointer) {
         if (!dragging || pointer != draggingPointer) return;
 
-        setIdleEffectsEnabled(true);
         targetOffset.setZero();
         dragging = false;
         draggingPointer = -1;

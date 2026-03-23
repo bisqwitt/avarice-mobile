@@ -1,6 +1,7 @@
 package com.avaricious.components;
 
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.cards.AbstractCard;
@@ -45,6 +46,7 @@ public class DeckUi {
     private final Vector2 touchDownLocation = new Vector2();
     private boolean unfolded = false;
     private AbstractCard touchingCard = null;
+    private TooltipPopup tooltipPopup = null;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         update(delta);
@@ -68,7 +70,7 @@ public class DeckUi {
                         touchingCard = card;
                         cards.get(card).targetScale = 1.3f;
                         cards.get(card).beginDrag(mouse.x, mouse.y, 0);
-                        PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
+                        tooltipPopup = PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
                     }
                 }
             }
@@ -89,7 +91,7 @@ public class DeckUi {
                 dragableBody.endDrag(0);
                 cards.get(touchingCard).targetScale = 1f;
                 touchingCard = null;
-                PopupManager.I().killTooltip();
+                PopupManager.I().killTooltip(tooltipPopup);
             }
         }
     }

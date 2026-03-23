@@ -77,7 +77,7 @@ public class SlotScreen extends ScreenAdapter {
     private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
     private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
-    private final HandUi handUi = new HandUi();
+    private final HandUi handUi = HandUi.I();
     private final DeckUi deckUi = DeckUi.I();
     private final RingBar ringBar = RingBar.I();
     private final HealthUi healthUi = HealthUi.I();
@@ -86,7 +86,7 @@ public class SlotScreen extends ScreenAdapter {
     private final TextureRegion backgroundPixel = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
     private final TextureRegion backgroundPixelDarker = Assets.I().get(AssetKey.BACKGROUND_DARKER);
     private final TextureRegion backgroundWhite = Assets.I().get(AssetKey.BACKGROUND_WHITE);
-    private final TextureRegion backgroundBrighter = Assets.I().get(AssetKey.BACKGROUND_DARKEST);
+    private final TextureRegion white = Assets.I().get(AssetKey.WHITE_PIXEL);
 
     private final CreditScore creditScore = new CreditScore(0,
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -177,21 +177,11 @@ public class SlotScreen extends ScreenAdapter {
         PopupManager.I().draw(batch, delta);
 
         batch.begin();
-        batch.draw(backgroundDarkest, 0, 6, 10, 10);
-        batch.draw(backgroundPixel, -3, -3, 15, 11.75f);
-        batch.draw(backgroundPixelDarker, -3, 3, 15, 3.85f);
+        batch.draw(backgroundDarkest, -3, -3, 15, 26);
 
-        batch.draw(backgroundBrighter, -3, 17.9f, 15, 0.1f);
-//        batch.draw(backgroundWhiteDarker, -3, 17.85f, 15, 0.05f);
-//        batch.draw(backgroundWhite, -3, 14.4f, 15, 0.1f);
-////        batch.draw(backgroundWhiteDarker, -3, 14.35f, 15, 0.05f);
-//        batch.draw(backgroundWhite, -3, 8.65f, 15, 0.1f);
-//        batch.draw(backgroundWhiteDarker, -3, 8.6f, 15, 0.05f);
-        batch.draw(backgroundBrighter, -3, 2.9f, 15, 0.1f);
-//        batch.draw(backgroundWhiteDarker, -3, 2.8f, 15, 0.05f);
-        batch.draw(backgroundBrighter, -3, 6.8f, 15, 0.1f);
-//        batch.draw(backgroundWhiteDarker, -3, 6.75f, 15, 0.05f);
-//        BorderPulseMesh.I().render(batch, delta);
+        batch.draw(white, -3, 9.06f, 15f, 0.05f);
+        batch.draw(white, -3, 6.85f, 15, 0.05f);
+        batch.draw(white, -3, 2.95f, 15, 0.05f);
         Pencil.I().draw(batch);
         batch.end();
 

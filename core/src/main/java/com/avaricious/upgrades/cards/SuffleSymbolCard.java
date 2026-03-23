@@ -1,5 +1,6 @@
 package com.avaricious.upgrades.cards;
 
+import com.avaricious.upgrades.IUpgradeType;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,6 +13,11 @@ public class SuffleSymbolCard extends AbstractCard {
     @Override
     protected void onApply() {
 
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.UTILITY;
     }
 
     @Override

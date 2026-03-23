@@ -3,6 +3,7 @@ package com.avaricious;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
@@ -78,11 +79,14 @@ public abstract class PackOpening {
     private static final int BEAM_COUNT = 8;
     private final Rarity[] beamRarity = new Rarity[BEAM_COUNT];
 
+    protected boolean selected = false;
     protected boolean ripped = false;
     private boolean dragging = false;
     private boolean closed = false;
 
     private Upgrade result;
+    private Vector2 mouseTouchdownLocation = new Vector2();
+    private TooltipPopup tooltipPopup = null;
 
     private final Button sellButton = new Button(() -> {
         CreditManager.I().gain(result.price());
@@ -127,32 +131,51 @@ public abstract class PackOpening {
         if (bought) return;
 
         if (touching && !wasTouching && body.getBounds().contains(mouse)) {
-            this.dragging = true;
-            body.targetScale = 1.3f;
-            body.beginDrag(mouse.x, mouse.y, 0);
+            if(body.getBounds().contains(mouse)) {
+                this.dragging = true;
+                body.targetScale = 1.3f;
+                body.setIdleEffectsEnabled(false);
+                body.beginDrag(mouse.x, mouse.y, 0);
 
-            PopupManager.I().createTooltip(randomRing, body.getRenderPos(new Vector2()));
+                mouseTouchdownLocation.set(mouse);
+                tooltipPopup = PopupManager.I().createTooltip(randomRing, body.getRenderPos(new Vector2()));
+            } else deselect(true);
         }
 
         if (touching && dragging) {
-            Vector2 cardRenderPos = body.getRenderPos(new Vector2());
-
             body.dragTo(mouse.x, mouse.y, 0);
-            PopupManager.I().updateTooltip(
-                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
-                true
-            );
         }
 
         if (!touching && wasTouching && dragging) {
             if (buyBounds.contains(body.getCardCenter())) {
                 buy();
             } else {
-                body.targetScale = 1f;
                 body.endDrag(0);
+                boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
+                if(isClick) {
+                    if(selected) deselect(true);
+                    else selected = true;
+                } else selected = true;
             }
             dragging = false;
-            PopupManager.I().killTooltip();
+        }
+
+        if(touching || selected) {
+            Vector2 cardRenderPos = body.getRenderPos(new Vector2());
+            PopupManager.I().updateTooltip(
+                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
+                true
+            );
+        }
+    }
+
+    private void deselect(boolean killTooltip) {
+        body.targetScale = 1f;
+        body.setIdleEffectsEnabled(true);
+        selected = false;
+        if(killTooltip) {
+            PopupManager.I().killTooltip(tooltipPopup);
+            tooltipPopup = null;
         }
     }
 
@@ -400,7 +423,7 @@ public abstract class PackOpening {
             @Override
             public void run() {
                 Vector2 renderPos = body.getRenderPos(new Vector2());
-                PopupManager.I().createTooltip(result, new Vector2(
+                tooltipPopup = PopupManager.I().createTooltip(result, new Vector2(
                         renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
                     ZIndex.PACK_OPENING_SELECTED).setVisible(true);
             }
@@ -408,7 +431,7 @@ public abstract class PackOpening {
     }
 
     private void close() {
-        PopupManager.I().killTooltip();
+        PopupManager.I().killTooltip(tooltipPopup);
         Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING_BACKGROUND);
         closed = true;
     }

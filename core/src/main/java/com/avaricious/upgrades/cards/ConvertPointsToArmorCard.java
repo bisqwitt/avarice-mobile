@@ -3,6 +3,7 @@ package com.avaricious.upgrades.cards;
 import com.avaricious.components.HealthUi;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,6 +26,11 @@ public class ConvertPointsToArmorCard extends AbstractCard {
         points = (int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS);
         ScoreDisplay.I().setValueOf(ScoreDisplay.Type.POINTS, 0);
         HealthUi.I().addArmor(points);
+    }
+
+    @Override
+    public IUpgradeType type() {
+        return CardType.DEFENCE;
     }
 
     @Override
