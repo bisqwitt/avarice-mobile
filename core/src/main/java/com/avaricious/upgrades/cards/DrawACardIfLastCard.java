@@ -7,22 +7,18 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class DrawAndDiscardOneCard extends AbstractCard {
+public class DrawACardIfLastCard extends AbstractCard implements IConditionalApplyCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.BANNER_CARD);
 
     @Override
     public String description() {
-        return "Draw and Discard one Card";
+        return "Draw one Card, can only be played if this is the last card in hand";
     }
 
     @Override
     protected void onApply() {
-        Hand hand = Hand.I();
-        hand.queueActions(
-            hand::discardRandomCard,
-            hand::drawCard
-        );
+        Hand.I().drawCard();
     }
 
     @Override
@@ -39,5 +35,10 @@ public class DrawAndDiscardOneCard extends AbstractCard {
     public Runnable createPopupRunnable(Vector2 pos) {
         return () -> {
         };
+    }
+
+    @Override
+    public boolean condition() {
+        return Hand.I().getHand().size() == 1;
     }
 }

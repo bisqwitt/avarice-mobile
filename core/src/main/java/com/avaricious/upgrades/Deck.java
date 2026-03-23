@@ -3,9 +3,11 @@ package com.avaricious.upgrades;
 import com.avaricious.DevTools;
 import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
-import com.avaricious.upgrades.cards.DrawAndDiscardOneCard;
+import com.avaricious.upgrades.cards.DrawACardDefenceCardsDisabledCard;
+import com.avaricious.upgrades.cards.DrawACardIfLastCard;
 import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
+import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
 import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
 import com.avaricious.upgrades.cards.PointsCard;
 import com.avaricious.upgrades.cards.PointsForEachCardInHandCard;
@@ -40,14 +42,16 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             OneDollarCard.class,
             ConvertPointsToArmorCard.class,
             PointsForEachCardInHandCard.class,
-            DrawAndDiscardOneCard.class,
+            DrawACardIfLastCard.class,
             MultiForEveryCardDiscarded.class,
             DrawTwoCardsForTenDamage.class,
             PointsForEverySymbolHit.class,
             PointsForEveryFruitCard.class,
             EitherDoublePointsOrHalveMulti.class,
             HealForEveryFruitHitCard.class,
-            MultiForEveryAttackInHandCard.class
+            MultiForEveryAttackInHandCard.class,
+            DrawACardDefenceCardsDisabledCard.class,
+            MultiForEveryDisabledCard.class
         ));
 
         if (DevTools.allCardsInDeck) {

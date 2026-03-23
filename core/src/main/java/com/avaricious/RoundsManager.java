@@ -41,11 +41,15 @@ public class RoundsManager {
     private Integer currentRound;
     private int currentTargetScore;
 
+    private boolean defenceTypeCardsDisabled = false;
+
     public void nextRound() {
         currentRound++;
         currentTargetScore = targetScorePerRound.get(currentRound);
         if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
         else if (isBossRound()) boss = null;
+
+        defenceTypeCardsDisabled = false;
     }
 
     public boolean isBossRound() {
@@ -62,5 +66,13 @@ public class RoundsManager {
 
     public int getCurrentTargetScore() {
         return currentTargetScore;
+    }
+
+    public void disableDefenceTypeCards() {
+        defenceTypeCardsDisabled = true;
+    }
+
+    public boolean defenceTypeCardsDisabled() {
+        return defenceTypeCardsDisabled;
     }
 }

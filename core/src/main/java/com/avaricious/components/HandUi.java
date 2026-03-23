@@ -127,7 +127,7 @@ public class HandUi {
 
     private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
         DragableBody body = card.getBody();
-        if (SlotMachine.windowBounds.contains(body.getCardCenter())) {
+        if (SlotMachine.windowBounds.contains(card.getBody().getCardCenter()) && !card.isDisabled()) {
             applyCard(card);
         } else if (DeckUi.I().getFirstCardBounds().contains(body.getCardCenter())) {
             discardCard(card);
@@ -174,7 +174,9 @@ public class HandUi {
             + (card != draggingCard && card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
-        if (DeckUi.I().getHitBox().contains(body.getCardCenter())) alpha -= 0.5f;
+        if (DeckUi.I().getHitBox().contains(body.getCardCenter()) || card.isDisabled()) {
+            alpha -= 0.5f;
+        }
 
         Vector2 position = body.getRenderPos(new Vector2());
 

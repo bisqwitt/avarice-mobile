@@ -1,5 +1,6 @@
 package com.avaricious.upgrades.cards;
 
+import com.avaricious.RoundsManager;
 import com.avaricious.components.popups.NumberPopup;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.utility.AssetKey;
@@ -42,5 +43,12 @@ public abstract class AbstractCard extends Upgrade {
     @Override
     public int price() {
         return 3;
+    }
+
+    public boolean isDisabled() {
+        if(this instanceof IConditionalApplyCard && !((IConditionalApplyCard) this).condition()) return true;
+        if(RoundsManager.I().defenceTypeCardsDisabled() && this.type() == CardType.DEFENCE) return true;
+
+        return false;
     }
 }

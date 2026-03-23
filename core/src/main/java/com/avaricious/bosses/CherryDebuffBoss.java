@@ -6,7 +6,7 @@ import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStack
 public class CherryDebuffBoss extends AbstractBoss {
     @Override
     public String description() {
-        return "Cherries are debuff";
+        return "Cherries are debuffed";
     }
 
     @Override

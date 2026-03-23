@@ -37,6 +37,7 @@ import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
+import com.avaricious.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.utility.AssetKey;
@@ -408,19 +409,10 @@ public class SlotScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                Hand hand = Hand.I();
-                if (RoundsManager.I().getBoss() instanceof OneLessCardBoss) {
-                    hand.queueActions(
-                        hand::drawCard,
-                        hand::drawCard
-                    );
-                } else {
-                    hand.queueActions(
-                        hand::drawCard,
-                        hand::drawCard,
-                        hand::drawCard
-                    );
-                }
+                int drawAmount = 3;
+                if(RoundsManager.I().getBoss() instanceof OneLessCardBoss) drawAmount--;
+                if(RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
+                Hand.I().drawCards(drawAmount);
             }
         }, 0.25f);
     }

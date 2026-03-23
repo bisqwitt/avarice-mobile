@@ -3,6 +3,7 @@ package com.avaricious.components.slot;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.RoundsManager;
+import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
@@ -186,7 +187,8 @@ public class SlotMachine {
             adjY += body.getIdleFloatYOffset();
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
-        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
+        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
+                || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
             alpha = 0.5f;
 
         // NEW: rotate around center using current wobble angle
