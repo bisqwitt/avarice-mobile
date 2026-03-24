@@ -46,7 +46,7 @@ public enum Symbol {
     }
 
     public void setBaseSpawnChance(int value) {
-        baseSpawnChance = value;
+        baseSpawnChance = value; // TODO calc % and remove from the other symbols to reach 100
     }
 
     public AssetKey textureKey() {
