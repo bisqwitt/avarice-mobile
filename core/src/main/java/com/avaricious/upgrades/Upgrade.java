@@ -8,6 +8,8 @@ public abstract class Upgrade {
 
     protected DragableBody body = null;
 
+    protected UpgradeRarity rarity = UpgradeRarity.COMMON;
+
     public abstract String title();
 
     public abstract String description();
@@ -19,6 +21,10 @@ public abstract class Upgrade {
     public abstract TextureRegion texture();
 
     public abstract TextureRegion shadowTexture();
+
+    public UpgradeRarity rarity() {
+        return rarity;
+    }
 
     public void addBody(Rectangle initialBounds) {
         body = new DragableBody(initialBounds).setTilt(200f, 20f);

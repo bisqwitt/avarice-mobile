@@ -1,60 +1,54 @@
-package com.avaricious.upgrades.rings;
+package com.avaricious;
 
-import com.avaricious.CreditManager;
-import com.avaricious.PackOpening;
-import com.avaricious.components.RelicBag;
-import com.avaricious.components.RingBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
+import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.Upgrade;
 import com.avaricious.upgrades.UpgradeRarity;
+import com.avaricious.upgrades.cards.CardType;
+import com.avaricious.upgrades.rings.RingType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RingAssetKeys;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
-public class RingPack extends PackOpening {
+public class SymbolSpawnChancePack extends PackOpening {
 
-    private AbstractRing resultRing;
+    private Symbol result;
 
-    public RingPack(Rectangle buyBounds) {
-        super(new Rectangle(3.65f, 8.5f, 1.5f, 1.5f), buyBounds);
+    public SymbolSpawnChancePack(Rectangle buyBounds) {
+        super(new Rectangle(1.6f, 9.25f, 1.7f, 1.7f), buyBounds);
     }
 
     @Override
     protected TextureRegion getTexture() {
-        if (ripped) return Assets.I().get(resultRing.keySet().getTextureKey());
-        return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getTextureKey());
+        if (ripped) return Assets.I().get(result.textureKey());
+        return Assets.I().get(Symbol.values()[currentTextureIndex].textureKey());
     }
 
     @Override
     protected TextureRegion getShadowTexture() {
-        if (ripped) return Assets.I().get(resultRing.keySet().getShadowKey());
-        return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getShadowKey());
+        if (ripped) return Assets.I().get(result.shadowKey());
+        return Assets.I().get(Symbol.values()[currentTextureIndex].shadowKey());
     }
 
     @Override
     protected TextureRegion getWhiteTexture() {
-        if (ripped) return Assets.I().get(resultRing.keySet().getWhiteKey());
-        return Assets.I().get(RingAssetKeys.values()[currentTextureIndex].getWhiteKey());
+        if (ripped) return Assets.I().get(result.whiteKey());
+        return Assets.I().get(Symbol.values()[currentTextureIndex].whiteKey());
     }
 
     @Override
     protected int getTextureAmount() {
-        return RingAssetKeys.values().length;
-    }
-
-    @Override
-    protected float getTooltipYOffset() {
-        return 2f;
+        return Symbol.values().length;
     }
 
     @Override
@@ -62,17 +56,18 @@ public class RingPack extends PackOpening {
         return new Upgrade() {
             @Override
             public String title() {
-                return "Ring";
+                return "Symbol";
             }
 
             @Override
             public String description() {
-                return "Random Ring";
+                return "Increase Spawn chance of random Symbol by 5%\n"
+                    + "(Can be discarded)";
             }
 
             @Override
             public IUpgradeType type() {
-                return RingType.UNKNOWN;
+                return CardType.UNKNOWN;
             }
 
             @Override
@@ -99,16 +94,47 @@ public class RingPack extends PackOpening {
 
     @Override
     protected Upgrade getResult() {
-        return resultRing = RelicBag.I().randomRelic();
+        result = Symbol.values()[MathUtils.random(Symbol.values().length - 1)];
+        return new Upgrade() {
+            @Override
+            public String title() {
+                return "Spawn chance";
+            }
+
+            @Override
+            public String description() {
+                return "Increase " + result.toString() + " spawn chance from " + result.baseSpawnChance()
+                    + "% to " + (result.baseSpawnChance() + 5) + "%";
+            }
+
+            @Override
+            public IUpgradeType type() {
+                return RingType.PASSIVE;
+            }
+
+            @Override
+            public int price() {
+                return 5;
+            }
+
+            @Override
+            public TextureRegion texture() {
+                return Assets.I().get(result.textureKey());
+            }
+
+            @Override
+            public TextureRegion shadowTexture() {
+                return Assets.I().get(result.shadowKey());
+            }
+        };
     }
 
     @Override
     protected Button getSellButton() {
         return new Button(() -> {
-            CreditManager.I().gain(resultRing.price());
             PopupManager.I().killTooltip(tooltipPopup);
             closing = true;
-            PopupManager.I().spawnTextPopup(new SoldPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+            PopupManager.I().spawnTextPopup(new SoldPopup(new Vector2(2.5f, 11f), ZIndex.PACK_OPENING_SELECTED));
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
@@ -116,9 +142,9 @@ public class RingPack extends PackOpening {
                 }
             }, 1);
         },
-            Assets.I().get(AssetKey.SELL_BUTTON),
-            Assets.I().get(AssetKey.SELL_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.SELL_BUTTON),
+            Assets.I().get(AssetKey.DISCARD_BUTTON),
+            Assets.I().get(AssetKey.DISCARD_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.DISCARD_BUTTON),
             new Rectangle(1, 5, 79 / 25f, 25 / 25f),
             Input.Keys.BACKSPACE, ZIndex.PACK_OPENING_SELECTED);
     }
@@ -126,10 +152,10 @@ public class RingPack extends PackOpening {
     @Override
     protected Button getClaimButton() {
         return new Button(() -> {
-            RingBar.I().addRing(resultRing);
+            result.setBaseSpawnChance(result.baseSpawnChance() + 5);
             PopupManager.I().killTooltip(tooltipPopup);
             closing = true;
-            PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+            PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 11f), ZIndex.PACK_OPENING_SELECTED));
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
@@ -142,5 +168,10 @@ public class RingPack extends PackOpening {
             Assets.I().get(AssetKey.CLAIM_BUTTON),
             new Rectangle(4.9f, 5f, 79 / 25f, 25 / 25f),
             Input.Keys.ENTER, ZIndex.PACK_OPENING_SELECTED);
+    }
+
+    @Override
+    protected float getTooltipYOffset() {
+        return 2.25f;
     }
 }

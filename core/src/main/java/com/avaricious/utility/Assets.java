@@ -1,7 +1,7 @@
 package com.avaricious.utility;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.Rarity;
+import com.avaricious.upgrades.UpgradeRarity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -99,7 +99,7 @@ public class Assets {
     }
 
     public TextureRegion getSymbol(Symbol symbol) {
-        return get(symbol.assetKey());
+        return get(symbol.textureKey());
     }
 
     private static final AssetKey[] DIGITS = {
@@ -194,11 +194,11 @@ public class Assets {
         return applyColor;
     }
 
-    public Color getRarityColor(Rarity rarity) {
-        if (rarity == Rarity.COMMON) return common;
-        else if (rarity == Rarity.UNCOMMON) return uncommon;
-        else if (rarity == Rarity.RARE) return rare;
-        else if (rarity == Rarity.EPIC) return epic;
+    public Color getRarityColor(UpgradeRarity rarity) {
+        if (rarity == UpgradeRarity.COMMON) return common;
+        else if (rarity == UpgradeRarity.UNCOMMON) return uncommon;
+        else if (rarity == UpgradeRarity.RARE) return rare;
+        else if (rarity == UpgradeRarity.EPIC) return epic;
         else return legendary;
     }
 }

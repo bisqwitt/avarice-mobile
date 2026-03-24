@@ -7,7 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public enum RingType implements IUpgradeType {
     ACTIVE(AssetKey.CARD_TYPE_BOX_RED),
-    PASSIVE(AssetKey.CARD_TYPE_BOX_BLUE);
+    PASSIVE(AssetKey.CARD_TYPE_BOX_BLUE),
+    UNKNOWN(AssetKey.UNKNOWN_BOX);
 
     RingType(AssetKey typeBoxAssetKey) {
         this.typeBoxAssetKey = typeBoxAssetKey;

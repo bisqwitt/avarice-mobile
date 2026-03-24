@@ -124,7 +124,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-//                shop.show();
+                shop.show();
             }
         }, 1);
     }
@@ -410,8 +410,8 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 int drawAmount = 3;
-                if(RoundsManager.I().getBoss() instanceof OneLessCardBoss) drawAmount--;
-                if(RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
+                if (RoundsManager.I().getBoss() instanceof OneLessCardBoss) drawAmount--;
+                if (RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
                 Hand.I().drawCards(drawAmount);
             }
         }, 0.25f);

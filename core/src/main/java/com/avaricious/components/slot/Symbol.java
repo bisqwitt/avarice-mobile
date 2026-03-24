@@ -6,24 +6,28 @@ import com.avaricious.utility.AssetKey;
 
 public enum Symbol {
 
-    LEMON(2, 19.4f, AssetKey.LEMON, true),
-    CHERRY(2, 19.4f, AssetKey.CHERRY, true),
-    CLOVER(3, 14.9f, AssetKey.CLOVER, false),
-    BELL(3, 14.9f, AssetKey.BELL, false),
-    IRON(5, 11.9f, AssetKey.IRON, false),
-    DIAMOND(5, 11.9f, AssetKey.DIAMOND, false),
-    SEVEN(7, 7.5f, AssetKey.SEVEN, false);
+    LEMON(2, 24, AssetKey.LEMON, AssetKey.LEMON_SHADOW, AssetKey.LEMON_WHITE, true),
+    CHERRY(2, 24, AssetKey.CHERRY, AssetKey.CHERRY_SHADOW, AssetKey.CHERRY_WHITE, true),
+    CLOVER(3, 16, AssetKey.CLOVER, AssetKey.CLOVER_SHADOW, AssetKey.CLOVER_WHITE, false),
+    BELL(3, 16, AssetKey.BELL, AssetKey.BELL_SHADOW, AssetKey.BELL_WHITE, false),
+    IRON(5, 8, AssetKey.IRON, AssetKey.IRON_SHADOW, AssetKey.IRON_WHITE, false),
+    DIAMOND(5, 8, AssetKey.DIAMOND, AssetKey.DIAMOND_SHADOW, AssetKey.DIAMOND_WHITE, false),
+    SEVEN(7, 4, AssetKey.SEVEN, AssetKey.SEVEN_SHADOW, AssetKey.SEVEN_WHITE, false);
 
     private Integer baseValue;
-    private final Float baseSpawnChance;
-    private final AssetKey assetKey;
+    private Integer baseSpawnChance;
+    private final AssetKey texture;
+    private final AssetKey shadowTexture;
+    private final AssetKey whiteTexture;
 
     private final boolean isFruit;
 
-    Symbol(Integer baseValue, Float baseSpawnChance, AssetKey assetKey, boolean isFruit) {
+    Symbol(Integer baseValue, Integer baseSpawnChance, AssetKey texture, AssetKey shadowTexture, AssetKey whiteTexture, boolean isFruit) {
         this.baseValue = baseValue;
         this.baseSpawnChance = baseSpawnChance;
-        this.assetKey = assetKey;
+        this.texture = texture;
+        this.shadowTexture = shadowTexture;
+        this.whiteTexture = whiteTexture;
         this.isFruit = isFruit;
     }
 
@@ -37,12 +41,24 @@ public enum Symbol {
         baseValue = value;
     }
 
-    public Float baseSpawnChance() {
+    public Integer baseSpawnChance() {
         return baseSpawnChance;
     }
 
-    public AssetKey assetKey() {
-        return assetKey;
+    public void setBaseSpawnChance(int value) {
+        baseSpawnChance = value;
+    }
+
+    public AssetKey textureKey() {
+        return texture;
+    }
+
+    public AssetKey shadowKey() {
+        return shadowTexture;
+    }
+
+    public AssetKey whiteKey() {
+        return whiteTexture;
     }
 
     public String toString() {

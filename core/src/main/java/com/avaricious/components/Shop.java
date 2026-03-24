@@ -4,6 +4,7 @@ import static com.badlogic.gdx.math.MathUtils.lerp;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
+import com.avaricious.SymbolSpawnChancePack;
 import com.avaricious.components.bars.ShopCardsBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.NextRoundButton;
@@ -45,6 +46,7 @@ public class Shop {
     private final CreditScore creditScore;
 
     private final ShopCardsBar cards = new ShopCardsBar(buyBox.getBounds());
+    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
     private CardPack cardPack = new CardPack(buyBox.getBounds());
     private RingPack ringPack = new RingPack(buyBox.getBounds());
 
@@ -136,10 +138,12 @@ public class Shop {
         ));
 
         buyBox.setVisible(cards.isDragging() || cards.isSelected()
+            || symbolSpawnChancePack.isDragging() || symbolSpawnChancePack.isSelected()
             || cardPack.isDragging() || cardPack.isSelected()
             || ringPack.isDragging() || ringPack.isSelected());
 
         cards.draw(delta);
+        symbolSpawnChancePack.draw(delta);
         cardPack.draw(delta);
         ringPack.draw(delta);
 
@@ -151,6 +155,7 @@ public class Shop {
 
     public void show() {
         cards.loadCards(Deck.I().randomUpgrades(3));
+        symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
         cardPack = new CardPack(buyBox.getBounds());
         ringPack = new RingPack(buyBox.getBounds());
 
@@ -207,8 +212,9 @@ public class Shop {
         if (state == State.ENTERING || state == State.EXITING) {
             cards.setY(currentWindowY + 9.15f);
             rerollButton.getButtonRectangle().setY(currentWindowY + 7.65f);
+            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 4.75f;
             cardPack.getBody().getPos().y = currentWindowY + 4.4f;
-            ringPack.getBody().getPos().y = currentWindowY + 4.75f;
+            ringPack.getBody().getPos().y = currentWindowY + 4.85f;
         }
     }
 
@@ -259,6 +265,7 @@ public class Shop {
         if (state != State.SHOWN) return;
 
         cards.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        symbolSpawnChancePack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);

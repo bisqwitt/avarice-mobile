@@ -1,12 +1,23 @@
 package com.avaricious.upgrades.cards;
 
+import com.avaricious.CreditManager;
 import com.avaricious.PackOpening;
+import com.avaricious.components.buttons.Button;
+import com.avaricious.components.popups.ClaimedPopup;
+import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.popups.SoldPopup;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.UpgradeRarity;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +27,7 @@ public class CardPack extends PackOpening {
     private AbstractCard resultCard;
 
     public CardPack(Rectangle buyBounds) {
-        super(new Rectangle(4.85f, 8.1f, 142 / 80f, 190 / 80f), buyBounds);
+        super(new Rectangle(5.55f, 8.1f, 142 / 80f, 190 / 80f), buyBounds);
     }
 
     @Override
@@ -41,6 +52,46 @@ public class CardPack extends PackOpening {
     }
 
     @Override
+    protected Upgrade getPackDescription() {
+        return new Upgrade() {
+            @Override
+            public String title() {
+                return "Card";
+            }
+
+            @Override
+            public String description() {
+                return "Random Card";
+            }
+
+            @Override
+            public IUpgradeType type() {
+                return CardType.UNKNOWN;
+            }
+
+            @Override
+            public int price() {
+                return 1;
+            }
+
+            @Override
+            public TextureRegion texture() {
+                return null;
+            }
+
+            @Override
+            public TextureRegion shadowTexture() {
+                return null;
+            }
+
+            @Override
+            public UpgradeRarity rarity() {
+                return UpgradeRarity.UNKNOWN;
+            }
+        };
+    }
+
+    @Override
     protected Upgrade getResult() {
         return resultCard = Deck.I().randomUpgrade();
     }
@@ -48,6 +99,48 @@ public class CardPack extends PackOpening {
     @Override
     protected float getTooltipYOffset() {
         return 3f;
+    }
+
+    @Override
+    protected Button getSellButton() {
+        return new Button(() -> {
+            CreditManager.I().gain(resultCard.price());
+            PopupManager.I().killTooltip(tooltipPopup);
+            closing = true;
+            PopupManager.I().spawnTextPopup(new SoldPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    close();
+                }
+            }, 1);
+        },
+            Assets.I().get(AssetKey.SELL_BUTTON),
+            Assets.I().get(AssetKey.SELL_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.SELL_BUTTON),
+            new Rectangle(1, 5, 79 / 25f, 25 / 25f),
+            Input.Keys.BACKSPACE, ZIndex.PACK_OPENING_SELECTED);
+    }
+
+    @Override
+    protected Button getClaimButton() {
+        return new Button(() -> {
+            Deck.I().addCardToDeck(resultCard);
+            PopupManager.I().killTooltip(tooltipPopup);
+            closing = true;
+            PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    close();
+                }
+            }, 1);
+        },
+            Assets.I().get(AssetKey.CLAIM_BUTTON),
+            Assets.I().get(AssetKey.CLAIM_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.CLAIM_BUTTON),
+            new Rectangle(4.9f, 5f, 79 / 25f, 25 / 25f),
+            Input.Keys.ENTER, ZIndex.PACK_OPENING_SELECTED);
     }
 
     private List<AssetKey> cardAssetKeys() {

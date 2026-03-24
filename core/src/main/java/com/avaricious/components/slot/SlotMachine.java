@@ -89,22 +89,25 @@ public class SlotMachine {
         // build basic reel strips (repeat symbol set to avoid short cycles)
         List<Symbol> baseStrip = new ArrayList<>();
 
-        for (int i = 0; i < 12; i++) {
-            baseStrip.add(Symbol.LEMON);
-            if (!DevTools.onlyLemon) baseStrip.add(Symbol.CHERRY);
+        for (Symbol symbol : Symbol.values()) {
+
         }
-        if (!DevTools.onlyLemon && !DevTools.lemonCherry) {
-            for (int i = 0; i < 8; i++) {
-                baseStrip.add(Symbol.CLOVER);
-                baseStrip.add(Symbol.BELL);
-            }
-            for (int i = 0; i < 4; i++) {
-                baseStrip.add(Symbol.IRON);
-                baseStrip.add(Symbol.DIAMOND);
-            }
-            baseStrip.add(Symbol.SEVEN);
-            baseStrip.add(Symbol.SEVEN);
-        }
+
+        Arrays.stream(Symbol.values())
+            .filter(symbol -> {
+                if (DevTools.onlyLemon) {
+                    return symbol == Symbol.LEMON;
+                }
+                if (DevTools.lemonCherry) {
+                    return symbol == Symbol.LEMON || symbol == Symbol.CHERRY;
+                }
+                return true;
+            })
+            .forEach(symbol -> {
+                for (int i = 0; i < symbol.baseSpawnChance(); i++) {
+                    baseStrip.add(symbol);
+                }
+            });
         Collections.shuffle(baseStrip);
 
         for (int c = 0; c < cols; c++) {
@@ -188,7 +191,7 @@ public class SlotMachine {
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
-                || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
+            || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
             alpha = 0.5f;
 
         // NEW: rotate around center using current wobble angle

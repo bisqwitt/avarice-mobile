@@ -8,7 +8,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public enum CardType implements IUpgradeType {
     ATTACK(AssetKey.CARD_TYPE_BOX_RED),
     DEFENCE(AssetKey.CARD_TYPE_BOX_BLUE),
-    UTILITY(AssetKey.CARD_TYPE_BOX_GREEN);
+    UTILITY(AssetKey.CARD_TYPE_BOX_GREEN),
+    UNKNOWN(AssetKey.UNKNOWN_BOX);
 
     private final AssetKey typeBoxAssetKey;
 

@@ -1,27 +1,19 @@
 package com.avaricious;
 
-import com.avaricious.components.RingBar;
 import com.avaricious.components.buttons.Button;
-import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.popups.SoldPopup;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.Rarity;
 import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.AbstractCard;
-import com.avaricious.upgrades.rings.AbstractRing;
+import com.avaricious.upgrades.UpgradeRarity;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.RingAssetKeys;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,18 +22,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 public abstract class PackOpening {
-
-    private final AbstractRing randomRing = new AbstractRing() {
-        @Override
-        public RingAssetKeys keySet() {
-            return null;
-        }
-
-        @Override
-        public String description() {
-            return "Random Relic";
-        }
-    };
 
     private final Rectangle bounds;
     private DragableBody body;
@@ -79,60 +59,27 @@ public abstract class PackOpening {
     private float coreGlowScale = 0f;
 
     private static final int BEAM_COUNT = 8;
-    private final Rarity[] beamRarity = new Rarity[BEAM_COUNT];
+    private final UpgradeRarity[] beamRarity = new UpgradeRarity[BEAM_COUNT];
 
     protected boolean selected = false;
     protected boolean ripped = false;
     private boolean dragging = false;
-    private boolean closing = false;
+    protected boolean closing = false;
     private boolean closed = false;
 
     private Upgrade result;
     private final Vector2 mouseTouchdownLocation = new Vector2();
-    private TooltipPopup tooltipPopup = null;
+    protected TooltipPopup tooltipPopup = null;
 
-    private final Button sellButton = new Button(() -> {
-        CreditManager.I().gain(result.price());
-        PopupManager.I().killTooltip(tooltipPopup);
-        closing = true;
-        PopupManager.I().spawnTextPopup(new SoldPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                close();
-            }
-        }, 1);
-    },
-        Assets.I().get(AssetKey.SELL_BUTTON),
-        Assets.I().get(AssetKey.SELL_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.SELL_BUTTON),
-        new Rectangle(1, 5, 79 / 25f, 25 / 25f),
-        Input.Keys.BACKSPACE, ZIndex.PACK_OPENING_SELECTED);
+    private final Button sellButton = getSellButton();
 
-    private final Button claimButton = new Button(() -> {
-        if (result instanceof AbstractRing) RingBar.I().addRing((AbstractRing) result);
-        else Deck.I().addCardToDeck((AbstractCard) result);
-        PopupManager.I().killTooltip(tooltipPopup);
-        closing = true;
-        PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 12f), ZIndex.PACK_OPENING_SELECTED));
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                close();
-            }
-        }, 1);
-    },
-        Assets.I().get(AssetKey.CLAIM_BUTTON),
-        Assets.I().get(AssetKey.CLAIM_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.CLAIM_BUTTON),
-        new Rectangle(4.9f, 5f, 79 / 25f, 25 / 25f),
-        Input.Keys.ENTER, ZIndex.PACK_OPENING_SELECTED);
+    private final Button claimButton = getClaimButton();
 
     public PackOpening(Rectangle bounds, Rectangle buyBounds) {
         this.bounds = bounds;
         body = new DragableBody(bounds);
 
-        price = new CreditNumber(5, new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f);
+        price = new CreditNumber(getPackDescription().price(), new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f);
 
         this.buyBounds = buyBounds;
     }
@@ -157,7 +104,7 @@ public abstract class PackOpening {
                 body.beginDrag(mouse.x, mouse.y, 0);
 
                 mouseTouchdownLocation.set(mouse);
-                tooltipPopup = PopupManager.I().createTooltip(randomRing, body.getRenderPos(new Vector2()));
+                tooltipPopup = PopupManager.I().createTooltip(getPackDescription(), body.getRenderPos(new Vector2()));
             } else deselect(true);
         }
 
@@ -166,7 +113,7 @@ public abstract class PackOpening {
         }
 
         if (!touching && wasTouching && dragging) {
-            if (buyBounds.contains(body.getCardCenter()) && CreditManager.I().enoughCredit(randomRing.price())) {
+            if (buyBounds.contains(body.getCardCenter()) && CreditManager.I().enoughCredit(getPackDescription().price())) {
                 buy();
             } else {
                 if (buyBounds.contains(body.getCardCenter())) CreditManager.I().pulse();
@@ -422,8 +369,8 @@ public abstract class PackOpening {
         float rarityUpgradeChance = 0.50f; // 5%
         for (int i = 0; i < beamRarity.length; i++) {
             boolean upgrade = Math.random() < rarityUpgradeChance;
-            Rarity rarity;
-            if (i == 0) rarity = upgrade ? Rarity.UNCOMMON : Rarity.COMMON;
+            UpgradeRarity rarity;
+            if (i == 0) rarity = upgrade ? UpgradeRarity.UNCOMMON : UpgradeRarity.COMMON;
             else rarity = upgrade ? beamRarity[i - 1].next() : beamRarity[i - 1];
             beamRarity[i] = rarity;
         }
@@ -455,8 +402,7 @@ public abstract class PackOpening {
         }, 0.2f);
     }
 
-    private void close() {
-        PopupManager.I().killTooltip(tooltipPopup);
+    protected void close() {
         Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING_BACKGROUND);
         closed = true;
     }
@@ -473,9 +419,15 @@ public abstract class PackOpening {
 
     protected abstract int getTextureAmount();
 
+    protected abstract Upgrade getPackDescription();
+
     protected abstract Upgrade getResult();
 
     protected abstract float getTooltipYOffset();
+
+    protected abstract Button getSellButton();
+
+    protected abstract Button getClaimButton();
 
     public boolean isDragging() {
         return dragging;

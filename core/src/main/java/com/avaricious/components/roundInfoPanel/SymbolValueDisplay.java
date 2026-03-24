@@ -24,7 +24,7 @@ public class SymbolValueDisplay {
                 y += 4f;
             }
 
-            Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(symbol.assetKey()),
+            Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(symbol.textureKey()),
                 new Rectangle(x, y, 1f, 1f), ZIndex.ROUND_INFO_PANEL_UNFOLDED));
             Pencil.I().addDrawing(new TextureDrawing(colon,
                 new Rectangle(x + 1, y + 0.2f, 7 / 20f, 11 / 20f), ZIndex.ROUND_INFO_PANEL_UNFOLDED));

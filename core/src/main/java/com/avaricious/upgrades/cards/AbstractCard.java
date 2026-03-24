@@ -46,8 +46,10 @@ public abstract class AbstractCard extends Upgrade {
     }
 
     public boolean isDisabled() {
-        if(this instanceof IConditionalApplyCard && !((IConditionalApplyCard) this).condition()) return true;
-        if(RoundsManager.I().defenceTypeCardsDisabled() && this.type() == CardType.DEFENCE) return true;
+        if (this instanceof IConditionalApplyCard && !((IConditionalApplyCard) this).condition())
+            return true;
+        if (RoundsManager.I().defenceTypeCardsDisabled() && this.type() == CardType.DEFENCE)
+            return true;
 
         return false;
     }

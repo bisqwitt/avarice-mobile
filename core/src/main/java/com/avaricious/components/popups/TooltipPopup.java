@@ -27,9 +27,12 @@ public class TooltipPopup {
     private final BitmapFont bigFont;
     private final BitmapFont mediumFont;
     private final BitmapFont smallFont;
+
     private final GlyphLayout titleTxt = new GlyphLayout();
     private final GlyphLayout descriptionTxt = new GlyphLayout();
+    private final GlyphLayout rarityTxt = new GlyphLayout();
     private final GlyphLayout typeTxt = new GlyphLayout();
+
     private final float BOX_WRAP_WIDTH = 500f;
     private final float TYPE_BOX_WRAP_WIDTH = 150f;
 
@@ -63,6 +66,7 @@ public class TooltipPopup {
         titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, BOX_WRAP_WIDTH, Align.top | Align.center, true);
         setDescription(upgrade.description());
         typeTxt.setText(smallFont, upgrade.type().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
+        rarityTxt.setText(smallFont, upgrade.rarity().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
     }
 
     public void update(Vector2 pos, boolean visible) {
@@ -101,7 +105,12 @@ public class TooltipPopup {
         float typeBoxHeight = 23 / 45f;
         Pencil.I().addDrawing(new TextureDrawing(
             upgrade.type().getTypeBox(),
-            new Rectangle((boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+            new Rectangle(1.2f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+            layer, new Color(1f, 1f, 1f, alpha)
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            upgrade.rarity().getRarityBoxTexture(),
+            new Rectangle(-1.25f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
             layer, new Color(1f, 1f, 1f, alpha)
         ));
 
@@ -117,8 +126,10 @@ public class TooltipPopup {
             float descriptionX = center.x - BOX_WRAP_WIDTH / 2f;
             float descriptionY = center.y + 35f + offset;
 
-            float typeX = center.x - TYPE_BOX_WRAP_WIDTH / 2f;
+            float typeX = (center.x - TYPE_BOX_WRAP_WIDTH / 2f) + 120f;
             float typeY = (boxY * 100f) + 60f;
+            float rarityX = (center.x - TYPE_BOX_WRAP_WIDTH / 2f) - 127f;
+
 
             Pencil.I().addDrawing(new FontDrawing(
                 bigFont, titleTxt, new Vector2(titleX, titleY), layer
@@ -128,6 +139,9 @@ public class TooltipPopup {
             ));
             Pencil.I().addDrawing(new FontDrawing(
                 smallFont, typeTxt, new Vector2(typeX, typeY), layer
+            ));
+            Pencil.I().addDrawing(new FontDrawing(
+                smallFont, rarityTxt, new Vector2(rarityX, typeY), layer
             ));
         }
     }
