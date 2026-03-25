@@ -16,8 +16,8 @@ public class DevTools {
 
     public static boolean enableProfiler = false;
 
-    public static boolean testRings = false;
+    public static boolean testRings = true;
 
-    public static boolean allCardsInDeck = true;
+    public static boolean allCardsInDeck = false;
 
 }

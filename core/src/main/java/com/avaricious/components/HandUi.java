@@ -44,8 +44,8 @@ public class HandUi {
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = 3.75f;
-    private final float CARD_WIDTH = 142 / 85f;
-    private final float CARD_HEIGHT = 190 / 85f;
+    private final float CARD_WIDTH = 142 / 75f;
+    private final float CARD_HEIGHT = 190 / 75f;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -183,9 +183,8 @@ public class HandUi {
             + (card != draggingCard && card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
-        if (DeckUi.I().getHitBox().contains(body.getCardCenter()) || (!selectingCardToDiscard && card.isDisabled())) {
-            alpha -= 0.5f;
-        }
+        if (DeckUi.I().getHitBox().contains(body.getCardCenter())) alpha -= 0.25f;
+        if(!selectingCardToDiscard && card.isDisabled()) alpha -= 0.25f;
 
         Vector2 position = body.getRenderPos(new Vector2());
         ZIndex zIndex = draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;

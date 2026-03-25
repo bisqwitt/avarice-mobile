@@ -19,7 +19,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     private Hand() {
-        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
+//        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
 //        addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
     }
 

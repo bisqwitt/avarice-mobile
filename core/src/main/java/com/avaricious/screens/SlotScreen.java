@@ -180,8 +180,8 @@ public class SlotScreen extends ScreenAdapter {
         batch.begin();
         batch.draw(backgroundDarkest, -3, -3, 15, 26);
         batch.draw(white, -3, 9.06f, 15f, 0.05f);
-        batch.draw(white, -3, 6.85f, 15, 0.05f);
-        batch.draw(white, -3, 2.95f, 15, 0.05f);
+//        batch.draw(white, -3, 6.85f, 15, 0.05f);
+//        batch.draw(white, -3, 2.95f, 15, 0.05f);
         Pencil.I().draw(batch);
 //        RainbowProgressBar.I().render(batch, 0.5f, 14.5f, 8f, 0.5f, delta);
 //        BorderPulseMesh.I().render(batch, delta);
