@@ -87,35 +87,14 @@ public class SlotMachine {
         }
 
         // build basic reel strips (repeat symbol set to avoid short cycles)
-        List<Symbol> baseStrip = new ArrayList<>();
-
-        for (Symbol symbol : Symbol.values()) {
-
-        }
-
-        Arrays.stream(Symbol.values())
-            .filter(symbol -> {
-                if (DevTools.onlyLemon) {
-                    return symbol == Symbol.LEMON;
-                }
-                if (DevTools.lemonCherry) {
-                    return symbol == Symbol.LEMON || symbol == Symbol.CHERRY;
-                }
-                return true;
-            })
-            .forEach(symbol -> {
-                for (int i = 0; i < symbol.baseSpawnChance(); i++) {
-                    baseStrip.add(symbol);
-                }
-            });
-        Collections.shuffle(baseStrip);
 
         for (int c = 0; c < cols; c++) {
-            reels.add(new Reel(baseStrip, rows, () -> {
+            reels.add(new Reel(rows, () -> {
                 spinningReels--;
                 if (spinningReels == 0) onLastReelFinished.run();
             }));
         }
+        buildStrip();
     }
 
     // --- drawing ---
@@ -274,6 +253,32 @@ public class SlotMachine {
             cols * (CELL_W + spacingX),
             rows * (CELL_H + spacingY)
         );
+    }
+
+    public void buildStrip() {
+        List<Symbol> baseStrip = new ArrayList<>();
+
+        Arrays.stream(Symbol.values())
+            .filter(symbol -> {
+                if (DevTools.onlyLemon) {
+                    return symbol == Symbol.LEMON;
+                }
+                if (DevTools.lemonCherry) {
+                    return symbol == Symbol.LEMON || symbol == Symbol.CHERRY;
+                }
+                return true;
+            })
+            .forEach(symbol -> {
+                for (int i = 0; i < symbol.baseSpawnChance(); i++) {
+                    baseStrip.add(symbol);
+                }
+            });
+
+        reels.forEach(reel -> {
+            Collections.shuffle(baseStrip);
+            reel.setStrip(baseStrip);
+        });
+
     }
 
     private boolean isInGrid(Vector2 pos) {

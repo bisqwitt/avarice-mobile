@@ -4,6 +4,7 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.Upgrade;
@@ -152,7 +153,8 @@ public class SymbolSpawnChancePack extends PackOpening {
     @Override
     protected Button getClaimButton() {
         return new Button(() -> {
-            result.setBaseSpawnChance(result.baseSpawnChance() + 5);
+            Symbol.increaseSpawnChance(result, 5);
+            SlotMachine.I().buildStrip();
             PopupManager.I().killTooltip(tooltipPopup);
             closing = true;
             PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(2.5f, 11f), ZIndex.PACK_OPENING_SELECTED));

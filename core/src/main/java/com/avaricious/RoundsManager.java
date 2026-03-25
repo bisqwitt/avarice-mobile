@@ -1,8 +1,11 @@
 package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
+import com.avaricious.upgrades.cards.AbstractCard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RoundsManager {
@@ -18,6 +21,7 @@ public class RoundsManager {
     private RoundsManager() {
         currentRound = 1;
         currentTargetScore = targetScorePerRound.get(currentRound);
+        RainbowProgressBar.I().setMaxValue(currentTargetScore);
     }
 
     private final Map<Integer, Integer> targetScorePerRound = new HashMap<Integer, Integer>() {{
@@ -41,14 +45,18 @@ public class RoundsManager {
     private Integer currentRound;
     private int currentTargetScore;
 
+    private final List<AbstractCard> playedCardsThisRound = new ArrayList<>();
     private boolean defenceTypeCardsDisabled = false;
 
     public void nextRound() {
         currentRound++;
         currentTargetScore = targetScorePerRound.get(currentRound);
+        RainbowProgressBar.I().setMaxValue(currentTargetScore);
+
         if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
         else if (isBossRound()) boss = null;
 
+        playedCardsThisRound.clear();
         defenceTypeCardsDisabled = false;
     }
 
@@ -74,5 +82,13 @@ public class RoundsManager {
 
     public boolean defenceTypeCardsDisabled() {
         return defenceTypeCardsDisabled;
+    }
+
+    public void onCardPlayed(AbstractCard card) {
+        playedCardsThisRound.add(card);
+    }
+
+    public List<AbstractCard> getPlayedCardsThisRound() {
+        return playedCardsThisRound;
     }
 }

@@ -2,6 +2,7 @@ package com.avaricious.components.slot;
 
 import com.badlogic.gdx.math.MathUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,9 +19,8 @@ public class Reel {
 
     public enum Phase {IDLE, STARTING, CRUISING, STOPPING, SETTLING}
 
-    private final List<Symbol> strip;
+    private final List<Symbol> strip = new ArrayList<>();
     private final int visibleRows;
-    private final int stripLen;
 
     // Continuous motion in symbol units:
     private float pos = 0f;     // increases downward (choose one direction consistently)
@@ -52,14 +52,12 @@ public class Reel {
     private final Runnable onSpinFinished;
     private boolean spinFinishedNotified = false;
 
-    public Reel(List<Symbol> strip, int visibleRows, Runnable onSpinFinished) {
-        this.strip = strip;
+    public Reel(int visibleRows, Runnable onSpinFinished) {
         this.visibleRows = visibleRows;
-        this.stripLen = strip.size();
 
         this.onSpinFinished = onSpinFinished;
         // randomize initial position so reels don't look identical at boot
-        this.pos = MathUtils.random(0, stripLen - 1) + MathUtils.random();
+        this.pos = 1;
     }
 
     /**
@@ -97,7 +95,7 @@ public class Reel {
 
                 if (stopRequested) {
                     int randomNumber = MathUtils.random(1, 100);
-                    if (randomNumber == 100) stopTargetPos += stripLen;
+                    if (randomNumber == 100) stopTargetPos += strip.size();
 //                    if (randomNumber == 10) stopTargetPos += stripLen;
                     phase = Phase.STOPPING;
                 }
@@ -200,9 +198,9 @@ public class Reel {
         // => stopTargetPos = (nextInteger - centerRow) + k*stripLen
         float baseTarget = nextInteger - centerRow;
 
-        float minTarget = pos + (extraSpinsMin * stripLen);
-        float k = (float) Math.ceil((minTarget - baseTarget) / stripLen);
-        stopTargetPos = baseTarget + k * stripLen;
+        float minTarget = pos + (extraSpinsMin * strip.size());
+        float k = (float) Math.ceil((minTarget - baseTarget) / strip.size());
+        stopTargetPos = baseTarget + k * strip.size();
 
         // Optionally add a small fractional “overshoot” feel by letting settle handle it
         // (do NOT offset stopTargetPos; keep it exact for alignment).
@@ -229,12 +227,12 @@ public class Reel {
     public Symbol symbolAtRow(int row) {
         // The symbol index for a row is floor(pos + row)
         int idx = (int) Math.floor(pos + row);
-        return strip.get(mod(idx, stripLen));
+        return strip.get(mod(idx, strip.size()));
     }
 
     private void setSymbolAtRow(int row, Symbol symbol) {
         int idx = (int) Math.floor(pos + row);
-        strip.set(mod(idx, stripLen), symbol);
+        strip.set(mod(idx, strip.size()), symbol);
     }
 
     private static int mod(int x, int m) {
@@ -245,5 +243,10 @@ public class Reel {
     private static float approach(float value, float target, float maxDelta) {
         if (value < target) return Math.min(value + maxDelta, target);
         return Math.max(value - maxDelta, target);
+    }
+
+    public void setStrip(List<Symbol> strip) {
+        this.strip.clear();
+        this.strip.addAll(strip);
     }
 }

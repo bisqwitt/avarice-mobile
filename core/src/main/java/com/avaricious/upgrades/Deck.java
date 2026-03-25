@@ -2,21 +2,24 @@ package com.avaricious.upgrades;
 
 import com.avaricious.DevTools;
 import com.avaricious.upgrades.cards.AbstractCard;
+import com.avaricious.upgrades.cards.ArmorCard;
 import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
 import com.avaricious.upgrades.cards.DrawACardDefenceCardsDisabledCard;
+import com.avaricious.upgrades.cards.DrawACardDisabledUntilTwoCardsPlayedCard;
 import com.avaricious.upgrades.cards.DrawACardIfLastCard;
+import com.avaricious.upgrades.cards.DrawAndDiscardACard;
+import com.avaricious.upgrades.cards.DrawCardsEqualToCurrentStreak;
 import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
-import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
+import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
+import com.avaricious.upgrades.cards.MultiCard;
+import com.avaricious.upgrades.cards.MultiForEveryAttackInHandCard;
 import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
+import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
+import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.PointsCard;
 import com.avaricious.upgrades.cards.PointsForEachCardInHandCard;
-import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
-import com.avaricious.upgrades.cards.MultiForEveryAttackInHandCard;
-import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.PointsForEveryFruitCard;
-import com.avaricious.upgrades.cards.ArmorCard;
-import com.avaricious.upgrades.cards.MultiCard;
 import com.avaricious.upgrades.cards.PointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
 
@@ -51,7 +54,10 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             HealForEveryFruitHitCard.class,
             MultiForEveryAttackInHandCard.class,
             DrawACardDefenceCardsDisabledCard.class,
-            MultiForEveryDisabledCard.class
+            MultiForEveryDisabledCard.class,
+            DrawACardDisabledUntilTwoCardsPlayedCard.class,
+            DrawCardsEqualToCurrentStreak.class,
+            DrawAndDiscardACard.class
         ));
 
         if (DevTools.allCardsInDeck) {

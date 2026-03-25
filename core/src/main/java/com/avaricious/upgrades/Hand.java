@@ -1,9 +1,7 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.upgrades.cards.AbstractCard;
-import com.avaricious.upgrades.cards.DrawACardDefenceCardsDisabledCard;
-import com.avaricious.upgrades.cards.DrawACardIfLastCard;
-import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
+import com.avaricious.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 
@@ -21,8 +19,8 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     private Hand() {
-        addCardToHand(Deck.I().drawCard(DrawACardDefenceCardsDisabledCard.class));
-        addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
+        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
+//        addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
     }
 
     private final List<AbstractCard> hand = new ArrayList<>();
@@ -83,7 +81,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     public void drawCards(int amount) {
-        for(int i = 0; i < amount; i++) {
+        for (int i = 0; i < amount; i++) {
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {

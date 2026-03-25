@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 public class MultiForEveryCardDiscarded extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.BLACKBOARD_CARD);
-    private int mult;
+    private int multi;
 
     @Override
     public String description() {
@@ -22,8 +22,8 @@ public class MultiForEveryCardDiscarded extends AbstractCard {
 
     @Override
     protected void onApply() {
-        mult = Hand.I().getCardsDiscarded() * 5;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, mult);
+        multi = Hand.I().getCardsDiscarded() * 5;
+        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, multi);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class MultiForEveryCardDiscarded extends AbstractCard {
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> PopupManager.I().spawnNumber(createNumberPopup(mult, pos, Assets.I().red()));
+        return () -> PopupManager.I().spawnNumber(createNumberPopup(multi, pos, Assets.I().red()));
     }
 }

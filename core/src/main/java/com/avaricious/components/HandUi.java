@@ -62,8 +62,12 @@ public class HandUi {
     private TooltipPopup tooltipPopup;
     private final Vector2 mouseTouchdownLocation = new Vector2();
 
+    private boolean selectingCardToDiscard = false;
+    private final GlyphLayout discardACardTxt = new GlyphLayout();
+
     private HandUi() {
         Hand.I().onChange(newHand -> pendingHand = newHand);
+        discardACardTxt.setText(Assets.I().getBigFont(), "Select a card to discard", Color.WHITE, 500f, Align.top | Align.center, true);
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
@@ -127,7 +131,8 @@ public class HandUi {
 
     private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
         DragableBody body = card.getBody();
-        if (SlotMachine.windowBounds.contains(card.getBody().getCardCenter()) && !card.isDisabled()) {
+        if (SlotMachine.windowBounds.contains(card.getBody().getCardCenter())
+            && !card.isDisabled() && !selectingCardToDiscard) {
             applyCard(card);
         } else if (DeckUi.I().getFirstCardBounds().contains(body.getCardCenter())) {
             discardCard(card);
@@ -163,6 +168,10 @@ public class HandUi {
         Vector2 cardsHoldingPos = new Vector2(7.25f * 100f, 3.5f * 100f);
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
+
+        if (selectingCardToDiscard) {
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), discardACardTxt, new Vector2(1.85f * 100, 8.5f * 100), ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD));
+        }
     }
 
     private void drawCard(AbstractCard card) {
@@ -174,11 +183,13 @@ public class HandUi {
             + (card != draggingCard && card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
-        if (DeckUi.I().getHitBox().contains(body.getCardCenter()) || card.isDisabled()) {
+        if (DeckUi.I().getHitBox().contains(body.getCardCenter()) || (!selectingCardToDiscard && card.isDisabled())) {
             alpha -= 0.5f;
         }
 
         Vector2 position = body.getRenderPos(new Vector2());
+        ZIndex zIndex = draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
+        if (selectingCardToDiscard) zIndex = ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD;
 
         Color shadowColor = Assets.I().shadowColor();
         Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
@@ -189,13 +200,13 @@ public class HandUi {
                 bounds.width, bounds.height
             ),
             scale, rotation,
-            draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
+            zIndex, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             card.texture(),
             new Rectangle(position.x, position.y, bounds.width, bounds.height),
             scale, rotation,
-            draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD, new Color(1f, 1f, 1f, alpha)
+            zIndex, new Color(1f, 1f, 1f, alpha)
         ));
     }
 
@@ -353,11 +364,22 @@ public class HandUi {
             }
         }, 0.5f);
 
+        RoundsManager.I().onCardPlayed(card);
+
         if (RoundsManager.I().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
             Hand.I().discardRandomCard();
     }
 
+    public void selectCardToDiscard() {
+        selectingCardToDiscard = true;
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD);
+    }
+
     public void discardCard(AbstractCard card) {
+        if (selectingCardToDiscard) {
+            selectingCardToDiscard = false;
+            Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD);
+        }
         card.getBody().startApplyAnimation(0.6f, () -> {
             Hand.I().discardCard(card);
         });

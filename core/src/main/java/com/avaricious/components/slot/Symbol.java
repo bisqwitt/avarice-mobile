@@ -45,9 +45,8 @@ public enum Symbol {
         return baseSpawnChance;
     }
 
-    public void setBaseSpawnChance(int value) {
-        baseSpawnChance = value; // TODO calc % and remove from the other symbols to reach 100
-        // TODO recreate Slotmachine strip
+    private void setBaseSpawnChance(int value) {
+        baseSpawnChance = value;
     }
 
     public AssetKey textureKey() {
@@ -68,5 +67,35 @@ public enum Symbol {
 
     public boolean isFruit() {
         return isFruit;
+    }
+
+    public static void increaseSpawnChance(Symbol target, int amount) {
+        if (amount == 0) return;
+
+        Symbol[] symbols = Symbol.values();
+        int othersCount = symbols.length - 1;
+
+        if (othersCount <= 0) return;
+
+        int baseReduction = amount / othersCount;
+        int remainder = amount % othersCount;
+
+        // Add to target
+        target.baseSpawnChance += amount;
+
+        // Subtract equally from others
+        for (Symbol symbol : symbols) {
+            if (symbol == target) continue;
+            symbol.baseSpawnChance -= baseReduction;
+        }
+
+        // Distribute remainder one by one
+        for (Symbol symbol : symbols) {
+            if (remainder == 0) break;
+            if (symbol == target) continue;
+
+            symbol.baseSpawnChance -= 1;
+            remainder--;
+        }
     }
 }

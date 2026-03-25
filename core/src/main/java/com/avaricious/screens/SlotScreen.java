@@ -124,7 +124,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
+//                shop.show();
             }
         }, 1);
     }
@@ -152,6 +152,7 @@ public class SlotScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        Pencil.I().drawDarkenWindow();
         roundInfoPanel.draw(delta);
         buttonBoard.draw(batch, delta);
         ringBar.draw();
@@ -170,7 +171,6 @@ public class SlotScreen extends ScreenAdapter {
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
 
-        Pencil.I().drawDarkenWindow();
 
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
@@ -179,11 +179,12 @@ public class SlotScreen extends ScreenAdapter {
 
         batch.begin();
         batch.draw(backgroundDarkest, -3, -3, 15, 26);
-
         batch.draw(white, -3, 9.06f, 15f, 0.05f);
         batch.draw(white, -3, 6.85f, 15, 0.05f);
         batch.draw(white, -3, 2.95f, 15, 0.05f);
         Pencil.I().draw(batch);
+//        RainbowProgressBar.I().render(batch, 0.5f, 14.5f, 8f, 0.5f, delta);
+//        BorderPulseMesh.I().render(batch, delta);
         batch.end();
 
 //        bulbBorderShader.update(delta);

@@ -1,5 +1,6 @@
 package com.avaricious.components.roundInfoPanel;
 
+import com.avaricious.RainbowProgressBar;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -75,6 +76,7 @@ public class ScoreDisplay {
 
     public void addTo(Type type, float amount) {
         setValueOf(type, getValueOf(type) + amount);
+        RainbowProgressBar.I().setValue(getValueOf(Type.POINTS) * getValueOf(Type.MULTI) * getValueOf(Type.STREAK));
     }
 
     public void setValueOf(Type type, float value) {
