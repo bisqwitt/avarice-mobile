@@ -22,7 +22,7 @@ public abstract class AbstractScoreAdditionRing extends AbstractTriggerableRing 
     }
 
     private void addToPattern(ScoreDisplay.Type type, int value) {
-        ScoreDisplay.I().addTo(type, value);
+        ScoreDisplay.I().addPotentialValue(type, value);
         createNumberPopup(type == ScoreDisplay.Type.POINTS ? Assets.I().blue() : Assets.I().red(), value);
     }
 }

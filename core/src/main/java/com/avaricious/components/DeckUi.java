@@ -35,7 +35,7 @@ public class DeckUi {
 
     private final float CARD_WIDTH = 142 / 85f;
     private final float CARD_HEIGHT = 190 / 85f;
-    private final Rectangle firstCardBounds = new Rectangle(7f, 0.25f, CARD_WIDTH, CARD_HEIGHT);
+    private final Rectangle firstCardBounds = new Rectangle(7f, 2.4f, CARD_WIDTH, CARD_HEIGHT);
 
     private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);

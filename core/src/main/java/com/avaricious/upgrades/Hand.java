@@ -1,7 +1,6 @@
 package com.avaricious.upgrades;
 
 import com.avaricious.upgrades.cards.AbstractCard;
-import com.avaricious.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 
@@ -19,7 +18,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     private Hand() {
-        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
+//        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
 //        addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
     }
 

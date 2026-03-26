@@ -24,7 +24,7 @@ public class PointsForEveryFruitCard extends AbstractCard {
     @Override
     protected void onApply() {
         points = countFruits();
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override

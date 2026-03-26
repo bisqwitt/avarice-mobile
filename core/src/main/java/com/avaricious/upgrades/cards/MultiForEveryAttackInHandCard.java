@@ -33,7 +33,7 @@ public class MultiForEveryAttackInHandCard extends AbstractCard {
     @Override
     protected void onApply() {
         multi = attackCardsInHand() * 3;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, multi);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
     }
 
     @Override

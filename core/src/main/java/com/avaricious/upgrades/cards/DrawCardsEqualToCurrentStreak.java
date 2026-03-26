@@ -15,7 +15,7 @@ public class DrawCardsEqualToCurrentStreak extends AbstractCard {
     @Override
     public String description() {
         return "Draw cards equal to current streak\n"
-            + "(" + (int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.STREAK) + ")";
+            + "(" + (int) ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.STREAK) + ")";
     }
 
     @Override
@@ -30,7 +30,7 @@ public class DrawCardsEqualToCurrentStreak extends AbstractCard {
 
     @Override
     protected void onApply() {
-        Hand.I().drawCards((int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.STREAK));
+        Hand.I().drawCards((int) ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.STREAK));
     }
 
     @Override

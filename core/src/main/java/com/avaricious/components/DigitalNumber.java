@@ -20,7 +20,7 @@ public class DigitalNumber {
     protected final List<TextureRegion> numberShadowTextures = new ArrayList<>();
 
     protected final Color color;
-    protected final Rectangle bounds;
+    protected final Rectangle firstDigitBounds;
     protected final float offset;
 
     private ZIndex zIndex = ZIndex.DIGITAL_NUMBER;
@@ -31,19 +31,19 @@ public class DigitalNumber {
     private final IdleFloatEffect floatEffect = new IdleFloatEffect();
     private final IdleSwayEffect swayEffect = new IdleSwayEffect(1.2f, 0.4f);
 
-    public DigitalNumber(int initialScore, Color color, Rectangle bounds, float offset) {
+    public DigitalNumber(int initialScore, Color color, Rectangle firstDigitBounds, float offset) {
         setScore(initialScore);
         this.color = color;
-        this.bounds = bounds;
+        this.firstDigitBounds = firstDigitBounds;
         this.offset = offset;
 
         updateDigitalNumbers(initialScore);
     }
 
-    public DigitalNumber(int initialScore, Color color, int setLength, Rectangle bounds, float offset) {
+    public DigitalNumber(int initialScore, Color color, int setLength, Rectangle firstDigitBounds, float offset) {
         score = initialScore;
         this.color = color;
-        this.bounds = bounds;
+        this.firstDigitBounds = firstDigitBounds;
         this.offset = offset;
 
         for (int i = 0; i < setLength; i++) {
@@ -67,12 +67,12 @@ public class DigitalNumber {
         for (int i = 0; i < numberTextures.size(); i++) {
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
-                new Rectangle(bounds.x + (i * offset), numberY - 0.1f, bounds.width, bounds.height),
+                new Rectangle(firstDigitBounds.x + (i * offset), numberY - 0.1f, firstDigitBounds.width, firstDigitBounds.height),
                 scale, rotation, getZIndex(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
-                new Rectangle(bounds.x + (i * offset), numberY, bounds.width, bounds.height),
+                new Rectangle(firstDigitBounds.x + (i * offset), numberY, firstDigitBounds.width, firstDigitBounds.height),
                 scale, rotation, getZIndex(), color
             ));
         }
@@ -103,16 +103,20 @@ public class DigitalNumber {
         pulseEffect.pulse();
     }
 
+    public float getWidth() {
+        return ((firstDigitBounds.x + ((numberTextures.size() - 1) * offset)) - firstDigitBounds.x) + firstDigitBounds.width;
+    }
+
     public int getScore() {
         return score;
     }
 
-    public Rectangle getBounds() {
-        return bounds;
+    public Rectangle getFirstDigitBounds() {
+        return firstDigitBounds;
     }
 
     public float calcNumberY() {
-        return bounds.y + floatEffect.getYOffset();
+        return firstDigitBounds.y + floatEffect.getYOffset();
     }
 
     public float calcScale() {

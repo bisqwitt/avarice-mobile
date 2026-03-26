@@ -15,12 +15,12 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
-import com.avaricious.components.RelicBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.Body;
@@ -100,6 +100,7 @@ public class SlotScreen extends ScreenAdapter {
     private final Vector2 mouse = new Vector2();
     private boolean leftClickWasPressed = false;
     private int symbolsHitLastSpin = 0;
+    private boolean isFirstStreakIncrease = true;
 
     public SlotScreen(Main app) {
         this.app = app;
@@ -154,6 +155,7 @@ public class SlotScreen extends ScreenAdapter {
 
         Pencil.I().drawDarkenWindow();
         roundInfoPanel.draw(delta);
+        ScoreProgressBar.I().draw();
         buttonBoard.draw(batch, delta);
         ringBar.draw();
 
@@ -162,7 +164,7 @@ public class SlotScreen extends ScreenAdapter {
         xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw();
-        RelicBag.I().draw(batch);
+//        RelicBag.I().draw(batch);
 
         ParticleManager.I().draw(batch, delta);
         slotMachine.draw(app, delta);   // 10
@@ -179,9 +181,9 @@ public class SlotScreen extends ScreenAdapter {
 
         batch.begin();
         batch.draw(backgroundDarkest, -3, -3, 15, 26);
-        batch.draw(white, -3, 9.06f, 15f, 0.05f);
-        batch.draw(white, -3, 6.85f, 15, 0.05f);
-        batch.draw(white, -3, 2.95f, 15, 0.05f);
+//        batch.draw(white, -3, 9.06f, 15f, 0.05f);
+//        batch.draw(white, -3, 6.85f, 15, 0.05f);
+//        batch.draw(white, -3, 2.95f, 15, 0.05f);
         Pencil.I().draw(batch);
 //        RainbowProgressBar.I().render(batch, 0.5f, 14.5f, 8f, 0.5f, delta);
 //        BorderPulseMesh.I().render(batch, delta);
@@ -275,7 +277,7 @@ public class SlotScreen extends ScreenAdapter {
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         middleBody.getPos().x + 2.5f, middleBody.getPos().y + 1f);
 
-                roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.MULTI, multi);
+                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
@@ -302,7 +304,8 @@ public class SlotScreen extends ScreenAdapter {
         }
 
         scheduler.schedule(() -> {
-            roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.STREAK, 1);
+            if (isFirstStreakIncrease) isFirstStreakIncrease = false;
+            else roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.STREAK, 1);
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
@@ -333,7 +336,7 @@ public class SlotScreen extends ScreenAdapter {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         body.getPos().x + 1.5f, body.getPos().y + 2f);
-                roundInfoPanel.getScoreDisplay().addTo(ScoreDisplay.Type.POINTS, points);
+                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.POINTS, points);
 
                 EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                     new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
@@ -375,12 +378,14 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onCashoutButtonPressed() {
-        int score = roundInfoPanel.getScoreDisplay().calcScore();
-        roundInfoPanel.getTargetScoreDisplay().addToScore(score);
-        roundInfoPanel.getScoreDisplay().clearNumbers();
+        int score = roundInfoPanel.getScoreDisplay().calcPotentialValue();
+        roundInfoPanel.getScoreDisplay().addScore(score);
+
+        isFirstStreakIncrease = true;
+        roundInfoPanel.getScoreDisplay().clearPotentialScore();
 
         AudioManager.I().endPayout();
-        if (!roundInfoPanel.getTargetScoreDisplay().targetScoreReached()) return;
+        if (!roundInfoPanel.getScoreDisplay().targetScoreReached()) return;
 
         if (RoundsManager.I().isBossRound()) openBossLootWindow();
         else onTargetScoreReached();
@@ -402,8 +407,8 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
-        roundInfoPanel.getTargetScoreDisplay().resetScore();
         drawStartingHand();
+        roundInfoPanel.getScoreDisplay().setScore(0);
     }
 
     private void drawStartingHand() {

@@ -17,7 +17,7 @@ public class MultiForEveryDisabledCard extends AbstractCard {
     @Override
     public String description() {
         return Assets.I().redText("+7 Multi") + " for every disabled Card in Hand\n"
-        + "(" + disabledCardsInHand() + ")";
+            + "(" + disabledCardsInHand() + ")";
     }
 
     @Override
@@ -33,7 +33,7 @@ public class MultiForEveryDisabledCard extends AbstractCard {
     @Override
     protected void onApply() {
         multi = disabledCardsInHand() * 7;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, multi);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
     }
 
     @Override

@@ -1,20 +1,11 @@
 package com.avaricious.components.roundInfoPanel;
 
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class RoundInfoPanel {
 
-    private final TextureRegion borderWhite = Assets.I().get(AssetKey.WHITE_PIXEL);
-
-    private final TargetScoreDisplay targetScoreDisplay = new TargetScoreDisplay();
     private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
     private final SymbolValueDisplay symbolValueDisplay = new SymbolValueDisplay();
 
@@ -80,20 +71,16 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
-        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
-            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),
-            unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
+//        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
+//            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),
+//            unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
 
-        targetScoreDisplay.draw(delta, unfoldAmount);
+//        targetScoreDisplay.draw(delta, unfoldAmount);
         scoreDisplay.draw(delta, unfoldAmount);
 
 //        if(unfoldAmount != 0) {
 //            symbolValueDisplay.draw(delta);
 //        }
-    }
-
-    public TargetScoreDisplay getTargetScoreDisplay() {
-        return targetScoreDisplay;
     }
 
     public ScoreDisplay getScoreDisplay() {

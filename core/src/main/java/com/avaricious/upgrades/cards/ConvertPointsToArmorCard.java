@@ -17,14 +17,14 @@ public class ConvertPointsToArmorCard extends AbstractCard {
     @Override
     public String description() {
         return "Converts " + Assets.I().blueText("Points") + " ("
-            + Assets.I().blueText(((int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS)) + "") + ")\nto "
+            + Assets.I().blueText(((int) ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.POINTS)) + "") + ")\nto "
             + Assets.I().silverText("Armor");
     }
 
     @Override
     protected void onApply() {
-        points = (int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS);
-        ScoreDisplay.I().setValueOf(ScoreDisplay.Type.POINTS, 0);
+        points = (int) ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.POINTS);
+        ScoreDisplay.I().setPotentialValue(ScoreDisplay.Type.POINTS, 0);
         HealthUi.I().addArmor(points);
     }
 

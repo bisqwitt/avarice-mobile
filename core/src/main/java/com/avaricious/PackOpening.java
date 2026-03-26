@@ -162,7 +162,7 @@ public abstract class PackOpening {
         final ZIndex layer = dragging || charging || ripped ? ZIndex.PACK_OPENING_SELECTED : ZIndex.SHOP;
 
         price.setZIndex(layer);
-        price.getBounds().y = position.y - 1f;
+        price.getFirstDigitBounds().y = position.y - 1f;
 
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -387,7 +387,7 @@ public abstract class PackOpening {
         ripped = true;
         result = getResult();
         Vector2 centerPos = body.getCardCenter().sub(1, 1);
-        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.05f, ZIndex.PACK_OPENING);
+        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.RAINBOW, 0.09f, ZIndex.PACK_OPENING);
 //        ParticleManager.I().create(centerPos.x, centerPos.y, ParticleType.WHITE, 0.05f, 17);
 
         body.pulse();

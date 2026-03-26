@@ -23,7 +23,7 @@ public class PointsForEachCardInHandCard extends AbstractCard {
     @Override
     protected void onApply() {
         points = Hand.I().cardsHeldInHand() * 5;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override

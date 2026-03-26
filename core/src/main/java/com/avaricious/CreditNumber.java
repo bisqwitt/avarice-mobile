@@ -27,12 +27,12 @@ public class CreditNumber extends DigitalNumber {
     @Override
     public void draw(float delta, float scale, float rotation) {
         super.draw(delta, scale, rotation);
-        float x = bounds.x + (numberTextures.size() * offset) + 0.05f;
+        float x = firstDigitBounds.x + (numberTextures.size() * offset) + 0.05f;
         float y = calcNumberY();
 
         Pencil.I().addDrawing(new TextureDrawing(
             dollarSymbol,
-            new Rectangle(x, y, bounds.width, bounds.height),
+            new Rectangle(x, y, firstDigitBounds.width, firstDigitBounds.height),
             scale, rotation,
             getZIndex(), color));
     }

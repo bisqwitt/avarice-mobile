@@ -19,7 +19,7 @@ public class MultiCard extends AbstractCard {
 
     @Override
     public void onApply() {
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, 2);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, 2);
     }
 
     @Override

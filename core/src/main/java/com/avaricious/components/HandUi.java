@@ -43,9 +43,9 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = 3.75f;
-    private final float CARD_WIDTH = 142 / 85f;
-    private final float CARD_HEIGHT = 190 / 85f;
+    private final float Y = 2.65f;
+    private final float CARD_WIDTH = 142 / 88f;
+    private final float CARD_HEIGHT = 190 / 88f;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -165,7 +165,7 @@ public class HandUi {
         if (selectedCard != null) drawCard(selectedCard);
         if (applyingCard != null) drawCard(applyingCard);
 
-        Vector2 cardsHoldingPos = new Vector2(7.25f * 100f, 3.5f * 100f);
+        Vector2 cardsHoldingPos = new Vector2(5f * 100f, 2.3f * 100f);
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
 
@@ -263,7 +263,7 @@ public class HandUi {
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
         float handWidth = (n - 1) * (cards.size() != 7 ? CARD_OFFSET : CARD_OFFSET - 0.2f) + CARD_WIDTH;
-        return (screenWidth - handWidth) / 2f;
+        return -1 + (screenWidth - handWidth) / 2f;
     }
 
     private int calcCardIndex(AbstractCard card) {
