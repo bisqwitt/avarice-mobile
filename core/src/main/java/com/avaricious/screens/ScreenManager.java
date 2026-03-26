@@ -36,6 +36,7 @@ public class ScreenManager {
     private ScreenManager(Main app) {
         this.app = app;
         screens.put(MainScreen.class, new MainScreen(app));
+        screens.put(TestScreen.class, new TestScreen(app));
         screens.put(SlotScreen.class, new SlotScreen(app));
     }
 

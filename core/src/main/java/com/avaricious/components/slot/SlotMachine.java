@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Vector;
 
 public class SlotMachine {
 
@@ -39,15 +40,15 @@ public class SlotMachine {
     }
 
     // --- Layout ---
-    public static final int cols = 5;
-    public static final int rows = 3;
+    public static final int cols = 4;
+    public static final int rows = 4;
     public static final float CELL_W = 1.7f;
     public static final float CELL_H = 1.7f;
-    public static final float spacingX = 0f;
+    public static final float spacingX = 0.35f;
     public static final float spacingY = 0.15f;
 
-    public static final float originX = 0.26f;
-    public static final float originY = 7.5f;
+    public static final float originX = 0.75f;
+    public static final float originY = 7.25f;
 
     public static final Rectangle windowBounds = new Rectangle(0.05f, 9.16f, 8.85f, 5.6f);
 
@@ -73,13 +74,17 @@ public class SlotMachine {
             for (int r = 0; r < rows; r++) {
                 if (r == 0) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
-                    originY + 2 * (CELL_H + spacingY)
+                    originY + 3 * (CELL_H + spacingY)
                 ));
                 if (r == 1) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
-                    originY + 1 * (CELL_H + spacingY)
+                    originY + 2 * (CELL_H + spacingY)
                 ));
                 if (r == 2) grid[c][r] = new Body(new Vector2(
+                    originX + c * (CELL_W + spacingX),
+                    originY + 1 * (CELL_H + spacingY)
+                ));
+                if (r == 3) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 0 * (CELL_H + spacingY)
                 ));
@@ -115,10 +120,15 @@ public class SlotMachine {
             float speed = 10f; // higher = faster convergence
             alpha = MathUtils.lerp(alpha, desiredAlpha, speed * delta);
         }
-
-        // one big clip over the whole machine area
-        Camera cam = app.getViewport().getCamera();
-        cam.update();
+//
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            new Rectangle(originX - 0.1f, originY - 0.15f, 7.5f, 0.05f), ZIndex.SLOT_MACHINE));
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            new Rectangle(originX - 0.1f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            new Rectangle(originX - 0.1f, originY + 5.5f, 7.5f, 0.05f), ZIndex.SLOT_MACHINE));
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            new Rectangle(originX + 7.35f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
@@ -126,35 +136,36 @@ public class SlotMachine {
         area.setY(area.y - 0.125f);
         area.setHeight(area.height);
 
+        Camera cam = app.getViewport().getCamera();
+        cam.update();
         Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
-        drawSymbols(delta);
+        List<Vector2> symbolsInPatternHit = drawSymbols();
         Pencil.I().endScissors();
 
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(originX - 0.1f, originY - 0.15f, 8.65f, 0.05f), ZIndex.SLOT_MACHINE));
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(originX - 0.1f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(originX - 0.1f, originY + 5.5f, 8.65f, 0.05f), ZIndex.SLOT_MACHINE));
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(originX + 8.5f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
+        symbolsInPatternHit.forEach(this::drawSymbol);
 
         TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
     }
 
-    private void drawSymbols(float delta) {
+    private List<Vector2> drawSymbols() {
+        List<Vector2> symbolsInPatternHit = new ArrayList<>();
         for (int c = 0; c < cols; c++) {
             int drawFrom = -1;
             int drawTo = rows - 1;
 
             for (int k = drawFrom; k <= drawTo; k++) {
                 Vector2 pos = new Vector2(c, k);
-                drawSymbol(pos, delta);
+                if(isInGrid(pos) && grid[c][k].isInPatternHit()) {
+                    symbolsInPatternHit.add(pos);
+                    continue;
+                }
+                drawSymbol(pos);
             }
         }
+        return symbolsInPatternHit;
     }
 
-    private void drawSymbol(Vector2 gridPos, float delta) {
+    private void drawSymbol(Vector2 gridPos) {
         Reel reel = reels.get((int) gridPos.x);
         Symbol symbol = reel.symbolAtRow((int) gridPos.y);
 
@@ -196,7 +207,7 @@ public class SlotMachine {
 
     // --- spin control (organic staggered start/stop, aligned to center row) ---
     public void spin() {
-        spinningReels = 5;
+        spinningReels = cols;
         stale = false;
 
         float startSpeed = 16f;

@@ -273,7 +273,8 @@ public enum AssetKey {
     PROGRESSBAR_BACKGROUND_PIXEL("progressbar-background-pixel"),
     PROGRESSBAR_YELLOW_PIXEL("progressbar-yellow-pixel"),
     PROGRESSBAR_DARKER_YELLOW_PIXEL("progressbar-darker-yellow"),
-    DF_TXT("df-txt");
+    DF_TXT("df-txt"),
+    TEST("test");
 
     private final String path;
 

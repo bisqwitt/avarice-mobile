@@ -5,12 +5,20 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class PulseEffect {
 
+//    private static final float[] SCALE_VALUES = {
+//        1.0f,
+//        1.175f,
+//        0.825f,
+//        1.075f,
+//        0.95f,
+//        1.0f
+//    };
     private static final float[] SCALE_VALUES = {
         1.0f,
-        1.175f,
-        0.825f,
-        1.075f,
-        0.95f,
+        1.175f * 1.3f,
+        0.825f * 1.3f,
+        1.075f* 1.3f,
+        0.95f * 1.3f,
         1.0f
     };
 

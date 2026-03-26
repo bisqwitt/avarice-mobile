@@ -2,6 +2,7 @@ package com.avaricious;
 
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
+import com.avaricious.screens.TestScreen;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -22,13 +23,13 @@ public class Main extends Game {
         Assets.I().load();
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(9, 18);
-        uiViewport = new FitViewport(900, 1800);
+        viewport = new FitViewport(9, 20);
+        uiViewport = new FitViewport(900, 2000);
 
         ScreenManager.setBatch(batch);
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);
-        ScreenManager.create(this).setScreen(SlotScreen.class);
+        ScreenManager.create(this).setScreen(TestScreen.class);
     }
 
     public FitViewport getViewport() {

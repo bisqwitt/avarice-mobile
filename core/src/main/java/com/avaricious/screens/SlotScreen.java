@@ -47,9 +47,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -227,7 +229,7 @@ public class SlotScreen extends ScreenAdapter {
         List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
             healthUi.damage(20);
-            buttonBoard.setVisible(true);
+//            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
             return;
         }
@@ -309,7 +311,7 @@ public class SlotScreen extends ScreenAdapter {
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
-            buttonBoard.setVisible(true);
+//            buttonBoard.setVisible(true);
         });
 
         if (DevTools.autoSpin) {
@@ -368,7 +370,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private void onSpinButtonPressed() {
         slotMachine.setAlpha(1f);
-        buttonBoard.setVisible(false);
+//        buttonBoard.setVisible(false);
 
         slotMachine.spin();
 

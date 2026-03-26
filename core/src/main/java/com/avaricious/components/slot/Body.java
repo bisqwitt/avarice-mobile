@@ -9,7 +9,7 @@ public class Body {
     public float scale = 1f;
     public float targetScale = 1f;
 
-    private float targetScaleSpeed = 10f;
+    private float targetScaleSpeed = 7f;
 
     protected final Vector2 pos;
 

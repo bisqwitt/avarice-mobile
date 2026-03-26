@@ -25,13 +25,13 @@ public class HealthUi {
         return instance == null ? instance = new HealthUi() : instance;
     }
 
-    private final float hpSizeRatio = 22f;
-    private final float armorSizeRatio = 22f;
+    private final float hpSizeRatio = 20f;
+    private final float armorSizeRatio = 20f;
 
-    private final float healthY = 17.1f;
+    private final float healthY = 19.1f;
     private final float armorY = healthY;
-    private final float txtX = 0.3f;
-    private final float currentValueX = txtX + 1f;
+    private final float txtX = 0.75f;
+    private final float currentValueX = txtX + 1.25f;
 
     private final DigitalNumber armor;
     private final DigitalNumber health;
@@ -55,10 +55,10 @@ public class HealthUi {
 
     private HealthUi() {
         armor = new DigitalNumber(0, Assets.I().silver(), 3,
-            new Rectangle(currentValueX + 6.5f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.3f);
+            new Rectangle(currentValueX + 5.1f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.4f);
 
         health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
-            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.3f);
+            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.4f);
     }
 
     public void draw(float delta) {
@@ -77,7 +77,7 @@ public class HealthUi {
 
         armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            new Rectangle(txtX + 6.5f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio),
+            new Rectangle(txtX + 5.1f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);

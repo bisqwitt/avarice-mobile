@@ -123,7 +123,7 @@ public abstract class DisablableButton extends Button {
     }
 
     private void drawWithShadow(Rectangle bounds) {
-        float alpha = disabled() ? 0.5f : 1f;
+        float alpha = disabled() ? 0.6f : 1f;
         if (showShadow) {
             Color shadowColor = Assets.I().shadowColor();
             Pencil.I().addDrawing(new TextureDrawing(

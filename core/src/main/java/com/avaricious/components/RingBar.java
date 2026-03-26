@@ -40,9 +40,8 @@ public class RingBar {
 
     public final int MAX_RINGS = 5;
 
-    private final Rectangle firstRingBounds = new Rectangle(0.35f, 6.5f, 1.25f, 1.25f);
-    private final float RING_OFFSET = 1.75f;
-    private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private final Rectangle firstRingBounds = new Rectangle(0.85f, 5.75f, 1.15f, 1.15f);
+    private final float RING_OFFSET = 1.5f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
@@ -130,9 +129,9 @@ public class RingBar {
     public void draw() {
         rings.forEach(ring -> ring.draw(ring == touchingRing));
 
-        Vector2 ringsHoldingPos = new Vector2(7.25f * 100, 6.25f * 100f);
-        ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
-        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
+//        Vector2 ringsHoldingPos = new Vector2(7.25f * 100, 5.6f * 100f);
+//        ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
+//        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }
 
     public void addRing(AbstractRing ring) {
