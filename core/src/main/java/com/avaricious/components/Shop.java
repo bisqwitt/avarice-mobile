@@ -109,7 +109,7 @@ public class Shop {
         }, new Rectangle(2.4f, baseNextRoundButtonY, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
 
         // start hidden below like HealthUi.moveOut() result
-        creditScore.getBounds().y = baseCreditScoreY - uiMoveDistance;
+        creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
         nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
     }
 
@@ -164,7 +164,7 @@ public class Shop {
         state = State.ENTERING;
 
         // keep them out while entering
-        creditScore.getBounds().y = baseCreditScoreY - uiMoveDistance;
+        creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
         nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
 
         HealthUi.I().moveOut();
@@ -219,7 +219,7 @@ public class Shop {
     }
 
     private void moveInUi() {
-        startCreditScoreY = creditScore.getBounds().y;
+        startCreditScoreY = creditScore.getFirstDigitBounds().y;
         startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
 
         targetCreditScoreY = baseCreditScoreY;
@@ -230,7 +230,7 @@ public class Shop {
     }
 
     private void moveOutUi() {
-        startCreditScoreY = creditScore.getBounds().y;
+        startCreditScoreY = creditScore.getFirstDigitBounds().y;
         startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
 
         targetCreditScoreY = baseCreditScoreY - uiMoveDistance;
@@ -247,11 +247,11 @@ public class Shop {
         float progress = Math.min(uiMoveTime / uiMoveDuration, 1f);
         float eased = Interpolation.smooth.apply(progress);
 
-        creditScore.getBounds().y = lerp(startCreditScoreY, targetCreditScoreY, eased);
+        creditScore.getFirstDigitBounds().y = lerp(startCreditScoreY, targetCreditScoreY, eased);
         nextRoundButton.getButtonRectangle().y = lerp(startNextRoundButtonY, targetNextRoundButtonY, eased);
 
         if (progress >= 1f) {
-            creditScore.getBounds().y = targetCreditScoreY;
+            creditScore.getFirstDigitBounds().y = targetCreditScoreY;
             nextRoundButton.getButtonRectangle().y = targetNextRoundButtonY;
             isUiMoving = false;
         }

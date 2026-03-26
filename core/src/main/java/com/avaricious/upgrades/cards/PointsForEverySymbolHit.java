@@ -24,7 +24,7 @@ public class PointsForEverySymbolHit extends AbstractCard {
     @Override
     protected void onApply() {
         points = ScreenManager.I().getScreen(SlotScreen.class).getSymbolsHitLastSpin() * 2;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, points);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
     }
 
     @Override

@@ -25,20 +25,20 @@ public class HealthUi {
         return instance == null ? instance = new HealthUi() : instance;
     }
 
-    private final float hpSizeRatio = 15f;
-    private final float armorSizeRatio = 20f;
+    private final float hpSizeRatio = 22f;
+    private final float armorSizeRatio = 22f;
 
-    private final float healthY = 0.6f;
-    private final float armorY = healthY + 1.1f;
-    private final float txtX = 0.75f;
-    private final float currentValueX = txtX + 1.5f;
+    private final float healthY = 17.1f;
+    private final float armorY = healthY;
+    private final float txtX = 0.3f;
+    private final float currentValueX = txtX + 1f;
 
     private final DigitalNumber armor;
     private final DigitalNumber health;
 
     private final TextureRegion hpTxt = Assets.I().get(AssetKey.HP_TXT);
     private final TextureRegion hpTxtShadow = Assets.I().get(AssetKey.HP_TXT_SHADOW);
-    private final TextureRegion armTxt = Assets.I().get(AssetKey.ARM_TXT);
+    private final TextureRegion armTxt = Assets.I().get(AssetKey.DF_TXT);
     private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.ARM_TXT_SHADOW);
 
     private boolean isMoving = false;
@@ -55,20 +55,20 @@ public class HealthUi {
 
     private HealthUi() {
         armor = new DigitalNumber(0, Assets.I().silver(), 3,
-            new Rectangle(currentValueX + 0.35f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.45f);
+            new Rectangle(currentValueX + 6.5f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.3f);
 
         health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
-            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.55f);
+            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.3f);
     }
 
     public void draw(float delta) {
         updateMovement(delta);
-
-        Pencil.I().addDrawing(new TextureDrawing(
-            armTxtShadow,
-            new Rectangle(txtX - 0.15f, armor.calcNumberY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
-            ZIndex.HEALTH_UI, Assets.I().shadowColor()
-        ));
+//
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            armTxtShadow,
+//            new Rectangle(txtX + 6, armor.calcNumberY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
+//            ZIndex.HEALTH_UI, Assets.I().shadowColor()
+//        ));
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxtShadow,
             new Rectangle(txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
@@ -77,7 +77,7 @@ public class HealthUi {
 
         armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            new Rectangle(txtX - 0.15f, armor.calcNumberY(), 31 / armorSizeRatio, 11 / armorSizeRatio),
+            new Rectangle(txtX + 6.5f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio),
             ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);
@@ -108,11 +108,11 @@ public class HealthUi {
             damageArmor((int) armorDamage);
             if (spill > 0) {
                 damageHealth((int) spill);
-                ScoreDisplay.I().clearNumbers();
+                ScoreDisplay.I().clearPotentialScore();
             }
         } else {
             damageHealth(damage);
-            ScoreDisplay.I().clearNumbers();
+            ScoreDisplay.I().clearPotentialScore();
         }
 
         if (health.getScore() <= 0) {
@@ -121,8 +121,8 @@ public class HealthUi {
     }
 
     public void moveOut() {
-        startArmorY = armor.getBounds().y;
-        startHealthY = health.getBounds().y;
+        startArmorY = armor.getFirstDigitBounds().y;
+        startHealthY = health.getFirstDigitBounds().y;
 
         targetArmorY = armorY - moveDistance;
         targetHealthY = healthY - moveDistance;
@@ -132,8 +132,8 @@ public class HealthUi {
     }
 
     public void moveIn() {
-        startArmorY = armor.getBounds().y;
-        startHealthY = health.getBounds().y;
+        startArmorY = armor.getFirstDigitBounds().y;
+        startHealthY = health.getFirstDigitBounds().y;
 
         targetArmorY = armorY;
         targetHealthY = healthY;
@@ -151,12 +151,12 @@ public class HealthUi {
         // Good default for UI motion
         float eased = Interpolation.smooth.apply(progress);
 
-        armor.getBounds().y = lerp(startArmorY, targetArmorY, eased);
-        health.getBounds().y = lerp(startHealthY, targetHealthY, eased);
+        armor.getFirstDigitBounds().y = lerp(startArmorY, targetArmorY, eased);
+        health.getFirstDigitBounds().y = lerp(startHealthY, targetHealthY, eased);
 
         if (progress >= 1f) {
-            armor.getBounds().y = targetArmorY;
-            health.getBounds().y = targetHealthY;
+            armor.getFirstDigitBounds().y = targetArmorY;
+            health.getFirstDigitBounds().y = targetHealthY;
             isMoving = false;
         }
     }

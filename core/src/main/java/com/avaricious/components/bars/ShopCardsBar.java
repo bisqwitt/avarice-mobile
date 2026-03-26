@@ -151,7 +151,7 @@ public class ShopCardsBar {
         ));
         if (card != touchingCard && card != boughtCard) {
             cardPriceMap.get(card).setZIndex(layer);
-            cardPriceMap.get(card).getBounds().y = position.y + 2.6f;
+            cardPriceMap.get(card).getFirstDigitBounds().y = position.y + 2.6f;
             cardPriceMap.get(card).draw(delta, 1f, rotation);
         }
     }

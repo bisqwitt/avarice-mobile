@@ -19,7 +19,7 @@ public class PointsCard extends AbstractCard {
 
     @Override
     public void onApply() {
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.POINTS, 5);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, 5);
     }
 
     @Override

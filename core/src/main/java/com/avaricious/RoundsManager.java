@@ -1,6 +1,7 @@
 package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
+import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.upgrades.cards.AbstractCard;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class RoundsManager {
     private RoundsManager() {
         currentRound = 1;
         currentTargetScore = targetScorePerRound.get(currentRound);
-        RainbowProgressBar.I().setMaxValue(currentTargetScore);
+        ScoreProgressBar.I().setMaxValue(currentTargetScore);
     }
 
     private final Map<Integer, Integer> targetScorePerRound = new HashMap<Integer, Integer>() {{
@@ -51,7 +52,7 @@ public class RoundsManager {
     public void nextRound() {
         currentRound++;
         currentTargetScore = targetScorePerRound.get(currentRound);
-        RainbowProgressBar.I().setMaxValue(currentTargetScore);
+        ScoreProgressBar.I().setMaxValue(currentTargetScore);
 
         if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
         else if (isBossRound()) boss = null;

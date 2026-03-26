@@ -269,7 +269,11 @@ public enum AssetKey {
     RARITY_BOX_LEGENDARY("rarity-box-legendary"),
     UNKNOWN_BOX("unknown-box"),
     DISCARD_BUTTON("discard-button"),
-    DISCARD_BUTTON_PRESSED("discard-button-pressed");
+    DISCARD_BUTTON_PRESSED("discard-button-pressed"),
+    PROGRESSBAR_BACKGROUND_PIXEL("progressbar-background-pixel"),
+    PROGRESSBAR_YELLOW_PIXEL("progressbar-yellow-pixel"),
+    PROGRESSBAR_DARKER_YELLOW_PIXEL("progressbar-darker-yellow"),
+    DF_TXT("df-txt");
 
     private final String path;
 

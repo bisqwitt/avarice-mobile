@@ -30,9 +30,9 @@ public class EitherDoublePointsOrHalveMulti extends AbstractCard {
     protected void onApply() {
         doublePoints = MathUtils.random(0, 1) == 0;
         value = doublePoints
-            ? (int) ScoreDisplay.I().getValueOf(ScoreDisplay.Type.POINTS)
-            : (int) -ScoreDisplay.I().getValueOf(ScoreDisplay.Type.MULTI) / 2;
-        ScoreDisplay.I().addTo(doublePoints
+            ? (int) ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.POINTS)
+            : (int) -ScoreDisplay.I().getPotentialValueOf(ScoreDisplay.Type.MULTI) / 2;
+        ScoreDisplay.I().addPotentialValue(doublePoints
                 ? ScoreDisplay.Type.POINTS
                 : ScoreDisplay.Type.MULTI,
             value);

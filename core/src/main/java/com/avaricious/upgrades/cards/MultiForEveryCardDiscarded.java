@@ -23,7 +23,7 @@ public class MultiForEveryCardDiscarded extends AbstractCard {
     @Override
     protected void onApply() {
         multi = Hand.I().getCardsDiscarded() * 5;
-        ScoreDisplay.I().addTo(ScoreDisplay.Type.MULTI, multi);
+        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
     }
 
     @Override

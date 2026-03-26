@@ -46,8 +46,8 @@ public class SlotMachine {
     public static final float spacingX = 0f;
     public static final float spacingY = 0.15f;
 
-    public static final float originX = 0.2f;
-    public static final float originY = 9.26f;
+    public static final float originX = 0.26f;
+    public static final float originY = 7.5f;
 
     public static final Rectangle windowBounds = new Rectangle(0.05f, 9.16f, 8.85f, 5.6f);
 
@@ -129,6 +129,15 @@ public class SlotMachine {
         Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
         drawSymbols(delta);
         Pencil.I().endScissors();
+
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(originX - 0.1f, originY - 0.15f, 8.65f, 0.05f), ZIndex.SLOT_MACHINE));
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(originX - 0.1f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(originX - 0.1f, originY + 5.5f, 8.65f, 0.05f), ZIndex.SLOT_MACHINE));
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(originX + 8.5f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
 
         TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
     }
