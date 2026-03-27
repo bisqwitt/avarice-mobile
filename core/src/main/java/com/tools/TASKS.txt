@@ -35,3 +35,13 @@ fade alpha of symbols in/out when showing spin results
 
 BUGS:
 - In shop: PackOpenings are "Passive" do "?"
+
+
+PLAYTESTING:
+types / rarities sehen aus wie buttons (gleiche textur)
+wann muss ich cashouten
+shop buy box sieht aus wie button (gleiche textur) wusste nicht dass man muss ziehen
+nicht gewusst dass man karten ziehen muss
+wieviel leben verliert man und warum
+current $ nur im shop mit coin hit visual indicator
+deckUI fold back tap anywhere not on card

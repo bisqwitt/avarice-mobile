@@ -5,18 +5,12 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.rings.AbstractRing;
-import com.avaricious.upgrades.rings.DoubleXpRing;
-import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
-import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
-import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
-import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
@@ -40,7 +34,7 @@ public class RingBar {
 
     public final int MAX_RINGS = 5;
 
-    private final Rectangle firstRingBounds = new Rectangle(0.85f, 5.75f, 1.15f, 1.15f);
+    private final Rectangle firstRingBounds = new Rectangle(0.85f, 6.25f, 1.15f, 1.15f);
     private final float RING_OFFSET = 1.5f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
@@ -55,11 +49,7 @@ public class RingBar {
 
     private RingBar() {
         if (DevTools.testRings) {
-            addRing(new ThreeOfAKindMultiAdditionRing());
-            addRing(new PointsForEveryRingHit());
-            addRing(new CherryValueStackRing());
-            addRing(new MultiPerEmptyRingSlotRing());
-            addRing(new DoubleXpRing());
+//            addRing(new DoubleSymbolValueDisableFruits());
         }
     }
 
@@ -129,9 +119,9 @@ public class RingBar {
     public void draw() {
         rings.forEach(ring -> ring.draw(ring == touchingRing));
 
-//        Vector2 ringsHoldingPos = new Vector2(7.25f * 100, 5.6f * 100f);
-//        ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
-//        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
+        Vector2 ringsHoldingPos = new Vector2(6.75f * 100, 6f * 100f);
+        ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
+        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }
 
     public void addRing(AbstractRing ring) {

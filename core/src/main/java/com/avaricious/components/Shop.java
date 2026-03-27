@@ -26,7 +26,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Shop {
 
     private static final float WINDOW_X = -1f;
-    private static final float WINDOW_Y = 2.85f;
+    private static final float WINDOW_Y = 2f;
     private static final float WINDOW_WIDTH = 375 / 35f;
     public static final float WINDOW_HEIGHT = 650 / 35f;
 
@@ -68,7 +68,7 @@ public class Shop {
     private final float uiMoveDuration = 0.45f;
     private final float uiMoveDistance = 5f;
 
-    private final float baseCreditScoreY = 0.85f;
+    private final float baseCreditScoreY = 0.5f;
     private final float baseNextRoundButtonY = 0.25f;
 
     private float startCreditScoreY;
@@ -82,7 +82,7 @@ public class Shop {
 
         creditScore = new CreditScore(
             0,
-            new Rectangle(0.4f, baseCreditScoreY, 7 / 10f, 11 / 10f),
+            new Rectangle(0.5f, baseCreditScoreY, 7 / 12f, 11 / 12f),
             0.9f
         );
 
@@ -105,12 +105,12 @@ public class Shop {
             state = State.EXITING;
             windowVelocityY = 0f;
             moveOutUi();
-            HealthUi.I().moveIn();
-        }, new Rectangle(2.4f, baseNextRoundButtonY, 63 / 33f, 79 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
+            ButtonBoard.I().moveIn();
+        }, new Rectangle(6f, baseNextRoundButtonY, 75 / 33f, 43 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
 
         // start hidden below like HealthUi.moveOut() result
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
-        nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
+        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
     }
 
     public void draw(SpriteBatch batch, float delta) {
@@ -165,9 +165,9 @@ public class Shop {
 
         // keep them out while entering
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
-        nextRoundButton.getButtonRectangle().y = baseNextRoundButtonY - uiMoveDistance;
+        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
 
-        HealthUi.I().moveOut();
+        ButtonBoard.I().moveOut();
         moveInUi();
     }
 
@@ -211,7 +211,7 @@ public class Shop {
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
             cards.setY(currentWindowY + 9.15f);
-            rerollButton.getButtonRectangle().setY(currentWindowY + 7.65f);
+            rerollButton.getBounds().setY(currentWindowY + 7.65f);
             symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 4.75f;
             cardPack.getBody().getPos().y = currentWindowY + 4.4f;
             ringPack.getBody().getPos().y = currentWindowY + 4.85f;
@@ -220,7 +220,7 @@ public class Shop {
 
     private void moveInUi() {
         startCreditScoreY = creditScore.getFirstDigitBounds().y;
-        startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
+        startNextRoundButtonY = nextRoundButton.getBounds().y;
 
         targetCreditScoreY = baseCreditScoreY;
         targetNextRoundButtonY = baseNextRoundButtonY;
@@ -231,7 +231,7 @@ public class Shop {
 
     private void moveOutUi() {
         startCreditScoreY = creditScore.getFirstDigitBounds().y;
-        startNextRoundButtonY = nextRoundButton.getButtonRectangle().y;
+        startNextRoundButtonY = nextRoundButton.getBounds().y;
 
         targetCreditScoreY = baseCreditScoreY - uiMoveDistance;
         targetNextRoundButtonY = baseNextRoundButtonY - uiMoveDistance;
@@ -248,11 +248,11 @@ public class Shop {
         float eased = Interpolation.smooth.apply(progress);
 
         creditScore.getFirstDigitBounds().y = lerp(startCreditScoreY, targetCreditScoreY, eased);
-        nextRoundButton.getButtonRectangle().y = lerp(startNextRoundButtonY, targetNextRoundButtonY, eased);
+        nextRoundButton.getBounds().y = lerp(startNextRoundButtonY, targetNextRoundButtonY, eased);
 
         if (progress >= 1f) {
             creditScore.getFirstDigitBounds().y = targetCreditScoreY;
-            nextRoundButton.getButtonRectangle().y = targetNextRoundButtonY;
+            nextRoundButton.getBounds().y = targetNextRoundButtonY;
             isUiMoving = false;
         }
     }

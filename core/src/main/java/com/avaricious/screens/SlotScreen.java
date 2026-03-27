@@ -47,11 +47,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -79,7 +77,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
-    private final ButtonBoard buttonBoard = new ButtonBoard(this::onSpinButtonPressed, this::onCashoutButtonPressed);
+    private final ButtonBoard buttonBoard = ButtonBoard.I().init(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = HandUi.I();
     private final DeckUi deckUi = DeckUi.I();
     private final RingBar ringBar = RingBar.I();
@@ -158,7 +156,7 @@ public class SlotScreen extends ScreenAdapter {
         Pencil.I().drawDarkenWindow();
         roundInfoPanel.draw(delta);
         ScoreProgressBar.I().draw();
-        buttonBoard.draw(batch, delta);
+        buttonBoard.draw(delta);
         ringBar.draw();
 
 //        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);

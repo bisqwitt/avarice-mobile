@@ -3,14 +3,14 @@ package com.avaricious.components.slot.pattern;
 import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
+import com.avaricious.components.RingBar;
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 public class PatternFinder {
 
@@ -76,8 +76,11 @@ public class PatternFinder {
 
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss)
             matches.removeIf(match -> match.getSymbol() == Symbol.LEMON);
-        if(RoundsManager.I().getBoss() instanceof CherryDebuffBoss)
+        if (RoundsManager.I().getBoss() instanceof CherryDebuffBoss)
             matches.removeIf(match -> match.getSymbol() == Symbol.CHERRY);
+        if (RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class)) {
+            matches.removeIf(match -> match.getSymbol().isFruit());
+        }
 
         return matches;
     }

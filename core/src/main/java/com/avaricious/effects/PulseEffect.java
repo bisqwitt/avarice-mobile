@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class PulseEffect {
 
-//    private static final float[] SCALE_VALUES = {
+    //    private static final float[] DEFAULT_SCALE_VALUES = {
 //        1.0f,
 //        1.175f,
 //        0.825f,
@@ -16,18 +16,29 @@ public class PulseEffect {
     private static final float[] SCALE_VALUES = {
         1.0f,
         1.175f * 1.3f,
-        0.825f * 1.3f,
-        1.075f* 1.3f,
-        0.95f * 1.3f,
+        0.825f * 1.25f,
+        1.075f * 1.2f,
+        0.95f * 1.15f,
+        1 * 1.1f,
         1.0f
     };
 
+//    private static final float[] DEFAULT_ROTATION_VALUES = {
+//        0f,
+//        5f,
+//        -5f,
+//        2f,
+//        -1f,
+//        0f
+//    };
+
     private static final float[] ROTATION_VALUES = {
         0f,
-        5f,
-        -5f,
-        2f,
-        -1f,
+        7f,
+        -7f,
+        4f,
+        -2f,
+        1f,
         0f
     };
 
@@ -43,10 +54,9 @@ public class PulseEffect {
     private float currentScale = 1.0f;
     private float currentRotation = 0f;
 
-    /**
-     * 1 = normal, -1 = mirrored
-     */
     private float rotationDirection = 1f;
+
+//    private
 
     public void update(float delta) {
         if (!active || finished) {
@@ -105,5 +115,9 @@ public class PulseEffect {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public enum PulseStrength {
+        DEFAULT, HARD
     }
 }

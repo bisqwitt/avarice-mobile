@@ -9,6 +9,7 @@ import com.avaricious.upgrades.cards.DrawACardDisabledUntilTwoCardsPlayedCard;
 import com.avaricious.upgrades.cards.DrawACardIfLastCard;
 import com.avaricious.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.upgrades.cards.DrawCardsEqualToCurrentStreak;
+import com.avaricious.upgrades.cards.DrawTwoCardsDisabledOnZeroDefence;
 import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
 import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
 import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
@@ -16,6 +17,7 @@ import com.avaricious.upgrades.cards.MultiCard;
 import com.avaricious.upgrades.cards.MultiForEveryAttackInHandCard;
 import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
 import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
+import com.avaricious.upgrades.cards.MultiplyCurrentArmorByTwoCard;
 import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.PointsCard;
 import com.avaricious.upgrades.cards.PointsForEachCardInHandCard;
@@ -57,7 +59,9 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             MultiForEveryDisabledCard.class,
             DrawACardDisabledUntilTwoCardsPlayedCard.class,
             DrawCardsEqualToCurrentStreak.class,
-            DrawAndDiscardACard.class
+            DrawAndDiscardACard.class,
+            DrawTwoCardsDisabledOnZeroDefence.class,
+            MultiplyCurrentArmorByTwoCard.class
         ));
 
         if (DevTools.allCardsInDeck) {

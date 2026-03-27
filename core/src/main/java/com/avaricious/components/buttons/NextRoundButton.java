@@ -10,8 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class NextRoundButton extends Button {
 
-    private final float txtWidth = 76 / 50f;
-    private final float txtHeight = 52f / 50;
+    private final float txtWidth = 76 / 60f;
+    private final float txtHeight = 52f / 60;
 
     private final TextureRegion nextRoundTxt = Assets.I().get(AssetKey.NEXT_ROUND_TXT);
 
@@ -24,7 +24,7 @@ public class NextRoundButton extends Button {
         super.drawAt(bounds);
 
         float txtX = (bounds.x + bounds.width / 2f) - txtWidth / 2f;
-        float txtY = (bounds.y + 0.1f + bounds.height / 2f) - txtHeight / 2f;
+        float txtY = (bounds.y + 0.05f + bounds.height / 2f) - txtHeight / 2f;
         if (currentTexture == pressedButtonTexture) txtY -= 0.075f;
 
         Pencil.I().addDrawing(new TextureDrawing(nextRoundTxt,

@@ -48,6 +48,7 @@ public class RoundsManager {
 
     private final List<AbstractCard> playedCardsThisRound = new ArrayList<>();
     private boolean defenceTypeCardsDisabled = false;
+    private boolean cardsDisabledOnNoArmor = false;
 
     public void nextRound() {
         currentRound++;
@@ -59,6 +60,7 @@ public class RoundsManager {
 
         playedCardsThisRound.clear();
         defenceTypeCardsDisabled = false;
+        cardsDisabledOnNoArmor = false;
     }
 
     public boolean isBossRound() {
@@ -83,6 +85,14 @@ public class RoundsManager {
 
     public boolean defenceTypeCardsDisabled() {
         return defenceTypeCardsDisabled;
+    }
+
+    public void disableCardsOnNoArmor() {
+        cardsDisabledOnNoArmor = true;
+    }
+
+    public boolean cardsDisabledOnNoArmor() {
+        return cardsDisabledOnNoArmor;
     }
 
     public void onCardPlayed(AbstractCard card) {

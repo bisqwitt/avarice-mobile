@@ -1,7 +1,5 @@
 package com.avaricious.components;
 
-import static com.badlogic.gdx.math.MathUtils.lerp;
-
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.effects.BorderPulseMesh;
@@ -14,7 +12,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 
 public class HealthUi {
@@ -28,7 +25,7 @@ public class HealthUi {
     private final float hpSizeRatio = 20f;
     private final float armorSizeRatio = 20f;
 
-    private final float healthY = 19.1f;
+    private final float healthY = 18.8f;
     private final float armorY = healthY;
     private final float txtX = 0.75f;
     private final float currentValueX = txtX + 1.25f;
@@ -41,18 +38,6 @@ public class HealthUi {
     private final TextureRegion armTxt = Assets.I().get(AssetKey.DF_TXT);
     private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.ARM_TXT_SHADOW);
 
-    private boolean isMoving = false;
-
-    private final float moveDistance = 5f;
-    private final float moveDuration = 0.45f;
-
-    private float moveTime = 0f;
-
-    private float startArmorY;
-    private float startHealthY;
-    private float targetArmorY;
-    private float targetHealthY;
-
     private HealthUi() {
         armor = new DigitalNumber(0, Assets.I().silver(), 3,
             new Rectangle(currentValueX + 5.1f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.4f);
@@ -62,7 +47,6 @@ public class HealthUi {
     }
 
     public void draw(float delta) {
-        updateMovement(delta);
 //
 //        Pencil.I().addDrawing(new TextureDrawing(
 //            armTxtShadow,
@@ -120,47 +104,6 @@ public class HealthUi {
         }
     }
 
-    public void moveOut() {
-        startArmorY = armor.getFirstDigitBounds().y;
-        startHealthY = health.getFirstDigitBounds().y;
-
-        targetArmorY = armorY - moveDistance;
-        targetHealthY = healthY - moveDistance;
-
-        moveTime = 0f;
-        isMoving = true;
-    }
-
-    public void moveIn() {
-        startArmorY = armor.getFirstDigitBounds().y;
-        startHealthY = health.getFirstDigitBounds().y;
-
-        targetArmorY = armorY;
-        targetHealthY = healthY;
-
-        moveTime = 0f;
-        isMoving = true;
-    }
-
-    private void updateMovement(float delta) {
-        if (!isMoving) return;
-
-        moveTime += delta;
-        float progress = Math.min(moveTime / moveDuration, 1f);
-
-        // Good default for UI motion
-        float eased = Interpolation.smooth.apply(progress);
-
-        armor.getFirstDigitBounds().y = lerp(startArmorY, targetArmorY, eased);
-        health.getFirstDigitBounds().y = lerp(startHealthY, targetHealthY, eased);
-
-        if (progress >= 1f) {
-            armor.getFirstDigitBounds().y = targetArmorY;
-            health.getFirstDigitBounds().y = targetHealthY;
-            isMoving = false;
-        }
-    }
-
     public void healHealth() {
         setHealth(100);
     }
@@ -171,6 +114,14 @@ public class HealthUi {
 
     public void addArmor(int amount) {
         setArmor(armor.getScore() + amount);
+    }
+
+    public int getHealth() {
+        return health.getScore();
+    }
+
+    public int getArmor() {
+        return armor.getScore();
     }
 
     private void damageArmor(int damage) {

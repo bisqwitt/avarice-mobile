@@ -96,7 +96,7 @@ public class Button {
         onButtonPressedRunnable.run();
     }
 
-    public Rectangle getButtonRectangle() {
+    public Rectangle getBounds() {
         return buttonRectangle;
     }
 

@@ -44,8 +44,8 @@ public class HandUi {
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = 2.65f;
-    private final float CARD_WIDTH = 142 / 88f;
-    private final float CARD_HEIGHT = 190 / 88f;
+    private final float CARD_WIDTH = 142 / 90f;
+    private final float CARD_HEIGHT = 190 / 90f;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -170,7 +170,7 @@ public class HandUi {
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
 
         if (selectingCardToDiscard) {
-            Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), discardACardTxt, new Vector2(1.85f * 100, 8.5f * 100), ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD));
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), discardACardTxt, new Vector2(0.9f * 100, 6.75f * 100), ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD));
         }
     }
 
@@ -224,7 +224,7 @@ public class HandUi {
                 );
 
                 card.addBody(initialBounds);
-                card.getBody().pulse();
+//                card.getBody().pulse();
                 cards.add(card);
             }
         }
@@ -253,7 +253,7 @@ public class HandUi {
     }
 
     private float calcCardX(AbstractCard card) {
-        return calcFistX() + calcCardIndex(card) * (cards.size() != 7 ? CARD_OFFSET : CARD_OFFSET - 0.2f);
+        return calcFistX() + calcCardIndex(card) * calcOffset();
     }
 
     private float calcFistX() {
@@ -262,7 +262,7 @@ public class HandUi {
         if (n == 0) return 0;
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
-        float handWidth = (n - 1) * (cards.size() != 7 ? CARD_OFFSET : CARD_OFFSET - 0.2f) + CARD_WIDTH;
+        float handWidth = (n - 1) * calcOffset() + CARD_WIDTH;
         return -1 + (screenWidth - handWidth) / 2f;
     }
 
@@ -272,6 +272,11 @@ public class HandUi {
             if (sorted.get(i) == card) return i;
         }
         return -1;
+    }
+
+    private float calcOffset() {
+        return cards.size() == 6 ? CARD_OFFSET - 0.325f :
+            cards.size() == 7 ? CARD_OFFSET - 0.425f : CARD_OFFSET;
     }
 
     private List<AbstractCard> getEntriesSortedByX() {

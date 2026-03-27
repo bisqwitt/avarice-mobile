@@ -4,12 +4,15 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.upgrades.Deck;
+import com.avaricious.upgrades.Hand;
 import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -33,15 +36,17 @@ public class DeckUi {
         Deck.I().onChange(newDeck -> pendingCards = newDeck);
     }
 
-    private final float CARD_WIDTH = 142 / 85f;
-    private final float CARD_HEIGHT = 190 / 85f;
-    private final Rectangle firstCardBounds = new Rectangle(7f, 2.4f, CARD_WIDTH, CARD_HEIGHT);
+    private final float CARD_WIDTH = 142 / 90f;
+    private final float CARD_HEIGHT = 190 / 90f;
+    private final Rectangle firstCardBounds = new Rectangle(7f, 2.5f, CARD_WIDTH, CARD_HEIGHT);
 
     private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private final Map<AbstractCard, DragableBody> cards = new LinkedHashMap<>();
     private List<? extends AbstractCard> pendingCards;
+
+    private final GlyphLayout cardsInDeckTxt = new GlyphLayout();
 
     private final Vector2 touchDownLocation = new Vector2();
     private boolean unfolded = false;
@@ -107,9 +112,13 @@ public class DeckUi {
     }
 
     public void draw() {
+        Vector2 cardsInDeckPos = new Vector2(7.8f * 100, 2.3f * 100f);
+        cardsInDeckTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
+        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));
+
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
-            new Rectangle(6.8f, 0.05f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
+            new Rectangle(firstCardBounds.x - 0.2f, firstCardBounds.y - 0.2f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
             ZIndex.DECK_UI_BOX, Assets.I().shadowColor()));
 
 //        if(showingDeck) {

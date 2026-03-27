@@ -2,6 +2,8 @@ package com.avaricious.components.slot;
 
 import com.avaricious.RoundsManager;
 import com.avaricious.bosses.DecreaseSymbolValueBoss;
+import com.avaricious.components.RingBar;
+import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.AssetKey;
 
 public enum Symbol {
@@ -32,9 +34,9 @@ public enum Symbol {
     }
 
     public Integer baseValue() {
-        return RoundsManager.I().getBoss() instanceof DecreaseSymbolValueBoss
-            ? baseValue - 1
-            : baseValue;
+        if (RoundsManager.I().getBoss() instanceof DecreaseSymbolValueBoss) return baseValue - 1;
+        if (RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class)) return baseValue * 2;
+        return baseValue;
     }
 
     public void setBaseValue(int value) {

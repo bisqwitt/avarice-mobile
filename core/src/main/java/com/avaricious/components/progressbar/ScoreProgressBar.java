@@ -23,7 +23,7 @@ public class ScoreProgressBar {
     }
 
     private static final float BAR_X = 0.5f;
-    private static final float BAR_Y = 15.25f;
+    private static final float BAR_Y = 15.15f;
     private static final float BAR_WIDTH = 8f;
     private static final float BAR_HEIGHT = 0.25f;
 
@@ -93,10 +93,10 @@ public class ScoreProgressBar {
 
     public void setMaxValue(float maxValue) {
         this.maxValue = Math.max(0.0001f, maxValue);
-        this.currentValue = clamp(currentValue, 0f, this.maxValue);
-        this.optionalValue = clamp(optionalValue, 0f, this.maxValue);
-        this.displayedCurrentValue = clamp(displayedCurrentValue, 0f, this.maxValue);
-        this.displayedOptionalValue = clamp(displayedOptionalValue, 0f, this.maxValue);
+        this.currentValue = 0;
+        this.optionalValue = 0;
+        this.displayedCurrentValue = 0;
+        this.displayedOptionalValue = 0;
     }
 
     public void setCurrentValue(float currentValue) {

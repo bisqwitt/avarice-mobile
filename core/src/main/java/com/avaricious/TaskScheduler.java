@@ -2,16 +2,17 @@ package com.avaricious;
 
 import com.badlogic.gdx.utils.Timer;
 
-import java.util.*;
+import java.util.LinkedList;
 
 public class TaskScheduler {
 
     private static TaskScheduler instance;
+
     public static TaskScheduler I() {
         return instance == null ? instance = new TaskScheduler() : instance;
     }
 
-//    private final Map<Runnable, Float> tasks = new LinkedHashMap<>();
+    //    private final Map<Runnable, Float> tasks = new LinkedHashMap<>();
     private final LinkedList<ScheduledTask> tasks = new LinkedList<>();
     private final float defaultDelay = 0.4f;
 
@@ -34,7 +35,7 @@ public class TaskScheduler {
 
     public void runTasks() {
         float delay = defaultDelay;
-        for(ScheduledTask task : tasks) {
+        for (ScheduledTask task : tasks) {
             Timer.schedule(create(task.runnable), delay);
             delay += (task.delay);
         }

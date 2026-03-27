@@ -5,10 +5,12 @@ import com.avaricious.Main;
 import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
+import com.avaricious.components.RingBar;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
+import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -29,7 +31,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Vector;
 
 public class SlotMachine {
 
@@ -40,17 +41,17 @@ public class SlotMachine {
     }
 
     // --- Layout ---
-    public static final int cols = 4;
+    public static final int cols = 5;
     public static final int rows = 4;
-    public static final float CELL_W = 1.7f;
-    public static final float CELL_H = 1.7f;
+    public static final float CELL_W = 1.4f;
+    public static final float CELL_H = 1.4f;
     public static final float spacingX = 0.35f;
     public static final float spacingY = 0.15f;
 
-    public static final float originX = 0.75f;
-    public static final float originY = 7.25f;
+    public static final float originX = 0.25f;
+    public static final float originY = 8f;
 
-    public static final Rectangle windowBounds = new Rectangle(0.05f, 9.16f, 8.85f, 5.6f);
+    public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.15f, 8.95f, 6.285f);
 
     // Visual cells (for selection pulse/scale)
     private final Body[][] grid = new Body[cols][rows];
@@ -120,15 +121,11 @@ public class SlotMachine {
             float speed = 10f; // higher = faster convergence
             alpha = MathUtils.lerp(alpha, desiredAlpha, speed * delta);
         }
-//
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            new Rectangle(originX - 0.1f, originY - 0.15f, 7.5f, 0.05f), ZIndex.SLOT_MACHINE));
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            new Rectangle(originX - 0.1f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            new Rectangle(originX - 0.1f, originY + 5.5f, 7.5f, 0.05f), ZIndex.SLOT_MACHINE));
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            new Rectangle(originX + 7.35f, originY - 0.15f, 0.05f, 5.7f), ZIndex.SLOT_MACHINE));
+
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(0, originY + 6.13f, 9, 0.05f), ZIndex.SLOT_MACHINE));
+        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+            new Rectangle(0, originY - 0.2f, 9, 0.05f), ZIndex.SLOT_MACHINE));
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
@@ -155,7 +152,7 @@ public class SlotMachine {
 
             for (int k = drawFrom; k <= drawTo; k++) {
                 Vector2 pos = new Vector2(c, k);
-                if(isInGrid(pos) && grid[c][k].isInPatternHit()) {
+                if (isInGrid(pos) && grid[c][k].isInPatternHit()) {
                     symbolsInPatternHit.add(pos);
                     continue;
                 }
@@ -190,7 +187,8 @@ public class SlotMachine {
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
-            || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
+            || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
+            || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
             alpha = 0.5f;
 
         // NEW: rotate around center using current wobble angle

@@ -27,13 +27,13 @@ public class ScoreDisplay {
 
     private final TextureRegion xSymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
 
-    private final float DIGIT_Y = 16.25f;
+    private final float DIGIT_Y = 16f;
     private final float DIGIT_WIDTH = 7 / 15f;
     private final float DIGIT_HEIGHT = 11 / 15f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 5,
-        new Rectangle(2.75f, 17.5f, 7 / 10f, 11 / 10f), 0.9f);
+        new Rectangle(2.75f, 17.25f, 7 / 12f, 11 / 12f), 0.9f);
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
         new Rectangle(0.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
