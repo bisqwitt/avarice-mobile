@@ -125,7 +125,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-//                shop.show();
+                shop.show();
             }
         }, 1);
     }

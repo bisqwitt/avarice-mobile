@@ -35,9 +35,6 @@ public class ShopUpgradeBar {
     private final Rectangle firstUpgradeBounds = new Rectangle(1.55f, 13.15f, 142 / 80f, 190 / 80f);
     private final float UPGRADE_OFFSET = 2f;
 
-    private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
-    private final TextureRegion priceBox = Assets.I().get(AssetKey.PRICE_BOX);
-
     private final Map<Upgrade, CreditNumber> cardPriceMap = new HashMap<>();
     private Upgrade touchingCard = null;
     private Upgrade selectedCard = null;
