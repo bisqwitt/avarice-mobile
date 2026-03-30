@@ -93,7 +93,7 @@ public class CardPack extends PackOpening {
 
     @Override
     protected Upgrade getResult() {
-        return resultCard = Deck.I().randomUpgrade();
+        return resultCard = AbstractCard.randomCard();
     }
 
     @Override

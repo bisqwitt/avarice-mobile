@@ -6,7 +6,20 @@ import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.upgrades.IUpgradeType;
 import com.avaricious.upgrades.Upgrade;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.RandomMultiAdditionRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.FiveOfAKindMultiAdditionRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.FourOfAKindMultiAdditionRing;
+import com.avaricious.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsForEveryRingHit;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.BellValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CloverValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.DiamondValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.IronValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.LemonValueStackRing;
+import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.SevenValueStackRing;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RingAssetKeys;
@@ -17,6 +30,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class AbstractRing extends Upgrade {
 
@@ -89,4 +106,29 @@ public abstract class AbstractRing extends Upgrade {
     public int price() {
         return 3;
     }
+
+    public static AbstractRing randomRing() {
+        return instantiateCard(allRingClasses.get((int) (Math.random() * allRingClasses.size())));
+    }
+
+    public static final List<Class<? extends AbstractRing>> allRingClasses = Collections.unmodifiableList(Arrays.asList(
+        CriticalDamageRing.class,
+        DeptRing.class,
+        RandomMultiAdditionRing.class,
+        MultiPerEmptyRingSlotRing.class,
+        ThreeOfAKindMultiAdditionRing.class,
+        FourOfAKindMultiAdditionRing.class,
+        FiveOfAKindMultiAdditionRing.class,
+        LemonValueStackRing.class,
+        CherryValueStackRing.class,
+        CloverValueStackRing.class,
+        BellValueStackRing.class,
+        IronValueStackRing.class,
+        DiamondValueStackRing.class,
+        SevenValueStackRing.class,
+        PointsPerPatternHit.class,
+        DoubleXpRing.class,
+        OneMoreCardAtStartOfRoundRing.class,
+        DoubleSymbolValueDisableFruits.class
+    ));
 }

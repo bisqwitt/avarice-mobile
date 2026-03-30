@@ -72,7 +72,8 @@ public class HealthUi {
         ));
     }
 
-    public void damage(int damage) {
+    public boolean damage(int damage) {
+        boolean damagedHealth = false;
         float currentArmorValue = armor.getScore();
 
         EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
@@ -81,7 +82,7 @@ public class HealthUi {
                 evadeChanceStatus.getTexture(),
                 currentValueX + 1f,
                 (currentArmorValue > 0 ? armorY : healthY) + 0.5f);
-            return;
+            return false;
         }
 
         float armorHp = armor.getScore();
@@ -92,16 +93,19 @@ public class HealthUi {
             damageArmor((int) armorDamage);
             if (spill > 0) {
                 damageHealth((int) spill);
+                damagedHealth = true;
                 ScoreDisplay.I().clearPotentialScore();
             }
         } else {
             damageHealth(damage);
+            damagedHealth = true;
             ScoreDisplay.I().clearPotentialScore();
         }
 
         if (health.getScore() <= 0) {
             ScreenManager.restartGame();
         }
+        return damagedHealth;
     }
 
     public void healHealth() {

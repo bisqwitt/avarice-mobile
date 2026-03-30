@@ -4,6 +4,8 @@ import com.avaricious.components.slot.DragableBody;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.lang.reflect.InvocationTargetException;
+
 public abstract class Upgrade {
 
     protected DragableBody body = null;
@@ -32,6 +34,15 @@ public abstract class Upgrade {
 
     public DragableBody getBody() {
         return body;
+    }
+
+    public static <T> T instantiateCard(Class<T> clazz) {
+        try {
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                 NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

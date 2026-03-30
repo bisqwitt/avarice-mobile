@@ -1,33 +1,16 @@
 package com.avaricious.upgrades;
 
+import static com.avaricious.upgrades.cards.AbstractCard.allCardClasses;
+import static com.avaricious.upgrades.cards.AbstractCard.instantiateCard;
+
 import com.avaricious.DevTools;
 import com.avaricious.upgrades.cards.AbstractCard;
 import com.avaricious.upgrades.cards.ArmorCard;
-import com.avaricious.upgrades.cards.ConvertPointsToArmorCard;
-import com.avaricious.upgrades.cards.DrawACardDefenceCardsDisabledCard;
-import com.avaricious.upgrades.cards.DrawACardDisabledUntilTwoCardsPlayedCard;
-import com.avaricious.upgrades.cards.DrawACardIfLastCard;
-import com.avaricious.upgrades.cards.DrawAndDiscardACard;
-import com.avaricious.upgrades.cards.DrawCardsEqualToCurrentStreak;
-import com.avaricious.upgrades.cards.DrawTwoCardsDisabledOnZeroDefence;
-import com.avaricious.upgrades.cards.DrawTwoCardsForTenDamage;
-import com.avaricious.upgrades.cards.EitherDoublePointsOrHalveMulti;
-import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.upgrades.cards.MultiCard;
-import com.avaricious.upgrades.cards.MultiForEveryAttackInHandCard;
-import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
-import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
-import com.avaricious.upgrades.cards.MultiplyCurrentArmorByTwoCard;
-import com.avaricious.upgrades.cards.OneDollarCard;
 import com.avaricious.upgrades.cards.PointsCard;
-import com.avaricious.upgrades.cards.PointsForEachCardInHandCard;
-import com.avaricious.upgrades.cards.PointsForEveryFruitCard;
-import com.avaricious.upgrades.cards.PointsForEverySymbolHit;
 import com.avaricious.utility.Observable;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,31 +23,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
     }
 
     private Deck() {
-        allCardClasses.addAll(Arrays.asList(
-            PointsCard.class,
-            MultiCard.class,
-            ArmorCard.class,
-            OneDollarCard.class,
-            ConvertPointsToArmorCard.class,
-            PointsForEachCardInHandCard.class,
-            DrawACardIfLastCard.class,
-            MultiForEveryCardDiscarded.class,
-            DrawTwoCardsForTenDamage.class,
-            PointsForEverySymbolHit.class,
-            PointsForEveryFruitCard.class,
-            EitherDoublePointsOrHalveMulti.class,
-            HealForEveryFruitHitCard.class,
-            MultiForEveryAttackInHandCard.class,
-            DrawACardDefenceCardsDisabledCard.class,
-            MultiForEveryDisabledCard.class,
-            DrawACardDisabledUntilTwoCardsPlayedCard.class,
-            DrawCardsEqualToCurrentStreak.class,
-            DrawAndDiscardACard.class,
-            DrawTwoCardsDisabledOnZeroDefence.class,
-            MultiplyCurrentArmorByTwoCard.class
-        ));
-
-        if (DevTools.allCardsInDeck) {
+        if (DevTools.allCardsInDeck()) {
             for (Class<? extends AbstractCard> cardClass : allCardClasses) {
                 addCardToDeck(instantiateCard(cardClass));
             }
@@ -80,56 +39,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
         }
     }
 
-    private final List<Class<? extends AbstractCard>> allCardClasses = new ArrayList<>();
     private final List<AbstractCard> deck = new ArrayList<>();
-
-    public List<? extends AbstractCard> randomUpgrades(int amount) {
-        List<AbstractCard> result = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            result.add(randomUpgrade());
-        }
-        return result;
-    }
-
-    public AbstractCard randomUpgrade() {
-        try {
-            return randomUpgradeClass().getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException |
-                 InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private AbstractCard instantiateCard(Class<? extends AbstractCard> cardClass) {
-        try {
-            return cardClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Class<? extends AbstractCard> randomUpgradeClass() {
-        return allCardClasses.get((int) (Math.random() * allCardClasses.size()));
-    }
-
-    public <T> List<T> getUpgradesOfClass(Class<T> clazz) {
-        List<T> out = new ArrayList<>();
-        for (int i = 0; i < deck.size(); i++) {          // deck is a List<?>
-            Object o = deck.get(i);
-            if (clazz.isInstance(o)) {
-                out.add(clazz.cast(o));
-            }
-        }
-        return out;
-    }
-
-    public <T> T getUpgradeOfClass(Class<T> upgradeClass) {
-        for (AbstractCard upgrade : deck) {
-            if (upgradeClass.isInstance(upgrade)) return (T) upgrade;
-        }
-        return null;
-    }
 
     public AbstractCard drawRandomCard() {
         return removeCard((int) (Math.random() * deck.size()));
@@ -141,13 +51,6 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             .findFirst().get()));
     }
 
-    public boolean upgradeIsInDeck(Class<? extends AbstractCard> upgradeClass) {
-        for (AbstractCard upgrade : deck) {
-            if (upgradeClass.isInstance(upgrade)) return true;
-        }
-        return false;
-    }
-
     public void addCardToDeck(AbstractCard upgrade) {
         deck.add(upgrade);
         notifyChanged(snapshot());
@@ -157,14 +60,6 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
         AbstractCard card = deck.remove(index);
         notifyChanged(snapshot());
         return card;
-    }
-
-    public List<AbstractCard> getDeck() {
-        return deck;
-    }
-
-    public boolean spaceInDeck() {
-        return deck.size() < 7;
     }
 
     @Override

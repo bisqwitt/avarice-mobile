@@ -11,6 +11,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class AbstractCard extends Upgrade {
 
     public abstract String description();
@@ -56,4 +60,33 @@ public abstract class AbstractCard extends Upgrade {
 
         return false;
     }
+
+    public static AbstractCard randomCard() {
+        return instantiateCard(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
+    }
+
+    public static final List<Class<? extends AbstractCard>> allCardClasses = Collections.unmodifiableList(Arrays.asList(
+        PointsCard.class,
+        MultiCard.class,
+        ArmorCard.class,
+        OneDollarCard.class,
+        ConvertPointsToArmorCard.class,
+        PointsForEachCardInHandCard.class,
+        DrawACardIfLastCard.class,
+        MultiForEveryCardDiscarded.class,
+        DrawTwoCardsForTenDamage.class,
+        PointsForEverySymbolHit.class,
+        PointsForEveryFruitCard.class,
+        EitherDoublePointsOrHalveMulti.class,
+        HealForEveryFruitHitCard.class,
+        MultiForEveryAttackInHandCard.class,
+        DrawACardDefenceCardsDisabledCard.class,
+        MultiForEveryDisabledCard.class,
+        DrawACardDisabledUntilTwoCardsPlayedCard.class,
+        DrawCardsEqualToCurrentStreak.class,
+        DrawAndDiscardACard.class,
+        DrawTwoCardsDisabledOnZeroDefence.class,
+        MultiplyCurrentArmorByTwoCard.class,
+        ArmorForEverySymbolHitLastSpin.class
+    ));
 }

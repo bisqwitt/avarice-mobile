@@ -5,10 +5,9 @@ import static com.badlogic.gdx.math.MathUtils.lerp;
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.SymbolSpawnChancePack;
-import com.avaricious.components.bars.ShopCardsBar;
+import com.avaricious.components.bars.ShopUpgradeBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.NextRoundButton;
-import com.avaricious.upgrades.Deck;
 import com.avaricious.upgrades.cards.CardPack;
 import com.avaricious.upgrades.rings.RingPack;
 import com.avaricious.utility.AssetKey;
@@ -45,7 +44,7 @@ public class Shop {
     private final BuyBox buyBox = new BuyBox();
     private final CreditScore creditScore;
 
-    private final ShopCardsBar cards = new ShopCardsBar(buyBox.getBounds());
+    private final ShopUpgradeBar cards = new ShopUpgradeBar(buyBox.getBounds());
     private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
     private CardPack cardPack = new CardPack(buyBox.getBounds());
     private RingPack ringPack = new RingPack(buyBox.getBounds());
@@ -88,7 +87,7 @@ public class Shop {
 
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
-                cards.loadCards(Deck.I().randomUpgrades(3));
+                cards.load();
                 CreditManager.I().pay(3);
             }
         },
@@ -127,13 +126,13 @@ public class Shop {
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxtShadow,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 12.65f, 29 / 8f, 13 / 8f),
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 14.65f, 29 / 8f, 13 / 8f),
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxt,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 12.75f, 29 / 8f, 13 / 8f),
+            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 14.75f, 29 / 8f, 13 / 8f),
             ZIndex.SHOP
         ));
 
@@ -154,7 +153,7 @@ public class Shop {
     }
 
     public void show() {
-        cards.loadCards(Deck.I().randomUpgrades(3));
+        cards.load();
         symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
         cardPack = new CardPack(buyBox.getBounds());
         ringPack = new RingPack(buyBox.getBounds());
@@ -210,11 +209,11 @@ public class Shop {
 
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
-            cards.setY(currentWindowY + 9.15f);
-            rerollButton.getBounds().setY(currentWindowY + 7.65f);
-            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 4.75f;
-            cardPack.getBody().getPos().y = currentWindowY + 4.4f;
-            ringPack.getBody().getPos().y = currentWindowY + 4.85f;
+            cards.setY(currentWindowY + 11.15f);
+            rerollButton.getBounds().setY(currentWindowY + 9.65f);
+            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 6.75f;
+            cardPack.getBody().getPos().y = currentWindowY + 6.4f;
+            ringPack.getBody().getPos().y = currentWindowY + 6.85f;
         }
     }
 

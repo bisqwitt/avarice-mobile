@@ -2,22 +2,34 @@ package com.avaricious;
 
 public class DevTools {
 
-    public static boolean autoSpin = false;
+    private static final boolean active = true;
 
-    public static boolean noDamage = false;
+    public static boolean onlyLemon() {
+        return active && false;
+    }
 
-    public static String playMode = "speedrun";
+    public static boolean lemonCherry() {
+        return active && false;
+    }
 
-    public static boolean onlyLemon = false;
+    public static boolean audioMuted() {
+        return active && false;
+    }
 
-    public static boolean lemonCherry = false;
+    public static boolean enableProfiler() {
+        return active && false;
+    }
 
-    public static boolean audioMuted = false;
+    public static boolean testRings() {
+        return active && false;
+    }
 
-    public static boolean enableProfiler = false;
+    public static boolean allCardsInDeck() {
+        return active && false;
+    }
 
-    public static boolean testRings = true;
-
-    public static boolean allCardsInDeck = true;
+    public static boolean unlimitedMoney() {
+        return active && true;
+    }
 
 }

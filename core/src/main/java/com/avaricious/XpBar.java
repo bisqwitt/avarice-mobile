@@ -1,8 +1,6 @@
 package com.avaricious;
 
-import com.avaricious.components.RingBar;
 import com.avaricious.components.progressbar.ProgressBar;
-import com.avaricious.upgrades.rings.DoubleXpRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -61,8 +59,8 @@ public class XpBar extends ProgressBar {
     }
 
     public void addXp(int amount) {
-        xp += RingBar.I().ringOwned(DoubleXpRing.class) ? amount * 2 : amount;
-        if (xp > getMaxValue()) levelUp();
+//        xp += RingBar.I().ringOwned(DoubleXpRing.class) ? amount * 2 : amount;
+//        if (xp > getMaxValue()) levelUp();
     }
 
     private void levelUp() {

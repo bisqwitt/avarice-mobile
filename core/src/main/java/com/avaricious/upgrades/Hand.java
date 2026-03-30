@@ -1,7 +1,11 @@
 package com.avaricious.upgrades;
 
+import com.avaricious.DevTools;
 import com.avaricious.upgrades.cards.AbstractCard;
+import com.avaricious.upgrades.cards.ArmorCard;
+import com.avaricious.upgrades.cards.ArmorForEverySymbolHitLastSpin;
 import com.avaricious.upgrades.cards.DrawAndDiscardACard;
+import com.avaricious.upgrades.cards.MultiForEveryDisabledCard;
 import com.avaricious.utility.Observable;
 import com.badlogic.gdx.utils.Timer;
 
@@ -19,10 +23,12 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     private Hand() {
-//        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
-//        addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
-//        addCardToHand(Deck.I().drawCard(ArmorCard.class));
-        addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
+        if (DevTools.allCardsInDeck()) {
+            addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
+            addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
+            addCardToHand(Deck.I().drawCard(ArmorCard.class));
+            addCardToHand(Deck.I().drawCard(ArmorForEverySymbolHitLastSpin.class));
+        }
     }
 
     private final List<AbstractCard> hand = new ArrayList<>();

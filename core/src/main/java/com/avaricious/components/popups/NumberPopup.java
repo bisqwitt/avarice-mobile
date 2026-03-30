@@ -15,8 +15,8 @@ import java.util.List;
 
 public class NumberPopup implements IPopup {
 
-    public final static float defaultWidth = 7 / 14f;
-    public final static float defaultHeight = 11 / 14f;
+    public final static float defaultWidth = 7 / 16f;
+    public final static float defaultHeight = 11 / 16f;
 
     private enum Phase {PULSE, HOLD, EXIT, FINISHED}
 

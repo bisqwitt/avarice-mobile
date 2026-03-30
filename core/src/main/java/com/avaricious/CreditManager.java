@@ -23,7 +23,8 @@ public class CreditManager extends Observable<Integer> {
     }
 
     public void pay(int amount) {
-        setCredits(credits - amount);
+        if (!DevTools.unlimitedMoney())
+            setCredits(credits - amount);
     }
 
     public void roundEnd() {

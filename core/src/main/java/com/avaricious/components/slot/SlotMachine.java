@@ -13,13 +13,14 @@ import com.avaricious.effects.TextureEcho;
 import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -53,12 +54,9 @@ public class SlotMachine {
 
     public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.15f, 8.95f, 6.285f);
 
-    // Visual cells (for selection pulse/scale)
-    private final Body[][] grid = new Body[cols][rows];
-    private final TextureRegion slotBox = Assets.I().get(AssetKey.SLOT_BOX);
-
-    // Reels (one per column)
     private final List<Reel> reels = new ArrayList<>();
+    private final Body[][] grid = new Body[cols][rows];
+    private final GlyphLayout bossDescription = new GlyphLayout();
 
     private boolean runningResults = false;
     private float alpha = 1f;
@@ -126,6 +124,12 @@ public class SlotMachine {
             new Rectangle(0, originY + 6.13f, 9, 0.05f), ZIndex.SLOT_MACHINE));
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
             new Rectangle(0, originY - 0.2f, 9, 0.05f), ZIndex.SLOT_MACHINE));
+
+        if (RoundsManager.I().isBossRound()) {
+            bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), bossDescription,
+                new Vector2(0.5f * 100, 14.5f * 100), ZIndex.SLOT_MACHINE));
+        }
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
@@ -278,10 +282,10 @@ public class SlotMachine {
 
         Arrays.stream(Symbol.values())
             .filter(symbol -> {
-                if (DevTools.onlyLemon) {
+                if (DevTools.onlyLemon()) {
                     return symbol == Symbol.LEMON;
                 }
-                if (DevTools.lemonCherry) {
+                if (DevTools.lemonCherry()) {
                     return symbol == Symbol.LEMON || symbol == Symbol.CHERRY;
                 }
                 return true;

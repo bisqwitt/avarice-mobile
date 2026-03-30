@@ -15,6 +15,7 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
+import com.avaricious.components.RelicBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.Shop;
@@ -96,7 +97,6 @@ public class SlotScreen extends ScreenAdapter {
 
     private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
-    private final RoundsManager roundsManager = RoundsManager.I();
     private final Vector2 mouse = new Vector2();
     private boolean leftClickWasPressed = false;
     private int symbolsHitLastSpin = 0;
@@ -111,7 +111,7 @@ public class SlotScreen extends ScreenAdapter {
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
 
-        if (DevTools.enableProfiler) Profiler.start();
+        if (DevTools.enableProfiler()) Profiler.start();
     }
 
     @Override
@@ -161,10 +161,10 @@ public class SlotScreen extends ScreenAdapter {
 
 //        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);
         healthUi.draw(delta);
-        xpBar.draw(batch);      // 5
+//        xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw();
-//        RelicBag.I().draw(batch);
+        RelicBag.I().draw(batch);
 
         ParticleManager.I().draw(batch, delta);
         slotMachine.draw(app, delta);   // 10
@@ -226,7 +226,7 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            healthUi.damage(20);
+            if (healthUi.damage(20)) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
             return;
@@ -312,10 +312,6 @@ public class SlotScreen extends ScreenAdapter {
 //            buttonBoard.setVisible(true);
         });
 
-        if (DevTools.autoSpin) {
-            scheduler.schedule(this::onCashoutButtonPressed);
-            scheduler.schedule(this::onSpinButtonPressed);
-        }
         scheduler.runTasks();
     }
 

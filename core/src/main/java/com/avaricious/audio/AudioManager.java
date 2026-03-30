@@ -20,13 +20,13 @@ public class AudioManager {
         0.9f, 1f);
 
     // 0 = base, 2 = whole step, 3 = minor third, 5 = fourth, 7 = fifth
-    private static final float[] HIT_LADDER = { 0f, 2f, 3f, 5f, 7f };
+    private static final float[] HIT_LADDER = {0f, 2f, 3f, 5f, 7f};
 
     private AudioManager() {
     }
 
     public void playHit(float streak) {
-        if(!DevTools.audioMuted) playHitInternal(streak, -2f);
+        if (!DevTools.audioMuted()) playHitInternal(streak, -2f);
     }
 
     private void playHitInternal(float streak, float semitoneOffset) {
@@ -41,7 +41,7 @@ public class AudioManager {
     }
 
     public void startPayout() {
-        if(!DevTools.audioMuted) payout.start();
+        if (!DevTools.audioMuted()) payout.start();
         Gdx.app.log("AUDIO", "payout started");
     }
 

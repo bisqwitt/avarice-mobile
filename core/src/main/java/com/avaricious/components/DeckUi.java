@@ -34,11 +34,12 @@ public class DeckUi {
 
     private DeckUi() {
         Deck.I().onChange(newDeck -> pendingCards = newDeck);
+        cardsInDeckTxt.setText(Assets.I().getBigFont(), "Cards in Deck");
     }
 
     private final float CARD_WIDTH = 142 / 90f;
     private final float CARD_HEIGHT = 190 / 90f;
-    private final Rectangle firstCardBounds = new Rectangle(7f, 2.5f, CARD_WIDTH, CARD_HEIGHT);
+    private final Rectangle firstCardBounds = new Rectangle(7.1f, 2.5f, CARD_WIDTH, CARD_HEIGHT);
 
     private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
@@ -47,6 +48,7 @@ public class DeckUi {
     private List<? extends AbstractCard> pendingCards;
 
     private final GlyphLayout cardsInDeckTxt = new GlyphLayout();
+    private final GlyphLayout cardsInDeckCountTxt = new GlyphLayout();
 
     private final Vector2 touchDownLocation = new Vector2();
     private boolean unfolded = false;
@@ -113,8 +115,8 @@ public class DeckUi {
 
     public void draw() {
         Vector2 cardsInDeckPos = new Vector2(7.8f * 100, 2.3f * 100f);
-        cardsInDeckTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
-        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));
+        cardsInDeckCountTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
+        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckCountTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));
 
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
@@ -128,6 +130,11 @@ public class DeckUi {
             if (card != touchingCard) drawCard(card);
         }
         if (touchingCard != null) drawCard(touchingCard);
+
+        if (unfolded) {
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), cardsInDeckTxt,
+                new Vector2(2.5f * 100, 18f * 100), ZIndex.UNFOLDED_DECK_CARD));
+        }
     }
 
     public void drawCard(AbstractCard card) {

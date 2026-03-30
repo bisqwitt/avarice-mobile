@@ -50,6 +50,7 @@ public enum AssetKey {
     HEALTH_RED_PIXEL("health-red-pixel"),
     SHOP_WINDOW("ShopWindow"),
     SHOP_WINDOW_SHADOW("ShopWindowShadow"),
+    SHOP_WINDOW_BOX("ShopWindowBox"),
     SHOP_TXT("ShopTxt"),
     SHOP_TXT_SHADOW("ShopTxt-shadow"),
     REROLL_BUTTON("reroll"),
@@ -274,7 +275,8 @@ public enum AssetKey {
     PROGRESSBAR_YELLOW_PIXEL("progressbar-yellow-pixel"),
     PROGRESSBAR_DARKER_YELLOW_PIXEL("progressbar-darker-yellow"),
     DF_TXT("df-txt"),
-    TEST("test");
+    QUEST_SCROLL("quest-scroll"),
+    QUEST_SCROLL_SHADOW("quest-scroll-shadow");
 
     private final String path;
 

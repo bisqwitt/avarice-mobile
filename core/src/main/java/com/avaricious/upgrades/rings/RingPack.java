@@ -2,7 +2,6 @@ package com.avaricious.upgrades.rings;
 
 import com.avaricious.CreditManager;
 import com.avaricious.PackOpening;
-import com.avaricious.components.RelicBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.ClaimedPopup;
@@ -99,7 +98,7 @@ public class RingPack extends PackOpening {
 
     @Override
     protected Upgrade getResult() {
-        return resultRing = RelicBag.I().randomRelic();
+        return resultRing = AbstractRing.randomRing();
     }
 
     @Override
