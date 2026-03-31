@@ -7,8 +7,8 @@ import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradeRarity;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.UpgradeRarity;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -67,7 +67,7 @@ public abstract class PackOpening {
     protected boolean closing = false;
     private boolean closed = false;
 
-    private Upgrade result;
+    private AbstractUpgrade result;
     private final Vector2 mouseTouchdownLocation = new Vector2();
     protected TooltipPopup tooltipPopup = null;
 
@@ -419,9 +419,9 @@ public abstract class PackOpening {
 
     protected abstract int getTextureAmount();
 
-    protected abstract Upgrade getPackDescription();
+    protected abstract AbstractUpgrade getPackDescription();
 
-    protected abstract Upgrade getResult();
+    protected abstract AbstractUpgrade getResult();
 
     protected abstract float getTooltipYOffset();
 

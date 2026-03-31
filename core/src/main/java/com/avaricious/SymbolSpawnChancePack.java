@@ -6,11 +6,11 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.IUpgradeType;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.UpgradeRarity;
-import com.avaricious.upgrades.cards.CardType;
-import com.avaricious.upgrades.rings.RingType;
+import com.avaricious.items.upgrades.IUpgradeType;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.UpgradeRarity;
+import com.avaricious.items.upgrades.cards.CardType;
+import com.avaricious.items.upgrades.rings.RingType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
@@ -53,8 +53,8 @@ public class SymbolSpawnChancePack extends PackOpening {
     }
 
     @Override
-    protected Upgrade getPackDescription() {
-        return new Upgrade() {
+    protected AbstractUpgrade getPackDescription() {
+        return new AbstractUpgrade() {
             @Override
             public String title() {
                 return "Symbol";
@@ -94,9 +94,9 @@ public class SymbolSpawnChancePack extends PackOpening {
     }
 
     @Override
-    protected Upgrade getResult() {
+    protected AbstractUpgrade getResult() {
         result = Symbol.values()[MathUtils.random(Symbol.values().length - 1)];
-        return new Upgrade() {
+        return new AbstractUpgrade() {
             @Override
             public String title() {
                 return "Spawn chance";

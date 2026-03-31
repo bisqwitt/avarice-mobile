@@ -3,7 +3,7 @@ package com.avaricious.components.slot;
 import com.avaricious.RoundsManager;
 import com.avaricious.bosses.DecreaseSymbolValueBoss;
 import com.avaricious.components.RingBar;
-import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
+import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.AssetKey;
 
 public enum Symbol {

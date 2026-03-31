@@ -10,7 +10,7 @@ import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
-import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
+import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;

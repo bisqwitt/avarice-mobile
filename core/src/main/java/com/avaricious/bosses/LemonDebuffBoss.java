@@ -1,7 +1,7 @@
 package com.avaricious.bosses;
 
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.LemonValueStackRing;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.LemonValueStackRing;
 
 public class LemonDebuffBoss extends AbstractBoss {
     @Override
@@ -10,7 +10,7 @@ public class LemonDebuffBoss extends AbstractBoss {
     }
 
     @Override
-    public Upgrade loot() {
+    public AbstractUpgrade loot() {
         return new LemonValueStackRing();
     }
 }

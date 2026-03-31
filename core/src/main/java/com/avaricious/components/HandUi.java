@@ -9,11 +9,12 @@ import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.cards.AbstractCard;
+import com.avaricious.items.upgrades.Hand;
+import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.GameStateLogger;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.UiUtility;
@@ -369,7 +370,7 @@ public class HandUi {
             }
         }, 0.5f);
 
-        RoundsManager.I().onCardPlayed(card);
+        GameStateLogger.I().onCardPlayed(card);
 
         if (RoundsManager.I().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
             Hand.I().discardRandomCard();

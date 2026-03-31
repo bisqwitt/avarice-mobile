@@ -2,8 +2,8 @@ package com.avaricious.components;
 
 import com.avaricious.components.bars.StatusUpgradeBar;
 import com.avaricious.components.bars.UpgradeBar;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.rings.applicable.StatusRing;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.rings.applicable.StatusRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -59,7 +59,7 @@ public class StatusUpgradeWindow {
         upgradeBar.setzIndex(ZIndex.WINDOW_ON_TOP);
     }
 
-    private List<Upgrade> randomStatUpgrades() {
+    private List<AbstractUpgrade> randomStatUpgrades() {
         return Arrays.asList(StatusRing.newRandom(), StatusRing.newRandom(), StatusRing.newRandom());
     }
 

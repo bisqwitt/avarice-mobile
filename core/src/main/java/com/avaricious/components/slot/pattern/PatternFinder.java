@@ -5,7 +5,7 @@ import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.rings.DoubleSymbolValueDisableFruits;
+import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;

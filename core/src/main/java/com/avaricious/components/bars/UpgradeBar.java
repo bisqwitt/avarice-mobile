@@ -2,8 +2,8 @@ package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.slot.Body;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.AbstractCard;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -24,23 +24,23 @@ public abstract class UpgradeBar {
 
     private ZIndex zIndex = ZIndex.UPGRADE_BAR;
 
-    protected final Map<Upgrade, Rectangle> cardBounds = new HashMap<>();
-    protected final Map<Upgrade, Body> cardAnimationManagers = new HashMap<>();
+    protected final Map<AbstractUpgrade, Rectangle> cardBounds = new HashMap<>();
+    protected final Map<AbstractUpgrade, Body> cardAnimationManagers = new HashMap<>();
 
-    private Upgrade hoveringKey = null;
+    private AbstractUpgrade hoveringKey = null;
 
     private final boolean tooltipOnTopOfCard;
 
     protected Runnable onCardClicked;
 
-    public UpgradeBar(List<? extends Upgrade> Cards, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
+    public UpgradeBar(List<? extends AbstractUpgrade> Cards, Rectangle cardRectangle, float offset, boolean tooltipOnTop) {
         tooltipOnTopOfCard = tooltipOnTop;
 
         this.cardRectangle = cardRectangle;
         this.offset = offset;
 
         for (int i = 0; i < Cards.size(); i++) {
-            Upgrade upgrade = Cards.get(i);
+            AbstractUpgrade upgrade = Cards.get(i);
             cardBounds.put(upgrade, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
             cardAnimationManagers.put(upgrade, new Body(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
@@ -48,9 +48,9 @@ public abstract class UpgradeBar {
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         hoveringKey = null;
-        Upgrade[] clickedCard = new Upgrade[1];
-        for (Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
-            Upgrade upgrade = entry.getKey();
+        AbstractUpgrade[] clickedCard = new AbstractUpgrade[1];
+        for (Map.Entry<AbstractUpgrade, Rectangle> entry : cardBounds.entrySet()) {
+            AbstractUpgrade upgrade = entry.getKey();
             Rectangle rectangle = entry.getValue();
 
             boolean hovered = rectangle.contains(mouse);
@@ -80,8 +80,8 @@ public abstract class UpgradeBar {
      */
     public void draw(SpriteBatch batch) {
         // combined scale (identical idea to SlotMachine)
-        for (Map.Entry<Upgrade, Rectangle> entry : cardBounds.entrySet()) {
-            Upgrade upgrade = entry.getKey();
+        for (Map.Entry<AbstractUpgrade, Rectangle> entry : cardBounds.entrySet()) {
+            AbstractUpgrade upgrade = entry.getKey();
             Rectangle rectangle = entry.getValue();
 
             Body cardBody = cardAnimationManagers.get(upgrade);
@@ -100,7 +100,7 @@ public abstract class UpgradeBar {
         }
     }
 
-    protected void drawCard(SpriteBatch batch, Upgrade upgrade, Rectangle bounds, float scale, float rotation) {
+    protected void drawCard(SpriteBatch batch, AbstractUpgrade upgrade, Rectangle bounds, float scale, float rotation) {
         // draw shadow (also scaled and rotated)
         Pencil.I().addDrawing(new TextureDrawing(
             getShadow(upgrade),
@@ -114,24 +114,24 @@ public abstract class UpgradeBar {
         ));
     }
 
-    public void loadUpgrades(List<? extends Upgrade> upgrades) {
+    public void loadUpgrades(List<? extends AbstractUpgrade> upgrades) {
         cardBounds.clear();
         cardAnimationManagers.clear();
 
         for (int i = 0; i < upgrades.size(); i++) {
-            Upgrade Card = upgrades.get(i);
+            AbstractUpgrade Card = upgrades.get(i);
             cardBounds.put(Card, new Rectangle(cardRectangle.x + (i * offset), cardRectangle.y, cardRectangle.width, cardRectangle.height));
             cardAnimationManagers.put(Card, new Body(new Vector2(cardRectangle.x, cardRectangle.y)));
         }
     }
 
-    protected abstract void onUpgradeClicked(Upgrade clickedCard);
+    protected abstract void onUpgradeClicked(AbstractUpgrade clickedCard);
 
-    protected abstract TextureRegion getTexture(Upgrade Card);
+    protected abstract TextureRegion getTexture(AbstractUpgrade Card);
 
-    protected abstract TextureRegion getShadow(Upgrade Card);
+    protected abstract TextureRegion getShadow(AbstractUpgrade Card);
 
-    public Upgrade getHoveringCard() {
+    public AbstractUpgrade getHoveringCard() {
         return hoveringKey;
     }
 

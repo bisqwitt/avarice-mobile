@@ -1,6 +1,6 @@
 package com.avaricious.bosses;
 
-import com.avaricious.upgrades.Upgrade;
+import com.avaricious.items.upgrades.AbstractUpgrade;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -10,7 +10,7 @@ public abstract class AbstractBoss {
 
     public abstract String description();
 
-    public abstract Upgrade loot();
+    public abstract AbstractUpgrade loot();
 
     public static AbstractBoss getRandomBoss() {
         List<Class<? extends AbstractBoss>> allBossClasses = Arrays.asList(

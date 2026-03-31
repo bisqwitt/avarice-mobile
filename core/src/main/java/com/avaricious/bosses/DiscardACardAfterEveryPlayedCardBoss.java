@@ -1,7 +1,7 @@
 package com.avaricious.bosses;
 
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.MultiForEveryCardDiscarded;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.cards.MultiForEveryCardDiscarded;
 
 public class DiscardACardAfterEveryPlayedCardBoss extends AbstractBoss {
     @Override
@@ -10,7 +10,7 @@ public class DiscardACardAfterEveryPlayedCardBoss extends AbstractBoss {
     }
 
     @Override
-    public Upgrade loot() {
+    public AbstractUpgrade loot() {
         return new MultiForEveryCardDiscarded();
     }
 }

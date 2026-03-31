@@ -1,8 +1,8 @@
 package com.avaricious.components.bars;
 
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.rings.applicable.StatusRing;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.rings.applicable.StatusRing;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,12 +12,12 @@ import java.util.List;
 
 public class StatusUpgradeBar extends UpgradeBar {
 
-    public StatusUpgradeBar(List<? extends Upgrade> upgrades, Rectangle bounds) {
+    public StatusUpgradeBar(List<? extends AbstractUpgrade> upgrades, Rectangle bounds) {
         super(upgrades, bounds, 1.5f, false);
     }
 
     @Override
-    protected void onUpgradeClicked(Upgrade clickedUpgrade) {
+    protected void onUpgradeClicked(AbstractUpgrade clickedUpgrade) {
         cardBounds.keySet().retainAll(Collections.singleton(clickedUpgrade));
 //        cards.keySet().retainAll(Collections.singleton(clickedUpgrade));
 
@@ -31,12 +31,12 @@ public class StatusUpgradeBar extends UpgradeBar {
     }
 
     @Override
-    protected TextureRegion getTexture(Upgrade upgrade) {
+    protected TextureRegion getTexture(AbstractUpgrade upgrade) {
         return ((StatusRing) upgrade).getStat().getTexture();
     }
 
     @Override
-    protected TextureRegion getShadow(Upgrade upgrade) {
+    protected TextureRegion getShadow(AbstractUpgrade upgrade) {
         return ((StatusRing) upgrade).getStat().getShadowTexture();
     }
 }

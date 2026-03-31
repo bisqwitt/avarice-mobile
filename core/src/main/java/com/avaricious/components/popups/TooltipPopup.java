@@ -1,7 +1,7 @@
 package com.avaricious.components.popups;
 
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.upgrades.Upgrade;
+import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
@@ -36,7 +36,7 @@ public class TooltipPopup {
     private final float BOX_WRAP_WIDTH = 500f;
     private final float TYPE_BOX_WRAP_WIDTH = 150f;
 
-    private final Upgrade upgrade;
+    private final AbstractUpgrade upgrade;
     private final ZIndex layer;
 
     private Vector2 pos;
@@ -44,11 +44,11 @@ public class TooltipPopup {
     private float alpha = 0f;
     private boolean visible = false;
 
-    public TooltipPopup(Upgrade upgrade, Vector2 pos) {
+    public TooltipPopup(AbstractUpgrade upgrade, Vector2 pos) {
         this(upgrade, pos, ZIndex.POPUP_DEFAULT);
     }
 
-    public TooltipPopup(Upgrade upgrade, Vector2 pos, ZIndex layer) {
+    public TooltipPopup(AbstractUpgrade upgrade, Vector2 pos, ZIndex layer) {
         this.upgrade = upgrade;
         this.pos = new Vector2(pos);
         this.layer = layer;
@@ -181,7 +181,7 @@ public class TooltipPopup {
         return this;
     }
 
-    public Upgrade getUpgrade() {
+    public AbstractUpgrade getUpgrade() {
         return upgrade;
     }
 }

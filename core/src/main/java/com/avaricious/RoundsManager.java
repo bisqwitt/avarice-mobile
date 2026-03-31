@@ -2,11 +2,9 @@ package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.progressbar.ScoreProgressBar;
-import com.avaricious.upgrades.cards.AbstractCard;
+import com.avaricious.utility.GameStateLogger;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class RoundsManager {
@@ -46,10 +44,6 @@ public class RoundsManager {
     private Integer currentRound;
     private int currentTargetScore;
 
-    private final List<AbstractCard> playedCardsThisRound = new ArrayList<>();
-    private boolean defenceTypeCardsDisabled = false;
-    private boolean cardsDisabledOnNoArmor = false;
-
     public void nextRound() {
         currentRound++;
         currentTargetScore = targetScorePerRound.get(currentRound);
@@ -58,9 +52,7 @@ public class RoundsManager {
         if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
         else if (isBossRound()) boss = null;
 
-        playedCardsThisRound.clear();
-        defenceTypeCardsDisabled = false;
-        cardsDisabledOnNoArmor = false;
+        GameStateLogger.I().onNewRound();
     }
 
     public boolean isBossRound() {
@@ -77,29 +69,5 @@ public class RoundsManager {
 
     public int getCurrentTargetScore() {
         return currentTargetScore;
-    }
-
-    public void disableDefenceTypeCards() {
-        defenceTypeCardsDisabled = true;
-    }
-
-    public boolean defenceTypeCardsDisabled() {
-        return defenceTypeCardsDisabled;
-    }
-
-    public void disableCardsOnNoArmor() {
-        cardsDisabledOnNoArmor = true;
-    }
-
-    public boolean cardsDisabledOnNoArmor() {
-        return cardsDisabledOnNoArmor;
-    }
-
-    public void onCardPlayed(AbstractCard card) {
-        playedCardsThisRound.add(card);
-    }
-
-    public List<AbstractCard> getPlayedCardsThisRound() {
-        return playedCardsThisRound;
     }
 }

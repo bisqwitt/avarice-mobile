@@ -1,6 +1,6 @@
 package com.avaricious.components.popups;
 
-import com.avaricious.upgrades.Upgrade;
+import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,13 +30,13 @@ public class PopupManager {
     private ApplyPopup applyPopup;
     private DiscardPopup discardPopup;
 
-    public TooltipPopup createTooltip(Upgrade upgrade, Vector2 pos) {
+    public TooltipPopup createTooltip(AbstractUpgrade upgrade, Vector2 pos) {
         if (upgrade == null) return null;
         if (tooltipPopup != null && tooltipPopup.getUpgrade() == upgrade) return tooltipPopup;
         return tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
-    public TooltipPopup createTooltip(Upgrade upgrade, Vector2 pos, ZIndex layer) {
+    public TooltipPopup createTooltip(AbstractUpgrade upgrade, Vector2 pos, ZIndex layer) {
         if (upgrade == null) return null;
         return tooltipPopup = new TooltipPopup(upgrade, pos, layer);
     }
@@ -74,7 +74,7 @@ public class PopupManager {
     }
 
     public void killTooltip(TooltipPopup popup) {
-        if(tooltipPopup != null && tooltipPopup == popup) tooltipPopup = null;
+        if (tooltipPopup != null && tooltipPopup == popup) tooltipPopup = null;
         if (applyPopup != null) applyPopup.kill(() -> applyPopup = null);
         if (discardPopup != null) discardPopup.kill(() -> discardPopup = null);
     }
@@ -113,7 +113,7 @@ public class PopupManager {
         drawPopups(textPopups, delta);
 
         if (tooltipPopup != null) tooltipPopup.render(batch, delta);
-        if(killingTooltip != null) killingTooltip.render(batch, delta);
+        if (killingTooltip != null) killingTooltip.render(batch, delta);
         if (applyPopup != null) applyPopup.draw(delta);
         if (discardPopup != null) discardPopup.draw(delta);
     }

@@ -15,15 +15,15 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.HealthUi;
-import com.avaricious.components.RelicBag;
+import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
-import com.avaricious.components.Shop;
 import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.Body;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.PatternHitContext;
@@ -35,12 +35,12 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
-import com.avaricious.upgrades.Hand;
-import com.avaricious.upgrades.IUpgradeWithActionOnSpinButtonPressed;
-import com.avaricious.upgrades.cards.HealForEveryFruitHitCard;
-import com.avaricious.upgrades.rings.OneMoreCardAtStartOfRoundRing;
-import com.avaricious.upgrades.rings.triggerable.AbstractTriggerableRing;
-import com.avaricious.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
+import com.avaricious.items.upgrades.Hand;
+import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
+import com.avaricious.items.upgrades.cards.HealForEveryFruitHitCard;
+import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
+import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
+import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -125,7 +125,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
+//                shop.show();
             }
         }, 1);
     }
@@ -164,7 +164,7 @@ public class SlotScreen extends ScreenAdapter {
 //        xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw();
-        RelicBag.I().draw(batch);
+        ItemBag.I().draw();
 
         ParticleManager.I().draw(batch, delta);
         slotMachine.draw(app, delta);   // 10

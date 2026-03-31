@@ -6,10 +6,10 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
-import com.avaricious.upgrades.Deck;
-import com.avaricious.upgrades.Upgrade;
-import com.avaricious.upgrades.cards.AbstractCard;
-import com.avaricious.upgrades.rings.AbstractRing;
+import com.avaricious.items.upgrades.Deck;
+import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.cards.AbstractCard;
+import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -42,7 +42,7 @@ public class BossLootWindow {
         Assets.I().get(AssetKey.CLAIM_BUTTON),
         new Rectangle(4.9f, 8f, 79 / 25f, 25 / 25f), Input.Keys.ENTER, ZIndex.WINDOW_ON_TOP);
 
-    private Upgrade loot;
+    private AbstractUpgrade loot;
     private boolean touchingLoot = false;
     private TooltipPopup tooltipPopup = null;
 

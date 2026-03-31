@@ -1,7 +1,7 @@
 package com.avaricious.utility;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.upgrades.UpgradeRarity;
+import com.avaricious.items.upgrades.UpgradeRarity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
