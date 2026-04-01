@@ -14,6 +14,7 @@ import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 public abstract class AbstractShopItem {
 
@@ -25,6 +26,7 @@ public abstract class AbstractShopItem {
     private boolean dragging;
     private boolean selected;
     private boolean bought;
+    private boolean dead = false;
 
     private final Vector2 mouseTouchdownLocation = new Vector2();
     private TooltipPopup tooltipPopup = null;
@@ -35,6 +37,7 @@ public abstract class AbstractShopItem {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
+        if (dead) return;
         upgrade.getBody().update(delta);
 
         if (touching && !wasTouching) {
@@ -81,6 +84,7 @@ public abstract class AbstractShopItem {
     }
 
     public void draw(float delta) {
+        if (dead) return;
         DragableBody body = upgrade.getBody();
 
         Rectangle bounds = body.getBounds();
@@ -125,6 +129,13 @@ public abstract class AbstractShopItem {
         PopupManager.I().spawnTextPopup(new BoughtPopup(new Vector2(
             (renderPos.x + upgrade.getBody().getBounds().width / 2f) - BoughtPopup.WIDTH / 2f,
             renderPos.y + 3f), ZIndex.SHOP_CARD_TOUCHING));
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                dead = true;
+            }
+        }, 1);
     }
 
     private void deselectCard(boolean killTooltip) {

@@ -1,26 +1,15 @@
 package com.avaricious.items.upgrades;
 
 import com.avaricious.items.AbstractItem;
+import com.avaricious.items.IItemWithRarity;
+import com.avaricious.items.IItemWithType;
 
-import java.lang.reflect.InvocationTargetException;
-
-public abstract class AbstractUpgrade extends AbstractItem {
+public abstract class AbstractUpgrade extends AbstractItem implements IItemWithType, IItemWithRarity {
 
     protected UpgradeRarity rarity = UpgradeRarity.COMMON;
 
-    public abstract IUpgradeType type();
-
     public UpgradeRarity rarity() {
         return rarity;
-    }
-
-    public static <T> T instantiateUpgrade(Class<T> clazz) {
-        try {
-            return clazz.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

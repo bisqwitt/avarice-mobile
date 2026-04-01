@@ -14,7 +14,7 @@ public class TaskScheduler {
 
     //    private final Map<Runnable, Float> tasks = new LinkedHashMap<>();
     private final LinkedList<ScheduledTask> tasks = new LinkedList<>();
-    private final float defaultDelay = 0.45f;
+    private final float defaultDelay = 0.4f;
 
     private TaskScheduler() {
     }

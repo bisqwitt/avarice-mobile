@@ -2,6 +2,7 @@ package com.avaricious.components.shop;
 
 import com.avaricious.CreditNumber;
 import com.avaricious.components.ItemBag;
+import com.avaricious.items.AbstractItem;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +29,7 @@ public class QuestShopItem extends AbstractShopItem {
 
     @Override
     protected void acquireItem() {
-        ItemBag.I().addItem(upgrade);
+        ItemBag.I().addItem(AbstractItem.instantiateItem(upgrade.getClass()));
     }
 
     @Override

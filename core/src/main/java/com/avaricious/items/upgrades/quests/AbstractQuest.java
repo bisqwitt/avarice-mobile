@@ -12,11 +12,14 @@ import java.util.List;
 
 public abstract class AbstractQuest extends AbstractUpgrade {
 
-    private boolean completed = false;
+    public static float WIDTH = 48;
+    public static float HEIGHT = 44;
+
+    private boolean completed = true;
 
     @Override
     public String title() {
-        return "Quest";
+        return completed ? "Quest (Completed)" : "Quest";
     }
 
     @Override
@@ -34,7 +37,7 @@ public abstract class AbstractQuest extends AbstractUpgrade {
     }
 
     public static AbstractQuest randomQuest() {
-        return instantiateUpgrade(allQuestClasses.get((int) (Math.random() * allQuestClasses.size())));
+        return instantiateItem(allQuestClasses.get((int) (Math.random() * allQuestClasses.size())));
     }
 
     public static final List<Class<? extends AbstractQuest>> allQuestClasses = Collections.unmodifiableList(Arrays.asList(

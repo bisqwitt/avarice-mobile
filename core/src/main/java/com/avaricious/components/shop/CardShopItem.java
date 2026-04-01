@@ -1,6 +1,7 @@
 package com.avaricious.components.shop;
 
 import com.avaricious.CreditNumber;
+import com.avaricious.items.AbstractItem;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.badlogic.gdx.math.Rectangle;
@@ -16,7 +17,7 @@ public class CardShopItem extends AbstractShopItem {
     protected void load(Vector2 initialPos) {
         upgrade = AbstractCard.randomCard();
         Rectangle bounds = new Rectangle(
-            initialPos.x, initialPos.y, 142 / 80f, 190 / 80f
+            initialPos.x, initialPos.y, AbstractCard.WIDTH / 80f, AbstractCard.HEIGHT / 80f
         );
         upgrade.addBody(bounds);
         priceTag = new CreditNumber(upgrade.price(), new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f);
@@ -24,7 +25,7 @@ public class CardShopItem extends AbstractShopItem {
 
     @Override
     protected void acquireItem() {
-        Deck.I().addCardToDeck((AbstractCard) upgrade);
+        Deck.I().addCardToDeck(AbstractItem.instantiateItem(((AbstractCard) upgrade).getClass()));
     }
 
     @Override

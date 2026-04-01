@@ -1,7 +1,9 @@
 package com.avaricious.components.popups;
 
+import com.avaricious.items.AbstractItem;
+import com.avaricious.items.IItemWithRarity;
+import com.avaricious.items.IItemWithType;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
@@ -36,7 +38,7 @@ public class TooltipPopup {
     private final float BOX_WRAP_WIDTH = 500f;
     private final float TYPE_BOX_WRAP_WIDTH = 150f;
 
-    private final AbstractUpgrade upgrade;
+    private final AbstractItem item;
     private final ZIndex layer;
 
     private Vector2 pos;
@@ -44,12 +46,12 @@ public class TooltipPopup {
     private float alpha = 0f;
     private boolean visible = false;
 
-    public TooltipPopup(AbstractUpgrade upgrade, Vector2 pos) {
-        this(upgrade, pos, ZIndex.POPUP_DEFAULT);
+    public TooltipPopup(AbstractItem item, Vector2 pos) {
+        this(item, pos, ZIndex.POPUP_DEFAULT);
     }
 
-    public TooltipPopup(AbstractUpgrade upgrade, Vector2 pos, ZIndex layer) {
-        this.upgrade = upgrade;
+    public TooltipPopup(AbstractItem item, Vector2 pos, ZIndex layer) {
+        this.item = item;
         this.pos = new Vector2(pos);
         this.layer = layer;
 
@@ -63,16 +65,18 @@ public class TooltipPopup {
         mediumFont = Assets.I().getMediumFont();
         smallFont = Assets.I().getSmallFont();
 
-        titleTxt.setText(bigFont, upgrade.title(), Color.WHITE, BOX_WRAP_WIDTH, Align.top | Align.center, true);
-        setDescription(upgrade.description());
-        typeTxt.setText(smallFont, upgrade.type().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
-        rarityTxt.setText(smallFont, upgrade.rarity().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
+        titleTxt.setText(bigFont, item.title(), Color.WHITE, BOX_WRAP_WIDTH, Align.top | Align.center, true);
+        setDescription(item.description());
+        if (item instanceof IItemWithType)
+            typeTxt.setText(smallFont, ((IItemWithType) item).type().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
+        if (item instanceof IItemWithRarity)
+            rarityTxt.setText(smallFont, ((IItemWithRarity) item).rarity().toString(), Color.WHITE, TYPE_BOX_WRAP_WIDTH, Align.top | Align.center, true);
     }
 
     public void update(Vector2 pos, boolean visible) {
         this.pos = new Vector2(pos);
         this.visible = visible;
-        setDescription(upgrade.description());
+        setDescription(item.description());
     }
 
     public void render(SpriteBatch batch, float delta) {
@@ -103,16 +107,18 @@ public class TooltipPopup {
 
         float typeBoxWidth = 79 / 45f;
         float typeBoxHeight = 23 / 45f;
-        Pencil.I().addDrawing(new TextureDrawing(
-            upgrade.type().getTypeBox(),
-            new Rectangle(1.2f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
-            layer, new Color(1f, 1f, 1f, alpha)
-        ));
-        Pencil.I().addDrawing(new TextureDrawing(
-            upgrade.rarity().getRarityBoxTexture(),
-            new Rectangle(-1.25f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
-            layer, new Color(1f, 1f, 1f, alpha)
-        ));
+        if (item instanceof IItemWithType)
+            Pencil.I().addDrawing(new TextureDrawing(
+                ((IItemWithType) item).type().getTypeBox(),
+                new Rectangle(1.2f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+                layer, new Color(1f, 1f, 1f, alpha)
+            ));
+        if (item instanceof IItemWithRarity)
+            Pencil.I().addDrawing(new TextureDrawing(
+                ((IItemWithRarity) item).rarity().getRarityBoxTexture(),
+                new Rectangle(-1.25f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+                layer, new Color(1f, 1f, 1f, alpha)
+            ));
 
         Vector2 center = new Vector2(boxX + boxWidth / 2f, boxY + boxHeight / 2f);
         center.set(center.x * 100, center.y * 100); // Convert to UIViewport
@@ -181,7 +187,7 @@ public class TooltipPopup {
         return this;
     }
 
-    public AbstractUpgrade getUpgrade() {
-        return upgrade;
+    public AbstractItem getItem() {
+        return item;
     }
 }

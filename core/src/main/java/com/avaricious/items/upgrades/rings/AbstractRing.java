@@ -21,11 +21,7 @@ import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValu
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.LemonValueStackRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.SevenValueStackRing;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RingAssetKeys;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.UiUtility;
-import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -59,29 +55,6 @@ public abstract class AbstractRing extends AbstractUpgrade {
         return RingType.PASSIVE;
     }
 
-    public void draw(boolean isTouching) {
-        Rectangle bounds = body.getBounds();
-
-        float scale = body.getScale();
-        float rotation = body.getRotation();
-
-        float alpha = body.getAlpha();
-        Vector2 position = body.getRenderPos(new Vector2());
-
-        Color shadowColor = Assets.I().shadowColor();
-        Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
-        Pencil.I().addDrawing(new TextureDrawing(
-            Assets.I().get(keySet().getShadowKey()),
-            new Rectangle(position.x + shadowOffset.x, position.y - (isTouching ? 0.2f : 0.1f),
-                bounds.width, bounds.height
-            ), scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
-        Pencil.I().addDrawing(new TextureDrawing(
-            Assets.I().get(keySet().getTextureKey()),
-            new Rectangle(position.x, position.y, bounds.width, bounds.height),
-            scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(1f, 1f, 1f, alpha)
-        ));
-    }
-
     protected void pulse() {
         body.pulse();
 
@@ -108,7 +81,7 @@ public abstract class AbstractRing extends AbstractUpgrade {
     }
 
     public static AbstractRing randomRing() {
-        return instantiateUpgrade(allRingClasses.get((int) (Math.random() * allRingClasses.size())));
+        return instantiateItem(allRingClasses.get((int) (Math.random() * allRingClasses.size())));
     }
 
     public static final List<Class<? extends AbstractRing>> allRingClasses = Collections.unmodifiableList(Arrays.asList(

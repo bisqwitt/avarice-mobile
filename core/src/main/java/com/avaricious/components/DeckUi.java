@@ -20,9 +20,7 @@ import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DeckUi {
 
@@ -34,17 +32,17 @@ public class DeckUi {
 
     private DeckUi() {
         Deck.I().onChange(newDeck -> pendingCards = newDeck);
-        cardsInDeckTxt.setText(Assets.I().getBigFont(), "Cards in Deck");
+        cardsInDeckTxt.setText(Assets.I().getTitleFont(), "Cards in Deck");
     }
 
-    private final float CARD_WIDTH = 142 / 90f;
-    private final float CARD_HEIGHT = 190 / 90f;
+    private final float CARD_WIDTH = AbstractCard.WIDTH / 90f;
+    private final float CARD_HEIGHT = AbstractCard.HEIGHT / 90f;
     private final Rectangle firstCardBounds = new Rectangle(7.1f, 2.5f, CARD_WIDTH, CARD_HEIGHT);
 
     private final TextureRegion jokerCardBack = Assets.I().get(AssetKey.JOKER_CARD_BACK);
     private final TextureRegion jokerCardShadow = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
-    private final Map<AbstractCard, DragableBody> cards = new LinkedHashMap<>();
+    private final List<AbstractCard> cards = new ArrayList<>();
     private List<? extends AbstractCard> pendingCards;
 
     private final GlyphLayout cardsInDeckTxt = new GlyphLayout();
@@ -53,6 +51,7 @@ public class DeckUi {
     private final Vector2 touchDownLocation = new Vector2();
     private boolean unfolded = false;
     private AbstractCard touchingCard = null;
+    private AbstractCard selectedCard = null;
     private TooltipPopup tooltipPopup = null;
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
@@ -63,44 +62,68 @@ public class DeckUi {
         }
 
         if (!pressed && wasPressed) {
-            if (firstCardBounds.contains(touchDownLocation) && firstCardBounds.contains(mouse)) {
+            if (!unfolded && firstCardBounds.contains(touchDownLocation) && firstCardBounds.contains(mouse)) {
                 toggleShowDeck();
             }
         }
 
         if (unfolded) {
             if (pressed && !wasPressed) {
-                for (Map.Entry<AbstractCard, DragableBody> entry : cards.entrySet()) {
-                    AbstractCard card = entry.getKey();
-
-                    if (entry.getValue().getBounds().contains(mouse)) {
-                        touchingCard = card;
-                        cards.get(card).targetScale = 1.3f;
-                        cards.get(card).beginDrag(mouse.x, mouse.y, 0);
-                        tooltipPopup = PopupManager.I().createTooltip(card, cards.get(card).getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
+                for (AbstractCard card : cards) {
+                    if (card.getBody().getBounds().contains(mouse)) {
+                        onCardTouchDown(card, mouse);
+                        return;
                     }
                 }
+                deselectCard(true);
+                toggleShowDeck();
             }
 
             if (pressed && touchingCard != null) {
-                DragableBody touchingSlot = cards.get(touchingCard);
-                Vector2 cardRenderPos = touchingSlot.getRenderPos(new Vector2());
+                onCardTouching(touchingCard, mouse);
+            }
 
-                touchingSlot.dragTo(mouse.x, mouse.y, 0);
+            if (!pressed && wasPressed && touchingCard != null) {
+                onCardTouchReleased(touchingCard, mouse);
+            }
+
+            if (touchingCard != null || selectedCard != null) {
+                AbstractCard card = touchingCard == null ? selectedCard : touchingCard;
+                Vector2 cardRenderPos = card.getBody().getRenderPos(new Vector2());
                 PopupManager.I().updateTooltip(
                     new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + 2.85f),
                     true
                 );
             }
-
-            if (!pressed && wasPressed && touchingCard != null) {
-                DragableBody dragableBody = cards.get(touchingCard);
-                dragableBody.endDrag(0);
-                cards.get(touchingCard).targetScale = 1f;
-                touchingCard = null;
-                PopupManager.I().killTooltip(tooltipPopup);
-            }
         }
+    }
+
+    private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
+        if (selectedCard != null && card != selectedCard) deselectCard(false);
+        touchingCard = card;
+        card.getBody().targetScale = 1.3f;
+        card.getBody().beginDrag(mouse.x, mouse.y, 0);
+
+        if (selectedCard == null)
+            tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()), ZIndex.UNFOLDED_DECK_CARD);
+    }
+
+    private void onCardTouching(AbstractCard card, Vector2 mouse) {
+        card.getBody().dragTo(mouse.x, mouse.y, 0);
+    }
+
+    private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
+        DragableBody dragableBody = card.getBody();
+        dragableBody.endDrag(0);
+        boolean isClick = touchDownLocation.dst2(mouse) <= 0.2f * 0.2f;
+        if (isClick) {
+            if (selectedCard == card) deselectCard(true);
+            else {
+                if (selectedCard != null) deselectCard(false);
+                selectedCard = card;
+            }
+        } else selectedCard = card;
+        touchingCard = null;
     }
 
     private void update(float delta) {
@@ -108,9 +131,7 @@ public class DeckUi {
             loadPendingCards();
             pendingCards = null;
         }
-        for (DragableBody slot : cards.values()) {
-            slot.update(delta);
-        }
+        cards.forEach(card -> card.getBody().update(delta));
     }
 
     public void draw() {
@@ -123,22 +144,19 @@ public class DeckUi {
             new Rectangle(firstCardBounds.x - 0.2f, firstCardBounds.y - 0.2f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
             ZIndex.DECK_UI_BOX, Assets.I().shadowColor()));
 
-//        if(showingDeck) {
-//            returnButton.draw();
-//        }
-        for (AbstractCard card : cards.keySet()) {
+        for (AbstractCard card : cards) {
             if (card != touchingCard) drawCard(card);
         }
         if (touchingCard != null) drawCard(touchingCard);
 
         if (unfolded) {
-            Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), cardsInDeckTxt,
-                new Vector2(2.5f * 100, 18f * 100), ZIndex.UNFOLDED_DECK_CARD));
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getTitleFont(), cardsInDeckTxt,
+                new Vector2(1.75f * 100, 17f * 100), ZIndex.UNFOLDED_DECK_CARD));
         }
     }
 
     public void drawCard(AbstractCard card) {
-        DragableBody slot = cards.get(card);
+        DragableBody slot = card.getBody();
         Vector2 pos = slot.getRenderPos(new Vector2());
         final float scale = slot.getScale();
         final float rotation = slot.getRotation();
@@ -164,8 +182,8 @@ public class DeckUi {
                 firstCardBounds.x + 0.015f * i, firstCardBounds.y + 0.025f * i,
                 firstCardBounds.width, firstCardBounds.height
             );
-            cards.put(pendingCards.get(i), new DragableBody(bounds).setTilt(200f, 20f));
-            cards.get(pendingCards.get(i)).setIdleEffectsEnabled(false);
+            pendingCards.get(i).addBody(bounds);
+            cards.add(pendingCards.get(i));
         }
     }
 
@@ -180,29 +198,29 @@ public class DeckUi {
             }
 
             int index = 0;
-            List<DragableBody> reversed = new ArrayList<>(cards.values());
+            List<AbstractCard> reversed = new ArrayList<>(cards);
             Collections.reverse(reversed);
-            for (DragableBody card : reversed) {
+            for (AbstractCard card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        card.moveTo(positions.get(finalIndex));
+                        card.getBody().moveTo(positions.get(finalIndex));
                     }
                 }, index * 0.025f);
                 index++;
             }
             unfolded = true;
         } else {
-            List<DragableBody> reversed = new ArrayList<>(cards.values());
+            List<AbstractCard> reversed = new ArrayList<>(cards);
             Collections.reverse(reversed);
             int index = reversed.size() - 1;
-            for (DragableBody card : reversed) {
+            for (AbstractCard card : reversed) {
                 int finalIndex = index;
                 Timer.schedule(new Timer.Task() {
                     @Override
                     public void run() {
-                        card.moveTo(new Vector2(firstCardBounds.x + 0.015f * finalIndex, firstCardBounds.y + 0.025f * finalIndex));
+                        card.getBody().moveTo(new Vector2(firstCardBounds.x + 0.015f * finalIndex, firstCardBounds.y + 0.025f * finalIndex));
                     }
                 }, index * 0.025f);
                 index--;
@@ -213,6 +231,17 @@ public class DeckUi {
                     unfolded = false;
                 }
             }, reversed.size() * 0.025f + 0.25f);
+        }
+    }
+
+    public void deselectCard(boolean killTooltip) {
+        if (selectedCard == null) return;
+        selectedCard.getBody().targetScale = 1f;
+        selectedCard.getBody().setIdleEffectsEnabled(true);
+        selectedCard = null;
+        if (killTooltip) {
+            PopupManager.I().killTooltip(tooltipPopup);
+            tooltipPopup = null;
         }
     }
 

@@ -6,9 +6,9 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
+import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.IUpgradeType;
-import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.UpgradeRarity;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -27,7 +27,7 @@ public class CardPack extends PackOpening {
     private AbstractCard resultCard;
 
     public CardPack(Rectangle buyBounds) {
-        super(new Rectangle(5.55f, 8.1f, 142 / 80f, 190 / 80f), buyBounds);
+        super(new Rectangle(5.55f, 8.1f, AbstractCard.WIDTH / 80f, AbstractCard.HEIGHT / 80f), buyBounds);
     }
 
     @Override

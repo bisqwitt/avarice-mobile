@@ -13,6 +13,8 @@ import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValu
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.UiUtility;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -126,11 +128,36 @@ public class RingBar {
     }
 
     public void draw() {
-        rings.forEach(ring -> ring.draw(ring == touchingRing));
+        rings.forEach(this::drawRing);
 
         Vector2 ringsHoldingPos = new Vector2(5.25f * 100, 5.75f * 100f);
         ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
+    }
+
+    public void drawRing(AbstractRing ring) {
+        DragableBody body = ring.getBody();
+        Rectangle bounds = body.getBounds();
+        boolean isTouching = ring == touchingRing;
+
+        float scale = body.getScale();
+        float rotation = body.getRotation();
+
+        float alpha = body.getAlpha();
+        Vector2 position = body.getRenderPos(new Vector2());
+
+        Color shadowColor = Assets.I().shadowColor();
+        Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
+        Pencil.I().addDrawing(new TextureDrawing(
+            Assets.I().get(ring.keySet().getShadowKey()),
+            new Rectangle(position.x + shadowOffset.x, position.y - (isTouching ? 0.2f : 0.1f),
+                bounds.width, bounds.height
+            ), scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
+        Pencil.I().addDrawing(new TextureDrawing(
+            Assets.I().get(ring.keySet().getTextureKey()),
+            new Rectangle(position.x, position.y, bounds.width, bounds.height),
+            scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(1f, 1f, 1f, alpha)
+        ));
     }
 
     public void addRing(AbstractRing ring) {

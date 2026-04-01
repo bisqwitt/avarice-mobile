@@ -30,17 +30,17 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.effects.particle.ParticleManager;
-import com.avaricious.screens.mainscreen.BackgroundLayer;
-import com.avaricious.stats.PlayerStats;
-import com.avaricious.stats.statupgrades.CreditSpawnChance;
-import com.avaricious.stats.statupgrades.CriticalHitChance;
-import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.items.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
+import com.avaricious.screens.mainscreen.BackgroundLayer;
+import com.avaricious.stats.PlayerStats;
+import com.avaricious.stats.statupgrades.CreditSpawnChance;
+import com.avaricious.stats.statupgrades.CriticalHitChance;
+import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -125,7 +125,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-//                shop.show();
+                shop.show();
             }
         }, 1);
     }
@@ -219,6 +219,7 @@ public class SlotScreen extends ScreenAdapter {
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        ItemBag.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
     }

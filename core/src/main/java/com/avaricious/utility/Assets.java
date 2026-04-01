@@ -44,6 +44,7 @@ public class Assets {
     private final Color legendary = new Color(1f, 0.60f, 0.00f, 1f);
 
     private final Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
+    private BitmapFont titleFont;
     private BitmapFont bigFont;
     private BitmapFont mediumFont;
     private BitmapFont smallFont;
@@ -55,6 +56,11 @@ public class Assets {
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        param.size = 120;
+        titleFont = generator.generateFont(param);
+        titleFont.setUseIntegerPositions(false);
+        titleFont.getData().markupEnabled = true;
 
         param.size = 80;
         bigFont = generator.generateFont(param);
@@ -120,6 +126,10 @@ public class Assets {
     public TextureRegion getDigitalNumberShadow(int number) {
         if (number < 0 || number > 9) number = 0;
         return get(DIGIT_SHADOWS[number]);
+    }
+
+    public BitmapFont getTitleFont() {
+        return titleFont;
     }
 
     public BitmapFont getBigFont() {

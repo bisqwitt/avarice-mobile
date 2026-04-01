@@ -6,8 +6,8 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
-import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
@@ -132,11 +132,11 @@ public class BossLootWindow {
     }
 
     private float getTextureWidth() {
-        return loot instanceof AbstractRing ? 1.5f : 142 / 80f;
+        return loot instanceof AbstractRing ? 1.5f : AbstractCard.WIDTH / 80f;
     }
 
     private float getTextureHeight() {
-        return loot instanceof AbstractRing ? 1.5f : 190 / 80f;
+        return loot instanceof AbstractRing ? 1.5f : AbstractCard.HEIGHT / 80f;
     }
 
     public boolean isShown() {

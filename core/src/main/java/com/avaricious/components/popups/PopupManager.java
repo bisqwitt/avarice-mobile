@@ -1,6 +1,6 @@
 package com.avaricious.components.popups;
 
-import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.AbstractItem;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,13 +30,13 @@ public class PopupManager {
     private ApplyPopup applyPopup;
     private DiscardPopup discardPopup;
 
-    public TooltipPopup createTooltip(AbstractUpgrade upgrade, Vector2 pos) {
+    public TooltipPopup createTooltip(AbstractItem upgrade, Vector2 pos) {
         if (upgrade == null) return null;
-        if (tooltipPopup != null && tooltipPopup.getUpgrade() == upgrade) return tooltipPopup;
+        if (tooltipPopup != null && tooltipPopup.getItem() == upgrade) return tooltipPopup;
         return tooltipPopup = new TooltipPopup(upgrade, pos);
     }
 
-    public TooltipPopup createTooltip(AbstractUpgrade upgrade, Vector2 pos, ZIndex layer) {
+    public TooltipPopup createTooltip(AbstractItem upgrade, Vector2 pos, ZIndex layer) {
         if (upgrade == null) return null;
         return tooltipPopup = new TooltipPopup(upgrade, pos, layer);
     }

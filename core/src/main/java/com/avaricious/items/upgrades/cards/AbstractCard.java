@@ -17,6 +17,9 @@ import java.util.List;
 
 public abstract class AbstractCard extends AbstractUpgrade {
 
+    public static float WIDTH = 142;
+    public static float HEIGHT = 190;
+
     public abstract String description();
 
     protected abstract void onApply();
@@ -62,7 +65,7 @@ public abstract class AbstractCard extends AbstractUpgrade {
     }
 
     public static AbstractCard randomCard() {
-        return instantiateUpgrade(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
+        return instantiateItem(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
     }
 
     public static final List<Class<? extends AbstractCard>> allCardClasses = Collections.unmodifiableList(Arrays.asList(

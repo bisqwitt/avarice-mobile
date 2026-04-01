@@ -1,7 +1,7 @@
 package com.avaricious.items.upgrades;
 
 import static com.avaricious.items.upgrades.cards.AbstractCard.allCardClasses;
-import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateUpgrade;
+import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateItem;
 
 import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
@@ -25,17 +25,17 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
     private Deck() {
         if (DevTools.allCardsInDeck()) {
             for (Class<? extends AbstractCard> cardClass : allCardClasses) {
-                addCardToDeck(instantiateUpgrade(cardClass));
+                addCardToDeck(instantiateItem(cardClass));
             }
         } else {
             for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateUpgrade(PointsCard.class));
+                addCardToDeck(instantiateItem(PointsCard.class));
             }
             for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateUpgrade(MultiCard.class));
+                addCardToDeck(instantiateItem(MultiCard.class));
             }
-            addCardToDeck(instantiateUpgrade(ArmorCard.class));
-            addCardToDeck(instantiateUpgrade(ArmorCard.class));
+            addCardToDeck(instantiateItem(ArmorCard.class));
+            addCardToDeck(instantiateItem(ArmorCard.class));
         }
     }
 

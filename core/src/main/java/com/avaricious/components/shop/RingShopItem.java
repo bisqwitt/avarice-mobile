@@ -2,6 +2,7 @@ package com.avaricious.components.shop;
 
 import com.avaricious.CreditNumber;
 import com.avaricious.components.RingBar;
+import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -28,7 +29,7 @@ public class RingShopItem extends AbstractShopItem {
 
     @Override
     protected void acquireItem() {
-        RingBar.I().addRing((AbstractRing) upgrade);
+        RingBar.I().addRing(AbstractUpgrade.instantiateItem(((AbstractRing) upgrade).getClass()));
     }
 
     @Override

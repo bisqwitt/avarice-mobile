@@ -8,9 +8,9 @@ import com.avaricious.components.slot.DragableBody;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
+import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
@@ -45,8 +45,7 @@ public class HandUi {
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = 2.65f;
-    private final float CARD_WIDTH = 142 / 90f;
-    private final float CARD_HEIGHT = 190 / 90f;
+    private final float CARD_SIZE_DIVISOR = 90;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -221,7 +220,7 @@ public class HandUi {
 
                 Rectangle initialBounds = new Rectangle(
                     deckSpawn.x, deckSpawn.y,
-                    CARD_WIDTH, CARD_HEIGHT
+                    getCardWidth(), getCardHeight()
                 );
 
                 card.addBody(initialBounds);
@@ -263,7 +262,7 @@ public class HandUi {
         if (n == 0) return 0;
 
         float screenWidth = ScreenManager.getViewport().getWorldWidth();
-        float handWidth = (n - 1) * calcOffset() + CARD_WIDTH;
+        float handWidth = (n - 1) * calcOffset() + getCardWidth();
         return -1 + (screenWidth - handWidth) / 2f;
     }
 
@@ -353,7 +352,7 @@ public class HandUi {
         body.pulse();
         Vector2 pos = body.getRenderPos(new Vector2());
 
-        ParticleManager.I().create(pos.x + CARD_WIDTH / 2, pos.y + CARD_HEIGHT / 2, ParticleType.RAINBOW, 0.03f, ZIndex.CARD_APPLY_PARTICLES);
+        ParticleManager.I().create(pos.x + getCardWidth() / 2, pos.y + getCardHeight() / 2, ParticleType.RAINBOW, 0.03f, ZIndex.CARD_APPLY_PARTICLES);
 
         pos.x += 1.3f;
         pos.y += 1.8f;
@@ -389,5 +388,13 @@ public class HandUi {
         card.getBody().startApplyAnimation(0.6f, () -> {
             Hand.I().discardCard(card);
         });
+    }
+
+    private float getCardWidth() {
+        return AbstractCard.WIDTH / CARD_SIZE_DIVISOR;
+    }
+
+    private float getCardHeight() {
+        return AbstractCard.HEIGHT / CARD_SIZE_DIVISOR;
     }
 }
