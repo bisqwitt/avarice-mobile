@@ -7,8 +7,8 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.ClaimedPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
-import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.UpgradeRarity;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -52,11 +52,6 @@ public class RingPack extends PackOpening {
     }
 
     @Override
-    protected float getTooltipYOffset() {
-        return 2f;
-    }
-
-    @Override
     protected AbstractUpgrade getPackDescription() {
         return new AbstractUpgrade() {
             @Override
@@ -92,6 +87,11 @@ public class RingPack extends PackOpening {
             @Override
             public UpgradeRarity rarity() {
                 return UpgradeRarity.UNKNOWN;
+            }
+
+            @Override
+            public float getTooltipYOffset() {
+                return 2f;
             }
         };
     }

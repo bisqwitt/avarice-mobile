@@ -80,6 +80,11 @@ public abstract class AbstractRing extends AbstractUpgrade {
         return 3;
     }
 
+    @Override
+    public float getTooltipYOffset() {
+        return 1.7f;
+    }
+
     public static AbstractRing randomRing() {
         return instantiateItem(allRingClasses.get((int) (Math.random() * allRingClasses.size())));
     }

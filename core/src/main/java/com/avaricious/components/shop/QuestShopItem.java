@@ -42,8 +42,4 @@ public class QuestShopItem extends AbstractShopItem {
         return 1.8f;
     }
 
-    @Override
-    protected float getTooltipYOffset() {
-        return 2.1f;
-    }
 }

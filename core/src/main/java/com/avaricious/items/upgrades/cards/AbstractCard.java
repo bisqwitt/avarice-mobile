@@ -64,6 +64,11 @@ public abstract class AbstractCard extends AbstractUpgrade {
         return false;
     }
 
+    @Override
+    public float getTooltipYOffset() {
+        return 2.6f;
+    }
+
     public static AbstractCard randomCard() {
         return instantiateItem(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
     }

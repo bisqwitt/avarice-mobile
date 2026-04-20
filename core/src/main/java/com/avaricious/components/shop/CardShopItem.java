@@ -33,8 +33,4 @@ public class CardShopItem extends AbstractShopItem {
         return 2.6f;
     }
 
-    @Override
-    protected float getTooltipYOffset() {
-        return 3;
-    }
 }

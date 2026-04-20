@@ -78,7 +78,7 @@ public abstract class AbstractShopItem {
         if (dragging || selected) {
             Vector2 renderPos = upgrade.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
-                new Vector2(renderPos.x - 2f, renderPos.y + getTooltipYOffset()), true
+                new Vector2(renderPos.x - 2f, renderPos.y + upgrade.getTooltipYOffset()), true
             );
         }
     }
@@ -148,8 +148,6 @@ public abstract class AbstractShopItem {
     protected abstract void load(Vector2 pos);
 
     protected abstract void acquireItem();
-
-    protected abstract float getTooltipYOffset();
 
     protected abstract float getPriceTagYOffset();
 

@@ -88,17 +88,17 @@ public class CardPack extends PackOpening {
             public UpgradeRarity rarity() {
                 return UpgradeRarity.UNKNOWN;
             }
+
+            @Override
+            public float getTooltipYOffset() {
+                return 3f;
+            }
         };
     }
 
     @Override
     protected AbstractUpgrade getResult() {
         return resultCard = AbstractCard.randomCard();
-    }
-
-    @Override
-    protected float getTooltipYOffset() {
-        return 3f;
     }
 
     @Override

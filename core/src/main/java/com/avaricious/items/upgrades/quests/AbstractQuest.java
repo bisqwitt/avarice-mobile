@@ -52,5 +52,10 @@ public abstract class AbstractQuest extends AbstractUpgrade {
         return completed;
     }
 
+    @Override
+    public float getTooltipYOffset() {
+        return 2.1f;
+    }
+
     public abstract void claim();
 }

@@ -89,7 +89,7 @@ public class RingBar {
             AbstractRing ring = touchingRing == null ? selectedRing : touchingRing;
             Vector2 ringRenderPos = ring.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
-                new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + 1.7f),
+                new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + ring.getTooltipYOffset()),
                 true
             );
         }

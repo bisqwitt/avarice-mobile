@@ -6,8 +6,8 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.SoldPopup;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.UpgradeRarity;
 import com.avaricious.items.upgrades.cards.CardType;
 import com.avaricious.items.upgrades.rings.RingType;
@@ -90,6 +90,11 @@ public class SymbolSpawnChancePack extends PackOpening {
             public UpgradeRarity rarity() {
                 return UpgradeRarity.UNKNOWN;
             }
+
+            @Override
+            public float getTooltipYOffset() {
+                return 2.25f;
+            }
         };
     }
 
@@ -126,6 +131,11 @@ public class SymbolSpawnChancePack extends PackOpening {
             @Override
             public TextureRegion shadowTexture() {
                 return Assets.I().get(result.shadowKey());
+            }
+
+            @Override
+            public float getTooltipYOffset() {
+                return 2.25f;
             }
         };
     }
@@ -170,10 +180,5 @@ public class SymbolSpawnChancePack extends PackOpening {
             Assets.I().get(AssetKey.CLAIM_BUTTON),
             new Rectangle(4.9f, 5f, 79 / 25f, 25 / 25f),
             Input.Keys.ENTER, ZIndex.PACK_OPENING_SELECTED);
-    }
-
-    @Override
-    protected float getTooltipYOffset() {
-        return 2.25f;
     }
 }

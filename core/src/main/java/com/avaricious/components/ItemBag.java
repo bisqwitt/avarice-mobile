@@ -92,7 +92,7 @@ public class ItemBag {
                 AbstractItem item = touchingItem == null ? selectedItem : touchingItem;
                 Vector2 itemRenderPos = item.getBody().getRenderPos(new Vector2());
                 PopupManager.I().updateTooltip(
-                    new Vector2(itemRenderPos.x - 2f, itemRenderPos.y + 2.85f),
+                    new Vector2(itemRenderPos.x - 2f, itemRenderPos.y + item.getTooltipYOffset()),
                     true
                 );
             }
@@ -158,8 +158,8 @@ public class ItemBag {
 
         if (selectedItem != null || touchingItem != null) {
             AbstractItem item = selectedItem == null ? touchingItem : selectedItem;
-            if (item instanceof AbstractQuest && ((AbstractQuest) selectedItem).isCompleted()) {
-                Vector2 renderPos = selectedItem.getBody().getRenderPos(new Vector2());
+            if (item instanceof AbstractQuest && ((AbstractQuest) item).isCompleted()) {
+                Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
                 claimButton.getBounds().x = renderPos.x - 1.25f;
                 claimButton.getBounds().y = renderPos.y - 1.5f;
                 claimButton.draw();

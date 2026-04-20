@@ -41,9 +41,4 @@ public class RingShopItem extends AbstractShopItem {
     protected float getPriceTagYOffset() {
         return 1.7f;
     }
-
-    @Override
-    protected float getTooltipYOffset() {
-        return 2f;
-    }
 }

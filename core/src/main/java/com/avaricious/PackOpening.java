@@ -6,9 +6,9 @@ import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.UpgradeRarity;
+import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -133,7 +133,7 @@ public abstract class PackOpening {
         if (dragging || selected) {
             Vector2 cardRenderPos = body.getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
-                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getTooltipYOffset()),
+                new Vector2(cardRenderPos.x - 2f, cardRenderPos.y + getPackDescription().getTooltipYOffset()),
                 true
             );
         }
@@ -396,7 +396,7 @@ public abstract class PackOpening {
             public void run() {
                 Vector2 renderPos = body.getRenderPos(new Vector2());
                 tooltipPopup = PopupManager.I().createTooltip(result, new Vector2(
-                        renderPos.x - 2f, renderPos.y + getTooltipYOffset() + 0.85f),
+                        renderPos.x - 2f, renderPos.y + getPackDescription().getTooltipYOffset() + 0.85f),
                     ZIndex.PACK_OPENING_SELECTED).setVisible(true);
             }
         }, 0.2f);
@@ -422,8 +422,6 @@ public abstract class PackOpening {
     protected abstract AbstractUpgrade getPackDescription();
 
     protected abstract AbstractUpgrade getResult();
-
-    protected abstract float getTooltipYOffset();
 
     protected abstract Button getSellButton();
 

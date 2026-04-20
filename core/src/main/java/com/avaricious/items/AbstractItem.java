@@ -28,6 +28,8 @@ public abstract class AbstractItem {
         return body;
     }
 
+    public abstract float getTooltipYOffset();
+
     public static <T> T instantiateItem(Class<T> clazz) {
         try {
             return clazz.getDeclaredConstructor().newInstance();
