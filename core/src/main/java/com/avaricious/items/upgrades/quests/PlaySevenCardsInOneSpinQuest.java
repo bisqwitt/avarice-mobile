@@ -1,8 +1,13 @@
 package com.avaricious.items.upgrades.quests;
 
 import com.avaricious.CreditManager;
-import com.avaricious.components.ItemBag;
+import com.avaricious.components.popups.CreditNumberPopup;
+import com.avaricious.components.popups.NumberPopup;
+import com.avaricious.components.popups.PopupManager;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class PlaySevenCardsInOneSpinQuest extends AbstractQuest {
 
@@ -18,8 +23,14 @@ public class PlaySevenCardsInOneSpinQuest extends AbstractQuest {
     }
 
     @Override
-    public void claim() {
-        ItemBag.I().removeItem(this);
+    public void onClaim() {
+        Vector2 renderPos = body.getRenderPos(new Vector2());
+        PopupManager.I().spawnNumber(new CreditNumberPopup(10, new Rectangle(
+            renderPos.x + 0.9f, renderPos.y + 1f,
+            NumberPopup.defaultWidth + 0.1f,
+            NumberPopup.defaultHeight + 0.1f
+        ),
+            false, false).setZIndex(ZIndex.UNFOLDED_DECK_CARD));
         CreditManager.I().gain(10);
     }
 }

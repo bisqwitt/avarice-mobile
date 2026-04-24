@@ -8,10 +8,12 @@ import com.avaricious.items.AbstractItem;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -31,6 +33,7 @@ public class ItemBag {
     }
 
     private ItemBag() {
+        itemsTxt.setText(Assets.I().getTitleFont(), "Items");
     }
 
 
@@ -46,6 +49,7 @@ public class ItemBag {
     private AbstractItem selectedItem = null;
     private TooltipPopup tooltipPopup = null;
 
+    private final GlyphLayout itemsTxt = new GlyphLayout();
     private final Button claimButton = new Button(() -> {
         AbstractQuest quest = (AbstractQuest) selectedItem;
         quest.claim();
@@ -69,6 +73,14 @@ public class ItemBag {
         }
 
         if (showingItems) {
+            if (selectedItem != null
+                && selectedItem instanceof AbstractQuest
+                && ((AbstractQuest) selectedItem).isCompleted()
+                && (claimButton.getBounds().contains(mouse) || claimButton.getBounds().contains(mouseTouchdownLocation))) {
+                claimButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+                return;
+            }
+
             if (leftClickPressed && !leftClickWasPressed) {
                 for (AbstractItem item : items) {
                     if (item.getBody().getBounds().contains(mouse)) {
@@ -76,6 +88,7 @@ public class ItemBag {
                         return;
                     }
                 }
+
                 deselectItem(true);
                 toggleShowItems();
             }
@@ -97,11 +110,6 @@ public class ItemBag {
                 );
             }
         }
-
-        if (selectedItem != null
-            && selectedItem instanceof AbstractQuest
-            && ((AbstractQuest) selectedItem).isCompleted())
-            claimButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 
     private void onCardTouchDown(AbstractItem item, Vector2 mouse) {
@@ -151,6 +159,9 @@ public class ItemBag {
         ));
 
         if (showingItems) {
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getTitleFont(), itemsTxt,
+                new Vector2(3.25f * 100, 17f * 100), ZIndex.UNFOLDED_DECK_CARD));
+
             for (AbstractItem item : items) {
                 drawItem(item);
             }
@@ -160,7 +171,7 @@ public class ItemBag {
             AbstractItem item = selectedItem == null ? touchingItem : selectedItem;
             if (item instanceof AbstractQuest && ((AbstractQuest) item).isCompleted()) {
                 Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
-                claimButton.getBounds().x = renderPos.x - 1.25f;
+                claimButton.getBounds().x = renderPos.x - 0.5f;
                 claimButton.getBounds().y = renderPos.y - 1.5f;
                 claimButton.draw();
             }

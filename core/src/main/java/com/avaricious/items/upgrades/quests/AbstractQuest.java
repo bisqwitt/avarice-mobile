@@ -1,10 +1,16 @@
 package com.avaricious.items.upgrades.quests;
 
+import com.avaricious.components.ItemBag;
+import com.avaricious.components.popups.ClaimedPopup;
+import com.avaricious.components.popups.PopupManager;
 import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,6 +50,23 @@ public abstract class AbstractQuest extends AbstractUpgrade {
         PlaySevenCardsInOneSpinQuest.class
     ));
 
+    public void claim() {
+        body.pulse();
+        Vector2 renderPos = body.getRenderPos(new Vector2());
+        PopupManager.I().spawnTextPopup(new ClaimedPopup(new Vector2(
+            (renderPos.x + body.getBounds().width / 2f) - ClaimedPopup.WIDTH / 2f,
+            renderPos.y + 3f), ZIndex.UNFOLDED_DECK_CARD));
+        onClaim();
+
+        final AbstractQuest quest = this;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                ItemBag.I().removeItem(quest);
+            }
+        }, 1);
+    }
+
     public void complete() {
         completed = true;
     }
@@ -57,5 +80,5 @@ public abstract class AbstractQuest extends AbstractUpgrade {
         return 2.1f;
     }
 
-    public abstract void claim();
+    protected abstract void onClaim();
 }
