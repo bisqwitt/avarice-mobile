@@ -23,7 +23,7 @@ public class ScoreProgressBar {
     }
 
     private static final float BAR_X = 0.5f;
-    private static final float BAR_Y = 15.15f;
+    private static final float BAR_Y = 15f;
     private static final float BAR_WIDTH = 8f;
     private static final float BAR_HEIGHT = 0.25f;
 

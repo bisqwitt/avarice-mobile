@@ -23,13 +23,15 @@ public class ScoreDisplay {
     }
 
     private ScoreDisplay() {
+        clearPotentialScore();
     }
 
-    private final TextureRegion xSymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
+    private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
+    private final float multiplySymbolSize = 11f / 25f;
 
-    private final float DIGIT_Y = 16f;
-    private final float DIGIT_WIDTH = 7 / 15f;
-    private final float DIGIT_HEIGHT = 11 / 15f;
+    private final float DIGIT_Y = 15.75f;
+    private final float DIGIT_WIDTH = 7 / 13f;
+    private final float DIGIT_HEIGHT = 11 / 13f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 5,
@@ -42,7 +44,10 @@ public class ScoreDisplay {
         new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
     private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
-        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
+        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
+
+    float multiplySymbol1X = 0f;
+    float multiplySymbol2X = 0f;
 
     public void draw(float delta, float unfoldAmount) {
         float t = MathUtils.clamp(unfoldAmount, 0f, 1f);
@@ -62,20 +67,20 @@ public class ScoreDisplay {
         multiNumber.getFirstDigitBounds().y = digitY;
         streakNumber.getFirstDigitBounds().y = digitY;
 
-        scoreNumber.getFirstDigitBounds().x = ScreenManager.getViewport().getWorldWidth() / 2f - scoreNumber.getWidth() / 2;
-        scoreNumber.draw(delta);
+//        scoreNumber.getFirstDigitBounds().x = ScreenManager.getViewport().getWorldWidth() / 2f - scoreNumber.getWidth() / 2;
+//        scoreNumber.draw(delta);
 
         pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
-            xSymbol,
-            new Rectangle(pointsNumber.getFirstDigitBounds().x + 2.25f, digitY, 11f / 25f, 11f / 25f),
+            multiplySymbol,
+            new Rectangle(multiplySymbol1X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize),
             zIndex
         ));
 
         multiNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
-            xSymbol,
-            new Rectangle(multiNumber.getFirstDigitBounds().x + 2.25f, digitY, 11f / 25f, 11f / 25f),
+            multiplySymbol,
+            new Rectangle(multiplySymbol2X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize),
             zIndex
         ));
 
@@ -86,7 +91,7 @@ public class ScoreDisplay {
         setScore(scoreNumber.getScore() + amount);
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {
         scoreNumber.setScore(score);
         ScoreProgressBar.I().setCurrentValue(score);
     }
@@ -96,8 +101,10 @@ public class ScoreDisplay {
     }
 
     public void setPotentialValue(Type type, float value) {
-        getNumberOf(type).setScore((int) value);
+        getNumberOf(type).setScore(value);
         ScoreProgressBar.I().setOptionalValue(getPotentialValueOf(Type.POINTS) * Math.max(getPotentialValueOf(Type.MULTI), 1) * getPotentialValueOf(Type.STREAK));
+
+        updatePotentialScoreXLayout();
     }
 
     public float getPotentialValueOf(Type type) {
@@ -125,6 +132,25 @@ public class ScoreDisplay {
     private DigitalNumber getNumberOf(Type type) {
         return type == Type.POINTS ? pointsNumber :
             type == Type.MULTI ? multiNumber : streakNumber;
+    }
+
+    private void updatePotentialScoreXLayout() {
+        float width = pointsNumber.getWidth() + 1 + multiNumber.getWidth() + 1 + streakNumber.getWidth();
+        float pos = ScreenManager.getViewport().getWorldWidth() / 2f - width / 2f;
+
+        pointsNumber.getFirstDigitBounds().x = pos;
+        pos += pointsNumber.getWidth() + 0.4f;
+
+        multiplySymbol1X = pos;
+        pos += multiplySymbolSize + 0.35f;
+
+        multiNumber.getFirstDigitBounds().x = pos;
+        pos += multiNumber.getWidth() + 0.4f;
+
+        multiplySymbol2X = pos;
+        pos += multiplySymbolSize + 0.35f;
+
+        streakNumber.getFirstDigitBounds().x = pos;
     }
 
     public enum Type {

@@ -21,7 +21,7 @@ public abstract class AbstractQuest extends AbstractUpgrade {
     public static float WIDTH = 48;
     public static float HEIGHT = 44;
 
-    private boolean completed = true;
+    private boolean completed = false;
 
     @Override
     public String title() {

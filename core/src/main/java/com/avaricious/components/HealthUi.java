@@ -113,27 +113,27 @@ public class HealthUi {
     }
 
     public void healFor(int amount) {
-        setHealth(health.getScore() + amount);
+        setHealth((int) health.getScore() + amount);
     }
 
     public void addArmor(int amount) {
-        setArmor(armor.getScore() + amount);
+        setArmor((int) armor.getScore() + amount);
     }
 
     public int getHealth() {
-        return health.getScore();
+        return (int) health.getScore();
     }
 
     public int getArmor() {
-        return armor.getScore();
+        return (int) armor.getScore();
     }
 
     private void damageArmor(int damage) {
-        setArmor(armor.getScore() - damage);
+        setArmor((int) armor.getScore() - damage);
     }
 
     private void damageHealth(int damage) {
-        setHealth(health.getScore() - damage);
+        setHealth((int) health.getScore() - damage);
         BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.BLOODY);
         ScreenShake.I().addTrauma(0.55f);
     }

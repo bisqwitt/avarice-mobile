@@ -78,7 +78,8 @@ public class SlotScreen extends ScreenAdapter {
 
     private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
-    private final ButtonBoard buttonBoard = ButtonBoard.I().init(this::onSpinButtonPressed, this::onCashoutButtonPressed);
+    private final ButtonBoard buttonBoard = ButtonBoard.I()
+        .init(this::onSpinButtonPressed, this::onCashoutButtonPressed);
     private final HandUi handUi = HandUi.I();
     private final DeckUi deckUi = DeckUi.I();
     private final RingBar ringBar = RingBar.I();
@@ -125,7 +126,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
+//                shop.show();
             }
         }, 1);
     }
@@ -306,7 +307,8 @@ public class SlotScreen extends ScreenAdapter {
 
         scheduler.schedule(() -> {
             if (isFirstStreakIncrease) isFirstStreakIncrease = false;
-            else roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.STREAK, 1);
+            else
+                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.STREAK, 0.25f);
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
