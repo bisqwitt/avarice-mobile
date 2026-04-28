@@ -25,7 +25,7 @@ public class HealthUi {
     private final float hpSizeRatio = 20f;
     private final float armorSizeRatio = 20f;
 
-    private final float healthY = 18.8f;
+    private final float healthY = 18.5f;
     private final float armorY = healthY;
     private final float txtX = 0.75f;
     private final float currentValueX = txtX + 1.25f;
