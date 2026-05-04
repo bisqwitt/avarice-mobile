@@ -87,6 +87,16 @@ public class SymbolSpawnChancePack extends PackOpening {
             }
 
             @Override
+            public float getTextureWidth() {
+                return 0;
+            }
+
+            @Override
+            public float getTextureHeight() {
+                return 0;
+            }
+
+            @Override
             public UpgradeRarity rarity() {
                 return UpgradeRarity.UNKNOWN;
             }
@@ -131,6 +141,16 @@ public class SymbolSpawnChancePack extends PackOpening {
             @Override
             public TextureRegion shadowTexture() {
                 return Assets.I().get(result.shadowKey());
+            }
+
+            @Override
+            public float getTextureHeight() {
+                return 0;
+            }
+
+            @Override
+            public float getTextureWidth() {
+                return 0;
             }
 
             @Override

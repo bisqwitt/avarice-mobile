@@ -42,14 +42,6 @@ public abstract class AbstractQuest extends AbstractUpgrade {
         return Assets.I().get(AssetKey.QUEST_SCROLL_SHADOW);
     }
 
-    public static AbstractQuest randomQuest() {
-        return instantiateItem(allQuestClasses.get((int) (Math.random() * allQuestClasses.size())));
-    }
-
-    public static final List<Class<? extends AbstractQuest>> allQuestClasses = Collections.unmodifiableList(Arrays.asList(
-        PlaySevenCardsInOneSpinQuest.class
-    ));
-
     public void claim() {
         body.pulse();
         Vector2 renderPos = body.getRenderPos(new Vector2());
@@ -66,6 +58,25 @@ public abstract class AbstractQuest extends AbstractUpgrade {
             }
         }, 1);
     }
+
+    @Override
+    public float getTextureHeight() {
+        return HEIGHT;
+    }
+
+    @Override
+    public float getTextureWidth() {
+        return WIDTH;
+    }
+
+    public static AbstractQuest randomQuest() {
+        return instantiateItem(allQuestClasses.get((int) (Math.random() * allQuestClasses.size())));
+    }
+
+    public static final List<Class<? extends AbstractQuest>> allQuestClasses = Collections.unmodifiableList(Arrays.asList(
+        PlaySevenCardsInOneSpinQuest.class
+
+    ));
 
     public void complete() {
         completed = true;

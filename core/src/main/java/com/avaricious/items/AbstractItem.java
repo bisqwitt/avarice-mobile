@@ -20,6 +20,10 @@ public abstract class AbstractItem {
 
     public abstract TextureRegion shadowTexture();
 
+    public abstract float getTextureWidth();
+
+    public abstract float getTextureHeight();
+
     public void addBody(Rectangle initialBounds) {
         body = new DragableBody(initialBounds).setTilt(200f, 20f);
     }

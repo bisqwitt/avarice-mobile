@@ -10,6 +10,7 @@ import com.avaricious.items.upgrades.rings.DoubleXpRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
@@ -18,6 +19,7 @@ import com.avaricious.utility.UiUtility;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
@@ -40,9 +42,10 @@ public class RingBar {
     }
 
     public final int MAX_RINGS = 5;
+    private final TextureRegion ringSlot = Assets.I().get(AssetKey.RING_SLOT);
 
-    private final Rectangle firstRingBounds = new Rectangle(0.25f, 6f, 1.15f, 1.15f);
-    private final float RING_OFFSET = 1.3f;
+    private final Rectangle firstRingBounds = new Rectangle(0.2f, 6.2f, 1.15f, 1.15f);
+    private final float RING_OFFSET = 1.4f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
@@ -128,9 +131,15 @@ public class RingBar {
     }
 
     public void draw() {
+        for (int i = 0; i < MAX_RINGS; i++) {
+            Pencil.I().addDrawing(new TextureDrawing(ringSlot,
+                new Rectangle(firstRingBounds.x + i * RING_OFFSET - 0.1f, firstRingBounds.y - 0.1f, firstRingBounds.width + 0.2f, firstRingBounds.height + 0.2f),
+                ZIndex.RING_BAR, Assets.I().shadowColor()));
+        }
+
         rings.forEach(this::drawRing);
 
-        Vector2 ringsHoldingPos = new Vector2(5.25f * 100, 5.75f * 100f);
+        Vector2 ringsHoldingPos = new Vector2(5.45f * 100, 5.8f * 100f);
         ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }

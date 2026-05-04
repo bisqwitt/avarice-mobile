@@ -5,6 +5,7 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.items.AbstractItem;
+import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -37,7 +38,7 @@ public class ItemBag {
     }
 
 
-    private final Rectangle bagBounds = new Rectangle(7.2f, 5.75f, 42 / 30f, 48 / 30f);
+    private final Rectangle bagBounds = new Rectangle(7.3f, 5.75f, 42 / 30f, 48 / 30f);
     private final TextureRegion bagTexture = Assets.I().get(AssetKey.BAG);
     private final TextureRegion checkmark = Assets.I().get(AssetKey.CHECKMARK);
 
@@ -60,6 +61,16 @@ public class ItemBag {
         Assets.I().get(AssetKey.CLAIM_BUTTON),
         new Rectangle(0f, 0f, 79 / 30f, 25 / 30f),
         Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
+    private final Button useButton = new Button(() -> {
+        AbstractPotion potion = (AbstractPotion) selectedItem;
+        potion.use();
+        deselectItem(true);
+    },
+        Assets.I().get(AssetKey.USE_BUTTON),
+        Assets.I().get(AssetKey.USE_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.USE_BUTTON),
+        new Rectangle(0f, 0f, 79 / 30f, 25 / 30f),
+        Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
 
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         items.forEach(item -> item.getBody().update(delta));
@@ -68,7 +79,7 @@ public class ItemBag {
             mouseTouchdownLocation.set(mouse.x, mouse.y);
         }
 
-        if (!leftClickPressed && leftClickWasPressed && bagBounds.contains(mouseTouchdownLocation) && bagBounds.contains(mouse)) {
+        if (!leftClickPressed && leftClickWasPressed && bagBounds.contains(mouseTouchdownLocation) && bagBounds.contains(mouse) && !showingItems) {
             toggleShowItems();
         }
 
@@ -78,6 +89,12 @@ public class ItemBag {
                 && ((AbstractQuest) selectedItem).isCompleted()
                 && (claimButton.getBounds().contains(mouse) || claimButton.getBounds().contains(mouseTouchdownLocation))) {
                 claimButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+                return;
+            }
+            if (selectedItem != null
+                && selectedItem instanceof AbstractPotion
+                && (useButton.getBounds().contains(mouse) || useButton.getBounds().contains(mouseTouchdownLocation))) {
+                useButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
                 return;
             }
 
@@ -174,6 +191,12 @@ public class ItemBag {
                 claimButton.getBounds().x = renderPos.x - 0.5f;
                 claimButton.getBounds().y = renderPos.y - 1.5f;
                 claimButton.draw();
+            }
+            if (item instanceof AbstractPotion) {
+                Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
+                useButton.getBounds().x = renderPos.x - 0.5f;
+                useButton.getBounds().y = renderPos.y - 1.5f;
+                useButton.draw();
             }
         }
     }
@@ -286,11 +309,11 @@ public class ItemBag {
 
     private float getTextureWidth(AbstractItem item) {
         return item instanceof AbstractQuest ? AbstractQuest.WIDTH / 30
-            : 0;
+            : item.getTextureWidth() / 15;
     }
 
     private float getTextureHeight(AbstractItem item) {
         return item instanceof AbstractQuest ? AbstractQuest.HEIGHT / 30
-            : 0;
+            : item.getTextureHeight() / 15;
     }
 }

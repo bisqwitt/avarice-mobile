@@ -85,6 +85,16 @@ public class RingPack extends PackOpening {
             }
 
             @Override
+            public float getTextureHeight() {
+                return 0;
+            }
+
+            @Override
+            public float getTextureWidth() {
+                return 0;
+            }
+
+            @Override
             public UpgradeRarity rarity() {
                 return UpgradeRarity.UNKNOWN;
             }

@@ -19,6 +19,7 @@ import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.StatusUpgradeWindow;
+import com.avaricious.components.background.TvStaticBackground;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
@@ -65,6 +66,8 @@ public class SlotScreen extends ScreenAdapter {
     private final Main app;
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
+
+    private TvStaticBackground tvStaticBackground = new TvStaticBackground();
 
     private final RoundInfoPanel roundInfoPanel = new RoundInfoPanel();
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
@@ -147,13 +150,6 @@ public class SlotScreen extends ScreenAdapter {
 
         batch.setProjectionMatrix(camera.combined);
 
-        vfxManager.cleanUpBuffers();
-        vfxManager.beginInputCapture();
-
-        // Clear capture buffer to transparent
-        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         Pencil.I().drawDarkenWindow();
         roundInfoPanel.draw(delta);
         ScoreProgressBar.I().draw();
@@ -180,8 +176,17 @@ public class SlotScreen extends ScreenAdapter {
         bossLootWindow.draw(delta);
         PopupManager.I().draw(batch, delta);
 
+        vfxManager.cleanUpBuffers();
+        vfxManager.beginInputCapture();
+
+        // Clear capture buffer to transparent
+        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        tvStaticBackground.render(delta);
+
         batch.begin();
-        batch.draw(backgroundDarkest, -3, -3, 15, 26);
+//        batch.draw(backgroundDarkest, -3, -3, 15, 26);
 //        batch.draw(white, -3, 9.06f, 15f, 0.05f);
 //        batch.draw(white, -3, 6.85f, 15, 0.05f);
 //        batch.draw(white, -3, 2.95f, 15, 0.05f);

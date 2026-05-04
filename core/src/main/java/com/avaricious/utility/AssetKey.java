@@ -277,7 +277,18 @@ public enum AssetKey {
     DF_TXT("df-txt"),
     QUEST_SCROLL("quest-scroll"),
     QUEST_SCROLL_SHADOW("quest-scroll-shadow"),
-    CHECKMARK("checkmark");
+    CHECKMARK("checkmark"),
+    HEALTH_POTION("health-potion"),
+    HEALTH_POTION_SHADOW("health-potion-shadow"),
+    USE_BUTTON("use-button"),
+    USE_BUTTON_PRESSED("use-button-pressed"),
+    CARD_POTION("card-potion"),
+    CARD_POTION_SHADOW("card-potion-shadow"),
+    SHIELD_POTION("shield-potion"),
+    SHIELD_POTION_SHADOW("shield-potion-shadow"),
+    STREAK_POTION("streak-potion"),
+    STREAK_POTION_SHADOW("streak-potion-shadow"),
+    RING_SLOT("ring-slot");
 
     private final String path;
 

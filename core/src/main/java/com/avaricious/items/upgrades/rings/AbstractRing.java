@@ -81,6 +81,16 @@ public abstract class AbstractRing extends AbstractUpgrade {
     }
 
     @Override
+    public float getTextureWidth() {
+        return 1.5f;
+    }
+
+    @Override
+    public float getTextureHeight() {
+        return 1.5f;
+    }
+
+    @Override
     public float getTooltipYOffset() {
         return 1.7f;
     }

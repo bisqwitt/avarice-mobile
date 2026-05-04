@@ -65,6 +65,16 @@ public abstract class AbstractCard extends AbstractUpgrade {
     }
 
     @Override
+    public float getTextureHeight() {
+        return HEIGHT;
+    }
+
+    @Override
+    public float getTextureWidth() {
+        return WIDTH;
+    }
+
+    @Override
     public float getTooltipYOffset() {
         return 2.6f;
     }

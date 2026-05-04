@@ -27,7 +27,9 @@ public class ShopItemBar {
             int random = MathUtils.random(1, 100);
             if (random < 75) shopItems.add(new CardShopItem(buyBounds, pos));
             else if (random < 90) shopItems.add(new RingShopItem(buyBounds, pos));
-            else shopItems.add(new QuestShopItem(buyBounds, pos));
+            else {
+                shopItems.add(MathUtils.random(0, 1) == 0 ? new QuestShopItem(buyBounds, pos) : new PotionShopItem(buyBounds, pos));
+            }
         }
     }
 
