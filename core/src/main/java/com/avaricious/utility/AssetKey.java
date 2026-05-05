@@ -288,7 +288,19 @@ public enum AssetKey {
     SHIELD_POTION_SHADOW("shield-potion-shadow"),
     STREAK_POTION("streak-potion"),
     STREAK_POTION_SHADOW("streak-potion-shadow"),
-    RING_SLOT("ring-slot");
+    RING_SLOT("ring-slot"),
+    FELT_PIXEL("felt-pixel"),
+    DARKER_FELT_PIXEL("darker-felt-pixel"),
+    R("R"),
+    o("o"),
+    u("u"),
+    n("n"),
+    d("d"),
+    AVARICE_TXT("avarice-txt"),
+    NEW_RUN_BUTTON("new-run-button"),
+    NEW_RUN_BUTTON_PRESSED("new-run-button-pressed"),
+    CONTINUE_BUTTON("continue-button"),
+    CONTINUE_BUTTON_PRESSED("continue-button-pressed");
 
     private final String path;
 

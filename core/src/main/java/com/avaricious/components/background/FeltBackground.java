@@ -9,13 +9,13 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 
-public class TvStaticBackground implements Disposable {
+public class FeltBackground implements Disposable {
 
     private ShaderProgram shader;
     private Mesh mesh;
     private float time = 0f;
 
-    public TvStaticBackground() {
+    public FeltBackground() {
         ShaderProgram.pedantic = false;
 
         shader = new ShaderProgram(

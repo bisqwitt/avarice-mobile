@@ -54,13 +54,13 @@ float fbm(in vec2 st)
 void main()
 {
     // Base UV
-    vec2 st = v_texCoords;
+    vec2 st = v_texCoords * 600.0;
 
     // ------------- PIXELATION -------------
     // u_pixelSize is in UV units; e.g. 1.0/64.0 → 64 blocks across
-//    float blocks = 192.0;              // tweak this
-//    vec2 stPix = floor(st * blocks) / blocks;
-//    st = stPix;
+    float blocks = 192.0;              // tweak this
+    vec2 stPix = floor(st * blocks) / blocks;
+    st = stPix;
     // --------------------------------------
 
     vec3 color = mixColor1;

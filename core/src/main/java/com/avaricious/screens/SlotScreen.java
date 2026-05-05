@@ -19,7 +19,8 @@ import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.background.TvStaticBackground;
+import com.avaricious.components.background.FeltBackground;
+import com.avaricious.components.background.SlotScreenBackground;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
@@ -37,7 +38,7 @@ import com.avaricious.items.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
-import com.avaricious.screens.mainscreen.BackgroundLayer;
+import com.avaricious.screens.temp.BackgroundLayer;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
@@ -48,7 +49,6 @@ import com.avaricious.utility.Pencil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -67,7 +67,8 @@ public class SlotScreen extends ScreenAdapter {
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
 
-    private TvStaticBackground tvStaticBackground = new TvStaticBackground();
+    private final FeltBackground feltBackground = new FeltBackground();
+    private final SlotScreenBackground slotScreenBackground = new SlotScreenBackground();
 
     private final RoundInfoPanel roundInfoPanel = new RoundInfoPanel();
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
@@ -88,7 +89,7 @@ public class SlotScreen extends ScreenAdapter {
     private final RingBar ringBar = RingBar.I();
     private final HealthUi healthUi = HealthUi.I();
 
-    private final TextureRegion backgroundDarkest = Assets.I().get(AssetKey.BACKGROUND_DARKEST);
+    private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
     private final TextureRegion backgroundPixel = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
     private final TextureRegion backgroundPixelDarker = Assets.I().get(AssetKey.BACKGROUND_DARKER);
     private final TextureRegion backgroundWhite = Assets.I().get(AssetKey.BACKGROUND_WHITE);
@@ -179,14 +180,11 @@ public class SlotScreen extends ScreenAdapter {
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
-        // Clear capture buffer to transparent
-        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        tvStaticBackground.render(delta);
+//        feltBackground.render(delta);
+//        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
 
         batch.begin();
-//        batch.draw(backgroundDarkest, -3, -3, 15, 26);
+        batch.draw(feltPixel, -3, -3, 15, 26);
 //        batch.draw(white, -3, 9.06f, 15f, 0.05f);
 //        batch.draw(white, -3, 6.85f, 15, 0.05f);
 //        batch.draw(white, -3, 2.95f, 15, 0.05f);
