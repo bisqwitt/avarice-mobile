@@ -1,5 +1,6 @@
 package com.avaricious.utility;
 
+import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -30,6 +31,7 @@ public class Pencil {
 
     private final List<Drawing> drawings = new ArrayList<>();
 
+    private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
     private final TextureRegion blackTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
 
     private Rectangle scissors;
@@ -44,6 +46,7 @@ public class Pencil {
     public void draw(SpriteBatch batch) {
         updateDarkenAnimation(Gdx.graphics.getDeltaTime());
 
+        BorderPulseMesh.I().render(batch, Gdx.graphics.getDeltaTime());
         drawings.sort(Comparator.comparingInt(drawing -> drawing.getZIndex().index()));
         for (Drawing drawing : drawings) {
             drawing.draw(batch);

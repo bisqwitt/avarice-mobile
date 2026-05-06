@@ -43,4 +43,16 @@ public abstract class AbstractItem {
         }
     }
 
+    public static <T> T instantiateItem(String className, Class<T> expectedType) {
+        try {
+            return expectedType.cast(instantiateItem(Class.forName(className)));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getId() {
+        return getClass().getName();
+    }
+
 }

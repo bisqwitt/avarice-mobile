@@ -13,9 +13,9 @@ import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValu
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.UiUtility;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -33,7 +33,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class RingBar {
+public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private static RingBar instance;
 
@@ -41,11 +41,10 @@ public class RingBar {
         return instance == null ? instance = new RingBar() : instance;
     }
 
-    public final int MAX_RINGS = 5;
     private final TextureRegion ringSlot = Assets.I().get(AssetKey.RING_SLOT);
 
-    private final Rectangle firstRingBounds = new Rectangle(0.2f, 6.2f, 1.15f, 1.15f);
-    private final float RING_OFFSET = 1.4f;
+    private final Rectangle firstRingBounds = new Rectangle(0.25f, 5.925f, 1.1f, 1.1f);
+    private final float RING_OFFSET = 1.25f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
@@ -58,6 +57,7 @@ public class RingBar {
     private TooltipPopup tooltipPopup = null;
 
     private RingBar() {
+        notifyChanged(snapshot());
         if (DevTools.testRings()) {
             addRing(new DeptRing());
             addRing(new ThreeOfAKindMultiAdditionRing());
@@ -131,15 +131,12 @@ public class RingBar {
     }
 
     public void draw() {
-        for (int i = 0; i < MAX_RINGS; i++) {
-            Pencil.I().addDrawing(new TextureDrawing(ringSlot,
-                new Rectangle(firstRingBounds.x + i * RING_OFFSET - 0.1f, firstRingBounds.y - 0.1f, firstRingBounds.width + 0.2f, firstRingBounds.height + 0.2f),
-                ZIndex.RING_BAR, Assets.I().shadowColor()));
-        }
-
+        Pencil.I().addDrawing(new TextureDrawing(ringSlot,
+            new Rectangle(0.1f, 5.65f, 162 / 25f, 40 / 25f),
+            ZIndex.RING_BAR, Assets.I().shadowColor()));
         rings.forEach(this::drawRing);
 
-        Vector2 ringsHoldingPos = new Vector2(5.45f * 100, 5.8f * 100f);
+        Vector2 ringsHoldingPos = new Vector2(4.9f * 100, 5.475f * 100f);
         ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }
@@ -156,10 +153,9 @@ public class RingBar {
         Vector2 position = body.getRenderPos(new Vector2());
 
         Color shadowColor = Assets.I().shadowColor();
-        Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(ring.keySet().getShadowKey()),
-            new Rectangle(position.x + shadowOffset.x, position.y - (isTouching ? 0.2f : 0.1f),
+            new Rectangle(position.x, position.y - (isTouching ? 0.2f : 0.1f),
                 bounds.width, bounds.height
             ), scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
         Pencil.I().addDrawing(new TextureDrawing(
@@ -176,6 +172,8 @@ public class RingBar {
 
         rings.add(ring);
         ringIndex.put(ring, index);
+
+        notifyChanged(snapshot());
     }
 
     public <T extends AbstractRing> T getRingByClass(Class<T> ringClass) {
@@ -241,4 +239,13 @@ public class RingBar {
         }
     }
 
+    public void setRings(List<? extends AbstractRing> rings) {
+        this.rings.clear();
+        rings.forEach(this::addRing);
+    }
+
+    @Override
+    protected List<? extends AbstractRing> snapshot() {
+        return rings;
+    }
 }

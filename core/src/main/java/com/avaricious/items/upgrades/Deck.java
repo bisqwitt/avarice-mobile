@@ -23,6 +23,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
     }
 
     private Deck() {
+        notifyChanged(snapshot());
         if (DevTools.allCardsInDeck()) {
             for (Class<? extends AbstractCard> cardClass : allCardClasses) {
                 addCardToDeck(instantiateItem(cardClass));
@@ -65,5 +66,10 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
     @Override
     protected List<? extends AbstractCard> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(deck));
+    }
+
+    public void setDeck(List<? extends AbstractCard> cardsInDeck) {
+        deck.clear();
+        cardsInDeck.forEach(this::addCardToDeck);
     }
 }

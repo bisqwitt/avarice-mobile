@@ -3,11 +3,12 @@ package com.avaricious;
 import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.utility.GameStateLogger;
+import com.avaricious.utility.Observable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoundsManager {
+public class RoundsManager extends Observable<Integer> {
 
     private static RoundsManager instance;
 
@@ -18,7 +19,7 @@ public class RoundsManager {
     private AbstractBoss boss;
 
     private RoundsManager() {
-        currentRound = 1;
+        setCurrentRound(1);
         currentTargetScore = targetScorePerRound.get(currentRound);
         ScoreProgressBar.I().setMaxValue(currentTargetScore);
     }
@@ -45,14 +46,7 @@ public class RoundsManager {
     private int currentTargetScore;
 
     public void nextRound() {
-        currentRound++;
-        currentTargetScore = targetScorePerRound.get(currentRound);
-        ScoreProgressBar.I().setMaxValue(currentTargetScore);
-
-        if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
-        else if (isBossRound()) boss = null;
-
-        GameStateLogger.I().onNewRound();
+        setCurrentRound(currentRound + 1);
     }
 
     public boolean isBossRound() {
@@ -69,5 +63,25 @@ public class RoundsManager {
 
     public int getCurrentTargetScore() {
         return currentTargetScore;
+    }
+
+    public void setCurrentRound(int currentRound) {
+        this.currentRound = currentRound;
+
+        currentTargetScore = targetScorePerRound.get(currentRound);
+        ScoreProgressBar.I().setMaxValue(currentTargetScore);
+
+        if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
+        else if (isBossRound()) boss = null;
+
+        GameStateLogger.I().onNewRound();
+
+        notifyChanged(snapshot());
+    }
+
+
+    @Override
+    protected Integer snapshot() {
+        return currentRound;
     }
 }

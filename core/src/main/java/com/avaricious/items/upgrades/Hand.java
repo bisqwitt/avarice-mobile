@@ -23,6 +23,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     private Hand() {
+        notifyChanged(snapshot());
         if (DevTools.allCardsInDeck()) {
             addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
             addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
@@ -121,5 +122,10 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
 
     public int getStartingHandSize() {
         return startingHandSize;
+    }
+
+    public void setCards(List<? extends AbstractCard> cards) {
+        hand.clear();
+        cards.forEach(this::addCardToHand);
     }
 }

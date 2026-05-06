@@ -3,8 +3,10 @@ package com.avaricious;
 import com.avaricious.screens.MainScreen;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -19,6 +21,11 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        if (DevTools.deleteGameStateSaveFile()) {
+            FileHandle file = Gdx.files.local(GameStateManager.GAME_STATE_FILE_NAME);
+            if (file.exists()) file.delete();
+        }
+
         Assets.I().load();
 
         batch = new SpriteBatch();

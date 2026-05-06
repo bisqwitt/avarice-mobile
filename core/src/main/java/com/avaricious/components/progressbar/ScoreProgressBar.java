@@ -40,7 +40,7 @@ public class ScoreProgressBar {
 
     // Target values
     private float currentValue;
-    private float optionalValue;
+    private float potentialValue;
 
     // Animated/displayed values
     private float displayedCurrentValue;
@@ -62,7 +62,7 @@ public class ScoreProgressBar {
 
         displayedOptionalValue = animateTowards(
             displayedOptionalValue,
-            clamp(optionalValue, 0f, maxValue),
+            clamp(potentialValue, 0f, maxValue),
             delta
         );
     }
@@ -94,7 +94,7 @@ public class ScoreProgressBar {
     public void setMaxValue(float maxValue) {
         this.maxValue = Math.max(0.0001f, maxValue);
         this.currentValue = 0;
-        this.optionalValue = 0;
+        this.potentialValue = 0;
         this.displayedCurrentValue = 0;
         this.displayedOptionalValue = 0;
     }
@@ -103,8 +103,16 @@ public class ScoreProgressBar {
         this.currentValue = currentValue;
     }
 
-    public void setOptionalValue(float optionalValue) {
-        this.optionalValue = currentValue + optionalValue;
+    public void setPotentialValue(float optionalValue) {
+        this.potentialValue = currentValue + optionalValue;
+    }
+
+    public float getCurrentValue() {
+        return currentValue;
+    }
+
+    public float getPotentialValue() {
+        return potentialValue;
     }
 
     private float animateTowards(float current, float target, float delta) {

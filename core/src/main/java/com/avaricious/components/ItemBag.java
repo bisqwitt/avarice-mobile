@@ -4,12 +4,15 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
+import com.avaricious.effects.IdleFloatEffect;
+import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
 import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -25,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ItemBag {
+public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
     private static ItemBag instance;
 
@@ -34,12 +37,13 @@ public class ItemBag {
     }
 
     private ItemBag() {
+        notifyChanged(snapshot());
         itemsTxt.setText(Assets.I().getTitleFont(), "Items");
     }
 
-
-    private final Rectangle bagBounds = new Rectangle(7.3f, 5.75f, 42 / 30f, 48 / 30f);
+    private final Rectangle bagBounds = new Rectangle(7.05f, 5.3f, 42 / 26f, 48 / 26f);
     private final TextureRegion bagTexture = Assets.I().get(AssetKey.BAG);
+    private final TextureRegion bagShadowTexture = Assets.I().get(AssetKey.BAG_SHADOW);
     private final TextureRegion checkmark = Assets.I().get(AssetKey.CHECKMARK);
 
     private final List<AbstractItem> items = new ArrayList<>();
@@ -72,8 +76,13 @@ public class ItemBag {
         new Rectangle(0f, 0f, 79 / 30f, 25 / 30f),
         Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
 
+    private final IdleFloatEffect bagFloatEffect = new IdleFloatEffect();
+    private final IdleSwayEffect bagSwayEffect = new IdleSwayEffect();
+
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         items.forEach(item -> item.getBody().update(delta));
+        bagFloatEffect.update(delta);
+        bagSwayEffect.update(delta);
 
         if (leftClickPressed && !leftClickWasPressed) {
             mouseTouchdownLocation.set(mouse.x, mouse.y);
@@ -169,10 +178,12 @@ public class ItemBag {
     }
 
     public void draw() {
-        Pencil.I().addDrawing(new TextureDrawing(
-            bagTexture,
-            bagBounds,
-            ZIndex.RELIC_BAG
+        Pencil.I().addDrawing(new TextureDrawing(bagShadowTexture,
+            new Rectangle(bagBounds.x, bagBounds.y - 0.1f + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height),
+            1f, bagSwayEffect.getValue(), ZIndex.RELIC_BAG, Assets.I().shadowColor()));
+        Pencil.I().addDrawing(new TextureDrawing(bagTexture,
+            new Rectangle(bagBounds.x, bagBounds.y + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height),
+            1f, bagSwayEffect.getValue(), ZIndex.RELIC_BAG
         ));
 
         if (showingItems) {
@@ -210,7 +221,7 @@ public class ItemBag {
         Pencil.I().addDrawing(new TextureDrawing(
             item.shadowTexture(),
             new Rectangle(pos.x, pos.y - 0.2f, getTextureWidth(item), getTextureHeight(item)),
-            ZIndex.UNFOLDED_DECK_CARD, Assets.I().shadowColor())
+            scale, rotation, ZIndex.UNFOLDED_DECK_CARD, Assets.I().shadowColor())
         );
         Pencil.I().addDrawing(new TextureDrawing(
             item.texture(),
@@ -297,6 +308,8 @@ public class ItemBag {
         Rectangle bounds = new Rectangle(bagBounds.x, bagBounds.y, getTextureWidth(item), getTextureHeight(item));
         item.addBody(bounds);
         items.add(item);
+
+        notifyChanged(snapshot());
     }
 
     public void removeItem(AbstractItem item) {
@@ -315,5 +328,15 @@ public class ItemBag {
     private float getTextureHeight(AbstractItem item) {
         return item instanceof AbstractQuest ? AbstractQuest.HEIGHT / 30
             : item.getTextureHeight() / 15;
+    }
+
+    public void setItems(List<? extends AbstractItem> items) {
+        this.items.clear();
+        items.forEach(this::addItem);
+    }
+
+    @Override
+    protected List<? extends AbstractItem> snapshot() {
+        return items;
     }
 }

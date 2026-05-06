@@ -165,7 +165,7 @@ public class HandUi {
         if (selectedCard != null) drawCard(selectedCard);
         if (applyingCard != null) drawCard(applyingCard);
 
-        Vector2 cardsHoldingPos = new Vector2(5f * 100f, 2.3f * 100f);
+        Vector2 cardsHoldingPos = new Vector2(5f * 100f, 2.2f * 100f);
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
 
@@ -188,6 +188,7 @@ public class HandUi {
         }
 
         Vector2 position = body.getRenderPos(new Vector2());
+        position.y += body.getIdleFloatYOffset();
         ZIndex zIndex = draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
         if (selectingCardToDiscard) zIndex = ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD;
 
@@ -224,7 +225,8 @@ public class HandUi {
                 );
 
                 card.addBody(initialBounds);
-//                card.getBody().pulse();
+                card.getBody().getIdleFloatEffect().setStrength(0.02f, 0.75f);
+//                card.getBody().getIdleSwayEffect().setStrength();
                 cards.add(card);
             }
         }

@@ -6,6 +6,7 @@ import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -14,7 +15,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
-public class ScoreDisplay {
+public class ScoreDisplay extends Observable<ScoreState> {
 
     private static ScoreDisplay instance;
 
@@ -26,6 +27,8 @@ public class ScoreDisplay {
         clearPotentialScore();
     }
 
+    private final ScoreProgressBar scoreProgressBar = ScoreProgressBar.I();
+
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final float multiplySymbolSize = 11f / 25f;
 
@@ -33,9 +36,6 @@ public class ScoreDisplay {
     private final float DIGIT_WIDTH = 7 / 13f;
     private final float DIGIT_HEIGHT = 11 / 13f;
     private final float DIGIT_OFFSET = 0.7f;
-
-    private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 5,
-        new Rectangle(2.75f, 17.25f, 7 / 12f, 11 / 12f), 0.9f);
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
         new Rectangle(0.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
@@ -67,9 +67,6 @@ public class ScoreDisplay {
         multiNumber.getFirstDigitBounds().y = digitY;
         streakNumber.getFirstDigitBounds().y = digitY;
 
-//        scoreNumber.getFirstDigitBounds().x = ScreenManager.getViewport().getWorldWidth() / 2f - scoreNumber.getWidth() / 2;
-//        scoreNumber.draw(delta);
-
         pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
@@ -85,15 +82,17 @@ public class ScoreDisplay {
         ));
 
         streakNumber.draw(delta);
+        scoreProgressBar.draw();
     }
 
     public void addScore(int amount) {
-        setScore(scoreNumber.getScore() + amount);
+        setScore(scoreProgressBar.getCurrentValue() + amount);
     }
 
     public void setScore(float score) {
-        scoreNumber.setScore(score);
-        ScoreProgressBar.I().setCurrentValue(score);
+        scoreProgressBar.setCurrentValue(score);
+
+        notifyChanged(snapshot());
     }
 
     public void addPotentialValue(Type type, float amount) {
@@ -101,14 +100,16 @@ public class ScoreDisplay {
     }
 
     public void setPotentialValue(Type type, float value) {
-        getNumberOf(type).setScore(value);
-        ScoreProgressBar.I().setOptionalValue(getPotentialValueOf(Type.POINTS) * Math.max(getPotentialValueOf(Type.MULTI), 1) * getPotentialValueOf(Type.STREAK));
+        getNumberOf(type).setValue(value);
+        scoreProgressBar.setPotentialValue(getPotentialValueOf(Type.POINTS) * Math.max(getPotentialValueOf(Type.MULTI), 1) * getPotentialValueOf(Type.STREAK));
 
         updatePotentialScoreXLayout();
+
+        notifyChanged(snapshot());
     }
 
     public float getPotentialValueOf(Type type) {
-        return getNumberOf(type).getScore();
+        return getNumberOf(type).getValue();
     }
 
     public void clearPotentialScore() {
@@ -126,7 +127,7 @@ public class ScoreDisplay {
     }
 
     public boolean targetScoreReached() {
-        return scoreNumber.getScore() >= RoundsManager.I().getCurrentTargetScore();
+        return scoreProgressBar.getCurrentValue() >= RoundsManager.I().getCurrentTargetScore();
     }
 
     private DigitalNumber getNumberOf(Type type) {
@@ -151,6 +152,22 @@ public class ScoreDisplay {
         pos += multiplySymbolSize + 0.35f;
 
         streakNumber.getFirstDigitBounds().x = pos;
+    }
+
+    public void setScoreState(ScoreState scoreState) {
+        setScore(scoreState.currentScore);
+        setPotentialValue(Type.POINTS, scoreState.points);
+        setPotentialValue(Type.MULTI, scoreState.multi);
+        setPotentialValue(Type.STREAK, scoreState.streak);
+    }
+
+    @Override
+    protected ScoreState snapshot() {
+        return new ScoreState(
+            scoreProgressBar.getCurrentValue(),
+            pointsNumber.getValue(),
+            multiNumber.getValue(),
+            streakNumber.getValue());
     }
 
     public enum Type {

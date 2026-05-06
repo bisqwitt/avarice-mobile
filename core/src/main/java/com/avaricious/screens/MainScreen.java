@@ -7,10 +7,10 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -65,7 +65,6 @@ public class MainScreen extends ScreenAdapter {
         handleInput(delta);
 
         app.getViewport().apply();
-        Camera camera = app.getViewport().getCamera();
 
         background.render(batch, delta);
 
@@ -88,6 +87,7 @@ public class MainScreen extends ScreenAdapter {
     }
 
     private void onContinueButtonPressed() {
-
+        GameStateManager.I().applyLoadedGameState();
+        ScreenManager.I().setScreen(SlotScreen.class);
     }
 }

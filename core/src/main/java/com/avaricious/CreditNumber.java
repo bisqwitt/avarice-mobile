@@ -21,7 +21,7 @@ public class CreditNumber extends DigitalNumber {
     @Override
     public void draw(float delta) {
         super.draw(delta);
-        draw(delta, calcScale(), calcRotation());
+        draw(delta, getScale(), getRotation());
     }
 
     @Override

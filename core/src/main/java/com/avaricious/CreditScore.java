@@ -8,7 +8,7 @@ public class CreditScore extends CreditNumber {
     public CreditScore(int initialScore, Rectangle rectangle, float offset) {
         super(initialScore, rectangle, offset);
 
-        CreditManager.I().onChange(this::setScore);
+        CreditManager.I().onChange(this::setValue);
         setZIndex(ZIndex.CREDIT_SCORE);
     }
 }

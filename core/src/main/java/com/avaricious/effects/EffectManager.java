@@ -14,7 +14,7 @@ public class EffectManager {
         ParticleManager.I().create(bounds.x, bounds.y, ParticleType.RAINBOW, 0.03f, 50, ZIndex.SYMBOL_HIT_PARTICLES);
 //        TextureEcho.create(texture, bounds, new Color(1f, 1f, 1f, 1f), streak);
         TextureEcho.create(texture, bounds, parentType, streak);
-        BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.RAINBOW);
+//        BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.RAINBOW);
     }
 
     public static void increaseStreak() {

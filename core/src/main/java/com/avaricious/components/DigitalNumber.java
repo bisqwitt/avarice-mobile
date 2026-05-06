@@ -1,6 +1,7 @@
 package com.avaricious.components;
 
 import com.avaricious.effects.IdleFloatEffect;
+import com.avaricious.effects.IdleScaleEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.effects.PulseEffect;
 import com.avaricious.utility.AssetKey;
@@ -27,15 +28,16 @@ public class DigitalNumber {
 
     private ZIndex zIndex = ZIndex.DIGITAL_NUMBER;
 
-    private float score;
+    private float value;
     private boolean asDecimal = false;
 
     private final PulseEffect pulseEffect = new PulseEffect();
     private final IdleFloatEffect floatEffect = new IdleFloatEffect();
     private final IdleSwayEffect swayEffect = new IdleSwayEffect(1.2f, 0.4f);
+    private final IdleScaleEffect scaleEffect = new IdleScaleEffect();
 
     public DigitalNumber(int initialScore, Color color, Rectangle firstDigitBounds, float offset) {
-        setScore(initialScore);
+        setValue(initialScore);
         this.color = color;
         this.firstDigitBounds = firstDigitBounds;
         this.offset = offset;
@@ -44,7 +46,7 @@ public class DigitalNumber {
     }
 
     public DigitalNumber(int initialScore, Color color, int setLength, Rectangle firstDigitBounds, float offset) {
-        score = initialScore;
+        value = initialScore;
         this.color = color;
         this.firstDigitBounds = firstDigitBounds;
         this.offset = offset;
@@ -53,11 +55,11 @@ public class DigitalNumber {
             numberTextures.add(Assets.I().getDigitalNumber(0));
             numberShadowTextures.add(Assets.I().getDigitalNumberShadow(0));
         }
-        updateDigitalNumbers(score);
+        updateDigitalNumbers(value);
     }
 
     public void draw(float delta) {
-        draw(delta, pulseEffect.getScale(), calcScale() + calcRotation());
+        draw(delta, getScale(), getRotation());
     }
 
     public void draw(float delta, float scale, float rotation) {
@@ -66,7 +68,7 @@ public class DigitalNumber {
         pulseEffect.update(delta);
 
         float numberY = calcNumberY();
-        int decimalPlaces = countDecimalPlaces(score);
+        int decimalPlaces = countDecimalPlaces(value);
         int intDigitCount = numberTextures.size() - decimalPlaces;
         float dotOffset = offset * 0.5f;
 
@@ -128,12 +130,12 @@ public class DigitalNumber {
         }
     }
 
-    public void setScore(float score) {
-        if (score < 0) score = 0;
-        this.score = score;
+    public void setValue(float value) {
+        if (value < 0) value = 0;
+        this.value = value;
 
-        int decimalPlaces = countDecimalPlaces(score);
-        int intDigits = (int) score == 0 ? 1 : (int) Math.log10(score) + 1;
+        int decimalPlaces = countDecimalPlaces(value);
+        int intDigits = (int) value == 0 ? 1 : (int) Math.log10(value) + 1;
         int totalDigits = intDigits + decimalPlaces;
 
         while (numberTextures.size() < totalDigits) {
@@ -145,7 +147,7 @@ public class DigitalNumber {
             numberShadowTextures.remove(numberShadowTextures.size() - 1);
         }
 
-        updateDigitalNumbers(score);
+        updateDigitalNumbers(value);
         pulseEffect.pulse();
     }
 
@@ -161,14 +163,14 @@ public class DigitalNumber {
     }
 
     public float getWidth() {
-        int decimalPlaces = countDecimalPlaces(score);
+        int decimalPlaces = countDecimalPlaces(value);
         float dotOffset = offset * 0.5f;
         float extraWidth = (asDecimal && decimalPlaces > 0) ? dotOffset : 0;
         return ((numberTextures.size() - 1) * offset) + extraWidth + firstDigitBounds.width;
     }
 
-    public float getScore() {
-        return score;
+    public float getValue() {
+        return value;
     }
 
     public Rectangle getFirstDigitBounds() {
@@ -176,19 +178,15 @@ public class DigitalNumber {
     }
 
     public float calcNumberY() {
-        return firstDigitBounds.y + floatEffect.getYOffset();
+        return firstDigitBounds.y + floatEffect.getValue();
     }
 
-    public float calcScale() {
-        return pulseEffect.getScale();
-    }
-
-    public float calcRotation() {
-        return pulseEffect.getRotation() + swayEffect.getRotation();
+    public float getScale() {
+        return pulseEffect.getScale() * scaleEffect.getValue();
     }
 
     public float getRotation() {
-        return swayEffect.getRotation();
+        return pulseEffect.getRotation() + swayEffect.getValue();
     }
 
     protected ZIndex getZIndex() {

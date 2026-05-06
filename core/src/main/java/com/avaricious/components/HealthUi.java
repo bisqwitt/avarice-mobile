@@ -8,13 +8,14 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
-public class HealthUi {
+public class HealthUi extends Observable<HealthState> {
 
     private static HealthUi instance;
 
@@ -36,7 +37,7 @@ public class HealthUi {
     private final TextureRegion hpTxt = Assets.I().get(AssetKey.HP_TXT);
     private final TextureRegion hpTxtShadow = Assets.I().get(AssetKey.HP_TXT_SHADOW);
     private final TextureRegion armTxt = Assets.I().get(AssetKey.DF_TXT);
-    private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.ARM_TXT_SHADOW);
+    private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.DF_TXT_SHADOW);
 
     private HealthUi() {
         armor = new DigitalNumber(0, Assets.I().silver(), 3,
@@ -47,34 +48,32 @@ public class HealthUi {
     }
 
     public void draw(float delta) {
-//
-//        Pencil.I().addDrawing(new TextureDrawing(
-//            armTxtShadow,
-//            new Rectangle(txtX + 6, armor.calcNumberY() - 0.1f, 31 / armorSizeRatio, 11 / armorSizeRatio),
-//            ZIndex.HEALTH_UI, Assets.I().shadowColor()
-//        ));
-        Pencil.I().addDrawing(new TextureDrawing(
-            hpTxtShadow,
-            new Rectangle(txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
-            ZIndex.HEALTH_UI, Assets.I().shadowColor()
-        ));
-
         armor.draw(delta);
+        Pencil.I().addDrawing(new TextureDrawing(
+            armTxtShadow,
+            new Rectangle(txtX + 5.1f, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio),
+            armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
+        ));
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
             new Rectangle(txtX + 5.1f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio),
-            ZIndex.HEALTH_UI, Assets.I().silver()));
+            armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
+            hpTxtShadow,
+            new Rectangle(txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
+            health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
             hpTxt,
             new Rectangle(txtX, health.calcNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
-            ZIndex.HEALTH_UI, Assets.I().healthRedColor()
+            health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().healthRedColor()
         ));
     }
 
     public boolean damage(int damage) {
         boolean damagedHealth = false;
-        float currentArmorValue = armor.getScore();
+        float currentArmorValue = armor.getValue();
 
         EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
         if (evadeChanceStatus.rollChance()) {
@@ -85,7 +84,7 @@ public class HealthUi {
             return false;
         }
 
-        float armorHp = armor.getScore();
+        float armorHp = armor.getValue();
         if (armorHp > 0) {
             float armorDamage = Math.min(damage, armorHp);
             float spill = damage - armorDamage;
@@ -102,7 +101,7 @@ public class HealthUi {
             ScoreDisplay.I().clearPotentialScore();
         }
 
-        if (health.getScore() <= 0) {
+        if (health.getValue() <= 0) {
             ScreenManager.restartGame();
         }
         return damagedHealth;
@@ -113,37 +112,48 @@ public class HealthUi {
     }
 
     public void healFor(int amount) {
-        setHealth((int) health.getScore() + amount);
+        setHealth((int) health.getValue() + amount);
     }
 
     public void addArmor(int amount) {
-        setArmor((int) armor.getScore() + amount);
+        setArmor((int) armor.getValue() + amount);
     }
 
     public int getHealth() {
-        return (int) health.getScore();
+        return (int) health.getValue();
     }
 
     public int getArmor() {
-        return (int) armor.getScore();
+        return (int) armor.getValue();
     }
 
     private void damageArmor(int damage) {
-        setArmor((int) armor.getScore() - damage);
+        setArmor((int) armor.getValue() - damage);
     }
 
     private void damageHealth(int damage) {
-        setHealth((int) health.getScore() - damage);
+        setHealth((int) health.getValue() - damage);
         BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.BLOODY);
         ScreenShake.I().addTrauma(0.55f);
     }
 
     private void setHealth(int value) {
-        health.setScore(value);
+        health.setValue(value);
+        notifyChanged(snapshot());
     }
 
     private void setArmor(int value) {
-        armor.setScore(value);
+        armor.setValue(value);
+        notifyChanged(snapshot());
     }
 
+    public void setHealthState(HealthState healthState) {
+        setHealth(healthState.health);
+        setArmor(healthState.armor);
+    }
+
+    @Override
+    protected HealthState snapshot() {
+        return new HealthState(getHealth(), getArmor());
+    }
 }

@@ -13,7 +13,7 @@ public class CreditManager extends Observable<Integer> {
     }
 
     private CreditManager() {
-        credits = 5;
+        setCredits(5);
     }
 
     private int credits;
@@ -39,7 +39,7 @@ public class CreditManager extends Observable<Integer> {
         setCredits(getCredits());
     }
 
-    private void setCredits(int newValue) {
+    public void setCredits(int newValue) {
         credits = newValue;
         notifyChanged(newValue);
     }

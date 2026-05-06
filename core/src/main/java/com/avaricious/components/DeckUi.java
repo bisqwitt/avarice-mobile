@@ -135,7 +135,7 @@ public class DeckUi {
     }
 
     public void draw() {
-        Vector2 cardsInDeckPos = new Vector2(7.8f * 100, 2.3f * 100f);
+        Vector2 cardsInDeckPos = new Vector2(7.85f * 100, 2.2f * 100f);
         cardsInDeckCountTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckCountTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));
 
@@ -183,6 +183,7 @@ public class DeckUi {
                 firstCardBounds.width, firstCardBounds.height
             );
             pendingCards.get(i).addBody(bounds);
+            pendingCards.get(i).getBody().setIdleEffectsEnabled(false);
             cards.add(pendingCards.get(i));
         }
     }
@@ -211,6 +212,7 @@ public class DeckUi {
                 index++;
             }
             unfolded = true;
+            cards.forEach(card -> card.getBody().setIdleEffectsEnabled(true));
         } else {
             List<AbstractCard> reversed = new ArrayList<>(cards);
             Collections.reverse(reversed);
@@ -229,6 +231,7 @@ public class DeckUi {
                 @Override
                 public void run() {
                     unfolded = false;
+                    cards.forEach(card -> card.getBody().setIdleEffectsEnabled(false));
                 }
             }, reversed.size() * 0.025f + 0.25f);
         }

@@ -1,5 +1,6 @@
 package com.avaricious.components.roundInfoPanel;
 
+import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
@@ -23,6 +24,7 @@ public class RoundInfoPanel {
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
     private final TextureRegion roundTxt = Assets.I().get(AssetKey.ROUND_TXT);
+    private final TextureRegion roundTxtShadow = Assets.I().get(AssetKey.ROUND_TXT_SHADOW);
     private final IdleFloatEffect roundTxtFloatEffect = new IdleFloatEffect();
     private final IdleSwayEffect roundTxtSwayEffect = new IdleSwayEffect(1.5f, 1f);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, Assets.I().lightColor(), 1,
@@ -34,6 +36,10 @@ public class RoundInfoPanel {
     private float targetPanelY = panelBoundsFolded.y;
 
     private float unfoldAmount = 0f;
+
+    public RoundInfoPanel() {
+        RoundsManager.I().onChange(currentRoundNumber::setValue);
+    }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
         if (touching && !wasTouching) {
@@ -89,9 +95,12 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
+        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
+            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue() - 0.1f, 37 / 11f, 11 / 11f),
+            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(roundTxt,
-            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getYOffset(), 37 / 11f, 11 / 11f),
-            1f, roundTxtSwayEffect.getRotation(), ZIndex.PATTERN_DISPLAY));
+            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue(), 37 / 11f, 11 / 11f),
+            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
         currentRoundNumber.draw(delta);
 
 //        Pencil.I().addDrawing(new TextureDrawing(borderWhite,

@@ -21,8 +21,8 @@ import com.avaricious.components.ScreenShake;
 import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.background.FeltBackground;
 import com.avaricious.components.background.SlotScreenBackground;
+import com.avaricious.components.background.WarpBackground;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
@@ -46,6 +46,7 @@ import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -67,6 +68,7 @@ public class SlotScreen extends ScreenAdapter {
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
 
+    private final WarpBackground background = new WarpBackground();
     private final FeltBackground feltBackground = new FeltBackground();
     private final SlotScreenBackground slotScreenBackground = new SlotScreenBackground();
 
@@ -124,7 +126,8 @@ public class SlotScreen extends ScreenAdapter {
         backgroundLayer.init();
         slotMachine.setOnLastReelFinished(this::runResult);
 
-        drawStartingHand();
+        if (!GameStateManager.I().appliedLoadedState())
+            drawStartingHand();
 
         Timer.schedule(new Timer.Task() {
             @Override
@@ -137,6 +140,8 @@ public class SlotScreen extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
+        GameStateManager.I().update(delta);
+
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ScreenUtils.clear(0f, 0f, 0f, 1f);
 
@@ -153,7 +158,6 @@ public class SlotScreen extends ScreenAdapter {
 
         Pencil.I().drawDarkenWindow();
         roundInfoPanel.draw(delta);
-        ScoreProgressBar.I().draw();
         buttonBoard.draw(delta);
         ringBar.draw();
 
@@ -170,8 +174,7 @@ public class SlotScreen extends ScreenAdapter {
         handUi.draw(batch, delta);
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
-
-
+        
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
         bossLootWindow.draw(delta);
@@ -183,14 +186,11 @@ public class SlotScreen extends ScreenAdapter {
 //        feltBackground.render(delta);
 //        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
 
+//        background.render(batch, delta);
+
         batch.begin();
         batch.draw(feltPixel, -3, -3, 15, 26);
-//        batch.draw(white, -3, 9.06f, 15f, 0.05f);
-//        batch.draw(white, -3, 6.85f, 15, 0.05f);
-//        batch.draw(white, -3, 2.95f, 15, 0.05f);
         Pencil.I().draw(batch);
-//        RainbowProgressBar.I().render(batch, 0.5f, 14.5f, 8f, 0.5f, delta);
-//        BorderPulseMesh.I().render(batch, delta);
         batch.end();
 
 //        bulbBorderShader.update(delta);

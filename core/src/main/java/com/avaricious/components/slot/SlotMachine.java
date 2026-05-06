@@ -90,8 +90,6 @@ public class SlotMachine {
             }
         }
 
-        // build basic reel strips (repeat symbol set to avoid short cycles)
-
         for (int c = 0; c < cols; c++) {
             reels.add(new Reel(rows, () -> {
                 spinningReels--;
@@ -99,6 +97,11 @@ public class SlotMachine {
             }));
         }
         buildStrip();
+
+        Arrays.stream(grid)
+            .flatMap(Arrays::stream)
+            .filter(Objects::nonNull)
+            .forEach(body -> body.idleSwayEffect.setStrength(2.5f, 0.8f));
     }
 
     // --- drawing ---
@@ -111,9 +114,7 @@ public class SlotMachine {
         Arrays.stream(grid)
             .flatMap(Arrays::stream)
             .filter(Objects::nonNull)
-            .forEach(body -> {
-                body.update(delta);
-            });
+            .forEach(body -> body.update(delta));
 
         if (desiredAlpha != alpha) {
             float speed = 10f; // higher = faster convergence
@@ -123,7 +124,7 @@ public class SlotMachine {
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
             new Rectangle(0, originY + 6.13f, 9, 0.05f), ZIndex.SLOT_MACHINE));
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(0, originY - 0.2f, 9, 0.05f), ZIndex.SLOT_MACHINE));
+            new Rectangle(0, originY - 0.4f, 9, 0.05f), ZIndex.SLOT_MACHINE));
 
         if (RoundsManager.I().isBossRound()) {
             bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
@@ -134,8 +135,8 @@ public class SlotMachine {
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
         area.setWidth(area.width + 0.3f);
-        area.setY(area.y - 0.125f);
-        area.setHeight(area.height);
+        area.setY(area.y - 0.35f);
+        area.setHeight(area.height + 0.25f);
 
         Camera cam = app.getViewport().getCamera();
         cam.update();
@@ -182,7 +183,7 @@ public class SlotMachine {
         float drawW = CELL_W;
         float drawH = CELL_H;
         float adjX = colX - (drawW - CELL_W) / 2f;
-        float adjY = drawY - (drawH - CELL_H) / 2f;
+        float adjY = drawY - 0.08f - (drawH - CELL_H) / 2f;
         float alpha = this.alpha;
 
         if (isInGrid) {
@@ -199,6 +200,13 @@ public class SlotMachine {
 //        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
         float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
+
+        Color shadowColor = Assets.I().shadowColor();
+        Pencil.I().addDrawing(new TextureDrawing(
+            Assets.I().get(symbol.shadowKey()),
+            new Rectangle(adjX, adjY - 0.1f, drawW, drawH),
+            scale, rotation, ZIndex.SLOT_MACHINE, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+        ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().getSymbol(symbol),

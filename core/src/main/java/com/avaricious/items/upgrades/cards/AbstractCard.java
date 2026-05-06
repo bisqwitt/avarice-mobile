@@ -83,6 +83,12 @@ public abstract class AbstractCard extends AbstractUpgrade {
         return instantiateItem(allCardClasses.get((int) (Math.random() * allCardClasses.size())));
     }
 
+    @Override
+    public void addBody(Rectangle initialBounds) {
+        super.addBody(initialBounds);
+        body.getIdleScaleEffect().setAllowed(false);
+    }
+
     public static final List<Class<? extends AbstractCard>> allCardClasses = Collections.unmodifiableList(Arrays.asList(
         PointsCard.class,
         MultiCard.class,

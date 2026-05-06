@@ -76,6 +76,12 @@ public abstract class AbstractRing extends AbstractUpgrade {
     }
 
     @Override
+    public void addBody(Rectangle initialBounds) {
+        super.addBody(initialBounds);
+        body.getIdleScaleEffect().setAllowed(false);
+    }
+
+    @Override
     public int price() {
         return 3;
     }

@@ -1,6 +1,5 @@
 package com.avaricious.effects;
 
-import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -43,7 +42,7 @@ public class BorderPulseMesh {
 
     // Thickness in PIXELS (screen space)
     public float baseThickness = 0f;
-    public float pulseExtraThickness = 0.5f;
+    public float pulseExtraThickness = 0.4f;
 
     /**
      * Rainbow scroll speed around the border, in cycles per second.
@@ -130,17 +129,17 @@ public class BorderPulseMesh {
 
         float x, y, w, h;
 
-        if (type == Type.RAINBOW) {
-            x = SlotMachine.windowBounds.x;
-            y = SlotMachine.windowBounds.y;
-            w = SlotMachine.windowBounds.width;
-            h = SlotMachine.windowBounds.height;
-        } else {
-            x = 0f;
-            y = 0f;
-            w = screenW;
-            h = screenH;
-        }
+//        if (type == Type.RAINBOW) {
+//            x = SlotMachine.windowBounds.x;
+//            y = SlotMachine.windowBounds.y;
+//            w = SlotMachine.windowBounds.width;
+//            h = SlotMachine.windowBounds.height;
+//        } else {
+        x = 0f;
+        y = 0f;
+        w = screenW;
+        h = screenH;
+//        }
 
         ensureResources(w, h);
 

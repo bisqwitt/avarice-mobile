@@ -1,6 +1,7 @@
 package com.avaricious.components.slot;
 
 import com.avaricious.effects.IdleFloatEffect;
+import com.avaricious.effects.IdleScaleEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.effects.PulseEffect;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +20,7 @@ public class Body {
     protected final PulseEffect pulseEffect = new PulseEffect();
     protected final IdleSwayEffect idleSwayEffect = new IdleSwayEffect();
     protected final IdleFloatEffect idleFloatEffect = new IdleFloatEffect(0.04f, 0.4f);
+    protected final IdleScaleEffect idleScaleEffect = new IdleScaleEffect();
 
     public Body(Vector2 pos) {
         this.pos = pos;
@@ -28,6 +30,7 @@ public class Body {
         pulseEffect.update(delta);
         idleSwayEffect.update(delta);
         idleFloatEffect.update(delta);
+        idleScaleEffect.update(delta);
 
         scale += (targetScale - scale) * Math.min(1f, targetScaleSpeed * delta);
     }
@@ -37,11 +40,11 @@ public class Body {
     }
 
     public float getScale() {
-        return scale * pulseEffect.getScale();
+        return scale * pulseEffect.getScale() * idleScaleEffect.getValue();
     }
 
     public float getRotation() {
-        return pulseEffect.getRotation() + idleSwayEffect.getRotation();
+        return pulseEffect.getRotation() + idleSwayEffect.getValue();
     }
 
     public void beginPatternHit() {
@@ -78,12 +81,24 @@ public class Body {
     }
 
     public float getIdleFloatYOffset() {
-        return idleFloatEffect.getYOffset();
+        return idleFloatEffect.getValue();
     }
 
     public void setIdleEffectsEnabled(boolean enabled) {
         idleSwayEffect.setEnabled(enabled);
         idleFloatEffect.setEnabled(enabled);
+        idleScaleEffect.setEnabled(enabled);
     }
 
+    public IdleFloatEffect getIdleFloatEffect() {
+        return idleFloatEffect;
+    }
+
+    public IdleScaleEffect getIdleScaleEffect() {
+        return idleScaleEffect;
+    }
+
+    public IdleSwayEffect getIdleSwayEffect() {
+        return idleSwayEffect;
+    }
 }

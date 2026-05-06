@@ -275,6 +275,7 @@ public enum AssetKey {
     PROGRESSBAR_YELLOW_PIXEL("progressbar-yellow-pixel"),
     PROGRESSBAR_DARKER_YELLOW_PIXEL("progressbar-darker-yellow"),
     DF_TXT("df-txt"),
+    DF_TXT_SHADOW("df-txt-shadow"),
     QUEST_SCROLL("quest-scroll"),
     QUEST_SCROLL_SHADOW("quest-scroll-shadow"),
     CHECKMARK("checkmark"),

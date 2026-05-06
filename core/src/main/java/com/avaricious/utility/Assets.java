@@ -44,6 +44,7 @@ public class Assets {
     private final Color legendary = new Color(1f, 0.60f, 0.00f, 1f);
 
     private final Map<AssetKey, TextureRegion> cachedTextures = new HashMap<>();
+    private BitmapFont fabledFont;
     private BitmapFont titleFont;
     private BitmapFont bigFont;
     private BitmapFont mediumFont;
@@ -78,6 +79,13 @@ public class Assets {
         smallFont.getData().markupEnabled = true;
 
         generator.dispose();
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Fabled_Font.ttf"));
+        param.size = 108;
+
+        fabledFont = generator.generateFont(param);
+        fabledFont.setUseIntegerPositions(false);
+        fabledFont.getData().markupEnabled = true;
     }
 
     private void cache(TextureAtlas atlas) {
@@ -126,6 +134,10 @@ public class Assets {
     public TextureRegion getDigitalNumberShadow(int number) {
         if (number < 0 || number > 9) number = 0;
         return get(DIGIT_SHADOWS[number]);
+    }
+
+    public BitmapFont getFabledFont() {
+        return fabledFont;
     }
 
     public BitmapFont getTitleFont() {
