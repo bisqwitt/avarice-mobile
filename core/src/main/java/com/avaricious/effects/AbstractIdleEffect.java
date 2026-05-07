@@ -18,9 +18,9 @@ public abstract class AbstractIdleEffect {
         allowed = true;
     }
 
-    public abstract float calcValue();
+    protected abstract float calcValue();
 
-    public abstract float defaultValue();
+    protected abstract float defaultValue();
 
     public float getValue() {
         return enabled && allowed ? calcValue() : defaultValue();

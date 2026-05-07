@@ -1,6 +1,7 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
+import com.avaricious.components.AvariceText;
 import com.avaricious.components.background.WarpBackground;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.utility.AssetKey;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -22,7 +22,7 @@ public class MainScreen extends ScreenAdapter {
     private final Main app;
 
     private final WarpBackground background = new WarpBackground();
-    private final TextureRegion avariceTxt = Assets.I().get(AssetKey.AVARICE_TXT);
+    private final AvariceText title = new AvariceText();
 
     private final Button newRunButton = new Button(this::onNewRunButtonPressed,
         Assets.I().get(AssetKey.NEW_RUN_BUTTON),
@@ -68,11 +68,10 @@ public class MainScreen extends ScreenAdapter {
 
         background.render(batch, delta);
 
+        title.draw(delta);
+
         batch.setProjectionMatrix(app.getViewport().getCamera().combined);
         batch.begin();
-
-        batch.draw(avariceTxt,
-            2f, 16f, 53 / 10f, 11 / 10f);
 
         newRunButton.draw();
         continueButton.draw();

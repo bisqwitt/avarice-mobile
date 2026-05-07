@@ -1,45 +1,31 @@
 package com.avaricious.components;
 
-import com.avaricious.effects.IdleFloatEffect;
-import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 
-public class RoundText {
+public class RoundText extends FabledText {
 
-    private final List<TextureRegion> roundLetters = new ArrayList<>();
-
-    private final Map<TextureRegion, IdleFloatEffect> letterFloatEffects = new HashMap<>();
-    private final Map<TextureRegion, IdleSwayEffect> letterSwayEffects = new HashMap<>();
-
-    public RoundText() {
-        roundLetters.add(Assets.I().get(AssetKey.R));
-        roundLetters.add(Assets.I().get(AssetKey.o));
-        roundLetters.add(Assets.I().get(AssetKey.n));
-        roundLetters.add(Assets.I().get(AssetKey.d));
-
-        roundLetters.forEach(letter -> {
-            letterFloatEffects.put(letter, new IdleFloatEffect());
-            letterSwayEffects.put(letter, new IdleSwayEffect());
-        });
+    public RoundText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+        super(
+            Arrays.asList(
+                Assets.I().get(AssetKey.R_BIG),
+                Assets.I().get(AssetKey.O),
+                Assets.I().get(AssetKey.U),
+                Assets.I().get(AssetKey.N),
+                Assets.I().get(AssetKey.D)
+            ),
+            Arrays.asList(
+                Assets.I().get(AssetKey.R_BIG_SHADOW),
+                Assets.I().get(AssetKey.O_SHADOW),
+                Assets.I().get(AssetKey.U_SHADOW),
+                Assets.I().get(AssetKey.N_SHADOW),
+                Assets.I().get(AssetKey.D_SHADOW)
+            ),
+            startingPos, sizeRatio, spacing, zIndex
+        );
     }
-
-    public void draw(float delta) {
-        letterFloatEffects.values().forEach(floatEffect -> floatEffect.update(delta));
-        letterSwayEffects.values().forEach(swayEffect -> swayEffect.update(delta));
-
-        roundLetters.forEach(this::drawLetter);
-    }
-
-    private void drawLetter(TextureRegion letter) {
-//        Pencil.I().addDrawing(new TextureDrawing(letter,
-//            new Rectangle()));
-    }
-
 }

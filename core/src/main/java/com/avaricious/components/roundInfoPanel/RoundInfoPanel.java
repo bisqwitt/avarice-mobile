@@ -2,14 +2,9 @@ package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.effects.IdleFloatEffect;
-import com.avaricious.effects.IdleSwayEffect;
-import com.avaricious.utility.AssetKey;
+import com.avaricious.components.RoundText;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -17,16 +12,12 @@ import com.badlogic.gdx.math.Vector2;
 public class RoundInfoPanel {
 
     private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
-    private final SymbolValueDisplay symbolValueDisplay = new SymbolValueDisplay();
 
     private final Rectangle panelBoundsFolded = new Rectangle(0, 14.7f, 9f, 9f);
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
-    private final TextureRegion roundTxt = Assets.I().get(AssetKey.ROUND_TXT);
-    private final TextureRegion roundTxtShadow = Assets.I().get(AssetKey.ROUND_TXT_SHADOW);
-    private final IdleFloatEffect roundTxtFloatEffect = new IdleFloatEffect();
-    private final IdleSwayEffect roundTxtSwayEffect = new IdleSwayEffect(1.5f, 1f);
+    private final RoundText roundText = new RoundText(new Vector2(2.2f, 17f), 11f, 0.1f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, Assets.I().lightColor(), 1,
         new Rectangle(6.25f, 17f, 7 / 11f, 11 / 11f), 0.7f);
 
@@ -69,9 +60,6 @@ public class RoundInfoPanel {
     public void update(float delta) {
         updateUnfoldAmount();
 
-        roundTxtFloatEffect.update(delta);
-        roundTxtSwayEffect.update(delta);
-
         if (mouseTouchdownLocation == null) {
             float panelMoveSpeed = 20f;
             currentPanelBounds.y = MathUtils.lerp(
@@ -95,12 +83,13 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
-        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
-            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue() - 0.1f, 37 / 11f, 11 / 11f),
-            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
-        Pencil.I().addDrawing(new TextureDrawing(roundTxt,
-            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue(), 37 / 11f, 11 / 11f),
-            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
+//        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
+//            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue() - 0.1f, 37 / 11f, 11 / 11f),
+//            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
+//        Pencil.I().addDrawing(new TextureDrawing(roundTxt,
+//            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue(), 37 / 11f, 11 / 11f),
+//            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
+        roundText.draw(delta);
         currentRoundNumber.draw(delta);
 
 //        Pencil.I().addDrawing(new TextureDrawing(borderWhite,

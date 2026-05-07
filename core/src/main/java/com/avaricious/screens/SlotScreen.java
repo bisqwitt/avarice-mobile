@@ -174,7 +174,7 @@ public class SlotScreen extends ScreenAdapter {
         handUi.draw(batch, delta);
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
-        
+
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
         bossLootWindow.draw(delta);
@@ -184,9 +184,9 @@ public class SlotScreen extends ScreenAdapter {
         vfxManager.beginInputCapture();
 
 //        feltBackground.render(delta);
-//        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
+        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
 
-//        background.render(batch, delta);
+        background.render(batch, delta);
 
         batch.begin();
         batch.draw(feltPixel, -3, -3, 15, 26);
