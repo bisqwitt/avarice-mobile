@@ -197,6 +197,18 @@ public class DigitalNumber {
         this.zIndex = zIndex;
     }
 
+    public IdleFloatEffect getFloatEffect() {
+        return floatEffect;
+    }
+
+    public IdleSwayEffect getSwayEffect() {
+        return swayEffect;
+    }
+
+    public IdleScaleEffect getScaleEffect() {
+        return scaleEffect;
+    }
+
     public DigitalNumber setAsDecimal() {
         asDecimal = true;
         return this;

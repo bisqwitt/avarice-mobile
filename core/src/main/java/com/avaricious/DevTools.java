@@ -2,7 +2,7 @@ package com.avaricious;
 
 public class DevTools {
 
-    private static final boolean active = true;
+    private static final boolean active = false;
 
     public static boolean onlyLemon() {
         return active && false;

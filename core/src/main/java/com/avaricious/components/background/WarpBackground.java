@@ -29,12 +29,11 @@ public class WarpBackground {
     }
 
     public void render(SpriteBatch batch, float delta) {
-        time += delta / 2;
-
+        time += delta;
+        
         shader.bind();
         shader.setUniformf("u_resolution", Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         shader.setUniformf("u_time", time);
-        time += Gdx.graphics.getDeltaTime();
 
         batch.setShader(shader);
         batch.begin();

@@ -21,7 +21,7 @@ public class RoundInfoPanel {
     private final RoundText roundText = new RoundText(new Vector2(2.2f, 16.85f), 12f, 0.1f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, Assets.I().lightColor(), 1,
         new Rectangle(6.25f, 16.85f, 7 / 12f, 11 / 12f), 0.7f);
-    private final CreditScore creditScore = new CreditScore(new Rectangle(4f, 18.3f, 7 / 19f, 11 / 19f), 0.5f);
+    private final CreditScore creditScore = new CreditScore(new Rectangle(4f, 18.2f, 7 / 19f, 11 / 19f), 0.5f);
 
     private Vector2 mouseTouchdownLocation = null;
     private float panelYOnMouseTouchdown = -1;
@@ -93,7 +93,7 @@ public class RoundInfoPanel {
 //            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
         roundText.draw(delta);
         currentRoundNumber.draw(delta);
-        creditScore.draw(delta);
+//        creditScore.draw(delta);
 
 //        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
 //            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),

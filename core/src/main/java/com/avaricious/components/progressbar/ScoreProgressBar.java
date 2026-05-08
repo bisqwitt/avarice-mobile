@@ -22,8 +22,8 @@ public class ScoreProgressBar {
     }
 
     private static final float BAR_X = 0.5f;
-    private static final float BAR_Y = 15f;
-    private static final float BAR_WIDTH = 8f;
+    private static final float BAR_Y = 14.25f;
+    private static final float BAR_WIDTH = 7f;
     private static final float BAR_HEIGHT = 0.25f;
 
     // Higher = faster animation
@@ -87,7 +87,7 @@ public class ScoreProgressBar {
             BAR_X, BAR_Y, currentValueWidth, BAR_HEIGHT, ZIndex.SCORE_DISPLAY));
 
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), targetTxt,
-            new Vector2(((BAR_X + BAR_WIDTH) * 100 - (targetTxt.width)), (BAR_Y - 0.25f) * 100), ZIndex.SCORE_DISPLAY));
+            new Vector2(((BAR_X + BAR_WIDTH + 0.5f) * 100 - (targetTxt.width)), (BAR_Y) * 100), ZIndex.SCORE_DISPLAY));
     }
 
     public void setMaxValue(float maxValue) {

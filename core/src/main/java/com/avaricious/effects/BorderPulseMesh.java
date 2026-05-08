@@ -42,7 +42,7 @@ public class BorderPulseMesh {
 
     // Thickness in PIXELS (screen space)
     public float baseThickness = 0f;
-    public float pulseExtraThickness = 0.4f;
+    public float pulseExtraThickness = 0.55f;
 
     /**
      * Rainbow scroll speed around the border, in cycles per second.

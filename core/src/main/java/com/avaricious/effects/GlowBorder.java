@@ -20,7 +20,7 @@ public class GlowBorder {
         float pulse = 0.5f + 0.5f * (float) Math.sin(stateTime * 8f);
 
         // hover is already smooth 0..1
-        float thickness = 0.03f + 0.04f * hover;
+        float thickness = 0.05f + 0.04f * hover;
 
         float baseAlpha = (0.65f + 0.25f * pulse) + 0.25f * hover;
         float glowAlpha = (0.18f + 0.12f * pulse) + 0.18f * hover;

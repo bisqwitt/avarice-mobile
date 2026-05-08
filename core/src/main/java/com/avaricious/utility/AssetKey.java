@@ -321,7 +321,8 @@ public enum AssetKey {
     NEW_RUN_BUTTON("new-run-button"),
     NEW_RUN_BUTTON_PRESSED("new-run-button-pressed"),
     CONTINUE_BUTTON("continue-button"),
-    CONTINUE_BUTTON_PRESSED("continue-button-pressed");
+    CONTINUE_BUTTON_PRESSED("continue-button-pressed"),
+    CHARCOAL_PIXEL("charcoal-pixel");
 
     private final String path;
 

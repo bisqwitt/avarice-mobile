@@ -92,10 +92,7 @@ public class SlotScreen extends ScreenAdapter {
     private final HealthUi healthUi = HealthUi.I();
 
     private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
-    private final TextureRegion backgroundPixel = Assets.I().get(AssetKey.BACKGROUND_PIXEL);
-    private final TextureRegion backgroundPixelDarker = Assets.I().get(AssetKey.BACKGROUND_DARKER);
-    private final TextureRegion backgroundWhite = Assets.I().get(AssetKey.BACKGROUND_WHITE);
-    private final TextureRegion white = Assets.I().get(AssetKey.WHITE_PIXEL);
+    private final TextureRegion charcoalPixel = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
 
     private final CreditScore creditScore = new CreditScore(
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
@@ -186,10 +183,11 @@ public class SlotScreen extends ScreenAdapter {
 //        feltBackground.render(delta);
         slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
 
-        background.render(batch, delta);
+//        background.render(batch, delta);
 
         batch.begin();
         batch.draw(feltPixel, -3, -3, 15, 26);
+        batch.draw(charcoalPixel, -3f, 18f, 15f, 6f);
         Pencil.I().draw(batch);
         batch.end();
 

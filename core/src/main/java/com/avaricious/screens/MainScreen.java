@@ -66,7 +66,7 @@ public class MainScreen extends ScreenAdapter {
 
         app.getViewport().apply();
 
-//        background.render(batch, delta);
+        background.render(batch, delta);
 
         title.draw(delta);
 

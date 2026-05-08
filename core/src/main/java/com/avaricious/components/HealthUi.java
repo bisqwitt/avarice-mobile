@@ -24,10 +24,10 @@ public class HealthUi extends Observable<HealthState> {
     }
 
     private final float hpSizeRatio = 20f;
-    private final float armorSizeRatio = 20f;
+    private final float armorSizeRatio = 21f;
 
-    private final float healthY = 18.3f;
-    private final float armorY = healthY;
+    private final float healthY = 18.2f;
+    private final float armorY = healthY + 0.75f;
     private final float txtX = 0.75f;
     private final float currentValueX = txtX + 1.25f;
 
@@ -41,21 +41,24 @@ public class HealthUi extends Observable<HealthState> {
 
     private HealthUi() {
         armor = new DigitalNumber(0, Assets.I().silver(), 3,
-            new Rectangle(currentValueX + 5.1f, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.4f);
+            new Rectangle(currentValueX, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.4f);
 
         health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
             new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.4f);
+        health.getScaleEffect().setStrength(0.08f, 1.25f);
+        health.getScaleEffect().setAllowed(true);
+        health.getScaleEffect().setEnabled(false);
     }
 
     public void draw(float delta) {
         armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             armTxtShadow,
-            txtX + 5.1f, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio,
+            txtX, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio,
             armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            txtX + 5.1f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio,
+            txtX, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio,
             armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);
@@ -139,6 +142,8 @@ public class HealthUi extends Observable<HealthState> {
 
     private void setHealth(int value) {
         health.setValue(value);
+
+        health.getScaleEffect().setEnabled(value <= 20);
         notifyChanged(snapshot());
     }
 

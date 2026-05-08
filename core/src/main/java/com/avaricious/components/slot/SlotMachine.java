@@ -52,7 +52,7 @@ public class SlotMachine {
     public static final float originX = 0.25f;
     public static final float originY = 8f;
 
-    public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.15f, 8.95f, 6.285f);
+    public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.325f, 8.95f, 6.425f);
 
     private final List<Reel> reels = new ArrayList<>();
     private final Body[][] grid = new Body[cols][rows];
