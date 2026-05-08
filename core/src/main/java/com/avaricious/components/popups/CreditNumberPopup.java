@@ -31,7 +31,7 @@ public class CreditNumberPopup extends NumberPopup {
         Color color = Assets.I().yellow();
         Pencil.I().addDrawing(new TextureDrawing(
             dollarSymbol,
-            new Rectangle(bounds.x + (numberOffset * digitalNumberTextures.size()), bounds.y, bounds.width, bounds.height),
+            bounds.x + (numberOffset * digitalNumberTextures.size()), bounds.y, bounds.width, bounds.height,
             scale, rotation, zIndex, new Color(color.r, color.g, color.b, alpha)
         ));
     }

@@ -28,6 +28,6 @@ public class NextRoundButton extends Button {
         if (currentTexture == pressedButtonTexture) txtY -= 0.075f;
 
         Pencil.I().addDrawing(new TextureDrawing(nextRoundTxt,
-            new Rectangle(txtX, txtY, txtWidth, txtHeight), layer));
+            txtX, txtY, txtWidth, txtHeight, layer));
     }
 }

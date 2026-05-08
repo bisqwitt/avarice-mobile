@@ -122,9 +122,9 @@ public class SlotMachine {
         }
 
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(0, originY + 6.13f, 9, 0.05f), ZIndex.SLOT_MACHINE));
+            0, originY + 6.13f, 9, 0.05f, ZIndex.SLOT_MACHINE));
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            new Rectangle(0, originY - 0.4f, 9, 0.05f), ZIndex.SLOT_MACHINE));
+            0, originY - 0.4f, 9, 0.05f, ZIndex.SLOT_MACHINE));
 
         if (RoundsManager.I().isBossRound()) {
             bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
@@ -204,13 +204,13 @@ public class SlotMachine {
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(symbol.shadowKey()),
-            new Rectangle(adjX, adjY - 0.1f, drawW, drawH),
+            adjX, adjY - 0.1f, drawW, drawH,
             scale, rotation, ZIndex.SLOT_MACHINE, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().getSymbol(symbol),
-            new Rectangle(adjX, adjY, drawW, drawH),
+            adjX, adjY, drawW, drawH,
             scale, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
         ));
     }

@@ -78,12 +78,12 @@ public class DigitalNumber {
 
             Pencil.I().addDrawing(new TextureDrawing(
                 numberShadowTextures.get(i),
-                new Rectangle(firstDigitBounds.x + (i * offset) + extraOffset, numberY - 0.1f, firstDigitBounds.width, firstDigitBounds.height),
+                firstDigitBounds.x + (i * offset) + extraOffset, numberY - 0.1f, firstDigitBounds.width, firstDigitBounds.height,
                 scale, rotation, getZIndex(), Assets.I().shadowColor()
             ));
             Pencil.I().addDrawing(new TextureDrawing(
                 numberTextures.get(i),
-                new Rectangle(firstDigitBounds.x + (i * offset) + extraOffset, numberY, firstDigitBounds.width, firstDigitBounds.height),
+                firstDigitBounds.x + (i * offset) + extraOffset, numberY, firstDigitBounds.width, firstDigitBounds.height,
                 scale, rotation, getZIndex(), color
             ));
         }
@@ -93,7 +93,7 @@ public class DigitalNumber {
             float dotX = firstDigitBounds.x + (intDigitCount * offset);
             Pencil.I().addDrawing(new TextureDrawing(
                 dotSymbol,
-                new Rectangle(dotX, numberY, firstDigitBounds.width, firstDigitBounds.height),
+                dotX, numberY, firstDigitBounds.width, firstDigitBounds.height,
                 scale, rotation, getZIndex(), color
             ));
         }

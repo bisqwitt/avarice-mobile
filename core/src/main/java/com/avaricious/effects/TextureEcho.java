@@ -72,7 +72,7 @@ public class TextureEcho {
 
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
-            new Rectangle(x, y, drawW, drawH),
+            x, y, drawW, drawH,
             ZIndex.TEXTURE_GLOW, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
         ).setBeforeDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
             .setAfterDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));

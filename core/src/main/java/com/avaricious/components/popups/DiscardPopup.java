@@ -7,7 +7,6 @@ import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class DiscardPopup extends TextBoxPopup {
@@ -25,7 +24,7 @@ public class DiscardPopup extends TextBoxPopup {
 
         Color discardColor = Assets.I().healthRedColor();
         Pencil.I().addDrawing(new TextureDrawing(discardTxt,
-            new Rectangle(calcBoxX() + 0.45f, pos.y + 0.2f, 50 / 20f, 15 / 20f),
+            calcBoxX() + 0.45f, pos.y + 0.2f, 50 / 20f, 15 / 20f,
             ZIndex.POPUP_DEFAULT, new Color(discardColor.r, discardColor.g, discardColor.b, alpha)));
     }
 

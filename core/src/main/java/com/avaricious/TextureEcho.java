@@ -45,7 +45,7 @@ public class TextureEcho {
     private void _draw(SpriteBatch batch, float delta) {
         Pencil.I().addDrawing(new TextureDrawing(
             textureEcho,
-            currentPos,
+            currentPos.x, currentPos.y, currentPos.width, currentPos.height,
             ZIndex.TEXTURE_ECHO, new Color(color.r, color.g, color.b, alpha)));
 
         float echoSpeed = 18f;

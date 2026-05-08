@@ -15,7 +15,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
@@ -96,12 +95,12 @@ public class TooltipPopup {
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             boxShadow,
-            new Rectangle(boxX, boxY - 0.2f, boxWidth, boxHeight),
+            boxX, boxY - 0.2f, boxWidth, boxHeight,
             layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             box,
-            new Rectangle(boxX, boxY, boxWidth, boxHeight),
+            boxX, boxY, boxWidth, boxHeight,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
 
@@ -110,13 +109,13 @@ public class TooltipPopup {
         if (item instanceof IItemWithType)
             Pencil.I().addDrawing(new TextureDrawing(
                 ((IItemWithType) item).type().getTypeBox(),
-                new Rectangle(1.2f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+                1.2f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight,
                 layer, new Color(1f, 1f, 1f, alpha)
             ));
         if (item instanceof IItemWithRarity)
             Pencil.I().addDrawing(new TextureDrawing(
                 ((IItemWithRarity) item).rarity().getRarityBoxTexture(),
-                new Rectangle(-1.25f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight),
+                -1.25f + (boxX + boxWidth / 2f) - typeBoxWidth / 2f, boxY + 0.22f, typeBoxWidth, typeBoxHeight,
                 layer, new Color(1f, 1f, 1f, alpha)
             ));
 

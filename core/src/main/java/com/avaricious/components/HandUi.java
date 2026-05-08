@@ -196,16 +196,14 @@ public class HandUi {
         Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
-            new Rectangle(
-                position.x + shadowOffset.x, position.y - (card == draggingCard ? 0.3f : 0.2f),
-                bounds.width, bounds.height
-            ),
+            position.x + shadowOffset.x, position.y - (card == draggingCard ? 0.3f : 0.2f),
+            bounds.width, bounds.height,
             scale, rotation,
             zIndex, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             card.texture(),
-            new Rectangle(position.x, position.y, bounds.width, bounds.height),
+            position.x, position.y, bounds.width, bounds.height,
             scale, rotation,
             zIndex, new Color(1f, 1f, 1f, alpha)
         ));

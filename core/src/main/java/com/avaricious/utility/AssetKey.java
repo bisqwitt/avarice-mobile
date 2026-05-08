@@ -60,6 +60,7 @@ public enum AssetKey {
     RETURN_BUTTON_HOVERED("return-hovered"),
     RETURN_BUTTON_PRESSED("return-pressed"),
     DOLLAR_SYMBOL("dollar"),
+    DOLLAR_SYMBOL_SHADOW("dollar-shadow"),
     LEMON("lemon"),
     LEMON_SHADOW("lemon-shadow"),
     LEMON_WHITE("lemon-white"),

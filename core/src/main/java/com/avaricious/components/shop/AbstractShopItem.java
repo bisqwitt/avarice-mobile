@@ -98,14 +98,13 @@ public abstract class AbstractShopItem {
         shadowColor.a = Math.min(shadowColor.a, alpha);
         Pencil.I().addDrawing(new TextureDrawing(
             upgrade.shadowTexture(),
-            new Rectangle(
-                position.x, position.y - (dragging ? 0.3f : 0.2f),
-                bounds.width, bounds.height
-            ), scale, rotation, zIndex, shadowColor
+            position.x, position.y - (dragging ? 0.3f : 0.2f),
+            bounds.width, bounds.height,
+            scale, rotation, zIndex, shadowColor
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             upgrade.texture(),
-            new Rectangle(position.x, position.y, bounds.width, bounds.height),
+            position.x, position.y, bounds.width, bounds.height,
             scale, rotation, zIndex, new Color(1f, 1f, 1f, alpha)
         ));
 

@@ -7,7 +7,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 
 public class SymbolValueDisplay {
 
@@ -25,11 +24,11 @@ public class SymbolValueDisplay {
             }
 
             Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(symbol.textureKey()),
-                new Rectangle(x, y, 1f, 1f), ZIndex.ROUND_INFO_PANEL_UNFOLDED));
+                x, y, 1f, 1f, ZIndex.ROUND_INFO_PANEL_UNFOLDED));
             Pencil.I().addDrawing(new TextureDrawing(colon,
-                new Rectangle(x + 1, y + 0.2f, 7 / 20f, 11 / 20f), ZIndex.ROUND_INFO_PANEL_UNFOLDED));
+                x + 1, y + 0.2f, 7 / 20f, 11 / 20f, ZIndex.ROUND_INFO_PANEL_UNFOLDED));
             Pencil.I().addDrawing(new TextureDrawing(Assets.I().getDigitalNumber(symbol.baseValue()),
-                new Rectangle(x + 1.5f, y + 0.2f, 7 / 20f, 11 / 20f),
+                x + 1.5f, y + 0.2f, 7 / 20f, 11 / 20f,
                 ZIndex.ROUND_INFO_PANEL_UNFOLDED, Assets.I().blue()));
 
             index++;

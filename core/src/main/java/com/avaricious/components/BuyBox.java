@@ -38,23 +38,22 @@ public class BuyBox {
         Rectangle whiteBoxBounds = getInsetBounds(bounds, -inset);
         float blackAlpha = getPulseAlpha() * alpha;
 
-        Pencil.I().addDrawing(new TextureDrawing(
-            whiteBackground,
-            whiteBoxBounds,
+        Pencil.I().addDrawing(new TextureDrawing(whiteBackground,
+            whiteBoxBounds.x, whiteBoxBounds.y, whiteBoxBounds.width, whiteBoxBounds.height,
             ZIndex.SHOP,
             new Color(1f, 1f, 1f, alpha)
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             texture,
-            greenBoxBounds,
+            greenBoxBounds.x, greenBoxBounds.y, greenBoxBounds.width, greenBoxBounds.height,
             ZIndex.SHOP,
             new Color(1f, 1f, 1f, alpha)
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             blackTexture,
-            greenBoxBounds,
+            greenBoxBounds.x, greenBoxBounds.y, greenBoxBounds.width, greenBoxBounds.height,
             ZIndex.SHOP,
             new Color(1f, 1f, 1f, Math.min(alpha, blackAlpha))
         ));
@@ -65,7 +64,7 @@ public class BuyBox {
         float txtY = (bounds.y + bounds.height / 2f) - txtHeight / 2f;
         Pencil.I().addDrawing(new TextureDrawing(
             buyTxt,
-            new Rectangle(txtX, txtY, txtWidth, txtHeight),
+            txtX, txtY, txtWidth, txtHeight,
             ZIndex.SHOP,
             new Color(1f, 1f, 1f, alpha)
         ));

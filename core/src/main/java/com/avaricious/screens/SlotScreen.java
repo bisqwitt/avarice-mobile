@@ -97,7 +97,7 @@ public class SlotScreen extends ScreenAdapter {
     private final TextureRegion backgroundWhite = Assets.I().get(AssetKey.BACKGROUND_WHITE);
     private final TextureRegion white = Assets.I().get(AssetKey.WHITE_PIXEL);
 
-    private final CreditScore creditScore = new CreditScore(0,
+    private final CreditScore creditScore = new CreditScore(
         new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
 
     private final Shop shop = new Shop(this::onReturnedFromShop);

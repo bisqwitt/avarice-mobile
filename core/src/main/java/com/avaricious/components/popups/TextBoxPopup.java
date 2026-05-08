@@ -8,7 +8,6 @@ import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class TextBoxPopup {
@@ -38,11 +37,11 @@ public class TextBoxPopup {
 
         float boxX = calcBoxX();
         Pencil.I().addDrawing(new TextureDrawing(textBoxShadow,
-            new Rectangle(boxX, pos.y - 0.1f, boxWidth, boxHeight),
+            boxX, pos.y - 0.1f, boxWidth, boxHeight,
             ZIndex.POPUP_DEFAULT, new Color(1f, 1f, 1f, Math.min(0.25f, alpha))));
 
         Pencil.I().addDrawing(new TextureDrawing(getTextBox(),
-            new Rectangle(boxX, pos.y, boxWidth, boxHeight),
+            boxX, pos.y, boxWidth, boxHeight,
             ZIndex.POPUP_DEFAULT, new Color(1f, 1f, 1f, alpha)));
     }
 

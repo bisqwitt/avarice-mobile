@@ -1126,14 +1126,14 @@ critical hit-shadow
   index: -1
 d
   rotate: false
-  xy: 1679, 8
+  xy: 1688, 8
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
   index: -1
 d-shadow
   rotate: false
-  xy: 1687, 8
+  xy: 1696, 8
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
@@ -1257,9 +1257,16 @@ dollar
   orig: 7, 11
   offset: 0, 0
   index: -1
-dot
+dollar-shadow
   rotate: false
   xy: 1670, 8
+  size: 7, 11
+  orig: 7, 11
+  offset: 0, 0
+  index: -1
+dot
+  rotate: false
+  xy: 1679, 8
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -1364,14 +1371,14 @@ hp-txt-shadow
   index: -1
 i
   rotate: false
-  xy: 1695, 8
+  xy: 1704, 8
   size: 4, 11
   orig: 4, 11
   offset: 0, 0
   index: -1
 i-shadow
   rotate: false
-  xy: 1701, 8
+  xy: 1710, 8
   size: 4, 11
   orig: 4, 11
   offset: 0, 0
@@ -1525,7 +1532,7 @@ n
   index: -1
 n-shadow
   rotate: false
-  xy: 1707, 11
+  xy: 1716, 11
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
@@ -1567,14 +1574,14 @@ next-round-txt
   index: -1
 o
   rotate: false
-  xy: 1715, 11
+  xy: 1726, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
   index: -1
 o-shadow
   rotate: false
-  xy: 1726, 216
+  xy: 1734, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
@@ -1651,7 +1658,7 @@ quest-scroll-shadow
   index: -1
 r
   rotate: false
-  xy: 1766, 216
+  xy: 1774, 216
   size: 5, 8
   orig: 5, 8
   offset: 0, 0
@@ -1672,7 +1679,7 @@ r-big-shadow
   index: -1
 r-shadow
   rotate: false
-  xy: 1773, 216
+  xy: 1781, 216
   size: 5, 8
   orig: 5, 8
   offset: 0, 0
@@ -2344,14 +2351,14 @@ txt-box-shadow
   index: -1
 u
   rotate: false
-  xy: 1734, 216
+  xy: 1742, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
   index: -1
 u-shadow
   rotate: false
-  xy: 1742, 216
+  xy: 1750, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
@@ -2386,14 +2393,14 @@ use-button-pressed
   index: -1
 v
   rotate: false
-  xy: 1750, 216
+  xy: 1758, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0
   index: -1
 v-shadow
   rotate: false
-  xy: 1758, 216
+  xy: 1766, 216
   size: 6, 8
   orig: 6, 8
   offset: 0, 0

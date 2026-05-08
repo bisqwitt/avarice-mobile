@@ -1,5 +1,6 @@
 package com.avaricious.components.roundInfoPanel;
 
+import com.avaricious.CreditScore;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.RoundText;
@@ -17,9 +18,10 @@ public class RoundInfoPanel {
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
-    private final RoundText roundText = new RoundText(new Vector2(2.2f, 17f), 11f, 0.1f, ZIndex.PATTERN_DISPLAY);
+    private final RoundText roundText = new RoundText(new Vector2(2.2f, 16.85f), 12f, 0.1f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, Assets.I().lightColor(), 1,
-        new Rectangle(6.25f, 17f, 7 / 11f, 11 / 11f), 0.7f);
+        new Rectangle(6.25f, 16.85f, 7 / 12f, 11 / 12f), 0.7f);
+    private final CreditScore creditScore = new CreditScore(new Rectangle(4f, 18.3f, 7 / 19f, 11 / 19f), 0.5f);
 
     private Vector2 mouseTouchdownLocation = null;
     private float panelYOnMouseTouchdown = -1;
@@ -91,6 +93,7 @@ public class RoundInfoPanel {
 //            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
         roundText.draw(delta);
         currentRoundNumber.draw(delta);
+        creditScore.draw(delta);
 
 //        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
 //            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),

@@ -141,13 +141,13 @@ public abstract class AbstractTextPopup implements IPopup {
         drawColor.set(1f, 1f, 1f, alpha);
 
         Pencil.I().addDrawing(new TextureDrawing(getShadowTexture(),
-            new Rectangle(drawBounds.x, drawBounds.y - 0.15f, drawBounds.width, drawBounds.height),
+            drawBounds.x, drawBounds.y - 0.15f, drawBounds.width, drawBounds.height,
             pulseEffect.getScale(), pulseEffect.getRotation(),
             z, new Color(1f, 1f, 1f, Math.min(alpha, Assets.I().shadowColor().a))));
         Pencil.I().addDrawing(
             new TextureDrawing(
                 getTexture(),
-                drawBounds,
+                drawBounds.x, drawBounds.y, drawBounds.width, drawBounds.height,
                 pulseEffect.getScale(),
                 pulseEffect.getRotation(),
                 z,

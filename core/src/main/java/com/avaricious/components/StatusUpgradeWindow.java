@@ -114,7 +114,7 @@ public class StatusUpgradeWindow {
         float originY = hWin / 2f;
 
         Pencil.I().addDrawing(new TextureDrawing(window,
-            new Rectangle(WINDOW_X, WINDOW_Y + windowYOffset, wWin, hWin),
+            WINDOW_X, WINDOW_Y + windowYOffset, wWin, hWin,
             windowScale, 0f,
             ZIndex.WINDOW_ON_TOP, new Color(1f, 1f, 1f, windowAlpha)
         ));
@@ -126,7 +126,7 @@ public class StatusUpgradeWindow {
         float h = 13f / 15f;
         Pencil.I().addDrawing(new TextureDrawing(
             levelUpTxt,
-            new Rectangle(WINDOW_X + 1.8f, WINDOW_Y + 3.6f + windowYOffset, w, h),
+            WINDOW_X + 1.8f, WINDOW_Y + 3.6f + windowYOffset, w, h,
             levelUpTxtScale * windowScale, 0f,
             ZIndex.WINDOW_ON_TOP
         ));

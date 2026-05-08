@@ -26,7 +26,7 @@ public class HealthUi extends Observable<HealthState> {
     private final float hpSizeRatio = 20f;
     private final float armorSizeRatio = 20f;
 
-    private final float healthY = 18.5f;
+    private final float healthY = 18.3f;
     private final float armorY = healthY;
     private final float txtX = 0.75f;
     private final float currentValueX = txtX + 1.25f;
@@ -51,22 +51,22 @@ public class HealthUi extends Observable<HealthState> {
         armor.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             armTxtShadow,
-            new Rectangle(txtX + 5.1f, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio),
+            txtX + 5.1f, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio,
             armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            new Rectangle(txtX + 5.1f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio),
+            txtX + 5.1f, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio,
             armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().silver()));
 
         health.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxtShadow,
-            new Rectangle(txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio),
+            txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio,
             health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             hpTxt,
-            new Rectangle(txtX, health.calcNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio),
+            txtX, health.calcNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio,
             health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().healthRedColor()
         ));
     }

@@ -11,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class ScoreProgressBar {
@@ -74,18 +73,18 @@ public class ScoreProgressBar {
         float optionalValueWidth = maxValue <= 0f ? 0f : (displayedOptionalValue / maxValue) * BAR_WIDTH;
 
         Pencil.I().addDrawing(new TextureDrawing(white,
-            new Rectangle(BAR_X, BAR_Y - 0.05f, BAR_WIDTH, 0.05f), ZIndex.SCORE_DISPLAY));
+            BAR_X, BAR_Y - 0.05f, BAR_WIDTH, 0.05f, ZIndex.SCORE_DISPLAY));
         Pencil.I().addDrawing(new TextureDrawing(white,
-            new Rectangle(BAR_X, BAR_Y + BAR_HEIGHT, BAR_WIDTH, 0.05f), ZIndex.SCORE_DISPLAY));
+            BAR_X, BAR_Y + BAR_HEIGHT, BAR_WIDTH, 0.05f, ZIndex.SCORE_DISPLAY));
         Pencil.I().addDrawing(new TextureDrawing(white,
-            new Rectangle(BAR_X - 0.05f, BAR_Y - 0.05f, 0.05f, 0.35f), ZIndex.SCORE_DISPLAY));
+            BAR_X - 0.05f, BAR_Y - 0.05f, 0.05f, 0.35f, ZIndex.SCORE_DISPLAY));
         Pencil.I().addDrawing(new TextureDrawing(white,
-            new Rectangle(BAR_X + BAR_WIDTH, BAR_Y - 0.05f, 0.05f, 0.35f), ZIndex.SCORE_DISPLAY));
+            BAR_X + BAR_WIDTH, BAR_Y - 0.05f, 0.05f, 0.35f, ZIndex.SCORE_DISPLAY));
 
         Pencil.I().addDrawing(new TextureDrawing(darkerYellow,
-            new Rectangle(BAR_X, BAR_Y, optionalValueWidth, BAR_HEIGHT), ZIndex.SCORE_DISPLAY));
+            BAR_X, BAR_Y, optionalValueWidth, BAR_HEIGHT, ZIndex.SCORE_DISPLAY));
         Pencil.I().addDrawing(new TextureDrawing(yellow,
-            new Rectangle(BAR_X, BAR_Y, currentValueWidth, BAR_HEIGHT), ZIndex.SCORE_DISPLAY));
+            BAR_X, BAR_Y, currentValueWidth, BAR_HEIGHT, ZIndex.SCORE_DISPLAY));
 
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), targetTxt,
             new Vector2(((BAR_X + BAR_WIDTH) * 100 - (targetTxt.width)), (BAR_Y - 0.25f) * 100), ZIndex.SCORE_DISPLAY));

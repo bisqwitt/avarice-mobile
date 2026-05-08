@@ -49,6 +49,7 @@ public class Pencil {
         BorderPulseMesh.I().render(batch, Gdx.graphics.getDeltaTime());
         drawings.sort(Comparator.comparingInt(drawing -> drawing.getZIndex().index()));
         for (Drawing drawing : drawings) {
+            if (drawing instanceof FontDrawing) continue;
             drawing.draw(batch);
         }
         drawings.clear();
@@ -86,12 +87,10 @@ public class Pencil {
 
         Pencil.I().addDrawing(new TextureDrawing(
             blackTexture,
-            new Rectangle(
-                -1f,
-                -1f,
-                ScreenManager.getViewport().getWorldWidth() + 2,
-                ScreenManager.getViewport().getWorldHeight() + 2
-            ),
+            -1f, -1f,
+            ScreenManager.getViewport().getWorldWidth() + 2,
+            ScreenManager.getViewport().getWorldHeight() + 2
+            ,
             dimLayer,
             animatedColor
         ));

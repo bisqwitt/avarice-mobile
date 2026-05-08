@@ -167,10 +167,9 @@ public abstract class PackOpening {
         final Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             getShadowTexture(),
-            new Rectangle(
-                drawPos.x, drawPos.y - 0.2f * body.targetScale,
-                bounds.width, bounds.height
-            ), scale, drawRot,
+            drawPos.x, drawPos.y - 0.2f * body.targetScale,
+            bounds.width, bounds.height
+            , scale, drawRot,
             layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
 
@@ -179,7 +178,7 @@ public abstract class PackOpening {
 
         Pencil.I().addDrawing(new TextureDrawing(
             getTexture(),
-            new Rectangle(drawPos.x, drawPos.y, bounds.width, bounds.height),
+            drawPos.x, drawPos.y, bounds.width, bounds.height,
             scale, drawRot,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
@@ -190,7 +189,7 @@ public abstract class PackOpening {
             float easedWhiten = whiten * whiten * (3f - 2f * whiten);
             Pencil.I().addDrawing(new TextureDrawing(
                 getWhiteTexture(),
-                new Rectangle(drawPos.x, drawPos.y, bounds.width, bounds.height),
+                drawPos.x, drawPos.y, bounds.width, bounds.height,
                 scale, drawRot,
                 layer, new Color(1f, 1f, 1f, alpha * easedWhiten)
             ));
@@ -230,10 +229,8 @@ public abstract class PackOpening {
             Color color = new Color(1f, 1f, 1f, a);
             Pencil.I().addDrawing(new TextureDrawing(
                 whitePixel,
-                new Rectangle(drawPos.x - beamWidth / 2f, drawPos.y, beamWidth, length),
-                scale,
-                angle,
-                layer,
+                drawPos.x - beamWidth / 2f, drawPos.y, beamWidth, length,
+                scale, angle, layer,
                 new Color(color.r, color.g, color.b, a)
             ).usePosAsOrigin());
         }
@@ -246,14 +243,10 @@ public abstract class PackOpening {
 
         Pencil.I().addDrawing(new TextureDrawing(
             getWhiteTexture(),
-            new Rectangle(
-                center.x - width / 2f,
-                center.y - height / 2f,
-                width, height
-            ),
-            1f,
-            0f,
-            layer,
+            center.x - width / 2f,
+            center.y - height / 2f,
+            width, height
+            , 1f, 0f, layer,
             new Color(1f, 1f, 1f, coreGlowAlpha)
         ).setBeforeDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
             .setAfterDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
@@ -265,10 +258,8 @@ public abstract class PackOpening {
 
         Pencil.I().addDrawing(new TextureDrawing(
             whitePixel,
-            new Rectangle(0f, 0f, w, h),
-            1f,
-            0f,
-            layer,
+            0f, 0f, w, h,
+            1f, 0f, layer,
             new Color(1f, 1f, 1f, screenWhiteAlpha)
         ));
     }

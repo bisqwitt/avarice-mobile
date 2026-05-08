@@ -91,13 +91,13 @@ public class BossLootWindow {
         if (!shown) return;
         loot.getBody().update(delta);
 
-        Pencil.I().addDrawing(new TextureDrawing(window, WINDOW_BOUNDS, ZIndex.WINDOW_ON_TOP));
+        Pencil.I().addDrawing(new TextureDrawing(window, WINDOW_BOUNDS.x, WINDOW_BOUNDS.y, WINDOW_BOUNDS.width, WINDOW_BOUNDS.height, ZIndex.WINDOW_ON_TOP));
 
         Pencil.I().addDrawing(new TextureDrawing(bossDefeatedTxt,
-            new Rectangle(1f, 15.5f, 104 / 15f, 11 / 15f), ZIndex.WINDOW_ON_TOP));
+            1f, 15.5f, 104 / 15f, 11 / 15f, ZIndex.WINDOW_ON_TOP));
 
         Pencil.I().addDrawing(new TextureDrawing(rewardsTxt,
-            new Rectangle(1f, 13f, 61f / 15f, 11 / 15f), ZIndex.WINDOW_ON_TOP));
+            1f, 13f, 61f / 15f, 11 / 15f, ZIndex.WINDOW_ON_TOP));
 
         sellButton.draw();
         claimButton.draw();
@@ -113,10 +113,10 @@ public class BossLootWindow {
         float rotation = body.getRotation();
 
         Pencil.I().addDrawing(new TextureDrawing(loot.shadowTexture(),
-            new Rectangle(renderPos.x, renderPos.y - 0.1f, width, height),
+            renderPos.x, renderPos.y - 0.1f, width, height,
             scale, rotation, ZIndex.WINDOW_ON_TOP, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(loot.texture(),
-            new Rectangle(renderPos.x, renderPos.y, width, height),
+            renderPos.x, renderPos.y, width, height,
             scale, rotation, ZIndex.WINDOW_ON_TOP));
     }
 

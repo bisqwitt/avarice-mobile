@@ -3,7 +3,6 @@ package com.avaricious.utility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 
 public class TextureDrawing implements Drawing {
 
@@ -11,7 +10,10 @@ public class TextureDrawing implements Drawing {
 
     private final boolean additionalValues;
     private final TextureRegion textureRegion;
-    private final Rectangle bounds;
+    private final float x;
+    private final float y;
+    private final float w;
+    private final float h;
 
     private float scale;
     private float rotation;
@@ -23,33 +25,45 @@ public class TextureDrawing implements Drawing {
 
     private Color color;
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, ZIndex layer) {
+    public TextureDrawing(TextureRegion textureRegion, float x, float y, float w, float h, ZIndex layer) {
         this.textureRegion = textureRegion;
-        this.bounds = bounds;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
         this.layer = layer;
         additionalValues = false;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, ZIndex layer, Color color) {
+    public TextureDrawing(TextureRegion textureRegion, float x, float y, float w, float h, ZIndex layer, Color color) {
         this.textureRegion = textureRegion;
-        this.bounds = bounds;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
         this.layer = layer;
         this.color = color;
         additionalValues = false;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, ZIndex layer) {
+    public TextureDrawing(TextureRegion textureRegion, float x, float y, float w, float h, float scale, float rotation, ZIndex layer) {
         this.textureRegion = textureRegion;
-        this.bounds = bounds;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
         this.scale = scale;
         this.rotation = rotation;
         this.layer = layer;
         additionalValues = true;
     }
 
-    public TextureDrawing(TextureRegion textureRegion, Rectangle bounds, float scale, float rotation, ZIndex layer, Color color) {
+    public TextureDrawing(TextureRegion textureRegion, float x, float y, float w, float h, float scale, float rotation, ZIndex layer, Color color) {
         this.textureRegion = textureRegion;
-        this.bounds = bounds;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
         this.scale = scale;
         this.rotation = rotation;
         this.layer = layer;
@@ -66,15 +80,14 @@ public class TextureDrawing implements Drawing {
 
         if (additionalValues) {
             batch.draw(textureRegion,
-                bounds.x, bounds.y,
-                bounds.width / 2f, usePosAsOrigin ? 0 : bounds.height / 2f,
-                bounds.width, bounds.height,
+                x, y,
+                w / 2f, usePosAsOrigin ? 0 : h / 2f,
+                w, h,
                 scale, scale,
                 rotation);
         } else {
             batch.draw(textureRegion,
-                bounds.x, bounds.y,
-                bounds.width, bounds.height);
+                x, y, w, h);
         }
 
         if (color != null) batch.setColor(1f, 1f, 1f, 1f);

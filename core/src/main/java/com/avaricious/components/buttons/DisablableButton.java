@@ -127,13 +127,13 @@ public abstract class DisablableButton extends Button {
         if (showShadow) {
             Color shadowColor = Assets.I().shadowColor();
             Pencil.I().addDrawing(new TextureDrawing(
-                buttonShadow, new Rectangle(bounds.x, bounds.y - 0.1f, bounds.width, bounds.height),
+                buttonShadow, bounds.x, bounds.y - 0.1f, bounds.width, bounds.height,
                 layer, new Color(shadowColor.r, shadowColor.g, shadowColor.b, currentTexture == pressedButtonTexture ? 0.1f : 0.25f)
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
             currentTexture,
-            new Rectangle(bounds.x, bounds.y, bounds.width, bounds.height),
+            bounds.x, bounds.y, bounds.width, bounds.height,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
     }

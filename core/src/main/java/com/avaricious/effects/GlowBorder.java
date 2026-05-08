@@ -42,22 +42,22 @@ public class GlowBorder {
     private static void drawRectOutline(TextureRegion px, Rectangle r, float t, Color color, ZIndex layer) {
         // bottom
         Pencil.I().addDrawing(new TextureDrawing(
-            px, new Rectangle(r.x - t, r.y - t, r.width + 2f * t, t),
+            px, r.x - t, r.y - t, r.width + 2f * t, t,
             layer, color
         ));
         // top
         Pencil.I().addDrawing(new TextureDrawing(
-            px, new Rectangle(r.x - t, r.y + r.height, r.width + 2f * t, t),
+            px, r.x - t, r.y + r.height, r.width + 2f * t, t,
             layer, color
         ));
         // left
         Pencil.I().addDrawing(new TextureDrawing(
-            px, new Rectangle(r.x - t, r.y, t, r.height),
+            px, r.x - t, r.y, t, r.height,
             layer, color
         ));
         // right
         Pencil.I().addDrawing(new TextureDrawing(
-            px, new Rectangle(r.x + r.width, r.y, t, r.height),
+            px, r.x + r.width, r.y, t, r.height,
             layer, color
         ));
     }

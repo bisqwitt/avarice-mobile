@@ -7,7 +7,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
 public class XpBar extends ProgressBar {
 
@@ -40,7 +39,7 @@ public class XpBar extends ProgressBar {
         for (int i = 0; i < progress.length; i++) {
             Pencil.I().addDrawing(new TextureDrawing(
                 progress[i],
-                new Rectangle(X + (i * OFFSET), Y, STEP_WIDTH, STEP_HEIGHT),
+                X + (i * OFFSET), Y, STEP_WIDTH, STEP_HEIGHT,
                 ZIndex.XP_BAR));
         }
 //        batch.draw(border, 14.8f, 3.7f, 14 / 70f, 310 / 70f);

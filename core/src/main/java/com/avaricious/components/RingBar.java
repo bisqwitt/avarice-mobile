@@ -132,7 +132,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     public void draw() {
         Pencil.I().addDrawing(new TextureDrawing(ringSlot,
-            new Rectangle(0.1f, 5.65f, 162 / 25f, 40 / 25f),
+            0.1f, 5.65f, 162 / 25f, 40 / 25f,
             ZIndex.RING_BAR, Assets.I().shadowColor()));
         rings.forEach(this::drawRing);
 
@@ -155,12 +155,12 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(ring.keySet().getShadowKey()),
-            new Rectangle(position.x, position.y - (isTouching ? 0.2f : 0.1f),
-                bounds.width, bounds.height
-            ), scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
+            position.x, position.y - (isTouching ? 0.2f : 0.1f),
+            bounds.width, bounds.height,
+            scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))));
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(ring.keySet().getTextureKey()),
-            new Rectangle(position.x, position.y, bounds.width, bounds.height),
+            position.x, position.y, bounds.width, bounds.height,
             scale, rotation, isTouching ? ZIndex.RING_BAR_DRAGGING : ZIndex.RING_BAR, new Color(1f, 1f, 1f, alpha)
         ));
     }

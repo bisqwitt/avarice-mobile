@@ -141,7 +141,7 @@ public class DeckUi {
 
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
-            new Rectangle(firstCardBounds.x - 0.2f, firstCardBounds.y - 0.2f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f),
+            firstCardBounds.x - 0.2f, firstCardBounds.y - 0.2f, CARD_WIDTH + 0.4f, CARD_HEIGHT + 0.4f,
             ZIndex.DECK_UI_BOX, Assets.I().shadowColor()));
 
         for (AbstractCard card : cards) {
@@ -164,13 +164,13 @@ public class DeckUi {
         if (unfolded) {
             Pencil.I().addDrawing(new TextureDrawing(
                 jokerCardShadow,
-                new Rectangle(pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height),
+                pos.x, pos.y - 0.2f, firstCardBounds.width, firstCardBounds.height,
                 scale, rotation, ZIndex.UNFOLDED_DECK_CARD, Assets.I().shadowColor()
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
             unfolded ? card.texture() : jokerCardBack,
-            new Rectangle(pos.x, pos.y, firstCardBounds.width, firstCardBounds.height),
+            pos.x, pos.y, firstCardBounds.width, firstCardBounds.height,
             scale, rotation, unfolded ? ZIndex.UNFOLDED_DECK_CARD : ZIndex.DECK_UI_CARD
         ));
     }

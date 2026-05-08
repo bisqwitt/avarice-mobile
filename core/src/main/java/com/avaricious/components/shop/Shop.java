@@ -82,7 +82,6 @@ public class Shop {
         this.onReturnedFromShop = onReturnedFromShop;
 
         creditScore = new CreditScore(
-            0,
             new Rectangle(0.5f, baseCreditScoreY, 7 / 12f, 11 / 12f),
             0.9f
         );
@@ -122,19 +121,19 @@ public class Shop {
 
         Pencil.I().addDrawing(new TextureDrawing(
             window,
-            new Rectangle(WINDOW_X, currentWindowY, WINDOW_WIDTH, WINDOW_HEIGHT),
+            WINDOW_X, currentWindowY, WINDOW_WIDTH, WINDOW_HEIGHT,
             ZIndex.SHOP
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxtShadow,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 14.65f, 29 / 8f, 13 / 8f),
+            WINDOW_X + 3.75f, currentWindowY + 14.65f, 29 / 8f, 13 / 8f,
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopTxt,
-            new Rectangle(WINDOW_X + 3.75f, currentWindowY + 14.75f, 29 / 8f, 13 / 8f),
+            WINDOW_X + 3.75f, currentWindowY + 14.75f, 29 / 8f, 13 / 8f,
             ZIndex.SHOP
         ));
 

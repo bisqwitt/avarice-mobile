@@ -148,7 +148,7 @@ public class NumberPopup implements IPopup {
         // Use alpha for main draw color
         Pencil.I().addDrawing(new TextureDrawing(
             number < 0 ? minusTexture : plusTexture,
-            new Rectangle(bounds.x - numberOffset, bounds.y + yOffset, bounds.width, bounds.height),
+            bounds.x - numberOffset, bounds.y + yOffset, bounds.width, bounds.height,
             scale, rotation, zIndex, new Color(color.r, color.g, color.b, alpha)
         ));
 
@@ -156,7 +156,7 @@ public class NumberPopup implements IPopup {
             int index = i;
             Pencil.I().addDrawing(new TextureDrawing(
                 digitalNumberTextures.get(index),
-                new Rectangle(bounds.x + (numberOffset * index), bounds.y + yOffset, bounds.width, bounds.height),
+                bounds.x + (numberOffset * index), bounds.y + yOffset, bounds.width, bounds.height,
                 scale, rotation, zIndex, new Color(color.r, color.g, color.b, alpha)
             ));
         }
@@ -164,7 +164,7 @@ public class NumberPopup implements IPopup {
         if (asPercentage) {
             Pencil.I().addDrawing(new TextureDrawing(
                 percentageTexture,
-                new Rectangle(bounds.x + 0.4f, bounds.y + yOffset, 8 / 20f, 13 / 20f),
+                bounds.x + 0.4f, bounds.y + yOffset, 8 / 20f, 13 / 20f,
                 scale, rotation, zIndex
             ));
         }

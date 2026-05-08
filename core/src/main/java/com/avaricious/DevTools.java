@@ -17,7 +17,7 @@ public class DevTools {
     }
 
     public static boolean enableProfiler() {
-        return active && false;
+        return active && true;
     }
 
     public static boolean testRings() {

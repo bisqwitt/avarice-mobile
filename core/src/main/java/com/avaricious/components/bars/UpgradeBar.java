@@ -104,13 +104,13 @@ public abstract class UpgradeBar {
         // draw shadow (also scaled and rotated)
         Pencil.I().addDrawing(new TextureDrawing(
             getShadow(upgrade),
-            new Rectangle(bounds.x + 0.1f, bounds.y - 0.1f, bounds.width, bounds.height),
+            bounds.x + 0.1f, bounds.y - 0.1f, bounds.width, bounds.height,
             1f, rotation, ZIndex.UPGRADE_BAR, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             getTexture(upgrade),
-            bounds, 1f, rotation,
-            zIndex
+            bounds.x, bounds.y, bounds.width, bounds.height,
+            1f, rotation, zIndex
         ));
     }
 

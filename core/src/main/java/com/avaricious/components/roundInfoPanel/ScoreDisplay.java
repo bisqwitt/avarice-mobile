@@ -32,9 +32,9 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final float multiplySymbolSize = 11f / 25f;
 
-    private final float DIGIT_Y = 15.75f;
-    private final float DIGIT_WIDTH = 7 / 13f;
-    private final float DIGIT_HEIGHT = 11 / 13f;
+    private final float DIGIT_Y = 15.65f;
+    private final float DIGIT_WIDTH = 7 / 13.5f;
+    private final float DIGIT_HEIGHT = 11 / 13.5f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
@@ -70,14 +70,14 @@ public class ScoreDisplay extends Observable<ScoreState> {
         pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
-            new Rectangle(multiplySymbol1X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize),
+            multiplySymbol1X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize,
             zIndex
         ));
 
         multiNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
-            new Rectangle(multiplySymbol2X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize),
+            multiplySymbol2X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize,
             zIndex
         ));
 

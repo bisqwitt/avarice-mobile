@@ -81,13 +81,13 @@ public class Button {
     protected void drawAt(Rectangle bounds) {
         if (showShadow) {
             Rectangle shadowBounds = new Rectangle(bounds).setY(bounds.y - 0.1f);
-            Pencil.I().addDrawing(new TextureDrawing(
-                buttonShadow, shadowBounds,
+            Pencil.I().addDrawing(new TextureDrawing(buttonShadow,
+                shadowBounds.x, shadowBounds.y, shadowBounds.width, shadowBounds.height,
                 layer, Assets.I().shadowColor()
             ));
         }
-        Pencil.I().addDrawing(new TextureDrawing(
-            currentTexture, bounds,
+        Pencil.I().addDrawing(new TextureDrawing(currentTexture,
+            bounds.x, bounds.y, bounds.width, bounds.height,
             layer
         ));
     }

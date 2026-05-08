@@ -7,7 +7,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -60,11 +59,11 @@ public class FabledText {
             float rotation = swayEffects.get(i).getValue();
 
             Pencil.I().addDrawing(new TextureDrawing(letterShadowTextures.get(i),
-                new Rectangle(x, y - 0.1f, width, height),
+                x, y - 0.1f, width, height,
                 1f, rotation, zIndex, Assets.I().shadowColor()));
 
             Pencil.I().addDrawing(new TextureDrawing(letter,
-                new Rectangle(x, y, width, height), 1f, rotation, zIndex));
+                x, y, width, height, 1f, rotation, zIndex));
         }
     }
 

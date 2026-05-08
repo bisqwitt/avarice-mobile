@@ -179,10 +179,10 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
     public void draw() {
         Pencil.I().addDrawing(new TextureDrawing(bagShadowTexture,
-            new Rectangle(bagBounds.x, bagBounds.y - 0.1f + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height),
+            bagBounds.x, bagBounds.y - 0.1f + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height,
             1f, bagSwayEffect.getValue(), ZIndex.RELIC_BAG, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(bagTexture,
-            new Rectangle(bagBounds.x, bagBounds.y + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height),
+            bagBounds.x, bagBounds.y + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height,
             1f, bagSwayEffect.getValue(), ZIndex.RELIC_BAG
         ));
 
@@ -220,19 +220,19 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
         Pencil.I().addDrawing(new TextureDrawing(
             item.shadowTexture(),
-            new Rectangle(pos.x, pos.y - 0.2f, getTextureWidth(item), getTextureHeight(item)),
+            pos.x, pos.y - 0.2f, getTextureWidth(item), getTextureHeight(item),
             scale, rotation, ZIndex.UNFOLDED_DECK_CARD, Assets.I().shadowColor())
         );
         Pencil.I().addDrawing(new TextureDrawing(
             item.texture(),
-            new Rectangle(pos.x, pos.y, getTextureWidth(item), getTextureHeight(item)),
+            pos.x, pos.y, getTextureWidth(item), getTextureHeight(item),
             scale, rotation, ZIndex.UNFOLDED_DECK_CARD
         ));
 
         if (item instanceof AbstractQuest && ((AbstractQuest) item).isCompleted()) {
             Pencil.I().addDrawing(new TextureDrawing(
                 checkmark,
-                new Rectangle(pos.x + 0.9f, pos.y + 1f, 15 / 15f, 12 / 15f),
+                pos.x + 0.9f, pos.y + 1f, 15 / 15f, 12 / 15f,
                 scale, rotation, ZIndex.UNFOLDED_DECK_CARD
             ));
         }
