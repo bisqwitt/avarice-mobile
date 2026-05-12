@@ -6,10 +6,10 @@ import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.SymbolSpawnChancePack;
 import com.avaricious.components.ButtonBoard;
-import com.avaricious.components.BuyBox;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.NextRoundButton;
+import com.avaricious.components.texts.ShopText;
 import com.avaricious.items.upgrades.cards.CardPack;
 import com.avaricious.items.upgrades.rings.RingPack;
 import com.avaricious.utility.AssetKey;
@@ -39,17 +39,19 @@ public class Shop {
     private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
     private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
     private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
+    private final ShopText shopText = new ShopText(new Vector2(WINDOW_X + 3.5f, currentWindowY + 14.65f),
+        8f, 0.25f, ZIndex.SHOP);
 
     private final Button nextRoundButton;
     private final Button rerollButton;
 
-    private final BuyBox buyBox = new BuyBox();
     private final CreditScore creditScore;
 
-    private ShopItemBar shopItemBar = new ShopItemBar(buyBox.getBounds());
-    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
-    private CardPack cardPack = new CardPack(buyBox.getBounds());
-    private RingPack ringPack = new RingPack(buyBox.getBounds());
+    private ShopItemBar shopItemBar = new ShopItemBar();
+    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack();
+    private CardPack cardPack = new CardPack();
+    private RingPack ringPack = new RingPack();
+    private CardRemover cardRemover = new CardRemover(new Vector2(2f, 4f));
 
     private final Runnable onReturnedFromShop;
 
@@ -90,6 +92,8 @@ public class Shop {
             if (CreditManager.I().enoughCredit(3)) {
                 shopItemBar.load();
                 CreditManager.I().pay(3);
+            } else {
+                CreditManager.I().pulse();
             }
         },
             Assets.I().get(AssetKey.REROLL_BUTTON),
@@ -125,39 +129,24 @@ public class Shop {
             ZIndex.SHOP
         ));
 
-        Pencil.I().addDrawing(new TextureDrawing(
-            shopTxtShadow,
-            WINDOW_X + 3.75f, currentWindowY + 14.65f, 29 / 8f, 13 / 8f,
-            ZIndex.SHOP, Assets.I().shadowColor()
-        ));
-
-        Pencil.I().addDrawing(new TextureDrawing(
-            shopTxt,
-            WINDOW_X + 3.75f, currentWindowY + 14.75f, 29 / 8f, 13 / 8f,
-            ZIndex.SHOP
-        ));
-
-        buyBox.setVisible(shopItemBar.isDragging() || shopItemBar.isSelected()
-            || symbolSpawnChancePack.isDragging() || symbolSpawnChancePack.isSelected()
-            || cardPack.isDragging() || cardPack.isSelected()
-            || ringPack.isDragging() || ringPack.isSelected());
+        shopText.draw(delta);
 
         shopItemBar.draw(delta);
         symbolSpawnChancePack.draw(delta);
         cardPack.draw(delta);
         ringPack.draw(delta);
+        cardRemover.draw(delta);
 
         rerollButton.draw();
         creditScore.draw(delta);
         nextRoundButton.draw();
-        buyBox.draw(delta);
     }
 
     public void show() {
         shopItemBar.load();
-        symbolSpawnChancePack = new SymbolSpawnChancePack(buyBox.getBounds());
-        cardPack = new CardPack(buyBox.getBounds());
-        ringPack = new RingPack(buyBox.getBounds());
+        symbolSpawnChancePack = new SymbolSpawnChancePack();
+        cardPack = new CardPack();
+        ringPack = new RingPack();
 
         currentWindowY = OFFSCREEN_TOP_Y;
         windowVelocityY = 0f;
@@ -210,11 +199,13 @@ public class Shop {
 
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
+            shopText.getStartingPos().y = currentWindowY + 15f;
             shopItemBar.setY(currentWindowY + 11.15f);
             rerollButton.getBounds().setY(currentWindowY + 9.65f);
             symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 6.75f;
             cardPack.getBody().getPos().y = currentWindowY + 6.4f;
             ringPack.getBody().getPos().y = currentWindowY + 6.85f;
+            cardRemover.getBody().getPos().y = currentWindowY + 2.5f;
         }
     }
 
@@ -264,10 +255,16 @@ public class Shop {
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         if (state != State.SHOWN) return;
 
+        if (cardRemover.getRemoveCardWindow().isOpen()) {
+            cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            return;
+        }
+
         shopItemBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         symbolSpawnChancePack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

@@ -26,8 +26,8 @@ public class HealthUi extends Observable<HealthState> {
     private final float hpSizeRatio = 20f;
     private final float armorSizeRatio = 21f;
 
-    private final float healthY = 18.2f;
-    private final float armorY = healthY + 0.75f;
+    private final float healthY = 18.15f;
+    private final float armorY = healthY + 0.85f;
     private final float txtX = 0.75f;
     private final float currentValueX = txtX + 1.25f;
 

@@ -1,11 +1,13 @@
 package com.avaricious.components.roundInfoPanel;
 
-import com.avaricious.CreditScore;
+import com.avaricious.CreditScoreWithText;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.components.RoundText;
+import com.avaricious.components.texts.RoundText;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -18,10 +20,12 @@ public class RoundInfoPanel {
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
-    private final RoundText roundText = new RoundText(new Vector2(2.2f, 16.85f), 12f, 0.1f, ZIndex.PATTERN_DISPLAY);
+    private final RoundText roundText = new RoundText(new Vector2(5.5f, 19f), 20f, 0.1f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, Assets.I().lightColor(), 1,
-        new Rectangle(6.25f, 16.85f, 7 / 12f, 11 / 12f), 0.7f);
-    private final CreditScore creditScore = new CreditScore(new Rectangle(4f, 18.2f, 7 / 19f, 11 / 19f), 0.5f);
+        new Rectangle(7.95f, 19f, 7 / 20f, 11 / 20f), 0.7f);
+    private final CreditScoreWithText creditScore = new CreditScoreWithText(new Vector2(4.75f, 18.15f), 20f, 0.5f);
+
+    private final TextureRegion whitePixel = Assets.I().get(AssetKey.WHITE_PIXEL);
 
     private Vector2 mouseTouchdownLocation = null;
     private float panelYOnMouseTouchdown = -1;
@@ -85,15 +89,12 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
-//        Pencil.I().addDrawing(new TextureDrawing(roundTxtShadow,
-//            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue() - 0.1f, 37 / 11f, 11 / 11f),
-//            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
-//        Pencil.I().addDrawing(new TextureDrawing(roundTxt,
-//            new Rectangle(2.2f, 17f + roundTxtFloatEffect.getValue(), 37 / 11f, 11 / 11f),
-//            1f, roundTxtSwayEffect.getValue(), ZIndex.PATTERN_DISPLAY));
+//        Pencil.I().addDrawing(new TextureDrawing(whitePixel,
+//            0, 17.7f, 15f, 0.05f, ZIndex.PATTERN_DISPLAY));
+
         roundText.draw(delta);
         currentRoundNumber.draw(delta);
-//        creditScore.draw(delta);
+        creditScore.draw(delta);
 
 //        Pencil.I().addDrawing(new TextureDrawing(borderWhite,
 //            new Rectangle(drawBounds.x, drawBounds.y, drawBounds.width, 0.05f),

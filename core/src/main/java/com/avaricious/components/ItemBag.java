@@ -41,7 +41,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
         itemsTxt.setText(Assets.I().getTitleFont(), "Items");
     }
 
-    private final Rectangle bagBounds = new Rectangle(7.05f, 5.3f, 42 / 26f, 48 / 26f);
+    private final Rectangle bagBounds = new Rectangle(7.05f, 5.8f, 42 / 26f, 48 / 26f);
     private final TextureRegion bagTexture = Assets.I().get(AssetKey.BAG);
     private final TextureRegion bagShadowTexture = Assets.I().get(AssetKey.BAG_SHADOW);
     private final TextureRegion checkmark = Assets.I().get(AssetKey.CHECKMARK);

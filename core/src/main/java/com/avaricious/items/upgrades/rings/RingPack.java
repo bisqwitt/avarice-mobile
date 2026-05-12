@@ -24,8 +24,8 @@ public class RingPack extends PackOpening {
 
     private AbstractRing resultRing;
 
-    public RingPack(Rectangle buyBounds) {
-        super(new Rectangle(3.65f, 8.5f, 1.5f, 1.5f), buyBounds);
+    public RingPack() {
+        super(new Rectangle(3.65f, 8.5f, 1.5f, 1.5f));
     }
 
     @Override

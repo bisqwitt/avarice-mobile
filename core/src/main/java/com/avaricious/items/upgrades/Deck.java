@@ -72,4 +72,8 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
         deck.clear();
         cardsInDeck.forEach(this::addCardToDeck);
     }
+
+    public List<AbstractCard> getDeck() {
+        return deck;
+    }
 }

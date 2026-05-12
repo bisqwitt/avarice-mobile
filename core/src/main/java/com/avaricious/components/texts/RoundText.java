@@ -1,4 +1,4 @@
-package com.avaricious.components;
+package com.avaricious.components.texts;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;

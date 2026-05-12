@@ -45,7 +45,7 @@ public class HandUi {
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = 2.65f;
-    private final float CARD_SIZE_DIVISOR = 90;
+    private final float CARD_SIZE_DIVISOR = 80;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);

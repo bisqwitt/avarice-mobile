@@ -4,7 +4,6 @@ import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
@@ -32,7 +31,7 @@ public class Pencil {
     private final List<Drawing> drawings = new ArrayList<>();
 
     private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
-    private final TextureRegion blackTexture = Assets.I().get(AssetKey.JOKER_CARD_SHADOW);
+    private final TextureRegion charcoal = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
 
     private Rectangle scissors;
     private Runnable beforeDrawing;
@@ -81,17 +80,13 @@ public class Pencil {
     public void drawDarkenWindow() {
         if (dimAlpha <= 0.01f) return;
 
-        Color base = Assets.I().shadowColor();
-        Color animatedColor = new Color(base.r, base.g, base.b, dimAlpha);
-
         Pencil.I().addDrawing(new TextureDrawing(
-            blackTexture,
+            charcoal,
             -1f, -1f,
             ScreenManager.getViewport().getWorldWidth() + 2,
             ScreenManager.getViewport().getWorldHeight() + 2
             ,
-            dimLayer,
-            animatedColor
+            dimLayer
         ));
     }
 

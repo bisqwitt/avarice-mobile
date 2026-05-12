@@ -130,7 +130,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-//                shop.show();
+                shop.show();
             }
         }, 1);
     }
@@ -181,13 +181,16 @@ public class SlotScreen extends ScreenAdapter {
         vfxManager.beginInputCapture();
 
 //        feltBackground.render(delta);
-        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
+//        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
 
 //        background.render(batch, delta);
 
         batch.begin();
-        batch.draw(feltPixel, -3, -3, 15, 26);
-        batch.draw(charcoalPixel, -3f, 18f, 15f, 6f);
+//        batch.draw(feltPixel, -3, -3, 15, 26);
+        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
+        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
+        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
+        batch.draw(feltPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
         Pencil.I().draw(batch);
         batch.end();
 

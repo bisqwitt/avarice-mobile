@@ -11,8 +11,8 @@ public class QuestShopItem extends AbstractShopItem {
 
     private final float ITEM_Y_OFFSET = 0.45f;
 
-    public QuestShopItem(Rectangle buyBounds, Vector2 initialPos) {
-        super(buyBounds, initialPos);
+    public QuestShopItem(Vector2 initialPos) {
+        super(initialPos);
     }
 
     @Override

@@ -30,11 +30,11 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final ScoreProgressBar scoreProgressBar = ScoreProgressBar.I();
 
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
-    private final float multiplySymbolSize = 11f / 25f;
+    private final float multiplySymbolSize = 11f / 23f;
 
-    private final float DIGIT_Y = 15.65f;
-    private final float DIGIT_WIDTH = 7 / 13.5f;
-    private final float DIGIT_HEIGHT = 11 / 13.5f;
+    private final float DIGIT_Y = 16.25f;
+    private final float DIGIT_WIDTH = 7 / 12f;
+    private final float DIGIT_HEIGHT = 11 / 12f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,

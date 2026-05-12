@@ -11,8 +11,8 @@ public class RingShopItem extends AbstractShopItem {
 
     private final float ITEM_Y_OFFSET = 0.4f;
 
-    public RingShopItem(Rectangle buyBounds, Vector2 initialPos) {
-        super(buyBounds, initialPos);
+    public RingShopItem(Vector2 initialPos) {
+        super(initialPos);
     }
 
     @Override

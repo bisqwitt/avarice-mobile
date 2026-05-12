@@ -1,5 +1,6 @@
 package com.avaricious.components;
 
+import com.avaricious.components.texts.FabledText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;

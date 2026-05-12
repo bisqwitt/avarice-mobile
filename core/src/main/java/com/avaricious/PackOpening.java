@@ -14,6 +14,7 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -26,8 +27,6 @@ public abstract class PackOpening {
     private final Rectangle bounds;
     private DragableBody body;
     private final CreditNumber price;
-
-    private final Rectangle buyBounds;
 
     protected int currentTextureIndex = 0;
     private float lastTextureChange = 0f;
@@ -71,17 +70,20 @@ public abstract class PackOpening {
     private final Vector2 mouseTouchdownLocation = new Vector2();
     protected TooltipPopup tooltipPopup = null;
 
+    private final Button buyButton = new Button(this::buy,
+        Assets.I().get(AssetKey.BUY_BUTTON),
+        Assets.I().get(AssetKey.BUY_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.BUY_BUTTON),
+        new Rectangle(0, 0, 79 / 30f, 25 / 30f),
+        Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
     private final Button sellButton = getSellButton();
-
     private final Button claimButton = getClaimButton();
 
-    public PackOpening(Rectangle bounds, Rectangle buyBounds) {
+    public PackOpening(Rectangle bounds) {
         this.bounds = bounds;
         body = new DragableBody(bounds);
 
         price = new CreditNumber(getPackDescription().price(), new Rectangle(bounds.x + 0.5f, bounds.y, 7 / 20f, 11 / 20f), 0.4f);
-
-        this.buyBounds = buyBounds;
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
@@ -95,6 +97,11 @@ public abstract class PackOpening {
         }
 
         if (bought) return;
+
+        if ((selected || dragging) && buyButton.getBounds().contains(mouse)) {
+            buyButton.handleInput(mouse, touching, wasTouching);
+            return;
+        }
 
         if (touching && !wasTouching) {
             if (body.getBounds().contains(mouse)) {
@@ -113,19 +120,14 @@ public abstract class PackOpening {
         }
 
         if (!touching && wasTouching && dragging) {
-            if (buyBounds.contains(body.getCardCenter()) && CreditManager.I().enoughCredit(getPackDescription().price())) {
-                buy();
+            body.endDrag(0);
+            boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
+            if (isClick) {
+                if (selected) deselect(true);
+                else selected = true;
             } else {
-                if (buyBounds.contains(body.getCardCenter())) CreditManager.I().pulse();
-                body.endDrag(0);
-                boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
-                if (isClick) {
-                    if (selected) deselect(true);
-                    else selected = true;
-                } else {
-                    selected = true;
-                    deselect(true);
-                }
+                selected = true;
+                deselect(true);
             }
             dragging = false;
         }
@@ -195,6 +197,13 @@ public abstract class PackOpening {
             ));
         }
 
+        if ((selected || dragging) && !bought) {
+            Vector2 renderPos = body.getRenderPos(new Vector2());
+            buyButton.getBounds().x = renderPos.x - 0.5f;
+            buyButton.getBounds().y = renderPos.y - 1.5f;
+            buyButton.draw();
+        }
+
         if (flashActive) {
             drawCoreGlow(layer);
             drawScreenFlash(layer);
@@ -232,7 +241,7 @@ public abstract class PackOpening {
                 drawPos.x - beamWidth / 2f, drawPos.y, beamWidth, length,
                 scale, angle, layer,
                 new Color(color.r, color.g, color.b, a)
-            ).usePosAsOrigin());
+            ));
         }
     }
 

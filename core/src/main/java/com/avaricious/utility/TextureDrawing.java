@@ -3,6 +3,7 @@ package com.avaricious.utility;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 public class TextureDrawing implements Drawing {
 
@@ -18,7 +19,7 @@ public class TextureDrawing implements Drawing {
     private float scale;
     private float rotation;
 
-    private boolean usePosAsOrigin = false;
+    private Vector2 origin;
 
     private Runnable beforeDrawing;
     private Runnable afterDrawing;
@@ -81,7 +82,7 @@ public class TextureDrawing implements Drawing {
         if (additionalValues) {
             batch.draw(textureRegion,
                 x, y,
-                w / 2f, usePosAsOrigin ? 0 : h / 2f,
+                origin == null ? w / 2f : origin.x, origin == null ? h / 2f : origin.y,
                 w, h,
                 scale, scale,
                 rotation);
@@ -111,8 +112,8 @@ public class TextureDrawing implements Drawing {
         return this;
     }
 
-    public TextureDrawing usePosAsOrigin() {
-        usePosAsOrigin = true;
+    public TextureDrawing setOrigin(Vector2 origin) {
+        this.origin = origin;
         return this;
     }
 }

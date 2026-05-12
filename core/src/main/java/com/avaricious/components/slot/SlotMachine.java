@@ -50,7 +50,7 @@ public class SlotMachine {
     public static final float spacingY = 0.15f;
 
     public static final float originX = 0.25f;
-    public static final float originY = 8f;
+    public static final float originY = 8.5f;
 
     public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.325f, 8.95f, 6.425f);
 
@@ -104,10 +104,7 @@ public class SlotMachine {
             .forEach(body -> body.idleSwayEffect.setStrength(2.5f, 0.8f));
     }
 
-    // --- drawing ---
-    public void draw(Main app, float delta) {
-        SpriteBatch batch = app.getBatch();
-        // update reel motion
+    private void update(float delta) {
         for (int c = 0; c < cols; c++) {
             reels.get(c).update(delta);
         }
@@ -120,6 +117,12 @@ public class SlotMachine {
             float speed = 10f; // higher = faster convergence
             alpha = MathUtils.lerp(alpha, desiredAlpha, speed * delta);
         }
+    }
+
+    public void draw(Main app, float delta) {
+        SpriteBatch batch = app.getBatch();
+        // update reel motion
+        update(delta);
 
         Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
             0, originY + 6.13f, 9, 0.05f, ZIndex.SLOT_MACHINE));
@@ -134,8 +137,8 @@ public class SlotMachine {
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
-        area.setWidth(area.width + 0.3f);
         area.setY(area.y - 0.35f);
+        area.setWidth(area.width + 0.3f);
         area.setHeight(area.height + 0.25f);
 
         Camera cam = app.getViewport().getCamera();
@@ -196,8 +199,6 @@ public class SlotMachine {
             || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
             alpha = 0.5f;
 
-        // NEW: rotate around center using current wobble angle
-//        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].wobbleAngleDeg() : 0f;
         float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 

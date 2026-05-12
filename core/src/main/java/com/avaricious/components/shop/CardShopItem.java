@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class CardShopItem extends AbstractShopItem {
 
-    public CardShopItem(Rectangle buyBounds, Vector2 initialPos) {
-        super(buyBounds, initialPos);
+    public CardShopItem(Vector2 initialPos) {
+        super(initialPos);
     }
 
     @Override

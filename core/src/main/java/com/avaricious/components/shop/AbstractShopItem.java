@@ -2,23 +2,24 @@ package com.avaricious.components.shop;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditNumber;
+import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.BoughtPopup;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
 import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 public abstract class AbstractShopItem {
-
-    private final Rectangle buyBounds;
 
     protected AbstractUpgrade upgrade;
     protected CreditNumber priceTag;
@@ -31,14 +32,25 @@ public abstract class AbstractShopItem {
     private final Vector2 mouseTouchdownLocation = new Vector2();
     private TooltipPopup tooltipPopup = null;
 
-    public AbstractShopItem(Rectangle buyBounds, Vector2 initialPos) {
-        this.buyBounds = buyBounds;
+    private final Button buyButton = new Button(this::buyUpgrade,
+        Assets.I().get(AssetKey.BUY_BUTTON),
+        Assets.I().get(AssetKey.BUY_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.BUY_BUTTON),
+        new Rectangle(0, 0, 79 / 30f, 25 / 30f),
+        Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
+
+    public AbstractShopItem(Vector2 initialPos) {
         load(initialPos);
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
         if (dead) return;
         upgrade.getBody().update(delta);
+
+        if ((selected || dragging) && buyButton.getBounds().contains(mouse)) {
+            buyButton.handleInput(mouse, touching, wasTouching);
+            return;
+        }
 
         if (touching && !wasTouching) {
             if (upgrade.getBody().getBounds().contains(mouse)) {
@@ -57,25 +69,19 @@ public abstract class AbstractShopItem {
         }
 
         if (!touching && wasTouching && dragging) {
-            if (buyBounds.contains(upgrade.getBody().getCardCenter()) && CreditManager.I().enoughCredit(upgrade.price())) {
-                buyUpgrade();
+            upgrade.getBody().endDrag(0);
+            boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
+            if (isClick) {
+                if (selected) deselectCard(true);
+                else selected = true;
             } else {
-                if (buyBounds.contains(upgrade.getBody().getCardCenter()))
-                    CreditManager.I().pulse();
-                upgrade.getBody().endDrag(0);
-                boolean isClick = mouseTouchdownLocation.dst(mouse) <= 0.2f * 0.2f;
-                if (isClick) {
-                    if (selected) deselectCard(true);
-                    else selected = true;
-                } else {
-                    selected = true;
-                    deselectCard(true);
-                }
+                selected = true;
+                deselectCard(true);
             }
             dragging = false;
         }
 
-        if (dragging || selected) {
+        if (selected) {
             Vector2 renderPos = upgrade.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
                 new Vector2(renderPos.x - 2f, renderPos.y + upgrade.getTooltipYOffset()), true
@@ -113,9 +119,20 @@ public abstract class AbstractShopItem {
             priceTag.getFirstDigitBounds().y = position.y + getPriceTagYOffset();
             priceTag.draw(delta, 1f, rotation);
         }
+
+        if (selected || dragging) {
+            Vector2 renderPos = body.getRenderPos(new Vector2());
+            buyButton.getBounds().x = renderPos.x - 0.5f;
+            buyButton.getBounds().y = renderPos.y - 1.5f;
+            buyButton.draw();
+        }
     }
 
     private void buyUpgrade() {
+        if (!CreditManager.I().enoughCredit(upgrade.price())) {
+            CreditManager.I().pulse();
+            return;
+        }
         acquireItem();
         CreditManager.I().pay(upgrade.price());
         PopupManager.I().killTooltip(tooltipPopup);
