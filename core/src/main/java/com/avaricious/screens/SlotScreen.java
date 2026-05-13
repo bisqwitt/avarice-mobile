@@ -130,7 +130,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-                shop.show();
+//                shop.show();
             }
         }, 1);
     }
@@ -163,7 +163,7 @@ public class SlotScreen extends ScreenAdapter {
 //        xpBar.draw(batch);      // 5
 //        jokerBar.draw(batch, delta);
         deckUi.draw();
-        ItemBag.I().draw();
+        ItemBag.I().draw(delta);
 
         ParticleManager.I().draw(batch, delta);
         slotMachine.draw(app, delta);   // 10
@@ -190,7 +190,7 @@ public class SlotScreen extends ScreenAdapter {
         batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
         batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
         batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
-        batch.draw(feltPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
+        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
         Pencil.I().draw(batch);
         batch.end();
 

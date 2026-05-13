@@ -23,16 +23,13 @@ public class ScoreDisplay extends Observable<ScoreState> {
         return instance == null ? instance = new ScoreDisplay() : instance;
     }
 
-    private ScoreDisplay() {
-        clearPotentialScore();
-    }
-
     private final ScoreProgressBar scoreProgressBar = ScoreProgressBar.I();
 
+    private final TextureRegion scoreDisplaySlot = Assets.I().get(AssetKey.SCORE_DISPLAY_SLOT);
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final float multiplySymbolSize = 11f / 23f;
 
-    private final float DIGIT_Y = 16.25f;
+    private final float DIGIT_Y = 16.4f;
     private final float DIGIT_WIDTH = 7 / 12f;
     private final float DIGIT_HEIGHT = 11 / 12f;
     private final float DIGIT_OFFSET = 0.7f;
@@ -48,6 +45,14 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     float multiplySymbol1X = 0f;
     float multiplySymbol2X = 0f;
+
+    private ScoreDisplay() {
+        clearPotentialScore();
+
+        pointsNumber.getScaleEffect().setAllowed(false);
+        multiNumber.getScaleEffect().setAllowed(false);
+        streakNumber.getScaleEffect().setAllowed(false);
+    }
 
     public void draw(float delta, float unfoldAmount) {
         float t = MathUtils.clamp(unfoldAmount, 0f, 1f);
@@ -66,6 +71,12 @@ public class ScoreDisplay extends Observable<ScoreState> {
         pointsNumber.getFirstDigitBounds().y = digitY;
         multiNumber.getFirstDigitBounds().y = digitY;
         streakNumber.getFirstDigitBounds().y = digitY;
+
+        Pencil.I().addDrawing(new TextureDrawing(
+            scoreDisplaySlot,
+            0.25f, 14.9f, 8.5f, 2.8f,
+            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()
+        ));
 
         pointsNumber.draw(delta);
         Pencil.I().addDrawing(new TextureDrawing(

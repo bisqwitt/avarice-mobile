@@ -89,6 +89,11 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
         removeCardFromHand(getRandomCard());
     }
 
+    public void deleteCard(AbstractCard card) {
+        hand.remove(card);
+        notifyChanged(snapshot());
+    }
+
     public void drawCards(int amount) {
         for (int i = 0; i < amount; i++) {
             Timer.schedule(new Timer.Task() {

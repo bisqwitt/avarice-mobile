@@ -36,4 +36,8 @@ public class DevTools {
         return active && false;
     }
 
+    public static boolean showMouseLocation() {
+        return active && true;
+    }
+
 }

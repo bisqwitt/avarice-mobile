@@ -27,7 +27,7 @@ public class CardPack extends PackOpening {
     private AbstractCard resultCard;
 
     public CardPack() {
-        super(new Rectangle(5.55f, 8.1f, AbstractCard.WIDTH / 80f, AbstractCard.HEIGHT / 80f));
+        super(new Rectangle(1.5f, 8.1f, AbstractCard.WIDTH / 80f, AbstractCard.HEIGHT / 80f));
     }
 
     @Override

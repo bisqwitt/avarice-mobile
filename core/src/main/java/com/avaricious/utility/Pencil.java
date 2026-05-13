@@ -1,14 +1,17 @@
 package com.avaricious.utility;
 
+import com.avaricious.DevTools;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ public class Pencil {
     private float targetDimAlpha = 0f;
     private final float dimSpeed = 15f; // higher = faster fade
 
+    private final GlyphLayout mouseLocationTxt = new GlyphLayout();
+
     public void draw(SpriteBatch batch) {
         updateDarkenAnimation(Gdx.graphics.getDeltaTime());
 
@@ -51,6 +56,14 @@ public class Pencil {
             drawing.draw(batch);
         }
         drawings.clear();
+
+        if (DevTools.showMouseLocation()) {
+            Vector2 mouseLocation = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+            ScreenManager.getViewport().unproject(mouseLocation);
+            mouseLocationTxt.setText(Assets.I().getSmallFont(), mouseLocation.x + "/" + mouseLocation.y);
+            new FontDrawing(Assets.I().getSmallFont(), mouseLocationTxt, new Vector2(mouseLocation.x * 100, mouseLocation.y * 100), ZIndex.PACK_OPENING)
+                .draw(batch);
+        }
     }
 
     private void updateDarkenAnimation(float delta) {

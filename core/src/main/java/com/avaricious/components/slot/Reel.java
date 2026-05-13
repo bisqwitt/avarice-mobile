@@ -29,7 +29,7 @@ public class Reel {
     private Phase phase = Phase.IDLE;
 
     // Tuning (Balatro-ish feel)
-    private float cruiseVel = 14f;         // symbols/sec
+    private float cruiseVel = 5f;         // symbols/sec
     private float accel = 70f;             // symbols/sec^2
     private float stopDecel = 90f;         // symbols/sec^2
     private float settleSpring = 180f;     // snap strength

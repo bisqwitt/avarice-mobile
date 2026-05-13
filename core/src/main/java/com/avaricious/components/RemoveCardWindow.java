@@ -1,5 +1,6 @@
 package com.avaricious.components;
 
+import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
@@ -7,19 +8,23 @@ import com.avaricious.components.texts.PermanentlyRemoveACardText;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
+import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class RemoveCardWindow {
 
     private final PermanentlyRemoveACardText title = new PermanentlyRemoveACardText();
-    private final List<AbstractCard> cards = new ArrayList<>();
+    private final List<RemovableCard> cards = new ArrayList<>();
 
     private boolean open = false;
 
@@ -29,14 +34,26 @@ public class RemoveCardWindow {
     private final Vector2 mouseTouchdownLocation = new Vector2();
     private TooltipPopup tooltipPopup;
 
+    private final Button removeButton = new Button(this::onRemoveButtonPressed,
+        Assets.I().get(AssetKey.REMOVE_BUTTON),
+        Assets.I().get(AssetKey.REMOVE_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.REMOVE_BUTTON),
+        new Rectangle(0, 0, 79 / 30f, 25 / 30f),
+        Input.Keys.ENTER, ZIndex.PACK_OPENING);
+
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
         if (!open) return;
 
+        if ((selectedCard != null || touchingCard != null) && removeButton.getBounds().contains(mouse)) {
+            removeButton.handleInput(mouse, touching, wasTouching);
+            return;
+        }
+
         if (touching && !wasTouching) {
             mouseTouchdownLocation.set(mouse.x, mouse.y);
-            for (AbstractCard card : cards) {
-                if (card.getBody().getBounds().contains(mouse)) {
-                    onCardTouchdown(card, mouse);
+            for (RemovableCard card : cards) {
+                if (card.card.getBody().getBounds().contains(mouse)) {
+                    onCardTouchdown(card.card, mouse);
                     return;
                 }
             }
@@ -67,7 +84,7 @@ public class RemoveCardWindow {
         card.getBody().beginDrag(mouse.x, mouse.y, 0);
 
         if (selectedCard == null)
-            tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
+            tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()), ZIndex.PACK_OPENING);
     }
 
     private void onCardTouching(AbstractCard card, Vector2 mouse) {
@@ -88,34 +105,38 @@ public class RemoveCardWindow {
         touchingCard = null;
     }
 
-    private void update(float delta) {
-
-    }
-
     public void draw(float delta) {
         if (!open) return;
 
 //        Pencil.I().addDrawing(new FontDrawing(Assets.I().getTitleFont(), ));
         title.draw(delta);
         cards.forEach(this::drawCard);
+
+        if (selectedCard != null || touchingCard != null) {
+            AbstractCard card = selectedCard == null ? touchingCard : selectedCard;
+            Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
+            removeButton.getBounds().x = renderPos.x - 0.5f;
+            removeButton.getBounds().y = renderPos.y - 1.5f;
+            removeButton.draw();
+        }
     }
 
-    private void drawCard(AbstractCard card) {
-        DragableBody body = card.getBody();
+    private void drawCard(RemovableCard card) {
+        DragableBody body = card.card.getBody();
         Vector2 pos = body.getRenderPos(new Vector2());
         float scale = body.getScale();
         float rotation = body.getRotation();
         float width = AbstractCard.WIDTH / 90f;
         float height = AbstractCard.HEIGHT / 90f;
-        ZIndex zIndex = card == touchingCard || card == selectedCard ? ZIndex.PACK_OPENING_SELECTED : ZIndex.PACK_OPENING;
+        ZIndex zIndex = card.card == touchingCard || card.card == selectedCard ? ZIndex.PACK_OPENING_SELECTED : ZIndex.PACK_OPENING;
 
         Pencil.I().addDrawing(new TextureDrawing(
-            card.shadowTexture(),
+            card.card.shadowTexture(),
             pos.x, pos.y - 0.2f, width, height,
             scale, rotation, zIndex, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
-            card.texture(),
+            card.card.texture(),
             pos.x, pos.y, width, height,
             scale, rotation, zIndex
         ));
@@ -136,8 +157,11 @@ public class RemoveCardWindow {
         open = true;
 
         cards.clear();
-        cards.addAll(Hand.I().getHand());
-        cards.addAll(Deck.I().getDeck());
+
+        Hand.I().getHand().forEach(card -> cards.add(
+            new RemovableCard(card, CardSource.HAND, card.getBody().getPos())));
+        Deck.I().getDeck().forEach(card -> cards.add(
+            new RemovableCard(card, CardSource.DECK, card.getBody().getPos())));
 
         List<Vector2> positions = new ArrayList<>();
         for (int col = 5; col > 0; col--) {
@@ -146,14 +170,51 @@ public class RemoveCardWindow {
             }
         }
 
-        for (int i = 0; i < cards.size(); i++) {
-            cards.get(i).getBody().getPos().set(positions.get(i));
+        List<RemovableCard> sortedCards = new ArrayList<>(cards);
+        sortedCards.sort(Comparator.comparing(card -> card.card.getClass().getSimpleName()));
+
+        int i = 0;
+        for (RemovableCard card : sortedCards) {
+            card.card.getBody().getPos().set(positions.get(i));
+            i++;
         }
 
         Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING);
     }
 
+    private void onRemoveButtonPressed() {
+        if (cards.stream()
+            .filter(removableCard -> removableCard.card == selectedCard)
+            .findAny().get().source == CardSource.HAND) {
+            Hand.I().deleteCard(selectedCard);
+        } else {
+            Deck.I().removeCard(selectedCard);
+        }
+        
+        cards.forEach(removableCard -> removableCard.card.getBody().getPos().set(removableCard.position));
+
+        deselectCard(true);
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING);
+        open = false;
+    }
+
     public boolean isOpen() {
         return open;
+    }
+
+    private static class RemovableCard {
+        public AbstractCard card;
+        public CardSource source;
+        public Vector2 position;
+
+        public RemovableCard(AbstractCard card, CardSource source, Vector2 position) {
+            this.card = card;
+            this.source = source;
+            this.position = position;
+        }
+    }
+
+    private enum CardSource {
+        HAND, DECK;
     }
 }

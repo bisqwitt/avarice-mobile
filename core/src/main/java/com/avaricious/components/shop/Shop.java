@@ -36,11 +36,11 @@ public class Shop {
 
     private float currentWindowY = OFFSCREEN_TOP_Y;
 
-    private final TextureRegion window = Assets.I().get(AssetKey.SHOP_WINDOW);
-    private final TextureRegion shopTxt = Assets.I().get(AssetKey.SHOP_TXT);
-    private final TextureRegion shopTxtShadow = Assets.I().get(AssetKey.SHOP_TXT_SHADOW);
     private final ShopText shopText = new ShopText(new Vector2(WINDOW_X + 3.5f, currentWindowY + 14.65f),
         8f, 0.25f, ZIndex.SHOP);
+    private final TextureRegion window = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
+    private final TextureRegion shopSlot = Assets.I().get(AssetKey.SHOP_SLOT);
+    private final TextureRegion deckEditShopSlot = Assets.I().get(AssetKey.DECK_EDIT_SHOP_SLOT);
 
     private final Button nextRoundButton;
     private final Button rerollButton;
@@ -84,7 +84,7 @@ public class Shop {
         this.onReturnedFromShop = onReturnedFromShop;
 
         creditScore = new CreditScore(
-            new Rectangle(0.5f, baseCreditScoreY, 7 / 12f, 11 / 12f),
+            new Rectangle(0.75f, baseCreditScoreY, 7 / 12f, 11 / 12f),
             0.9f
         );
 
@@ -129,6 +129,22 @@ public class Shop {
             ZIndex.SHOP
         ));
 
+        Pencil.I().addDrawing(new TextureDrawing(
+            shopSlot,
+            WINDOW_X + 1.75f, currentWindowY + 10.25f, 110 / 15f, 60 / 15f,
+            ZIndex.SHOP, Assets.I().shadowColor()
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            shopSlot,
+            WINDOW_X + 1.75f, currentWindowY + 5.75f, 110 / 15f, 60 / 15f,
+            ZIndex.SHOP, Assets.I().shadowColor()
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
+            deckEditShopSlot,
+            WINDOW_X + 2.45f, currentWindowY + 1.2f, 90 / 15f, 60 / 15f,
+            ZIndex.SHOP, Assets.I().shadowColor()
+        ));
+
         shopText.draw(delta);
 
         shopItemBar.draw(delta);
@@ -137,7 +153,7 @@ public class Shop {
         ringPack.draw(delta);
         cardRemover.draw(delta);
 
-        rerollButton.draw();
+//        rerollButton.draw();
         creditScore.draw(delta);
         nextRoundButton.draw();
     }
@@ -200,12 +216,12 @@ public class Shop {
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
             shopText.getStartingPos().y = currentWindowY + 15f;
-            shopItemBar.setY(currentWindowY + 11.15f);
-            rerollButton.getBounds().setY(currentWindowY + 9.65f);
-            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 6.75f;
-            cardPack.getBody().getPos().y = currentWindowY + 6.4f;
-            ringPack.getBody().getPos().y = currentWindowY + 6.85f;
-            cardRemover.getBody().getPos().y = currentWindowY + 2.5f;
+            shopItemBar.setY(currentWindowY + 11.55f);
+            rerollButton.getBounds().setY(currentWindowY + 10.05f);
+            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 7.35f;
+            cardPack.getBody().getPos().y = currentWindowY + 7f;
+            ringPack.getBody().getPos().y = currentWindowY + 7.45f;
+            cardRemover.getBody().getPos().y = currentWindowY + 2.45f;
         }
     }
 

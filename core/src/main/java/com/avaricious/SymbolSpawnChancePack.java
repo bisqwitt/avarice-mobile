@@ -26,7 +26,7 @@ public class SymbolSpawnChancePack extends PackOpening {
     private Symbol result;
 
     public SymbolSpawnChancePack() {
-        super(new Rectangle(1.6f, 9.25f, 1.7f, 1.7f));
+        super(new Rectangle(5.65f, 9.25f, 1.7f, 1.7f));
     }
 
     @Override

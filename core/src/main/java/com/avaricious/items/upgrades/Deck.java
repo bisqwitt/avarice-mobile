@@ -63,6 +63,11 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
         return card;
     }
 
+    public void removeCard(AbstractCard card) {
+        deck.remove(card);
+        notifyChanged(snapshot());
+    }
+
     @Override
     protected List<? extends AbstractCard> snapshot() {
         return Collections.unmodifiableList(new ArrayList<>(deck));

@@ -26,6 +26,7 @@ public class CardRemover {
     private final RemoveCardWindow removeCardWindow = new RemoveCardWindow();
 
     private final TextureRegion texture = Assets.I().get(AssetKey.REMOVE_CARD);
+    private final TextureRegion shadowTexture = Assets.I().get(AssetKey.REMOVE_CARD_SHADOW);
     private final AbstractUpgrade upgrade = new AbstractUpgrade() {
         @Override
         public String title() {
@@ -99,12 +100,13 @@ public class CardRemover {
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
-        body.update(delta);
-
         if (removeCardWindow.isOpen()) {
             removeCardWindow.handleInput(mouse, touching, wasTouching);
             return;
         }
+
+        if (bought) return;
+        body.update(delta);
 
         if ((selected || dragging) && buyButton.getBounds().contains(mouse)) {
             buyButton.handleInput(mouse, touching, wasTouching);
@@ -149,6 +151,9 @@ public class CardRemover {
     }
 
     public void draw(float delta) {
+        removeCardWindow.draw(delta);
+        if (bought) return;
+
         Rectangle bounds = body.getBounds();
         Vector2 pos = body.getRenderPos(new Vector2());
         float alpha = body.getAlpha();
@@ -159,6 +164,11 @@ public class CardRemover {
         Color shadowColor = Assets.I().shadowColor();
         shadowColor.a = Math.min(shadowColor.a, alpha);
         Pencil.I().addDrawing(new TextureDrawing(
+            shadowTexture,
+            pos.x, pos.y - 0.2f, bounds.width, bounds.height,
+            scale, rotation, zIndex, shadowColor
+        ));
+        Pencil.I().addDrawing(new TextureDrawing(
             texture,
             pos.x, pos.y, bounds.width, bounds.height,
             scale, rotation, zIndex, new Color(1f, 1f, 1f, alpha)
@@ -167,7 +177,7 @@ public class CardRemover {
         if (!dragging && !selected) {
             priceTag.setZIndex(zIndex);
             priceTag.getFirstDigitBounds().x = pos.x + 0.75f;
-            priceTag.getFirstDigitBounds().y = pos.y - 0.75f;
+            priceTag.getFirstDigitBounds().y = pos.y - 1f;
             priceTag.draw(delta, 1f, rotation);
         }
 
@@ -176,8 +186,6 @@ public class CardRemover {
             buyButton.getBounds().y = pos.y - 1.5f;
             buyButton.draw();
         }
-
-        removeCardWindow.draw(delta);
     }
 
     private void deselect(boolean killTooltip) {

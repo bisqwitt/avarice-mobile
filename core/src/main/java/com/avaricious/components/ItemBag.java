@@ -4,6 +4,7 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
+import com.avaricious.components.texts.ItemsText;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
@@ -11,13 +12,11 @@ import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -38,7 +37,6 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
     private ItemBag() {
         notifyChanged(snapshot());
-        itemsTxt.setText(Assets.I().getTitleFont(), "Items");
     }
 
     private final Rectangle bagBounds = new Rectangle(7.05f, 5.8f, 42 / 26f, 48 / 26f);
@@ -54,7 +52,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
     private AbstractItem selectedItem = null;
     private TooltipPopup tooltipPopup = null;
 
-    private final GlyphLayout itemsTxt = new GlyphLayout();
+    private final ItemsText itemsText = new ItemsText(new Vector2(3.25f, 17f), 10f, 0.15f, ZIndex.UNFOLDED_DECK_CARD);
     private final Button claimButton = new Button(() -> {
         AbstractQuest quest = (AbstractQuest) selectedItem;
         quest.claim();
@@ -177,7 +175,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
         }
     }
 
-    public void draw() {
+    public void draw(float delta) {
         Pencil.I().addDrawing(new TextureDrawing(bagShadowTexture,
             bagBounds.x, bagBounds.y - 0.1f + bagFloatEffect.getValue(), bagBounds.width, bagBounds.height,
             1f, bagSwayEffect.getValue(), ZIndex.RELIC_BAG, Assets.I().shadowColor()));
@@ -187,9 +185,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
         ));
 
         if (showingItems) {
-            Pencil.I().addDrawing(new FontDrawing(Assets.I().getTitleFont(), itemsTxt,
-                new Vector2(3.25f * 100, 17f * 100), ZIndex.UNFOLDED_DECK_CARD));
-
+            itemsText.draw(delta);
             for (AbstractItem item : items) {
                 drawItem(item);
             }

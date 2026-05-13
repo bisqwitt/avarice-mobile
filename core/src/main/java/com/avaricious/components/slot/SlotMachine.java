@@ -194,6 +194,15 @@ public class SlotMachine {
             adjY += body.getIdleFloatYOffset();
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
+
+//        if (adjY > 13.55f) {
+//            float t = 1f - ((adjY - 13.55f) / 0.5f);
+//            alpha *= Math.max(0f, Math.min(1f, t));
+//        } else if (adjY < 8.45f) {
+//            float t = 1f - ((8.45f - adjY) / 0.5f);
+//            alpha *= Math.max(0f, Math.min(1f, t));
+//        }
+
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
             || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
             || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())

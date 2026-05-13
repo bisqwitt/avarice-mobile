@@ -330,6 +330,7 @@ public enum AssetKey {
     BUY_BUTTON("buy-button"),
     BUY_BUTTON_PRESSED("buy-button-pressed"),
     REMOVE_CARD("remove-card"),
+    REMOVE_CARD_SHADOW("remove-card-shadow"),
     S_BIG("s-big"),
     S_BIG_SHADOW("s-big-shadow"),
     H("h"),
@@ -343,7 +344,17 @@ public enum AssetKey {
     S("s"),
     S_SHADOW("s-shadow"),
     Y("y"),
-    Y_SHADOW("y-shadow");
+    Y_SHADOW("y-shadow"),
+    REMOVE_BUTTON("remove-button"),
+    REMOVE_BUTTON_PRESSED("remove-button-pressed"),
+    BLACK_PIXEL("black-pixel"),
+    SHOP_SLOT("shop-slot"),
+    DECK_EDIT_SHOP_SLOT("deckedit-shop-slot"),
+    SCORE_DISPLAY_SLOT("ScoreDisplaySlot"),
+    I_BIG("i-big"),
+    I_BIG_SHADOW("i-big-shadow"),
+    K("k"),
+    K_SHADOW("k-shadow");
 
     private final String path;
 

@@ -116,7 +116,7 @@ public abstract class AbstractShopItem {
 
         if (!dragging && !selected && !bought) {
             priceTag.setZIndex(zIndex);
-            priceTag.getFirstDigitBounds().y = position.y + getPriceTagYOffset();
+            priceTag.getFirstDigitBounds().y = position.y - 1f;
             priceTag.draw(delta, 1f, rotation);
         }
 
