@@ -11,10 +11,10 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
-import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
@@ -124,16 +124,16 @@ public class SlotMachine {
         // update reel motion
         update(delta);
 
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            0, originY + 6.13f, 9, 0.05f, ZIndex.SLOT_MACHINE));
-        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-            0, originY - 0.4f, 9, 0.05f, ZIndex.SLOT_MACHINE));
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            0, originY + 6.13f, 9, 0.05f, ZIndex.SLOT_MACHINE));
+//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
+//            0, originY - 0.4f, 9, 0.05f, ZIndex.SLOT_MACHINE));
 
-        if (RoundsManager.I().isBossRound()) {
-            bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
-            Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), bossDescription,
-                new Vector2(0.5f * 100, 14.5f * 100), ZIndex.SLOT_MACHINE));
-        }
+//        if (RoundsManager.I().isBossRound()) {
+//            bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
+//            Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), bossDescription,
+//                new Vector2(0.5f * 100, 14.5f * 100), ZIndex.SLOT_MACHINE));
+//        }
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
@@ -226,6 +226,42 @@ public class SlotMachine {
     }
 
     // --- spin control (organic staggered start/stop, aligned to center row) ---
+//    public void spin() {
+//        spinningReels = cols;
+//        stale = false;
+//
+//        float startSpeed = 16f;
+//        float startStagger = 0.1f;
+//        float stopStagger = 0.25f;
+//
+//        for (int c = 0; c < cols; c++) {
+//            final int col = c;
+//
+//            float startDelay = col * startStagger;
+//            float stopDelay = 0.5f + col * stopStagger;
+//
+//            float reelSpeed = startSpeed + SeededRandomizer.nextFloat(-0.7f, 0.7f);
+//
+//            Reel reel = reels.get(col);
+//            int targetIndex = SeededRandomizer.nextInt(0, reel.stripSize() - 1);
+//
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    reels.get(col).start(reelSpeed);
+//                }
+//            }, startDelay);
+//
+//            Timer.schedule(new Timer.Task() {
+//                @Override
+//                public void run() {
+//                    int minDistance = 8 + col * 4;
+//                    reels.get(col).requestStopAtIndex(targetIndex, minDistance);
+//                }
+//            }, 0.6f + col * 0.12f);
+//        }
+//    }
+
     public void spin() {
         spinningReels = cols;
         stale = false;
@@ -309,15 +345,16 @@ public class SlotMachine {
                 return true;
             })
             .forEach(symbol -> {
-                for (int i = 0; i < symbol.baseSpawnChance(); i++) {
+                for (int i = 0; i < symbol.baseSpawnChance() / 2; i++) {
                     baseStrip.add(symbol);
                 }
             });
 
-        reels.forEach(reel -> {
-            Collections.shuffle(baseStrip);
-            reel.setStrip(baseStrip);
-        });
+        for (Reel reel : reels) {
+            List<Symbol> reelStrip = new ArrayList<>(baseStrip);
+            Collections.shuffle(reelStrip, SeededRandomizer.get());
+            reel.setStrip(reelStrip);
+        }
 
     }
 

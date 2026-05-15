@@ -2,6 +2,8 @@ package com.avaricious.components;
 
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.components.texts.ArmorText;
+import com.avaricious.components.texts.HealthText;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.stats.PlayerStats;
@@ -14,6 +16,7 @@ import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class HealthUi extends Observable<HealthState> {
 
@@ -23,55 +26,28 @@ public class HealthUi extends Observable<HealthState> {
         return instance == null ? instance = new HealthUi() : instance;
     }
 
-    private final float hpSizeRatio = 20f;
-    private final float armorSizeRatio = 21f;
-
-    private final float healthY = 18.15f;
-    private final float armorY = healthY + 0.85f;
-    private final float txtX = 0.75f;
-    private final float currentValueX = txtX + 1.25f;
-
     private final DigitalNumber armor;
     private final DigitalNumber health;
 
-    private final TextureRegion hpTxt = Assets.I().get(AssetKey.HP_TXT);
-    private final TextureRegion hpTxtShadow = Assets.I().get(AssetKey.HP_TXT_SHADOW);
-    private final TextureRegion armTxt = Assets.I().get(AssetKey.DF_TXT);
-    private final TextureRegion armTxtShadow = Assets.I().get(AssetKey.DF_TXT_SHADOW);
+    private final HealthText healthText = new HealthText(new Vector2(0.475f, 19.1f), 30f, 0.05f, ZIndex.HEALTH_UI);
+    private final ArmorText armorText = new ArmorText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.HEALTH_UI);
 
     private HealthUi() {
-        armor = new DigitalNumber(0, Assets.I().silver(), 3,
-            new Rectangle(currentValueX, armorY, 7 / armorSizeRatio, 11 / armorSizeRatio), 0.4f);
+        armor = new DigitalNumber(0, Assets.I().silver(), 1,
+            new Rectangle(3f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
         health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
-            new Rectangle(currentValueX, healthY, 7 / hpSizeRatio, 11 / hpSizeRatio), 0.4f);
+            new Rectangle(0.65f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
         health.getScaleEffect().setStrength(0.08f, 1.25f);
         health.getScaleEffect().setAllowed(true);
         health.getScaleEffect().setEnabled(false);
     }
 
     public void draw(float delta) {
-        armor.draw(delta);
-        Pencil.I().addDrawing(new TextureDrawing(
-            armTxtShadow,
-            txtX, armor.calcNumberY() - 0.1f, 18 / armorSizeRatio, 11 / armorSizeRatio,
-            armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
-        ));
-        Pencil.I().addDrawing(new TextureDrawing(armTxt,
-            txtX, armor.calcNumberY(), 18 / armorSizeRatio, 11 / armorSizeRatio,
-            armor.getScale(), armor.getRotation(), ZIndex.HEALTH_UI, Assets.I().silver()));
-
+        healthText.draw(delta);
         health.draw(delta);
-        Pencil.I().addDrawing(new TextureDrawing(
-            hpTxtShadow,
-            txtX, health.calcNumberY() - 0.1f, 18 / hpSizeRatio, 11 / hpSizeRatio,
-            health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().shadowColor()
-        ));
-        Pencil.I().addDrawing(new TextureDrawing(
-            hpTxt,
-            txtX, health.calcNumberY(), 18 / hpSizeRatio, 11 / hpSizeRatio,
-            health.getScale(), health.getRotation(), ZIndex.HEALTH_UI, Assets.I().healthRedColor()
-        ));
+        armorText.draw(delta);
+        armor.draw(delta);
     }
 
     public boolean damage(int damage) {
@@ -79,13 +55,13 @@ public class HealthUi extends Observable<HealthState> {
         float currentArmorValue = armor.getValue();
 
         EvadeChance evadeChanceStatus = PlayerStats.I().getStat(EvadeChance.class);
-        if (evadeChanceStatus.rollChance()) {
-            PopupManager.I().spawnStatisticHit(
-                evadeChanceStatus.getTexture(),
-                currentValueX + 1f,
-                (currentArmorValue > 0 ? armorY : healthY) + 0.5f);
-            return false;
-        }
+//        if (evadeChanceStatus.rollChance()) {
+//            PopupManager.I().spawnStatisticHit(
+//                evadeChanceStatus.getTexture(),
+//                currentValueX + 1f,
+//                (currentArmorValue > 0 ? armorY : healthY) + 0.5f);
+//            return false;
+//        }
 
         float armorHp = armor.getValue();
         if (armorHp > 0) {

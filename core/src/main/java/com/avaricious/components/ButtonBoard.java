@@ -2,9 +2,15 @@ package com.avaricious.components;
 
 import static com.badlogic.gdx.math.MathUtils.lerp;
 
+import com.avaricious.RoundsManager;
 import com.avaricious.components.buttons.CashoutButton;
 import com.avaricious.components.buttons.SpinButton;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +31,8 @@ public class ButtonBoard {
 
     private SpinButton spinAgainButton;
     private CashoutButton cashoutButton;
+    private GlyphLayout cashoutsLeftText = new GlyphLayout();
+    private int cashoutsLeft = 3;
 
     private boolean isMoving = false;
 
@@ -61,6 +69,12 @@ public class ButtonBoard {
 
         spinAgainButton.draw();
         cashoutButton.draw();
+
+        if(RoundsManager.I().isBossRound()) {
+            cashoutsLeftText.setText(Assets.I().getSmallFont(), cashoutsLeft + " left");
+            Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cashoutsLeftText,
+                new Vector2((BOARD_X + 1.5f) * 100, (BOARD_Y + 2f) * 100), ZIndex.BUTTON_BOARD));
+        }
     }
 
     public void moveOut() {
@@ -97,5 +111,13 @@ public class ButtonBoard {
     public void setVisible(boolean visible) {
         spinAgainButton.setVisibleAnimated(visible);
         cashoutButton.setVisibleAnimated(visible);
+    }
+
+    public int getCashoutsLeft() {
+        return cashoutsLeft;
+    }
+
+    public void minusCashoutsLeft() {
+        cashoutsLeft--;
     }
 }

@@ -27,8 +27,8 @@ public class FabledText {
     private final ZIndex zIndex;
     private Color color;
 
-    private final List<IdleFloatEffect> floatEffects = new ArrayList<>();
-    private final List<IdleSwayEffect> swayEffects = new ArrayList<>();
+    protected final List<IdleFloatEffect> floatEffects = new ArrayList<>();
+    protected final List<IdleSwayEffect> swayEffects = new ArrayList<>();
 
     protected FabledText(List<TextureRegion> letterTextures, List<TextureRegion> letterShadowTextures,
                          Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {

@@ -3,6 +3,7 @@ package com.avaricious.screens;
 import com.avaricious.Main;
 import com.avaricious.components.HealthUi;
 import com.avaricious.items.upgrades.Hand;
+import com.avaricious.utility.SeededRandomizer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -37,6 +38,7 @@ public class ScreenManager {
         screens.put(MainScreen.class, new MainScreen(app));
         screens.put(TestScreen.class, new TestScreen(app));
         screens.put(SlotScreen.class, new SlotScreen(app));
+        screens.put(PlayerCombatScreen.class, new PlayerCombatScreen(app));
     }
 
     public void setScreen(Class<? extends ScreenAdapter> screenClass) {

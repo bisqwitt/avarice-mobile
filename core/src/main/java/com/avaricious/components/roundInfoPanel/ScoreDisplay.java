@@ -30,8 +30,8 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final float multiplySymbolSize = 11f / 23f;
 
     private final float DIGIT_Y = 16.4f;
-    private final float DIGIT_WIDTH = 7 / 12f;
-    private final float DIGIT_HEIGHT = 11 / 12f;
+    private final float DIGIT_WIDTH = 7 / 13f;
+    private final float DIGIT_HEIGHT = 11 / 13f;
     private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
@@ -139,6 +139,10 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     public boolean targetScoreReached() {
         return scoreProgressBar.getCurrentValue() >= RoundsManager.I().getCurrentTargetScore();
+    }
+
+    public float getScore() {
+         return scoreProgressBar.getCurrentValue();
     }
 
     private DigitalNumber getNumberOf(Type type) {

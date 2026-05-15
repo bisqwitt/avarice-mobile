@@ -1,5 +1,6 @@
 package com.avaricious.components.shop;
 
+import com.avaricious.utility.SeededRandomizer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,11 +22,11 @@ public class ShopItemBar {
         shopItems.clear();
         for (int i = 0; i < 3; i++) {
             Vector2 pos = new Vector2(firstUpgradePos.x + i * UPGRADE_OFFSET, firstUpgradePos.y);
-            int random = MathUtils.random(1, 100);
+            int random = SeededRandomizer.nextInt(1, 100);
             if (random < 75) shopItems.add(new CardShopItem(pos));
             else if (random < 90) shopItems.add(new RingShopItem(pos));
             else {
-                shopItems.add(MathUtils.random(0, 1) == 0 ? new QuestShopItem(pos) : new PotionShopItem(pos));
+                shopItems.add(SeededRandomizer.nextInt(0, 1) == 0 ? new QuestShopItem(pos) : new PotionShopItem(pos));
             }
         }
     }

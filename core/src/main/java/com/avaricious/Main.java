@@ -1,8 +1,11 @@
 package com.avaricious;
 
 import com.avaricious.screens.MainScreen;
+import com.avaricious.screens.PlayerCombatScreen;
 import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,6 +30,7 @@ public class Main extends Game {
         }
 
         Assets.I().load();
+        SeededRandomizer.setSeed(12345);
 
         batch = new SpriteBatch();
         viewport = new FitViewport(9, 20);
@@ -35,7 +39,7 @@ public class Main extends Game {
         ScreenManager.setBatch(batch);
         ScreenManager.setUiViewport(uiViewport);
         ScreenManager.setViewport(viewport);
-        ScreenManager.create(this).setScreen(MainScreen.class);
+        ScreenManager.create(this).setScreen(SlotScreen.class);
     }
 
     public FitViewport getViewport() {

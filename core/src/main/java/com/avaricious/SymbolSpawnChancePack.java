@@ -13,6 +13,7 @@ import com.avaricious.items.upgrades.cards.CardType;
 import com.avaricious.items.upgrades.rings.RingType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -110,7 +111,7 @@ public class SymbolSpawnChancePack extends PackOpening {
 
     @Override
     protected AbstractUpgrade getResult() {
-        result = Symbol.values()[MathUtils.random(Symbol.values().length - 1)];
+        result = Symbol.values()[SeededRandomizer.nextInt(0, Symbol.values().length - 1)];
         return new AbstractUpgrade() {
             @Override
             public String title() {

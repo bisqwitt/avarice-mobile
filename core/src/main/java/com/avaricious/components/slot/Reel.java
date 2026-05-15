@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.utility.SeededRandomizer;
 import com.badlogic.gdx.math.MathUtils;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class Reel {
 
     // Used for jitter
     private float t = 0f;
-    private float seed = MathUtils.random(0f, 1000f);
+    private float seed = SeededRandomizer.seed;
 
     private final Runnable onSpinFinished;
     private boolean spinFinishedNotified = false;
@@ -94,9 +95,6 @@ public class Reel {
                 pos += vel * dt;
 
                 if (stopRequested) {
-                    int randomNumber = MathUtils.random(1, 100);
-                    if (randomNumber == 100) stopTargetPos += strip.size();
-//                    if (randomNumber == 10) stopTargetPos += stripLen;
                     phase = Phase.STOPPING;
                 }
                 break;
@@ -212,6 +210,24 @@ public class Reel {
         }
     }
 
+    public void requestStopAtIndex(int targetIndex, int minDistance) {
+        stopRequested = true;
+
+        int centerRow = visibleRows / 2;
+        int stripLen = strip.size();
+
+        int currentBase = (int) Math.floor(pos);
+        int currentCenterIndex = mod(currentBase + centerRow, stripLen);
+
+        int forward = mod(targetIndex - currentCenterIndex, stripLen);
+
+        while (forward < minDistance) {
+            forward += stripLen;
+        }
+
+        stopTargetPos = currentBase + forward;
+    }
+
     /**
      * Fraction between current symbol and next for rendering offset.
      */
@@ -228,6 +244,10 @@ public class Reel {
         // The symbol index for a row is floor(pos + row)
         int idx = (int) Math.floor(pos + row);
         return strip.get(mod(idx, strip.size()));
+    }
+
+    public int stripSize() {
+        return strip.size();
     }
 
     private void setSymbolAtRow(int row, Symbol symbol) {

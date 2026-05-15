@@ -46,7 +46,9 @@ import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.gameState.GameStateManager;
+import com.avaricious.utility.playerRun.PlayerRunManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -138,6 +140,7 @@ public class SlotScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         GameStateManager.I().update(delta);
+        PlayerRunManager.I().update(delta);
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ScreenUtils.clear(0f, 0f, 0f, 1f);
@@ -388,10 +391,14 @@ public class SlotScreen extends ScreenAdapter {
         roundInfoPanel.getScoreDisplay().clearPotentialScore();
 
         AudioManager.I().endPayout();
-        if (!roundInfoPanel.getScoreDisplay().targetScoreReached()) return;
+        if(RoundsManager.I().isBossRound()) ButtonBoard.I().minusCashoutsLeft();
 
-        if (RoundsManager.I().isBossRound()) openBossLootWindow();
+        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() || (RoundsManager.I().isBossRound() && ButtonBoard.I().getCashoutsLeft() != 0)) return;
+
+//        if (RoundsManager.I().isBossRound()) openBossLootWindow();
         else onTargetScoreReached();
+
+        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
     }
 
     public void onTargetScoreReached() {

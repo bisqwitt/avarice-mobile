@@ -7,6 +7,7 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.ZIndex;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainScreen extends ScreenAdapter {
-
     private final Main app;
 
     private final WarpBackground background = new WarpBackground();
