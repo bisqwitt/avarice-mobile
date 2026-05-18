@@ -108,7 +108,6 @@ public class RemoveCardWindow {
     public void draw(float delta) {
         if (!open) return;
 
-//        Pencil.I().addDrawing(new FontDrawing(Assets.I().getTitleFont(), ));
         title.draw(delta);
         cards.forEach(this::drawCard);
 
@@ -190,7 +189,7 @@ public class RemoveCardWindow {
         } else {
             Deck.I().removeCard(selectedCard);
         }
-        
+
         cards.forEach(removableCard -> removableCard.card.getBody().getPos().set(removableCard.position));
 
         deselectCard(true);

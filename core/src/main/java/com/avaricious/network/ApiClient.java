@@ -14,7 +14,7 @@ public class ApiClient {
         return instance == null ? new ApiClient() : instance;
     }
 
-    private final String baseUrl = "http://172.24.2.175:3000";
+    private final String baseUrl = "https://excusably-stoppage-astonish.ngrok-free.dev";
     private final Json json = new Json();
 
     private ApiClient() {
@@ -43,6 +43,41 @@ public class ApiClient {
                     Gdx.app.log("NETWORK", "Score sent successfully");
                 } else {
                     Gdx.app.error("NETWORK", "Server error: " + status);
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.error("NETWORK", "Request failed", t);
+            }
+
+            @Override
+            public void cancelled() {
+                Gdx.app.log("NETWORK", "Request cancelled");
+            }
+        });
+    }
+
+    public void checkOpponentScore(int round, OpponentScoreCallback callback) {
+        Net.HttpRequest request = new HttpRequestBuilder()
+            .newRequest()
+            .method(Net.HttpMethods.GET)
+            .url(baseUrl + "api/score/" + round + "/" + "Yuuki")
+            .build();
+
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                int status = httpResponse.getStatus().getStatusCode();
+
+                if (status < 200 || status >= 300) {
+                    Gdx.app.error("NETWORK", "HTTP error: " + status);
+                    return;
+                }
+
+                OpponentScoreResult result = json.fromJson(OpponentScoreResult.class, httpResponse.getResultAsString());
+                if (result.found) {
+                    callback.onResult(result.entry);
                 }
             }
 

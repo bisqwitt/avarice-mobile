@@ -1,10 +1,14 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
+import com.avaricious.RoundsManager;
+import com.avaricious.WaitingForEnemyWindow;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.texts.EnemyText;
 import com.avaricious.components.texts.PlayerText;
+import com.avaricious.network.ApiClient;
+import com.avaricious.network.ScoreEntry;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
@@ -23,6 +27,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
     private final Main app;
 
     private final ScreenShake screenShake;
+    private final WaitingForEnemyWindow waitingForEnemyWindow = new WaitingForEnemyWindow();
 
     private final PlayerText playerText = new PlayerText(
         new Vector2(2, 16.5f), 12f, 0.1f, ZIndex.SLOT_MACHINE
@@ -67,6 +72,9 @@ public class PlayerCombatScreen extends ScreenAdapter {
     private DigitalNumber lerpTargetNumber1, lerpTargetNumber2;
     private float lerpStart1, lerpTarget1, lerpStart2, lerpTarget2;
 
+    private float pollTimer = 0f;
+    private final float pollInterval = 1f;
+
     public PlayerCombatScreen(Main app) {
         this.app = app;
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
@@ -74,18 +82,20 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        playerHealth.setValue(PlayerRunManager.I().getPlayerRun().playerHealth);
-        playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
-//        playerScore.setValue(500);
-
-        enemyHealth.setValue(PlayerRunManager.I().getEnemyRun().playerHealth);
-        enemyScore.setValue(PlayerRunManager.I().getEnemyRun().getLastRoundEndScore());
-
-        startAnimation();
+        waitingForEnemyWindow.open();
     }
 
     private void update(float delta) {
         screenShake.update(delta);
+        pollTimer += delta;
+        if (pollTimer >= pollInterval) {
+            pollTimer = 0f;
+            ApiClient.I().checkOpponentScore(RoundsManager.I().getCurrentRound(), entry -> Gdx.app.postRunnable(() -> {
+                waitingForEnemyWindow.close();
+                onOpponentDataReceived(entry);
+            }));
+        }
+
 
         if (movingScores) {
             moveTimer += delta;
@@ -120,17 +130,29 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
         update(delta);
 
-        playerText.draw(delta);
-        playerHealth.draw(delta);
-        playerScore.draw(delta);
+//        playerText.draw(delta);
+//        playerHealth.draw(delta);
+//        playerScore.draw(delta);
+//
+//        enemyText.draw(delta);
+//        enemyHealth.draw(delta);
+//        enemyScore.draw(delta);
 
-        enemyText.draw(delta);
-        enemyHealth.draw(delta);
-        enemyScore.draw(delta);
+        waitingForEnemyWindow.draw(delta);
 
         batch.begin();
         Pencil.I().draw(batch);
         batch.end();
+    }
+
+    public void onOpponentDataReceived(ScoreEntry data) {
+        playerHealth.setValue(PlayerRunManager.I().getPlayerRun().playerHealth);
+        playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
+
+        enemyHealth.setValue(1000);
+        enemyScore.setValue(data.score);
+
+        startAnimation();
     }
 
     private void startAnimation() {

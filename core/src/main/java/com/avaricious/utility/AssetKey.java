@@ -361,7 +361,13 @@ public enum AssetKey {
     P_BIG("p-big"),
     P_BIG_SHADOW("p-big-shadow"),
     E_BIG("e-big"),
-    E_BIG_SHADOW("e-big-shadow");
+    E_BIG_SHADOW("e-big-shadow"),
+    W_BIG("w-big"),
+    W_BIG_SHADOW("w-big-shadow"),
+    G("g"),
+    G_SHADOW("g-shadow"),
+    F("f"),
+    F_SHADOW("f-shadow");
 
     private final String path;
 

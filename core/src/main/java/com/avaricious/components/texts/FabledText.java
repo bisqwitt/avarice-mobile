@@ -86,7 +86,9 @@ public class FabledText {
             Assets.I().get(AssetKey.P),
             Assets.I().get(AssetKey.P_SHADOW),
             Assets.I().get(AssetKey.Y),
-            Assets.I().get(AssetKey.Y_SHADOW)
+            Assets.I().get(AssetKey.Y_SHADOW),
+            Assets.I().get(AssetKey.G),
+            Assets.I().get(AssetKey.G_SHADOW)
         ).contains(letterTexture);
     }
 
