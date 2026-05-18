@@ -90,7 +90,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
         pollTimer += delta;
         if (pollTimer >= pollInterval) {
             pollTimer = 0f;
-            ApiClient.I().checkOpponentScore(RoundsManager.I().getCurrentRound(), entry -> Gdx.app.postRunnable(() -> {
+            ApiClient.I().checkOpponentScore(RoundsManager.I().getCurrentRound() - 1, entry -> Gdx.app.postRunnable(() -> {
                 waitingForEnemyWindow.close();
                 onOpponentDataReceived(entry);
             }));
@@ -130,13 +130,15 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
         update(delta);
 
-//        playerText.draw(delta);
-//        playerHealth.draw(delta);
-//        playerScore.draw(delta);
-//
-//        enemyText.draw(delta);
-//        enemyHealth.draw(delta);
-//        enemyScore.draw(delta);
+        if (!waitingForEnemyWindow.isOpen()) {
+            playerText.draw(delta);
+            playerHealth.draw(delta);
+            playerScore.draw(delta);
+
+            enemyText.draw(delta);
+            enemyHealth.draw(delta);
+            enemyScore.draw(delta);
+        }
 
         waitingForEnemyWindow.draw(delta);
 

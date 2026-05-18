@@ -17,12 +17,15 @@ public class ApiClient {
     private final String baseUrl = "https://excusably-stoppage-astonish.ngrok-free.dev";
     private final Json json = new Json();
 
+    private final String name = "Yuuki";
+
     private ApiClient() {
         json.setOutputType(JsonWriter.OutputType.json);
+        json.setIgnoreUnknownFields(true);
     }
 
     public void sendScore(int round, int score) {
-        String body = json.toJson(new ScoreEntry("Yuuki", round, score));
+        String body = json.toJson(new ScoreEntry(name, round, score));
 
         Net.HttpRequest request = new HttpRequestBuilder()
             .newRequest()
@@ -62,7 +65,7 @@ public class ApiClient {
         Net.HttpRequest request = new HttpRequestBuilder()
             .newRequest()
             .method(Net.HttpMethods.GET)
-            .url(baseUrl + "api/score/" + round + "/" + "Yuuki")
+            .url(baseUrl + "/api/score/" + round + "/" + name)
             .build();
 
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {

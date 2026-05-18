@@ -393,12 +393,12 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     public void onTargetScoreReached(int score) {
+        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
         if (RoundsManager.I().isPlayerCombatRound()) {
             ScreenManager.I().setScreen(PlayerCombatScreen.class);
         } else {
             shop.show();
         }
-        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
         healthUi.healHealth();

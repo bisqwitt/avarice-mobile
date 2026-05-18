@@ -91,4 +91,7 @@ public class WaitingForEnemyWindow {
         open = false;
     }
 
+    public boolean isOpen() {
+        return open;
+    }
 }
