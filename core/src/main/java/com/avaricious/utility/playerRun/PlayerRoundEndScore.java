@@ -5,6 +5,9 @@ public class PlayerRoundEndScore {
     public int round;
     public int score;
 
+    public PlayerRoundEndScore() {
+    }
+
     public PlayerRoundEndScore(int round, int score) {
         this.round = round;
         this.score = score;

@@ -53,7 +53,8 @@ public class ScoreProgressBar {
 
     public void update() {
         String text = (int) displayedOptionalValue + "";
-        if(!RoundsManager.I().isBossRound()) text = text.concat(" / " + RoundsManager.I().getCurrentTargetScore());
+        if (!RoundsManager.I().isPlayerCombatRound())
+            text = text.concat(" / " + RoundsManager.I().getCurrentTargetScore());
         targetTxt.setText(Assets.I().getSmallFont(), text);
 
         float delta = Math.min(Gdx.graphics.getDeltaTime(), 1f / 30f);

@@ -1,5 +1,6 @@
 package com.avaricious.utility.playerRun;
 
+import com.avaricious.network.ApiClient;
 import com.avaricious.utility.gameState.GameState;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -32,11 +33,11 @@ public class PlayerRunManager {
     private float saveTimer = 0f;
 
     public void update(float delta) {
-        if(!isDirty) return;
+        if (!isDirty) return;
 
         saveTimer += delta;
 
-        if(saveTimer >= 1f) {
+        if (saveTimer >= 1f) {
             savePlayerRun();
             isDirty = false;
             saveTimer = 0f;
@@ -55,6 +56,7 @@ public class PlayerRunManager {
 
     public void updatePlayerRoundEndScore(int round, int score) {
         playerRun.roundEndScores.add(new PlayerRoundEndScore(round, score));
+        ApiClient.I().sendScore(round, score);
     }
 
     public PlayerRun getPlayerRun() {
@@ -62,9 +64,23 @@ public class PlayerRunManager {
     }
 
     public PlayerRun getEnemyRun() {
-        if(enemyRun == null) {
-            enemyRun = json.fromJson(PlayerRun.class, enemyRunFile.readString());
+        if (enemyRun == null) {
+            if (enemyRunFile.exists())
+                enemyRun = json.fromJson(PlayerRun.class, enemyRunFile.readString());
+            else {
+                enemyRun = defaultEnemyRun();
+                String data = json.prettyPrint(enemyRun);
+                enemyRunFile.writeString(data, false);
+            }
         }
+        return enemyRun;
+    }
+
+    private PlayerRun defaultEnemyRun() {
+        PlayerRun enemyRun = new PlayerRun();
+        enemyRun.roundEndScores.add(new PlayerRoundEndScore(1, 200));
+        enemyRun.roundEndScores.add(new PlayerRoundEndScore(2, 350));
+        enemyRun.roundEndScores.add(new PlayerRoundEndScore(3, 450));
         return enemyRun;
     }
 

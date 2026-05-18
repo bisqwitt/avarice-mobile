@@ -21,8 +21,9 @@ public class DigitalNumber {
     protected final List<TextureRegion> numberTextures = new ArrayList<>();
     protected final List<TextureRegion> numberShadowTextures = new ArrayList<>();
     protected final TextureRegion dotSymbol = Assets.I().get(AssetKey.DOT_SYMBOL);
+    protected final TextureRegion minusSymbol = Assets.I().get(AssetKey.MINUS_SYMBOL);
 
-    protected final Color color;
+    protected Color color;
     protected final Rectangle firstDigitBounds;
     protected final float offset;
 
@@ -97,6 +98,21 @@ public class DigitalNumber {
                 scale, rotation, getZIndex(), color
             ));
         }
+
+        boolean isNegative = value < 0;
+        if (isNegative) {
+            Pencil.I().addDrawing(new TextureDrawing(
+                minusSymbol,
+                firstDigitBounds.x - offset,
+                numberY,
+                firstDigitBounds.width,
+                firstDigitBounds.height,
+                scale,
+                rotation,
+                getZIndex(),
+                color
+            ));
+        }
     }
 
     private void updateDigitalNumbers(float score) {
@@ -131,11 +147,11 @@ public class DigitalNumber {
     }
 
     public void setValue(float value) {
-        if (value < 0) value = 0;
         this.value = value;
 
-        int decimalPlaces = countDecimalPlaces(value);
-        int intDigits = (int) value == 0 ? 1 : (int) Math.log10(value) + 1;
+        float absValue = Math.abs(value);
+        int decimalPlaces = countDecimalPlaces(absValue);
+        int intDigits = (int) absValue == 0 ? 1 : (int) Math.log10(absValue) + 1;
         int totalDigits = intDigits + decimalPlaces;
 
         while (numberTextures.size() < totalDigits) {
@@ -147,7 +163,7 @@ public class DigitalNumber {
             numberShadowTextures.remove(numberShadowTextures.size() - 1);
         }
 
-        updateDigitalNumbers(value);
+        updateDigitalNumbers(absValue);
         pulseEffect.pulse();
     }
 
@@ -195,6 +211,10 @@ public class DigitalNumber {
 
     public void setZIndex(ZIndex zIndex) {
         this.zIndex = zIndex;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public IdleFloatEffect getFloatEffect() {

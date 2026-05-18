@@ -1,7 +1,5 @@
 package com.avaricious;
 
-import com.avaricious.screens.MainScreen;
-import com.avaricious.screens.PlayerCombatScreen;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;

@@ -10,7 +10,6 @@ import com.avaricious.TaskScheduler;
 import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.bosses.OneLessCardBoss;
-import com.avaricious.components.BossLootWindow;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
@@ -19,9 +18,6 @@ import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.StatusUpgradeWindow;
-import com.avaricious.components.background.FeltBackground;
-import com.avaricious.components.background.SlotScreenBackground;
-import com.avaricious.components.background.WarpBackground;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
@@ -46,7 +42,6 @@ import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.avaricious.utility.playerRun.PlayerRunManager;
 import com.badlogic.gdx.Gdx;
@@ -70,15 +65,11 @@ public class SlotScreen extends ScreenAdapter {
     private final SlotMachine slotMachine;
     private final XpBar xpBar;
 
-    private final WarpBackground background = new WarpBackground();
-    private final FeltBackground feltBackground = new FeltBackground();
-    private final SlotScreenBackground slotScreenBackground = new SlotScreenBackground();
-
     private final RoundInfoPanel roundInfoPanel = new RoundInfoPanel();
 //    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
 //    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
 
-    private final BossLootWindow bossLootWindow = new BossLootWindow(this::onTargetScoreReached);
+    //    private final BossLootWindow bossLootWindow = new BossLootWindow(this::onTargetScoreReached);
     private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
     });
 
@@ -177,7 +168,7 @@ public class SlotScreen extends ScreenAdapter {
 
         shop.draw(batch, delta);
         statusUpgradeWindow.draw(batch, delta);     // 15
-        bossLootWindow.draw(delta);
+//        bossLootWindow.draw(delta);
         PopupManager.I().draw(batch, delta);
 
         vfxManager.cleanUpBuffers();
@@ -216,14 +207,14 @@ public class SlotScreen extends ScreenAdapter {
         boolean leftClickPressed = Gdx.input.isTouched();
 
         statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        bossLootWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        bossLootWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        else if (!bossLootWindow.isShown()) {
-            roundInfoPanel.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-            buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-            ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-            handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        }
+//        else if (!bossLootWindow.isShown()) {
+        roundInfoPanel.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        }
         backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -391,21 +382,26 @@ public class SlotScreen extends ScreenAdapter {
         roundInfoPanel.getScoreDisplay().clearPotentialScore();
 
         AudioManager.I().endPayout();
-        if(RoundsManager.I().isBossRound()) ButtonBoard.I().minusCashoutsLeft();
 
-        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() || (RoundsManager.I().isBossRound() && ButtonBoard.I().getCashoutsLeft() != 0)) return;
+        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() && !RoundsManager.I().isPlayerCombatRound())
+            return;
 
 //        if (RoundsManager.I().isBossRound()) openBossLootWindow();
-        else onTargetScoreReached();
-
-        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
+        else {
+            onTargetScoreReached(score);
+        }
     }
 
-    public void onTargetScoreReached() {
+    public void onTargetScoreReached(int score) {
+        if (RoundsManager.I().isPlayerCombatRound()) {
+            ScreenManager.I().setScreen(PlayerCombatScreen.class);
+        } else {
+            shop.show();
+        }
+        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
         healthUi.healHealth();
-        shop.show();
     }
 
     @Override
@@ -437,7 +433,7 @@ public class SlotScreen extends ScreenAdapter {
         return symbolsHitLastSpin;
     }
 
-    public void openBossLootWindow() {
-        bossLootWindow.show();
-    }
+//    public void openBossLootWindow() {
+//        bossLootWindow.show();
+//    }
 }
