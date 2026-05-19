@@ -1,6 +1,5 @@
 package com.avaricious.utility;
 
-import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.math.Vector2;
 
 public class UiUtility {
@@ -10,7 +9,7 @@ public class UiUtility {
     }
 
     private static float calcShadowXOffset(float x) {
-        float screenWidth = ScreenManager.getViewport().getWorldWidth();
+        float screenWidth = GameContext.I().viewport.getWorldWidth();
         float centerX = screenWidth * 0.5f;
         float half = screenWidth * 0.5f;
         if (half <= 0f) return 0f;
@@ -30,7 +29,7 @@ public class UiUtility {
         // 2) nonlinear easing: slow near center, stronger towards edges
         // try exponent 1.6 .. 2.4
         float expo = 2.0f;
-        float eased = (float)Math.pow(u, expo);
+        float eased = (float) Math.pow(u, expo);
 
         // restore sign
         float shaped = Math.signum(t) * eased;
@@ -42,7 +41,7 @@ public class UiUtility {
     }
 
     public static float calcShadowYOffset(float y) {
-        float h = ScreenManager.getViewport().getWorldHeight();
+        float h = GameContext.I().viewport.getWorldHeight();
         if (h <= 0f) return 0f;
 
         // Light/reference line at 85% height (Y-up world: near the top)
@@ -76,8 +75,6 @@ public class UiUtility {
         // Otherwise (shadow follows sign of t):
         return shaped * maxOffset;
     }
-
-
 
 
 }

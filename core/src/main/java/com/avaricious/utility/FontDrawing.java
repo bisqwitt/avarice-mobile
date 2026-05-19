@@ -1,6 +1,5 @@
 package com.avaricious.utility;
 
-import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,9 +29,9 @@ public class FontDrawing implements Drawing {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.setProjectionMatrix(ScreenManager.getUiViewport().getCamera().combined);
+        batch.setProjectionMatrix(GameContext.I().uiViewport.getCamera().combined);
         font.draw(batch, text, pos.x, pos.y);
-        batch.setProjectionMatrix(ScreenManager.getViewport().getCamera().combined);
+        batch.setProjectionMatrix(GameContext.I().viewport.getCamera().combined);
     }
 
     @Override

@@ -8,9 +8,9 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.UpgradeRarity;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -257,13 +257,13 @@ public abstract class PackOpening {
             width, height
             , 1f, 0f, layer,
             new Color(1f, 1f, 1f, coreGlowAlpha)
-        ).setBeforeDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
-            .setAfterDrawing(() -> ScreenManager.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
+        ).setBeforeDrawing(() -> GameContext.I().batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
+            .setAfterDrawing(() -> GameContext.I().batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
     }
 
     private void drawScreenFlash(ZIndex layer) {
-        float w = ScreenManager.getViewport().getWorldWidth();
-        float h = ScreenManager.getViewport().getWorldHeight();
+        float w = GameContext.I().viewport.getWorldWidth();
+        float h = GameContext.I().viewport.getWorldHeight();
 
         Pencil.I().addDrawing(new TextureDrawing(
             whitePixel,
@@ -354,8 +354,8 @@ public abstract class PackOpening {
         Rectangle initialBounds = new Rectangle(pos.x, pos.y, bounds.width, bounds.height);
         body = new DragableBody(initialBounds).setMoveToSpeed(3).setTargetScaleSpeed(5);
 
-        float screenWidth = ScreenManager.getViewport().getWorldWidth();
-        float screenHeight = ScreenManager.getViewport().getWorldHeight();
+        float screenWidth = GameContext.I().viewport.getWorldWidth();
+        float screenHeight = GameContext.I().viewport.getWorldHeight();
         body.moveTo(new Vector2(screenWidth / 2f - (bounds.width / 2f), screenHeight / 2f - (bounds.height / 2f)));
         body.targetScale = 2f;
 

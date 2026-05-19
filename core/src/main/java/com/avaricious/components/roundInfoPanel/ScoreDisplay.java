@@ -3,9 +3,9 @@ package com.avaricious.components.roundInfoPanel;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.progressbar.ScoreProgressBar;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -142,7 +142,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
     }
 
     public float getScore() {
-         return scoreProgressBar.getCurrentValue();
+        return scoreProgressBar.getCurrentValue();
     }
 
     private DigitalNumber getNumberOf(Type type) {
@@ -152,7 +152,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     private void updatePotentialScoreXLayout() {
         float width = pointsNumber.getWidth() + 1 + multiNumber.getWidth() + 1 + streakNumber.getWidth();
-        float pos = ScreenManager.getViewport().getWorldWidth() / 2f - width / 2f;
+        float pos = GameContext.I().viewport.getWorldWidth() / 2f - width / 2f;
 
         pointsNumber.getFirstDigitBounds().x = pos;
         pos += pointsNumber.getWidth() + 0.4f;

@@ -1,14 +1,11 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
-import com.avaricious.RoundsManager;
 import com.avaricious.WaitingForEnemyWindow;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.texts.EnemyText;
 import com.avaricious.components.texts.PlayerText;
-import com.avaricious.network.ApiClient;
-import com.avaricious.network.ScoreEntry;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
@@ -72,8 +69,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
     private DigitalNumber lerpTargetNumber1, lerpTargetNumber2;
     private float lerpStart1, lerpTarget1, lerpStart2, lerpTarget2;
 
-    private float pollTimer = 0f;
-    private final float pollInterval = 1f;
+    private boolean enemyDataReceived = false;
 
     public PlayerCombatScreen(Main app) {
         this.app = app;
@@ -82,20 +78,11 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        waitingForEnemyWindow.open();
+        enemyDataReceived = false;
     }
 
     private void update(float delta) {
         screenShake.update(delta);
-        pollTimer += delta;
-        if (pollTimer >= pollInterval) {
-            pollTimer = 0f;
-            ApiClient.I().checkOpponentScore(RoundsManager.I().getCurrentRound() - 1, entry -> Gdx.app.postRunnable(() -> {
-                waitingForEnemyWindow.close();
-                onOpponentDataReceived(entry);
-            }));
-        }
-
 
         if (movingScores) {
             moveTimer += delta;
@@ -130,7 +117,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
         update(delta);
 
-        if (!waitingForEnemyWindow.isOpen()) {
+        if (enemyDataReceived) {
             playerText.draw(delta);
             playerHealth.draw(delta);
             playerScore.draw(delta);
@@ -147,14 +134,21 @@ public class PlayerCombatScreen extends ScreenAdapter {
         batch.end();
     }
 
-    public void onOpponentDataReceived(ScoreEntry data) {
+    public void onOpponentFinishedRound(int opponentScore) {
+        waitingForEnemyWindow.close();
+        enemyDataReceived = true;
+
         playerHealth.setValue(PlayerRunManager.I().getPlayerRun().playerHealth);
         playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
 
         enemyHealth.setValue(1000);
-        enemyScore.setValue(data.score);
+        enemyScore.setValue(opponentScore);
 
         startAnimation();
+    }
+
+    public void onWaitingOnOpponent() {
+        waitingForEnemyWindow.open();
     }
 
     private void startAnimation() {

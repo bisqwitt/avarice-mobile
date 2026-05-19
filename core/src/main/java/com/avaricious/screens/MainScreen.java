@@ -4,10 +4,10 @@ import com.avaricious.Main;
 import com.avaricious.components.AvariceText;
 import com.avaricious.components.background.WarpBackground;
 import com.avaricious.components.buttons.Button;
+import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.ZIndex;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Gdx;
@@ -24,6 +24,12 @@ public class MainScreen extends ScreenAdapter {
     private final WarpBackground background = new WarpBackground();
     private final AvariceText title = new AvariceText();
 
+    private final Button joinQueueButton = new Button(this::onJoinQueueButtonPressed,
+        Assets.I().get(AssetKey.JOIN_QUEUE_BUTTON),
+        Assets.I().get(AssetKey.JOIN_QUEUE_BUTTON_PRESSED),
+        Assets.I().get(AssetKey.JOIN_QUEUE_BUTTON),
+        new Rectangle(2.5f, 9f, 79 / 20f, 25 / 20f),
+        Input.Keys.ENTER, ZIndex.SLOT_MACHINE);
     private final Button newRunButton = new Button(this::onNewRunButtonPressed,
         Assets.I().get(AssetKey.NEW_RUN_BUTTON),
         Assets.I().get(AssetKey.NEW_RUN_BUTTON_PRESSED),
@@ -41,8 +47,6 @@ public class MainScreen extends ScreenAdapter {
 
     public MainScreen(Main app) {
         this.app = app;
-
-
     }
 
     private void handleInput(float delta) {
@@ -50,6 +54,7 @@ public class MainScreen extends ScreenAdapter {
         app.getViewport().unproject(mouse);
         boolean leftClickPressed = Gdx.input.isTouched();
 
+        joinQueueButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         newRunButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         continueButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
 
@@ -73,12 +78,17 @@ public class MainScreen extends ScreenAdapter {
         batch.setProjectionMatrix(app.getViewport().getCamera().combined);
         batch.begin();
 
+        joinQueueButton.draw();
         newRunButton.draw();
         continueButton.draw();
 
         Pencil.I().draw(batch);
 
         batch.end();
+    }
+
+    private void onJoinQueueButtonPressed() {
+        NetworkController.I().matchmaking().joinQueue();
     }
 
     private void onNewRunButtonPressed() {

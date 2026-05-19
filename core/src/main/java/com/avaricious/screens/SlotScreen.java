@@ -41,6 +41,7 @@ import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.avaricious.utility.playerRun.PlayerRunManager;
@@ -407,8 +408,8 @@ public class SlotScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         super.resize(width, height);
-        ScreenManager.getViewport().update(width, height, true);
-        ScreenManager.getUiViewport().update(width, height, true);
+        GameContext.I().viewport.update(width, height, true);
+        GameContext.I().viewport.update(width, height, true);
         vfxManager.resize(width, height);
     }
 

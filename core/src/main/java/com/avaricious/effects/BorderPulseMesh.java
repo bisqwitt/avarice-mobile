@@ -1,6 +1,6 @@
 package com.avaricious.effects;
 
-import com.avaricious.screens.ScreenManager;
+import com.avaricious.utility.GameContext;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -124,8 +124,8 @@ public class BorderPulseMesh {
     }
 
     private void renderInternal() {
-        final float screenW = ScreenManager.getViewport().getWorldWidth();
-        final float screenH = ScreenManager.getViewport().getWorldHeight();
+        final float screenW = GameContext.I().viewport.getWorldWidth();
+        final float screenH = GameContext.I().viewport.getWorldHeight();
 
         float x, y, w, h;
 

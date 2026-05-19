@@ -3,12 +3,8 @@ package com.avaricious.screens;
 import com.avaricious.Main;
 import com.avaricious.components.HealthUi;
 import com.avaricious.items.upgrades.Hand;
-import com.avaricious.utility.SeededRandomizer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,10 +12,6 @@ import java.util.Map;
 public class ScreenManager {
 
     private static ScreenManager instance;
-
-    private static SpriteBatch batch;
-    private static FitViewport uiViewport;
-    private static FitViewport viewport;
 
     public static ScreenManager create(Main app) {
         return (instance = new ScreenManager(app));
@@ -36,7 +28,7 @@ public class ScreenManager {
     private ScreenManager(Main app) {
         this.app = app;
         screens.put(MainScreen.class, new MainScreen(app));
-        screens.put(TestScreen.class, new TestScreen(app));
+        screens.put(InQueueScreen.class, new InQueueScreen(app));
         screens.put(SlotScreen.class, new SlotScreen(app));
         screens.put(PlayerCombatScreen.class, new PlayerCombatScreen(app));
     }
@@ -47,30 +39,6 @@ public class ScreenManager {
 
     public <T> T getScreen(Class<T> screenClass) {
         return (T) screens.get(screenClass);
-    }
-
-    public static void setBatch(SpriteBatch batch) {
-        ScreenManager.batch = batch;
-    }
-
-    public static SpriteBatch getBatch() {
-        return batch;
-    }
-
-    public static void setViewport(FitViewport fitViewport) {
-        viewport = fitViewport;
-    }
-
-    public static FitViewport getViewport() {
-        return viewport;
-    }
-
-    public static void setUiViewport(FitViewport viewport) {
-        uiViewport = viewport;
-    }
-
-    public static Viewport getUiViewport() {
-        return uiViewport;
     }
 
     public static void restartGame() {

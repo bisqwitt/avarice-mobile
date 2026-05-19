@@ -10,10 +10,10 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.GameStateLogger;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -261,7 +261,7 @@ public class HandUi {
         int n = layoutCards.size();
         if (n == 0) return 0;
 
-        float screenWidth = ScreenManager.getViewport().getWorldWidth();
+        float screenWidth = GameContext.I().viewport.getWorldWidth();
         float handWidth = (n - 1) * calcOffset() + getCardWidth();
         return -1 + (screenWidth - handWidth) / 2f;
     }

@@ -19,7 +19,7 @@ public class RoundsManager extends Observable<Integer> {
     private AbstractBoss boss;
 
     private RoundsManager() {
-        setCurrentRound(1);
+        setCurrentRound(3);
         currentTargetScore = targetScorePerRound.get(currentRound);
         ScoreProgressBar.I().setMaxValue(currentTargetScore);
     }

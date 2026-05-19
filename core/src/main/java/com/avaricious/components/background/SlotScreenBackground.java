@@ -1,6 +1,6 @@
 package com.avaricious.components.background;
 
-import com.avaricious.screens.ScreenManager;
+import com.avaricious.utility.GameContext;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
@@ -64,7 +64,7 @@ public class SlotScreenBackground implements Disposable {
         shader.bind();
         shader.setUniformf("u_time", time);
         shader.setUniformf("u_resolution", width, height); // note: now in world units, adjust scanline density in frag if needed
-        shader.setUniformMatrix("u_projTrans", ScreenManager.getViewport().getCamera().combined); // <-- your camera.combined
+        shader.setUniformMatrix("u_projTrans", GameContext.I().viewport.getCamera().combined); // <-- your camera.combined
         mesh.render(shader, GL20.GL_TRIANGLES);
     }
 

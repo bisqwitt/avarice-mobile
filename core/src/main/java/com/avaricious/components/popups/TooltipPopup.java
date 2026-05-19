@@ -3,10 +3,10 @@ package com.avaricious.components.popups;
 import com.avaricious.items.AbstractItem;
 import com.avaricious.items.IItemWithRarity;
 import com.avaricious.items.IItemWithType;
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -81,8 +81,8 @@ public class TooltipPopup {
     public void render(SpriteBatch batch, float delta) {
         updateAlpha(delta);
         TextureRegion box = boxes.get(calcDescriptionLineAmount());
-        float worldWidth = ScreenManager.getViewport().getWorldWidth();
-        float worldHeight = ScreenManager.getViewport().getWorldHeight();
+        float worldWidth = GameContext.I().viewport.getWorldWidth();
+        float worldHeight = GameContext.I().viewport.getWorldHeight();
 
         float boxWidth = 82 / 15f;
         float boxHeight = box.getRegionHeight() / 15f;

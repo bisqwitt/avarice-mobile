@@ -1,8 +1,8 @@
 package com.avaricious.components.popups;
 
-import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -66,7 +66,7 @@ public class TextBoxPopup {
     }
 
     protected float calcBoxX() {
-        float worldWidth = ScreenManager.getViewport().getWorldWidth();
+        float worldWidth = GameContext.I().viewport.getWorldWidth();
         return pos.x < 0.25f
             ? 0.25f : pos.x + boxWidth > worldWidth - 0.25f
             ? worldWidth - boxWidth - 0.25f : pos.x;

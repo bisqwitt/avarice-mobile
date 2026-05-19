@@ -2,7 +2,6 @@ package com.avaricious.utility;
 
 import com.avaricious.DevTools;
 import com.avaricious.effects.BorderPulseMesh;
-import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -59,7 +58,7 @@ public class Pencil {
 
         if (DevTools.showMouseLocation()) {
             Vector2 mouseLocation = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-            ScreenManager.getViewport().unproject(mouseLocation);
+            GameContext.I().viewport.unproject(mouseLocation);
             mouseLocationTxt.setText(Assets.I().getSmallFont(), mouseLocation.x + "/" + mouseLocation.y);
             new FontDrawing(Assets.I().getSmallFont(), mouseLocationTxt, new Vector2(mouseLocation.x * 100, mouseLocation.y * 100), ZIndex.PACK_OPENING)
                 .draw(batch);
@@ -96,8 +95,8 @@ public class Pencil {
         Pencil.I().addDrawing(new TextureDrawing(
             charcoal,
             -1f, -1f,
-            ScreenManager.getViewport().getWorldWidth() + 2,
-            ScreenManager.getViewport().getWorldHeight() + 2
+            GameContext.I().viewport.getWorldWidth() + 2,
+            GameContext.I().viewport.getWorldHeight() + 2
             ,
             dimLayer
         ));

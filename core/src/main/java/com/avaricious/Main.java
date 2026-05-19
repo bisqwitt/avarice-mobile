@@ -1,8 +1,11 @@
 package com.avaricious;
 
+import com.avaricious.network.NetworkController;
+import com.avaricious.screens.InQueueScreen;
 import com.avaricious.screens.ScreenManager;
-import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.DeviceInfo;
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Game;
@@ -16,9 +19,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends Game {
-    SpriteBatch batch;
-    FitViewport viewport;
-    FitViewport uiViewport;
+
+    private SpriteBatch batch;
+    private FitViewport viewport;
+    private FitViewport uiViewport;
+    private final DeviceInfo deviceInfo;
+
+    public Main(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+    }
 
     @Override
     public void create() {
@@ -34,10 +43,10 @@ public class Main extends Game {
         viewport = new FitViewport(9, 20);
         uiViewport = new FitViewport(900, 2000);
 
-        ScreenManager.setBatch(batch);
-        ScreenManager.setUiViewport(uiViewport);
-        ScreenManager.setViewport(viewport);
-        ScreenManager.create(this).setScreen(SlotScreen.class);
+        GameContext.init(batch, viewport, uiViewport, deviceInfo);
+        NetworkController.I().connect();
+
+        ScreenManager.create(this).setScreen(InQueueScreen.class);
     }
 
     public FitViewport getViewport() {

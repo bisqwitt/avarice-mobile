@@ -12,7 +12,6 @@ import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.utility.Listener;
-import com.avaricious.utility.playerRun.PlayerRunManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
@@ -84,7 +83,6 @@ public class GameStateManager {
         ItemBag.I().setItems(instantiateItems(gameState.items, AbstractItem.class));
 
         applyingLoadedState = false;
-
         appliedLoadedState = true;
     }
 
@@ -101,7 +99,7 @@ public class GameStateManager {
         String data = json.prettyPrint(gameState);
         file.writeString(data, false);
 
-        PlayerRunManager.I().updatePlayerRun(gameState);
+//        PlayerRunManager.I().updatePlayerRun(gameState);
     }
 
     private <T> void observeValue(

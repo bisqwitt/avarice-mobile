@@ -1,6 +1,6 @@
 package com.avaricious.utility.playerRun;
 
-import com.avaricious.network.ApiClient;
+import com.avaricious.network.NetworkController;
 import com.avaricious.utility.gameState.GameState;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -56,7 +56,7 @@ public class PlayerRunManager {
 
     public void updatePlayerRoundEndScore(int round, int score) {
         playerRun.roundEndScores.add(new PlayerRoundEndScore(round, score));
-        ApiClient.I().sendScore(round, score);
+        NetworkController.I().match().sendRoundEndScore(round, score);
     }
 
     public PlayerRun getPlayerRun() {
