@@ -19,7 +19,7 @@ public class RoundsManager extends Observable<Integer> {
     private AbstractBoss boss;
 
     private RoundsManager() {
-        setCurrentRound(3);
+        setCurrentRound(1);
         currentTargetScore = targetScorePerRound.get(currentRound);
         ScoreProgressBar.I().setMaxValue(currentTargetScore);
     }
@@ -59,7 +59,7 @@ public class RoundsManager extends Observable<Integer> {
     }
 
     public boolean isPlayerCombatRound() {
-        return isPlayerCombatRound;
+        return currentRound % 3 == 0;
     }
 
     public Integer getCurrentRound() {
@@ -78,7 +78,7 @@ public class RoundsManager extends Observable<Integer> {
 
 //        if (currentRound % 3 == 0) boss = AbstractBoss.getRandomBoss();
 //        else if (isBossRound()) boss = null;
-        isPlayerCombatRound = currentRound % 3 == 0;
+//        isPlayerCombatRound = ;
 
         GameStateLogger.I().onNewRound();
 

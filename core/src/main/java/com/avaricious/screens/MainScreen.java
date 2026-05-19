@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class MainScreen extends ScreenAdapter {
     private final Main app;
 
-    private final WarpBackground background = new WarpBackground();
+//    private final WarpBackground background = new WarpBackground();
     private final AvariceText title = new AvariceText();
 
     private final Button joinQueueButton = new Button(this::onJoinQueueButtonPressed,
@@ -71,7 +71,7 @@ public class MainScreen extends ScreenAdapter {
 
         app.getViewport().apply();
 
-        background.render(batch, delta);
+//        background.render(batch, delta);
 
         title.draw(delta);
 

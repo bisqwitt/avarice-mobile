@@ -50,7 +50,7 @@ public class ButtonBoard {
 
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
         spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+//        cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 
     public void draw(float delta) {
@@ -60,7 +60,7 @@ public class ButtonBoard {
         cashoutButton.update(delta);
 
         spinAgainButton.draw();
-        cashoutButton.draw();
+//        cashoutButton.draw();
     }
 
     public void moveOut() {

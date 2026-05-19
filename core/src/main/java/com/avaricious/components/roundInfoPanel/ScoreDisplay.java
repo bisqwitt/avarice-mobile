@@ -93,7 +93,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
         ));
 
         streakNumber.draw(delta);
-        scoreProgressBar.draw();
+//        scoreProgressBar.draw();
     }
 
     public void addScore(int amount) {

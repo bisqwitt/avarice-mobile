@@ -3,6 +3,7 @@ package com.avaricious.screens;
 import com.avaricious.Main;
 import com.avaricious.WaitingForEnemyWindow;
 import com.avaricious.components.DigitalNumber;
+import com.avaricious.components.HealthUi;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.texts.EnemyText;
 import com.avaricious.components.texts.PlayerText;
@@ -27,27 +28,27 @@ public class PlayerCombatScreen extends ScreenAdapter {
     private final WaitingForEnemyWindow waitingForEnemyWindow = new WaitingForEnemyWindow();
 
     private final PlayerText playerText = new PlayerText(
-        new Vector2(2, 16.5f), 12f, 0.1f, ZIndex.SLOT_MACHINE
+        new Vector2(2, 5f), 12f, 0.1f, ZIndex.SLOT_MACHINE
     );
     private final DigitalNumber playerHealth = new DigitalNumber(
         PlayerRunManager.I().getPlayerRun().playerHealth, Assets.I().healthRedColor(),
-        new Rectangle(2, 15, 7 / 10f, 11 / 10f), 1
+        new Rectangle(2, 3.5f, 7 / 10f, 11 / 10f), 1
     );
     private final DigitalNumber playerScore = new DigitalNumber(
         500, Assets.I().lightColor(),
-        new Rectangle(2f, 12.5f, 7 / 10f, 11 / 10f), 1
+        new Rectangle(2f, 7.5f, 7 / 10f, 11 / 10f), 1
     );
 
     private final EnemyText enemyText = new EnemyText(
-        new Vector2(2f, 5f), 12f, 0.1f, ZIndex.SLOT_MACHINE
+        new Vector2(2f, 16.5f), 12f, 0.1f, ZIndex.SLOT_MACHINE
     );
     private final DigitalNumber enemyHealth = new DigitalNumber(
         PlayerRunManager.I().getEnemyRun().playerHealth, Assets.I().healthRedColor(),
-        new Rectangle(2, 3.5f, 7 / 10f, 11 / 10f), 1
+        new Rectangle(2, 15f, 7 / 10f, 11 / 10f), 1
     );
     private final DigitalNumber enemyScore = new DigitalNumber(
         0, Assets.I().lightColor(),
-        new Rectangle(2f, 7.5f, 7 / 10f, 11 / 10f), 1
+        new Rectangle(2f, 12.5f, 7 / 10f, 11 / 10f), 1
     );
 
     private boolean playerScoreIsHigher = false;
@@ -138,7 +139,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
         waitingForEnemyWindow.close();
         enemyDataReceived = true;
 
-        playerHealth.setValue(PlayerRunManager.I().getPlayerRun().playerHealth);
+        playerHealth.setValue(HealthUi.I().getHealth());
         playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
 
         enemyHealth.setValue(1000);
@@ -155,16 +156,16 @@ public class PlayerCombatScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                moveTo(new Vector2(2, 14), new Vector2(2, 6), 1);
+                moveTo(new Vector2(2, 6), new Vector2(2, 14), 1);
             }
-        }, 1.25f);
+        }, 1.5f);
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                moveTo(new Vector2(2, 10.5f), new Vector2(2, 9.5f), 0.25f);
+                moveTo(new Vector2(2f, 9.5f), new Vector2(2, 10.5f), 0.25f);
             }
-        }, 2.25f);
+        }, 2.5f);
 
         Timer.schedule(new Timer.Task() {
             @Override
@@ -180,14 +181,14 @@ public class PlayerCombatScreen extends ScreenAdapter {
 
                 lower.setColor(Assets.I().healthRedColor());
             }
-        }, 2.4f);
+        }, 2.65f);
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                moveTo(new Vector2(2f, 12.5f), new Vector2(2f, 7.5f), 0.5f);
+                moveTo(new Vector2(2f, 7.5f), new Vector2(2f, 12.5f), 0.5f);
             }
-        }, 2.5f);
+        }, 2.75f);
 
         Timer.schedule(new Timer.Task() {
             @Override
@@ -196,14 +197,14 @@ public class PlayerCombatScreen extends ScreenAdapter {
                 DigitalNumber health = playerScoreIsHigher ? enemyHealth : playerHealth;
                 lerpTo(score, health, 0, health.getValue() + score.getValue(), 0.25f);
             }
-        }, 3.25f);
+        }, 3.5f);
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 ScreenManager.I().setScreen(SlotScreen.class);
             }
-        }, 4.25f);
+        }, 5f);
     }
 
     private void moveTo(Vector2 playerScoreTargetPos, Vector2 enemyScoreTargetPos, float duration) {

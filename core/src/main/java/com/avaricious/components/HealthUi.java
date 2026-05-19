@@ -6,6 +6,7 @@ import com.avaricious.components.texts.ArmorText;
 import com.avaricious.components.texts.HealthText;
 import com.avaricious.effects.BorderPulseMesh;
 import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.EvadeChance;
 import com.avaricious.utility.AssetKey;
@@ -33,10 +34,10 @@ public class HealthUi extends Observable<HealthState> {
     private final ArmorText armorText = new ArmorText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.HEALTH_UI);
 
     private HealthUi() {
-        armor = new DigitalNumber(0, Assets.I().silver(), 1,
+        armor = new DigitalNumber(10, Assets.I().silver(), 2,
             new Rectangle(3f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
-        health = new DigitalNumber(100, Assets.I().healthRedColor(), 3,
+        health = new DigitalNumber(1000, Assets.I().healthRedColor(), 4,
             new Rectangle(0.65f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
         health.getScaleEffect().setStrength(0.08f, 1.25f);
         health.getScaleEffect().setAllowed(true);
@@ -44,8 +45,8 @@ public class HealthUi extends Observable<HealthState> {
     }
 
     public void draw(float delta) {
-        healthText.draw(delta);
-        health.draw(delta);
+//        healthText.draw(delta);
+//        health.draw(delta);
         armorText.draw(delta);
         armor.draw(delta);
     }
@@ -72,12 +73,10 @@ public class HealthUi extends Observable<HealthState> {
             if (spill > 0) {
                 damageHealth((int) spill);
                 damagedHealth = true;
-                ScoreDisplay.I().clearPotentialScore();
             }
         } else {
             damageHealth(damage);
             damagedHealth = true;
-            ScoreDisplay.I().clearPotentialScore();
         }
 
         if (health.getValue() <= 0) {
@@ -111,7 +110,8 @@ public class HealthUi extends Observable<HealthState> {
     }
 
     private void damageHealth(int damage) {
-        setHealth((int) health.getValue() - damage);
+        ScreenManager.I().getScreen(SlotScreen.class).onCashoutButtonPressed();
+//        setHealth((int) health.getValue() - damage);
         BorderPulseMesh.I().triggerOnce(BorderPulseMesh.Type.BLOODY);
         ScreenShake.I().addTrauma(0.55f);
     }

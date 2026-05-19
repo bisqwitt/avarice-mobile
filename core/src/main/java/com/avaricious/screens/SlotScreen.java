@@ -76,7 +76,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private final ScreenShake screenShake;
 
-    private final BackgroundLayer backgroundLayer = new BackgroundLayer();
+//    private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
     private final ButtonBoard buttonBoard = ButtonBoard.I()
         .init(this::onSpinButtonPressed, this::onCashoutButtonPressed);
@@ -114,7 +114,7 @@ public class SlotScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        backgroundLayer.init();
+//        backgroundLayer.init();
         slotMachine.setOnLastReelFinished(this::runResult);
 
         if (!GameStateManager.I().appliedLoadedState())
@@ -124,9 +124,10 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
-//                shop.show();
             }
         }, 1);
+
+        if(RoundsManager.I().isPlayerCombatRound()) shop.show();
     }
 
     @Override
@@ -216,7 +217,7 @@ public class SlotScreen extends ScreenAdapter {
         ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        }
-        backgroundLayer.handleInput();
+//        backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         ItemBag.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -227,7 +228,7 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            if (healthUi.damage(20)) isFirstStreakIncrease = true;
+            if (healthUi.damage(10)) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
             return;
@@ -375,7 +376,7 @@ public class SlotScreen extends ScreenAdapter {
         }
     }
 
-    private void onCashoutButtonPressed() {
+    public void onCashoutButtonPressed() {
         int score = roundInfoPanel.getScoreDisplay().calcPotentialValue();
         roundInfoPanel.getScoreDisplay().addScore(score);
 
@@ -384,22 +385,22 @@ public class SlotScreen extends ScreenAdapter {
 
         AudioManager.I().endPayout();
 
-        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() && !RoundsManager.I().isPlayerCombatRound())
-            return;
-
-//        if (RoundsManager.I().isBossRound()) openBossLootWindow();
-        else {
-            onTargetScoreReached(score);
-        }
+//        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() && !RoundsManager.I().isPlayerCombatRound())
+//            return;
+//
+////        if (RoundsManager.I().isBossRound()) openBossLootWindow();
+//        else {
+        onTargetScoreReached(score);
+//        }
     }
 
     public void onTargetScoreReached(int score) {
         PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
-        if (RoundsManager.I().isPlayerCombatRound()) {
+//        if (RoundsManager.I().isPlayerCombatRound()) {
             ScreenManager.I().setScreen(PlayerCombatScreen.class);
-        } else {
-            shop.show();
-        }
+//        } else {
+//            shop.show();
+//        }
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
         healthUi.healHealth();
@@ -414,6 +415,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
+        HealthUi.I().addArmor(10);
         drawStartingHand();
         roundInfoPanel.getScoreDisplay().setScore(0);
     }
