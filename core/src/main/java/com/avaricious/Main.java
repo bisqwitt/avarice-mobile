@@ -2,6 +2,7 @@ package com.avaricious;
 
 import com.avaricious.network.NetworkController;
 import com.avaricious.screens.InQueueScreen;
+import com.avaricious.screens.MainScreen;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.DeviceInfo;
@@ -46,7 +47,7 @@ public class Main extends Game {
         GameContext.init(batch, viewport, uiViewport, deviceInfo);
         NetworkController.I().connect();
 
-        ScreenManager.create(this).setScreen(InQueueScreen.class);
+        ScreenManager.create(this).setScreen(MainScreen.class);
     }
 
     public FitViewport getViewport() {

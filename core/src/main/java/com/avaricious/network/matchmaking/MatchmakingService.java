@@ -1,5 +1,9 @@
 package com.avaricious.network.matchmaking;
 
+import com.avaricious.screens.InQueueScreen;
+import com.avaricious.screens.MainScreen;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.badlogic.gdx.Gdx;
 
 public class MatchmakingService {
@@ -7,8 +11,7 @@ public class MatchmakingService {
     public void onQueueJoined() {
         Gdx.app.postRunnable(() -> {
             Gdx.app.log("MATCHMAKING", "Queue joined");
-
-            // Waiting for opponent Screen
+            ScreenManager.I().setScreen(InQueueScreen.class);
         });
     }
 
@@ -19,15 +22,14 @@ public class MatchmakingService {
             Gdx.app.log("MATCHMAKING", "Me: " + playerId);
             Gdx.app.log("MATCHMAKING", "Opponent: " + opponentId);
 
-            // switch screen / update state here
+            ScreenManager.I().setScreen(SlotScreen.class);
         });
     }
 
     public void onOpponentLeft(String roomId) {
         Gdx.app.postRunnable(() -> {
             Gdx.app.log("GAME", "Opponent left match");
-
-            // show message / return to menu
+            ScreenManager.I().setScreen(MainScreen.class);
         });
     }
 
