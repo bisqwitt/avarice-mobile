@@ -42,4 +42,9 @@ public class CreditNumber extends DigitalNumber {
             scale, rotation,
             getZIndex(), color));
     }
+
+    @Override
+    public float getWidth() {
+        return super.getWidth() + 0.05f + firstDigitBounds.width;
+    }
 }

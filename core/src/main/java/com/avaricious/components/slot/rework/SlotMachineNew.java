@@ -1,10 +1,12 @@
-package com.avaricious.components.slot;
+package com.avaricious.components.slot.rework;
 
 import com.avaricious.Main;
 import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
+import com.avaricious.components.slot.Body;
+import com.avaricious.components.slot.Symbol;
 import com.avaricious.components.slot.pattern.PatternFinder;
 import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
@@ -12,7 +14,6 @@ import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
@@ -22,21 +23,19 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class SlotMachine {
+public class SlotMachineNew {
 
-    private static SlotMachine instance;
+    private static SlotMachineNew instance;
 
-    public static SlotMachine I() {
-        return instance == null ? instance = new SlotMachine() : instance;
+    public static SlotMachineNew I() {
+        return instance == null ? instance = new SlotMachineNew() : instance;
     }
 
     // --- Layout ---
@@ -52,7 +51,7 @@ public class SlotMachine {
 
     public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.325f, 8.95f, 6.425f);
 
-    private final List<Reel> reels = new ArrayList<>();
+    private final List<ReelNew> reels = new ArrayList<>();
     private final Body[][] grid = new Body[cols][rows];
     private final GlyphLayout bossDescription = new GlyphLayout();
 
@@ -65,7 +64,18 @@ public class SlotMachine {
 
     private boolean stale = true;
 
-    private SlotMachine() {
+    private final SpinResultGenerator resultGenerator = new SpinResultGenerator();
+    private final ReelStripBuilder stripBuilder = new ReelStripBuilder();
+    private final ReelStripPlanner stripPlanner = new ReelStripPlanner();
+
+    private List<Symbol> baseStrip;
+    private SpinResult currentResult;
+
+    private boolean spinning = false;
+    private boolean spinFinishedCallbackCalled = false;
+    private float spinTime = 0f;
+
+    private SlotMachineNew() {
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -89,32 +99,53 @@ public class SlotMachine {
         }
 
         for (int c = 0; c < cols; c++) {
-            reels.add(new Reel(rows, () -> {
-                spinningReels--;
-                if (spinningReels == 0) onLastReelFinished.run();
-            }));
+            reels.add(new ReelNew(rows));
         }
         buildStrip();
 
         Arrays.stream(grid)
             .flatMap(Arrays::stream)
             .filter(Objects::nonNull)
-            .forEach(body -> body.idleSwayEffect.setStrength(2.5f, 0.8f));
+            .forEach(body -> body.getIdleSwayEffect().setStrength(2.5f, 0.8f));
     }
 
     private void update(float delta) {
-        for (int c = 0; c < cols; c++) {
-            reels.get(c).update(delta);
+        if (spinning) {
+            spinTime += delta;
         }
+
+        for (int c = 0; c < cols; c++) {
+            reels.get(c).update(delta, spinTime);
+        }
+
         Arrays.stream(grid)
             .flatMap(Arrays::stream)
             .filter(Objects::nonNull)
             .forEach(body -> body.update(delta));
 
         if (desiredAlpha != alpha) {
-            float speed = 10f; // higher = faster convergence
+            float speed = 10f;
             alpha = MathUtils.lerp(alpha, desiredAlpha, speed * delta);
         }
+
+        if (spinning && !spinFinishedCallbackCalled && allReelsFinished()) {
+            spinning = false;
+            spinFinishedCallbackCalled = true;
+
+            if (onLastReelFinished != null) {
+                onLastReelFinished.run();
+            }
+        }
+    }
+
+    private boolean allReelsFinished() {
+        for (ReelNew reel : reels) {
+            if (!reel.isFinished()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void draw(Main app, float delta) {
@@ -169,7 +200,7 @@ public class SlotMachine {
     }
 
     private void drawSymbol(Vector2 gridPos) {
-        Reel reel = reels.get((int) gridPos.x);
+        ReelNew reel = reels.get((int) gridPos.x);
         Symbol symbol = reel.symbolAtRow((int) gridPos.y);
 
         final float stepX = CELL_W + spacingX;
@@ -177,7 +208,7 @@ public class SlotMachine {
 
         boolean isInGrid = isInGrid(gridPos);
 
-        final float stepY = (CELL_H + spacingY);
+        final float stepY = CELL_H + spacingY;
         final float topY = originY + (rows - 1) * stepY;
         float drawY = topY - (gridPos.y + reel.frac()) * stepY;
 
@@ -190,24 +221,19 @@ public class SlotMachine {
         if (isInGrid) {
             Body body = grid[(int) gridPos.x][(int) gridPos.y];
             adjY += body.getIdleFloatYOffset();
-            if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
+
+            if (runningResults && !body.isInPatternHit()) {
+                alpha = 0.5f;
+            }
         }
 
-//        if (adjY > 13.55f) {
-//            float t = 1f - ((adjY - 13.55f) / 0.5f);
-//            alpha *= Math.max(0f, Math.min(1f, t));
-//        } else if (adjY < 8.45f) {
-//            float t = 1f - ((8.45f - adjY) / 0.5f);
-//            alpha *= Math.max(0f, Math.min(1f, t));
-//        }
+        float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
+        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 
         if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
             || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
             || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
             alpha = 0.5f;
-
-        float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
-        float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
@@ -223,100 +249,81 @@ public class SlotMachine {
         ));
     }
 
-    // --- spin control (organic staggered start/stop, aligned to center row) ---
-//    public void spin() {
-//        spinningReels = cols;
-//        stale = false;
-//
-//        float startSpeed = 16f;
-//        float startStagger = 0.1f;
-//        float stopStagger = 0.25f;
-//
-//        for (int c = 0; c < cols; c++) {
-//            final int col = c;
-//
-//            float startDelay = col * startStagger;
-//            float stopDelay = 0.5f + col * stopStagger;
-//
-//            float reelSpeed = startSpeed + SeededRandomizer.nextFloat(-0.7f, 0.7f);
-//
-//            Reel reel = reels.get(col);
-//            int targetIndex = SeededRandomizer.nextInt(0, reel.stripSize() - 1);
-//
-//            Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    reels.get(col).start(reelSpeed);
-//                }
-//            }, startDelay);
-//
-//            Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    int minDistance = 8 + col * 4;
-//                    reels.get(col).requestStopAtIndex(targetIndex, minDistance);
-//                }
-//            }, 0.6f + col * 0.12f);
-//        }
-//    }
-
     public void spin() {
-        spinningReels = cols;
         stale = false;
+        spinning = true;
+        spinFinishedCallbackCalled = false;
+        spinTime = 0f;
 
-        float startSpeed = 16f;
-        float startStagger = 0.1f;
-        float stopStagger = 0.5f;
+        currentResult = resultGenerator.generate(cols, rows);
+
+        float startStagger = 0.08f;
+
+        float firstReelFinish = 2.15f;
+        float finishGap = 0.35f;
+
+        float settleDuration = 0.28f;
+
+        int baseTravelDistance = 34;
+        int travelDistanceStep = 6;
 
         for (int c = 0; c < cols; c++) {
             final int col = c;
-            float startDelay = c * startStagger;
-            float stopDelay = cols * startStagger + c * stopStagger;
+            ReelNew reel = reels.get(col);
 
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    reels.get(col).start(startSpeed + MathUtils.random(-0.7f, 0.7f)); // tiny per-reel variation
-                }
-            }, startDelay);
+            ReelStripPlanner.PlannedReel planned =
+                stripPlanner.createPlannedReel(baseStrip, currentResult, col, rows);
 
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    reels.get(col).requestStopAlignCenter(0); // at least 2 full strip loops after stop requested
-                }
-            }, 1f + stopDelay);
+            reel.setStrip(planned.strip);
+
+            float startTime = col * startStagger;
+            float finishTime = firstReelFinish + col * finishGap;
+            float settleStartTime = finishTime - settleDuration;
+
+            int preferredTravelDistance = baseTravelDistance + col * travelDistanceStep;
+
+            float startPos = reel.currentPos();
+            float targetPos = calculateAbsoluteTargetPos(
+                reel,
+                planned.targetIndex,
+                preferredTravelDistance
+            );
+
+            ReelSpinPlan plan = new ReelSpinPlan(
+                startTime,
+                settleStartTime,
+                finishTime,
+                startPos,
+                targetPos,
+                0.16f,
+                col * 13.37f
+            );
+
+            reel.play(plan, null);
         }
     }
 
     // Returns each matching line as a List<Slot>
     public List<PatternHitContext> findMatches() {
-        Symbol[][] symbolMap = new Symbol[cols][rows];
+        Symbol[][] symbolMap = getSymbolMap();
 
-        for (int c = 0; c < reels.size(); c++) {
-            for (int row = 0; row < rows; row++) {
-                symbolMap[c][row] = reels.get(c).symbolAtRow(row);
-            }
-        }
-
-        // Raw matches (symbol + positions)
         List<PatternMatch> matches = PatternFinder.findMatches(symbolMap);
 
-        // Build final slot-based matches
         List<PatternHitContext> result = new ArrayList<>();
 
         for (PatternMatch match : matches) {
-
             List<Body> bodies = new ArrayList<>();
+
             for (Vector2 pos : match.getPositions()) {
                 Body body = grid[(int) pos.x][(int) pos.y];
-//                slot.setInPatternHit(true);
                 bodies.add(body);
             }
+
             result.add(new PatternHitContext(match.getSymbol(), bodies));
         }
 
         result.sort(Comparator.comparingInt(o -> o.getSymbol().ordinal()));
+
         return result;
     }
 
@@ -330,21 +337,11 @@ public class SlotMachine {
     }
 
     public void buildStrip() {
-        List<Symbol> baseStrip = new ArrayList<>();
+        baseStrip = stripBuilder.buildBaseStrip();
 
-        Arrays.stream(Symbol.values())
-            .forEach(symbol -> {
-                for (int i = 0; i < symbol.poolCount() / 2; i++) {
-                    baseStrip.add(symbol);
-                }
-            });
-
-        for (Reel reel : reels) {
-            List<Symbol> reelStrip = new ArrayList<>(baseStrip);
-            Collections.shuffle(reelStrip, SeededRandomizer.get());
-            reel.setStrip(reelStrip);
+        for (ReelNew reel : reels) {
+            reel.setStrip(stripBuilder.buildShuffledStrip(baseStrip));
         }
-
     }
 
     private boolean isInGrid(Vector2 pos) {
@@ -364,12 +361,18 @@ public class SlotMachine {
     }
 
     public Symbol[][] getSymbolMap() {
+        if (currentResult != null) {
+            return currentResult.symbols();
+        }
+
         Symbol[][] symbolMap = new Symbol[cols][rows];
+
         for (int c = 0; c < reels.size(); c++) {
             for (int row = 0; row < rows; row++) {
                 symbolMap[c][row] = reels.get(c).symbolAtRow(row);
             }
         }
+
         return symbolMap;
     }
 
@@ -379,5 +382,29 @@ public class SlotMachine {
 
     public boolean isStale() {
         return stale;
+    }
+
+    private float calculateAbsoluteTargetPos(
+        ReelNew reel,
+        int targetIndex,
+        int preferredTravelDistance
+    ) {
+        int stripLen = reel.stripSize();
+
+        int currentBase = (int) Math.floor(reel.currentPos());
+        int currentIndex = mod(currentBase, stripLen);
+
+        int forward = mod(targetIndex - currentIndex, stripLen);
+
+        while (forward < preferredTravelDistance) {
+            forward += stripLen;
+        }
+
+        return currentBase + forward;
+    }
+
+    private static int mod(int x, int m) {
+        int r = x % m;
+        return r < 0 ? r + m : r;
     }
 }

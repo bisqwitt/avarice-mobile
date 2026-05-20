@@ -16,4 +16,7 @@ public class SocketEvents {
     public static final String ROUND_END_WAITING = "roundEndWaiting";
     public static final String ROUND_END_RESULT = "roundEndResult";
 
+    // Health
+    public static final String HEALTH_UPDATE = "healthUpdate";
+    public static final String OPPONENT_HEALTH_CHANGED = "opponentHealthRequest";
 }

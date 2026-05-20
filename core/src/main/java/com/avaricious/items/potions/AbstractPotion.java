@@ -29,8 +29,7 @@ public abstract class AbstractPotion extends AbstractUpgrade {
     }
 
     public static final List<Class<? extends AbstractPotion>> allPotionClasses = Collections.unmodifiableList(Arrays.asList(
-        HealthPotion.class,
-        ShieldPotion.class,
+        TryPotion.class,
         CardPotion.class,
         StreakPotion.class
     ));

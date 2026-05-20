@@ -1,12 +1,15 @@
 package com.avaricious.components.roundInfoPanel;
 
-import com.avaricious.CreditScoreWithText;
+import com.avaricious.CreditScore;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.texts.CreditsText;
+import com.avaricious.components.texts.FabledText;
 import com.avaricious.components.texts.RoundText;
+import com.avaricious.components.texts.SpinsText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
@@ -16,7 +19,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class RoundInfoPanel {
+public class RoundInfoPanel extends Observable<Float> {
+
+    private static RoundInfoPanel instance;
+
+    public static RoundInfoPanel I() {
+        return instance == null ? instance = new RoundInfoPanel() : instance;
+    }
 
     private final ScoreDisplay scoreDisplay = ScoreDisplay.I();
 
@@ -24,11 +33,16 @@ public class RoundInfoPanel {
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
-    private final RoundText roundText = new RoundText(new Vector2(5.25f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final RoundText roundText = new RoundText(new Vector2(0.475f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber currentRoundNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
-        new Rectangle(5.75f, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+        new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+
+    private final SpinsText spinsText = new SpinsText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final DigitalNumber spinsNumber = new DigitalNumber(0, new Color(1f, 1f, 1f, 1f), 1,
+        new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+
     private final CreditsText creditsText = new CreditsText(new Vector2(7f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
-    private final CreditScoreWithText creditScore = new CreditScoreWithText(new Vector2(4.95f, 18.35f), 23f, 0.4f);
+    private final CreditScore creditScore = new CreditScore(new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
     private final TextureRegion black = Assets.I().get(AssetKey.BLACK_PIXEL);
     private final TextureRegion white = Assets.I().get(AssetKey.WHITE_PIXEL);
@@ -40,7 +54,7 @@ public class RoundInfoPanel {
 
     private float unfoldAmount = 0f;
 
-    public RoundInfoPanel() {
+    private RoundInfoPanel() {
         RoundsManager.I().onChange(currentRoundNumber::setValue);
     }
 
@@ -84,10 +98,14 @@ public class RoundInfoPanel {
                 currentPanelBounds.y = targetPanelY;
             }
         }
+
+        centerRoundInfoNumbers();
     }
 
     public void draw(float delta) {
         update(delta);
+        Pencil.I().addDrawing(new TextureDrawing(black,
+            0, 18f, 9f, 5f, ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()));
 
         // For Camera Shake
         Rectangle drawBounds = new Rectangle(currentPanelBounds);
@@ -95,13 +113,13 @@ public class RoundInfoPanel {
         drawBounds.width += 6;
         drawBounds.height += 3;
 
+        spinsText.draw(delta);
+        spinsNumber.draw(delta);
         roundText.draw(delta);
         currentRoundNumber.draw(delta);
         creditsText.draw(delta);
         creditScore.draw(delta);
 
-        Pencil.I().addDrawing(new TextureDrawing(black,
-            0, 18f, 9f, 5f, ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()));
         Pencil.I().addDrawing(new TextureDrawing(white,
             0, 18f, 9f, 0.05f, ZIndex.SCORE_DISPLAY));
 
@@ -117,8 +135,35 @@ public class RoundInfoPanel {
 //        }
     }
 
-    public ScoreDisplay getScoreDisplay() {
-        return scoreDisplay;
+    private void centerRoundInfoNumbers() {
+        centerNumberToText(roundText, currentRoundNumber);
+        centerNumberToText(spinsText, spinsNumber);
+        centerNumberToText(creditsText, creditScore);
+    }
+
+    private void centerNumberToText(FabledText text, DigitalNumber number) {
+        float textX = text.getStartingPos().x;
+        float textWidth = text.getWidth();
+        float numberWidth = number.getWidth();
+
+        number.getFirstDigitBounds().x = textX + (textWidth / 2f) - (numberWidth / 2f);
+    }
+
+    public void setSpins(float value) {
+        spinsNumber.setValue(value);
+        notifyChanged(snapshot());
+    }
+
+    public void addSpin() {
+        setSpins(getSpins() + 1);
+    }
+
+    public void minusSpin() {
+        setSpins(getSpins() - 1);
+    }
+
+    public float getSpins() {
+        return spinsNumber.getValue();
     }
 
     private void updateUnfoldAmount() {
@@ -128,5 +173,10 @@ public class RoundInfoPanel {
             0f,
             1f
         );
+    }
+
+    @Override
+    protected Float snapshot() {
+        return spinsNumber.getValue();
     }
 }

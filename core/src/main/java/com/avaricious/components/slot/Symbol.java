@@ -43,7 +43,7 @@ public enum Symbol {
         baseValue = value;
     }
 
-    public Integer baseSpawnChance() {
+    public Integer poolCount() {
         return baseSpawnChance;
     }
 

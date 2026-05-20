@@ -2,26 +2,18 @@ package com.avaricious;
 
 public class DevTools {
 
-    private static final boolean active = false;
-
-    public static boolean onlyLemon() {
-        return active && false;
-    }
-
-    public static boolean lemonCherry() {
-        return active && false;
-    }
+    private static final boolean active = true;
 
     public static boolean audioMuted() {
         return active && false;
     }
 
     public static boolean enableProfiler() {
-        return active && true;
+        return active && false;
     }
 
     public static boolean testRings() {
-        return active && true;
+        return active && false;
     }
 
     public static boolean allCardsInDeck() {
@@ -37,6 +29,14 @@ public class DevTools {
     }
 
     public static boolean showMouseLocation() {
+        return active && false;
+    }
+
+    public static boolean opponentDefaultValues() {
+        return active && true;
+    }
+
+    public static boolean rewriteSaveFile() {
         return active && true;
     }
 

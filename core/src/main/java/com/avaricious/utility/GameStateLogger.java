@@ -21,12 +21,10 @@ public class GameStateLogger {
 
     private final List<AbstractCard> playedCardsThisRound = new ArrayList<>();
     private boolean defenceTypeCardsDisabled = false;
-    private boolean cardsDisabledOnNoArmor = false;
 
     public void onNewRound() {
         playedCardsThisRound.clear();
         defenceTypeCardsDisabled = false;
-        cardsDisabledOnNoArmor = false;
     }
 
     public void onCardPlayed(AbstractCard card) {
@@ -49,14 +47,6 @@ public class GameStateLogger {
 
     public boolean defenceTypeCardsDisabled() {
         return defenceTypeCardsDisabled;
-    }
-
-    public void disableCardsOnNoArmor() {
-        cardsDisabledOnNoArmor = true;
-    }
-
-    public boolean cardsDisabledOnNoArmor() {
-        return cardsDisabledOnNoArmor;
     }
 
 }

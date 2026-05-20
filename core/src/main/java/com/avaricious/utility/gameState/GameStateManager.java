@@ -1,10 +1,11 @@
 package com.avaricious.utility.gameState;
 
 import com.avaricious.CreditManager;
+import com.avaricious.DevTools;
 import com.avaricious.RoundsManager;
-import com.avaricious.components.HealthUi;
 import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
+import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.items.AbstractItem;
 import com.avaricious.items.upgrades.Deck;
@@ -31,7 +32,7 @@ public class GameStateManager {
     private GameStateManager() {
         file = Gdx.files.local(GAME_STATE_FILE_NAME);
 
-        observeValue(HealthUi.I()::onChange, healthState -> gameState.healthState = healthState);
+        observeValue(RoundInfoPanel.I()::onChange, tries -> gameState.tries = tries.intValue());
         observeValue(ScoreDisplay.I()::onChange, scoreState -> gameState.scoreState = scoreState);
         observeValue(RoundsManager.I()::onChange, currentRound -> gameState.currentRound = currentRound);
         observeValue(CreditManager.I()::onChange, credits -> gameState.credits = credits);
@@ -72,7 +73,7 @@ public class GameStateManager {
     public void applyLoadedGameState() {
         applyingLoadedState = true;
 
-        HealthUi.I().setHealthState(gameState.healthState);
+        RoundInfoPanel.I().setSpins(gameState.tries);
         ScoreDisplay.I().setScoreState(gameState.scoreState);
         RoundsManager.I().setCurrentRound(gameState.currentRound);
         CreditManager.I().setCredits(gameState.credits);
@@ -87,7 +88,7 @@ public class GameStateManager {
     }
 
     private void loadGameState() {
-        if (!file.exists() || file.length() == 0) {
+        if (!file.exists() || file.length() == 0 || DevTools.rewriteSaveFile()) {
             gameState = new GameState();
             saveGameState();
             return;

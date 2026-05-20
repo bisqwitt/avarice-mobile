@@ -1,29 +1,24 @@
 package com.avaricious.items.potions;
 
-import com.avaricious.components.HealthUi;
+import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class ShieldPotion extends AbstractPotion {
+public class TryPotion extends AbstractPotion {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.SHIELD_POTION);
     private final TextureRegion shadowTexture = Assets.I().get(AssetKey.SHIELD_POTION_SHADOW);
 
     @Override
-    protected void onUse() {
-        HealthUi.I().addArmor(40);
-    }
-
-    @Override
     public String title() {
-        return "Shield Potion";
+        return "Try Potion";
     }
 
     @Override
     public String description() {
-        return "Gain 40 Shield";
+        return "+1 Try";
     }
 
     @Override
@@ -42,13 +37,18 @@ public class ShieldPotion extends AbstractPotion {
     }
 
     @Override
+    public void onUse() {
+        RoundInfoPanel.I().addSpin();
+    }
+
+    @Override
     public float getTextureWidth() {
-        return 14;
+        return 18;
     }
 
     @Override
     public float getTextureHeight() {
-        return 25;
+        return 35;
     }
 
     @Override

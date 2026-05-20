@@ -1,6 +1,5 @@
 package com.avaricious.items.upgrades.cards;
 
-import com.avaricious.components.HealthUi;
 import com.avaricious.components.popups.NumberPopup;
 import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.utility.AssetKey;
@@ -58,8 +57,6 @@ public abstract class AbstractCard extends AbstractUpgrade {
             return true;
         if (GameStateLogger.I().defenceTypeCardsDisabled() && this.type() == CardType.DEFENCE)
             return true;
-        if (GameStateLogger.I().cardsDisabledOnNoArmor() && HealthUi.I().getArmor() == 0)
-            return true;
 
         return false;
     }
@@ -92,25 +89,21 @@ public abstract class AbstractCard extends AbstractUpgrade {
     public static final List<Class<? extends AbstractCard>> allCardClasses = Collections.unmodifiableList(Arrays.asList(
         PointsCard.class,
         MultiCard.class,
-        ArmorCard.class,
+        TriesCard.class,
         OneDollarCard.class,
-        ConvertPointsToArmorCard.class,
         PointsForEachCardInHandCard.class,
         DrawACardIfLastCard.class,
         MultiForEveryCardDiscarded.class,
-        DrawTwoCardsForTenDamage.class,
+        DrawTwoCardsMinusOneTry.class,
         PointsForEverySymbolHit.class,
         PointsForEveryFruitCard.class,
         EitherDoublePointsOrHalveMulti.class,
-        HealForEveryFruitHitCard.class,
         MultiForEveryAttackInHandCard.class,
         DrawACardDefenceCardsDisabledCard.class,
         MultiForEveryDisabledCard.class,
         DrawACardDisabledUntilTwoCardsPlayedCard.class,
         DrawCardsEqualToCurrentStreak.class,
         DrawAndDiscardACard.class,
-        DrawTwoCardsDisabledOnZeroDefence.class,
-        MultiplyCurrentArmorByTwoCard.class,
-        ArmorForEverySymbolHitLastSpin.class
+        ImpersonatorCard.class
     ));
 }

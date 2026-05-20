@@ -17,7 +17,6 @@ import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -120,8 +119,8 @@ public class SymbolSpawnChancePack extends PackOpening {
 
             @Override
             public String description() {
-                return "Increase " + result.toString() + " spawn chance from " + result.baseSpawnChance()
-                    + "% to " + (result.baseSpawnChance() + 5) + "%";
+                return "Increase " + result.toString() + " spawn chance from " + result.poolCount()
+                    + "% to " + (result.poolCount() + 5) + "%";
             }
 
             @Override

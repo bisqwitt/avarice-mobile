@@ -102,4 +102,18 @@ public class FabledText {
     public Vector2 getStartingPos() {
         return startingPos;
     }
+
+    public float getWidth() {
+        if (letterTextures.isEmpty()) {
+            return 0f;
+        }
+
+        int lastIndex = letterTextures.size() - 1;
+        TextureRegion lastLetter = letterTextures.get(lastIndex);
+
+        float lastLetterX = lettersX.get(lastIndex);
+        float lastLetterWidth = lastLetter.getRegionWidth() / sizeRatio;
+
+        return (lastLetterX + lastLetterWidth) - startingPos.x;
+    }
 }

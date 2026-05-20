@@ -2,6 +2,7 @@ package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.progressbar.ScoreProgressBar;
+import com.avaricious.network.NetworkController;
 import com.avaricious.utility.GameStateLogger;
 import com.avaricious.utility.Observable;
 
@@ -15,8 +16,6 @@ public class RoundsManager extends Observable<Integer> {
     public static RoundsManager I() {
         return instance == null ? (instance = new RoundsManager()) : instance;
     }
-
-    private AbstractBoss boss;
 
     private RoundsManager() {
         setCurrentRound(1);
@@ -44,22 +43,16 @@ public class RoundsManager extends Observable<Integer> {
 
     private Integer currentRound;
     private int currentTargetScore;
-    private boolean isPlayerCombatRound = false;
+
+    private int playerHealth = 1000;
+    private int opponentHealth = 1000;
 
     public void nextRound() {
         setCurrentRound(currentRound + 1);
     }
 
-    public boolean isBossRound() {
-        return boss != null;
-    }
-
-    public AbstractBoss getBoss() {
-        return boss;
-    }
-
-    public boolean isPlayerCombatRound() {
-        return currentRound % 3 == 0;
+    public boolean isShopRound() {
+        return currentRound % 3 == 1 && currentRound != 1;
     }
 
     public Integer getCurrentRound() {
@@ -85,6 +78,26 @@ public class RoundsManager extends Observable<Integer> {
         notifyChanged(snapshot());
     }
 
+    public AbstractBoss getBoss() {
+        return null;
+    }
+
+    public int getPlayerHealth() {
+        return playerHealth;
+    }
+
+    public void setPlayerHealth(int playerHealth) {
+        this.playerHealth = playerHealth;
+        NetworkController.I().match().onHealthChanged(playerHealth);
+    }
+
+    public int getOpponentHealth() {
+        return opponentHealth;
+    }
+
+    public void setOpponentHealth(int opponentHealth) {
+        this.opponentHealth = opponentHealth;
+    }
 
     @Override
     protected Integer snapshot() {

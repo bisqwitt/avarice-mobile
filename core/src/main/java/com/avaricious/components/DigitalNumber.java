@@ -189,6 +189,14 @@ public class DigitalNumber {
         return value;
     }
 
+    public void addValue(float amount) {
+        setValue(getValue() + amount);
+    }
+
+    public void subtractValue(float amount) {
+        setValue(getValue() - amount);
+    }
+
     public Rectangle getFirstDigitBounds() {
         return firstDigitBounds;
     }

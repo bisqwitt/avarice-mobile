@@ -371,7 +371,9 @@ public enum AssetKey {
     Q("q"),
     Q_SHADOW("q-shadow"),
     JOIN_QUEUE_BUTTON("join-queue-button"),
-    JOIN_QUEUE_BUTTON_PRESSED("join-queue-button-pressed");
+    JOIN_QUEUE_BUTTON_PRESSED("join-queue-button-pressed"),
+    T_BIG("t-big"),
+    T_BIG_SHADOW("t-big-shadow");
 
     private final String path;
 

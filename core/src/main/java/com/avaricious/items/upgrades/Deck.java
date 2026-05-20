@@ -5,9 +5,9 @@ import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateItem;
 
 import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.items.upgrades.cards.ArmorCard;
 import com.avaricious.items.upgrades.cards.MultiCard;
 import com.avaricious.items.upgrades.cards.PointsCard;
+import com.avaricious.items.upgrades.cards.TriesCard;
 import com.avaricious.utility.Observable;
 
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             for (int i = 0; i < 3; i++) {
                 addCardToDeck(instantiateItem(MultiCard.class));
             }
-            addCardToDeck(instantiateItem(ArmorCard.class));
-            addCardToDeck(instantiateItem(ArmorCard.class));
+            addCardToDeck(instantiateItem(TriesCard.class));
+            addCardToDeck(instantiateItem(TriesCard.class));
         }
     }
 

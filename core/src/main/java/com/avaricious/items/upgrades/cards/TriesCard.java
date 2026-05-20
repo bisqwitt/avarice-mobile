@@ -1,21 +1,25 @@
 package com.avaricious.items.upgrades.cards;
 
-import com.avaricious.components.HealthUi;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class MultiplyCurrentArmorByTwoCard extends AbstractCard {
+public class TriesCard extends AbstractCard {
 
-    private final TextureRegion texture = Assets.I().get(AssetKey.MADNESS);
-    private int armor = 0;
+    private final TextureRegion texture = Assets.I().get(AssetKey.DUSK_CARD);
 
     @Override
     public String description() {
-        return "Multiply your current Armor by 2";
+        return "+1 Try";
+    }
+
+    @Override
+    protected void onApply() {
+        RoundInfoPanel.I().addSpin();
     }
 
     @Override
@@ -29,13 +33,7 @@ public class MultiplyCurrentArmorByTwoCard extends AbstractCard {
     }
 
     @Override
-    protected void onApply() {
-        armor = HealthUi.I().getArmor();
-        HealthUi.I().addArmor(armor);
-    }
-
-    @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> PopupManager.I().spawnNumber(createNumberPopup(armor, pos, Assets.I().silver()));
+        return () -> PopupManager.I().spawnNumber(createNumberPopup(20, pos, Assets.I().silver()));
     }
 }

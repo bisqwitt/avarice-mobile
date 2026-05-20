@@ -1,7 +1,7 @@
 package com.avaricious.bosses;
 
 import com.avaricious.items.upgrades.AbstractUpgrade;
-import com.avaricious.items.upgrades.cards.HealForEveryFruitHitCard;
+import com.avaricious.items.upgrades.cards.PointsForEachCardInHandCard;
 
 public class DoubleDamageBoss extends AbstractBoss {
     @Override
@@ -11,6 +11,6 @@ public class DoubleDamageBoss extends AbstractBoss {
 
     @Override
     public AbstractUpgrade loot() {
-        return new HealForEveryFruitHitCard();
+        return new PointsForEachCardInHandCard();
     }
 }

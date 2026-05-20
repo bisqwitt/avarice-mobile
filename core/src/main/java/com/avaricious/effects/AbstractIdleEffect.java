@@ -43,4 +43,8 @@ public abstract class AbstractIdleEffect {
         this.amplitude = amplitude;
         this.speed = speed;
     }
+
+    public void reset() {
+        time = 0f;
+    }
 }

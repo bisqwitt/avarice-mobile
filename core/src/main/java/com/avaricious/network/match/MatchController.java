@@ -22,6 +22,11 @@ public class MatchController {
             int opponentScore = data.getInt("opponentScore");
             service.onRoundEndResult(opponentScore);
         });
+
+        socketClient.onJson(SocketEvents.OPPONENT_HEALTH_CHANGED, data -> {
+            int opponentHealth = data.getInt("health");
+            service.onOpponentHealthChanged(opponentHealth);
+        });
     }
 
     public void sendRoundEndScore(int round, int score) {
@@ -31,6 +36,12 @@ public class MatchController {
         });
 
         Gdx.app.log("MATCH", "Sent round end score: " + score);
+    }
+
+    public void onHealthChanged(int newHealth) {
+        socketClient.emitJson(SocketEvents.HEALTH_UPDATE, payload -> {
+            payload.put("newHealth", newHealth);
+        });
     }
 
 }

@@ -1,23 +1,19 @@
 package com.avaricious.screens;
 
 import com.avaricious.CreditManager;
-import com.avaricious.CreditScore;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.Profiler;
 import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
-import com.avaricious.XpBar;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.bosses.OneLessCardBoss;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
-import com.avaricious.components.HealthUi;
 import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
-import com.avaricious.components.StatusUpgradeWindow;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
@@ -30,11 +26,9 @@ import com.avaricious.effects.TextureEcho;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
-import com.avaricious.items.upgrades.cards.HealForEveryFruitHitCard;
 import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
-import com.avaricious.screens.temp.BackgroundLayer;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
@@ -63,33 +57,20 @@ import java.util.List;
 public class SlotScreen extends ScreenAdapter {
 
     private final Main app;
-    private final SlotMachine slotMachine;
-    private final XpBar xpBar;
-
-    private final RoundInfoPanel roundInfoPanel = new RoundInfoPanel();
-//    private final LightBulbBorder lightBulbBorder = new LightBulbBorder();
-//    private final LightBulbBorderShader bulbBorderShader = new LightBulbBorderShader();
-
-    //    private final BossLootWindow bossLootWindow = new BossLootWindow(this::onTargetScoreReached);
-    private final StatusUpgradeWindow statusUpgradeWindow = new StatusUpgradeWindow(() -> {
-    });
+    private final SlotMachine slotMachine = SlotMachine.I();
 
     private final ScreenShake screenShake;
 
 //    private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
     private final ButtonBoard buttonBoard = ButtonBoard.I()
-        .init(this::onSpinButtonPressed, this::onCashoutButtonPressed);
+        .init(this::onSpinButtonPressed, this::onNoSpinsLeft);
     private final HandUi handUi = HandUi.I();
     private final DeckUi deckUi = DeckUi.I();
     private final RingBar ringBar = RingBar.I();
-    private final HealthUi healthUi = HealthUi.I();
 
     private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
     private final TextureRegion charcoalPixel = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
-
-    private final CreditScore creditScore = new CreditScore(
-        new Rectangle(1f, 7.5f, 0.32f * 1.5f, 0.56f * 1.5f), 0.35f * 1.5f);
 
     private final Shop shop = new Shop(this::onReturnedFromShop);
 
@@ -103,8 +84,6 @@ public class SlotScreen extends ScreenAdapter {
     public SlotScreen(Main app) {
         this.app = app;
         Pencil.I().setBatch(app.getBatch());
-        slotMachine = SlotMachine.I();
-        xpBar = new XpBar(statusUpgradeWindow::show);
 
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
@@ -127,7 +106,11 @@ public class SlotScreen extends ScreenAdapter {
             }
         }, 1);
 
-        if(RoundsManager.I().isPlayerCombatRound()) shop.show();
+        RoundInfoPanel.I().setSpins(1);
+//        drawStartingHand();
+        ScoreDisplay.I().setScore(0);
+
+        if (RoundsManager.I().isShopRound()) shop.show();
     }
 
     @Override
@@ -150,14 +133,10 @@ public class SlotScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         Pencil.I().drawDarkenWindow();
-        roundInfoPanel.draw(delta);
+        RoundInfoPanel.I().draw(delta);
         buttonBoard.draw(delta);
         ringBar.draw();
 
-//        lightBulbBorder.draw(1.5f, 15.75f, 6f, 1f, delta);
-        healthUi.draw(delta);
-//        xpBar.draw(batch);      // 5
-//        jokerBar.draw(batch, delta);
         deckUi.draw();
         ItemBag.I().draw(delta);
 
@@ -169,7 +148,6 @@ public class SlotScreen extends ScreenAdapter {
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
 
         shop.draw(batch, delta);
-        statusUpgradeWindow.draw(batch, delta);     // 15
 //        bossLootWindow.draw(delta);
         PopupManager.I().draw(batch, delta);
 
@@ -207,12 +185,10 @@ public class SlotScreen extends ScreenAdapter {
         mouse.set(Gdx.input.getX(), Gdx.input.getY());
         app.getViewport().unproject(mouse);
         boolean leftClickPressed = Gdx.input.isTouched();
-
-        statusUpgradeWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        bossLootWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        else if (!bossLootWindow.isShown()) {
-        roundInfoPanel.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        RoundInfoPanel.I().handleInput(mouse, leftClickPressed, leftClickWasPressed);
         buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -228,11 +204,14 @@ public class SlotScreen extends ScreenAdapter {
     private void runResult() {
         List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
-            if (healthUi.damage(10)) isFirstStreakIncrease = true;
+            if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
+
+            if (RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
             return;
         }
+        RoundInfoPanel.I().addSpin();
 
         TaskScheduler scheduler = TaskScheduler.I();
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
@@ -279,7 +258,7 @@ public class SlotScreen extends ScreenAdapter {
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         middleBody.getPos().x + 2.5f, middleBody.getPos().y + 1f);
 
-                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
+                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
@@ -308,7 +287,7 @@ public class SlotScreen extends ScreenAdapter {
         scheduler.schedule(() -> {
             if (isFirstStreakIncrease) isFirstStreakIncrease = false;
             else
-                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.STREAK, 0.25f);
+                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.STREAK, 0.25f);
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
@@ -335,18 +314,13 @@ public class SlotScreen extends ScreenAdapter {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         body.getPos().x + 1.5f, body.getPos().y + 2f);
-                roundInfoPanel.getScoreDisplay().addPotentialValue(ScoreDisplay.Type.POINTS, points);
+                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
 
                 EffectManager.create(Assets.I().getSymbol(patternHitContext.getSymbol()),
                     new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                     TextureEcho.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
-
-                xpBar.addXp(points);
-
-                HealForEveryFruitHitCard card = Hand.I().getCardOfClass(HealForEveryFruitHitCard.class);
-                if (card != null && patternHitContext.getSymbol().isFruit()) card.onFruitHit();
             });
 
             ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
@@ -370,40 +344,29 @@ public class SlotScreen extends ScreenAdapter {
 //        buttonBoard.setVisible(false);
 
         slotMachine.spin();
+        RoundInfoPanel.I().minusSpin();
 
         for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
             relicWithActionAfterSpin.onSpinButtonPressed();
         }
     }
 
-    public void onCashoutButtonPressed() {
-        int score = roundInfoPanel.getScoreDisplay().calcPotentialValue();
-        roundInfoPanel.getScoreDisplay().addScore(score);
+    public void onNoSpinsLeft() {
+        int score = ScoreDisplay.I().calcPotentialValue();
+        ScoreDisplay.I().addScore(score);
 
         isFirstStreakIncrease = true;
-        roundInfoPanel.getScoreDisplay().clearPotentialScore();
+        ScoreDisplay.I().clearPotentialScore();
 
         AudioManager.I().endPayout();
 
-//        if (!roundInfoPanel.getScoreDisplay().targetScoreReached() && !RoundsManager.I().isPlayerCombatRound())
-//            return;
-//
-////        if (RoundsManager.I().isBossRound()) openBossLootWindow();
-//        else {
-        onTargetScoreReached(score);
-//        }
-    }
-
-    public void onTargetScoreReached(int score) {
         PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
-//        if (RoundsManager.I().isPlayerCombatRound()) {
-            ScreenManager.I().setScreen(PlayerCombatScreen.class);
-//        } else {
-//            shop.show();
-//        }
+        ScreenManager.I().setScreen(PlayerCombatScreen.class);
+        if (DevTools.opponentDefaultValues())
+            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(200);
+
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();
-        healthUi.healHealth();
     }
 
     @Override
@@ -415,9 +378,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
-        HealthUi.I().addArmor(10);
-        drawStartingHand();
-        roundInfoPanel.getScoreDisplay().setScore(0);
+
     }
 
     private void drawStartingHand() {

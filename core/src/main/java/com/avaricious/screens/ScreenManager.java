@@ -1,9 +1,6 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
-import com.avaricious.components.HealthUi;
-import com.avaricious.items.upgrades.Hand;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 
 import java.util.HashMap;
@@ -39,26 +36,6 @@ public class ScreenManager {
 
     public <T> T getScreen(Class<T> screenClass) {
         return (T) screens.get(screenClass);
-    }
-
-    public static void restartGame() {
-        // Defer: prevents switching screens while an FBO capture is mid-flight.
-        Gdx.app.postRunnable(() -> {
-            ScreenAdapter old = instance.screens.get(SlotScreen.class);
-            if (old != null) {
-                // You must manage disposal yourself; libGDX does not auto-dispose Screens.
-                old.dispose();
-            }
-
-            HealthUi.I().healHealth();
-            Hand.I().discardRandomCard();
-            Hand.I().discardRandomCard();
-            Hand.I().discardRandomCard();
-
-            ScreenAdapter fresh = new SlotScreen(instance.app);
-            instance.screens.put(SlotScreen.class, fresh);
-            instance.app.setScreen(fresh);
-        });
     }
 
 }

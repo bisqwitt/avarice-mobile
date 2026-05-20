@@ -1,6 +1,5 @@
 package com.avaricious.utility.gameState;
 
-import com.avaricious.components.HealthState;
 import com.avaricious.components.roundInfoPanel.ScoreState;
 
 import java.util.ArrayList;
@@ -8,9 +7,9 @@ import java.util.List;
 
 public class GameState {
 
-    public HealthState healthState;
     public ScoreState scoreState;
 
+    public int tries;
     public int currentRound;
     public int credits;
 
@@ -21,13 +20,13 @@ public class GameState {
 
     public GameState copy() {
         GameState copy = new GameState();
-        copy.healthState = new HealthState(this.healthState.health, this.healthState.armor);
         copy.scoreState = new ScoreState(
             this.scoreState.currentScore,
             this.scoreState.points,
             this.scoreState.multi,
             this.scoreState.streak
         );
+        copy.tries = this.tries;
         copy.currentRound = this.currentRound;
         copy.credits = this.credits;
         copy.cardsInDeck.addAll(this.cardsInDeck);

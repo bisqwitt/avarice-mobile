@@ -53,7 +53,7 @@ public class ScoreProgressBar {
 
     public void update() {
         String text = (int) displayedOptionalValue + "";
-        if (!RoundsManager.I().isPlayerCombatRound())
+        if (!RoundsManager.I().isShopRound())
             text = text.concat(" / " + RoundsManager.I().getCurrentTargetScore());
         targetTxt.setText(Assets.I().getSmallFont(), text);
 

@@ -1,9 +1,9 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
+import com.avaricious.RoundsManager;
 import com.avaricious.WaitingForEnemyWindow;
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.components.HealthUi;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.texts.EnemyText;
 import com.avaricious.components.texts.PlayerText;
@@ -139,10 +139,10 @@ public class PlayerCombatScreen extends ScreenAdapter {
         waitingForEnemyWindow.close();
         enemyDataReceived = true;
 
-        playerHealth.setValue(HealthUi.I().getHealth());
+        playerHealth.setValue(RoundsManager.I().getPlayerHealth());
         playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
 
-        enemyHealth.setValue(1000);
+        enemyHealth.setValue(RoundsManager.I().getOpponentHealth());
         enemyScore.setValue(opponentScore);
 
         startAnimation();
@@ -153,6 +153,10 @@ public class PlayerCombatScreen extends ScreenAdapter {
     }
 
     private void startAnimation() {
+        float playerScoreValue = this.playerScore.getValue();
+        float enemyScoreValue = this.enemyScore.getValue();
+//        lerpTo(playerScore, enemyScore, );
+
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
@@ -197,14 +201,15 @@ public class PlayerCombatScreen extends ScreenAdapter {
                 DigitalNumber health = playerScoreIsHigher ? enemyHealth : playerHealth;
                 lerpTo(score, health, 0, health.getValue() + score.getValue(), 0.25f);
             }
-        }, 3.5f);
+        }, 4f);
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                RoundsManager.I().setPlayerHealth((int) playerHealth.getValue());
                 ScreenManager.I().setScreen(SlotScreen.class);
             }
-        }, 5f);
+        }, 5.5f);
     }
 
     private void moveTo(Vector2 playerScoreTargetPos, Vector2 enemyScoreTargetPos, float duration) {
