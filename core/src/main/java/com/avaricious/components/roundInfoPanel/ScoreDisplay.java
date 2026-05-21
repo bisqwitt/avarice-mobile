@@ -3,9 +3,10 @@ package com.avaricious.components.roundInfoPanel;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.progressbar.ScoreProgressBar;
+import com.avaricious.components.slot.Body;
+import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 public class ScoreDisplay extends Observable<ScoreState> {
 
@@ -27,12 +29,13 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     private final TextureRegion scoreDisplaySlot = Assets.I().get(AssetKey.SCORE_DISPLAY_SLOT);
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
-    private final float multiplySymbolSize = 11f / 23f;
+    private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
+    private final float multiplySymbolSize = 11f / 17f;
 
-    private final float DIGIT_Y = 16.4f;
-    private final float DIGIT_WIDTH = 7 / 13f;
-    private final float DIGIT_HEIGHT = 11 / 13f;
-    private final float DIGIT_OFFSET = 0.7f;
+    private final float DIGIT_Y = 15.5f;
+    private final float DIGIT_WIDTH = 7 / 10f;
+    private final float DIGIT_HEIGHT = 11 / 10f;
+    private final float DIGIT_OFFSET = 0.9f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
         new Rectangle(0.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
@@ -43,8 +46,11 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
 
-    float multiplySymbol1X = 0f;
-    float multiplySymbol2X = 0f;
+    float multiSymbol1X = 0f;
+    float multiSymbol2X = 0f;
+
+    private final Body multiBody1 = new Body(new Vector2(0, 0));
+    private final Body multiBody2 = new Body(new Vector2(0, 0));
 
     private ScoreDisplay() {
         clearPotentialScore();
@@ -57,6 +63,8 @@ public class ScoreDisplay extends Observable<ScoreState> {
     public void draw(float delta, float unfoldAmount) {
         float t = MathUtils.clamp(unfoldAmount, 0f, 1f);
         float smoothT = Interpolation.smoother.apply(t);
+        multiBody1.update(delta);
+        multiBody2.update(delta);
 
         ZIndex zIndex = t == 0f
             ? ZIndex.PATTERN_DISPLAY
@@ -72,24 +80,40 @@ public class ScoreDisplay extends Observable<ScoreState> {
         multiNumber.getFirstDigitBounds().y = digitY;
         streakNumber.getFirstDigitBounds().y = digitY;
 
-        Pencil.I().addDrawing(new TextureDrawing(
-            scoreDisplaySlot,
-            0.25f, 14.9f, 8.5f, 2.8f,
-            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()
-        ));
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            scoreDisplaySlot,
+//            0.25f, 14.9f, 8.5f, 2.8f,
+//            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()
+//        ));
 
         pointsNumber.draw(delta);
+
+        float multi1Y = digitY + multiBody1.getIdleFloatYOffset();
+        float multi1Sway = multiBody1.getIdleSwayEffect().getValue();
+        Pencil.I().addDrawing(new TextureDrawing(
+            multiplySymbolShadow,
+            multiSymbol1X, multi1Y, multiplySymbolSize, multiplySymbolSize,
+            1f, multi1Sway, zIndex, Assets.I().shadowColor()
+        ));
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
-            multiplySymbol1X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            zIndex
+            multiSymbol1X, multi1Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
+            1f, multi1Sway, zIndex
         ));
 
         multiNumber.draw(delta);
+
+        float multi2Y = digitY + multiBody2.getIdleFloatYOffset();
+        float multi2Sway = multiBody2.getIdleSwayEffect().getValue();
+        Pencil.I().addDrawing(new TextureDrawing(
+            multiplySymbolShadow,
+            multiSymbol2X, multi2Y, multiplySymbolSize, multiplySymbolSize,
+            1f, multi2Sway, zIndex, Assets.I().shadowColor()
+        ));
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
-            multiplySymbol2X, digitY + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            zIndex
+            multiSymbol2X, multi2Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
+            1, multi2Sway, zIndex
         ));
 
         streakNumber.draw(delta);
@@ -116,6 +140,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         updatePotentialScoreXLayout();
 
+        NetworkController.I().match().onScoreChanged(RoundsManager.I().getCurrentRound(), calcPotentialValue());
         notifyChanged(snapshot());
     }
 
@@ -151,22 +176,37 @@ public class ScoreDisplay extends Observable<ScoreState> {
     }
 
     private void updatePotentialScoreXLayout() {
-        float width = pointsNumber.getWidth() + 1 + multiNumber.getWidth() + 1 + streakNumber.getWidth();
-        float pos = GameContext.I().viewport.getWorldWidth() / 2f - width / 2f;
+        float centerX = 4.5f; // center of the score display area
+        float gap = 0.5f;
 
-        pointsNumber.getFirstDigitBounds().x = pos;
-        pos += pointsNumber.getWidth() + 0.4f;
+        float pointsWidth = pointsNumber.getWidth();
+        float multiWidth = multiNumber.getWidth();
+        float streakWidth = streakNumber.getWidth();
 
-        multiplySymbol1X = pos;
-        pos += multiplySymbolSize + 0.35f;
+        float symbolWidth = multiplySymbolSize;
 
-        multiNumber.getFirstDigitBounds().x = pos;
-        pos += multiNumber.getWidth() + 0.4f;
+        float totalWidth =
+            pointsWidth +
+                gap + symbolWidth +
+                gap + multiWidth +
+                gap + symbolWidth +
+                gap + streakWidth;
 
-        multiplySymbol2X = pos;
-        pos += multiplySymbolSize + 0.35f;
+        float x = centerX - totalWidth / 2f;
 
-        streakNumber.getFirstDigitBounds().x = pos;
+        pointsNumber.getFirstDigitBounds().x = x;
+        x += pointsWidth + gap;
+
+        multiSymbol1X = x;
+        x += symbolWidth + gap;
+
+        multiNumber.getFirstDigitBounds().x = x;
+        x += multiWidth + gap;
+
+        multiSymbol2X = x;
+        x += symbolWidth + gap;
+
+        streakNumber.getFirstDigitBounds().x = x;
     }
 
     public void setScoreState(ScoreState scoreState) {

@@ -11,7 +11,6 @@ import com.avaricious.bosses.OneLessCardBoss;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
-import com.avaricious.components.ItemBag;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.popups.PopupManager;
@@ -35,6 +34,7 @@ import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Bot;
 import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.gameState.GameStateManager;
@@ -96,7 +96,7 @@ public class SlotScreen extends ScreenAdapter {
 //        backgroundLayer.init();
         slotMachine.setOnLastReelFinished(this::runResult);
 
-        if (!GameStateManager.I().appliedLoadedState())
+        if (!GameStateManager.I().appliedLoadedState() && RoundsManager.I().getCurrentRound() == 1)
             drawStartingHand();
 
         Timer.schedule(new Timer.Task() {
@@ -137,8 +137,8 @@ public class SlotScreen extends ScreenAdapter {
         buttonBoard.draw(delta);
         ringBar.draw();
 
-        deckUi.draw();
-        ItemBag.I().draw(delta);
+//        deckUi.draw();
+//        ItemBag.I().draw(delta);
 
         ParticleManager.I().draw(batch, delta);
         slotMachine.draw(app, delta);   // 10
@@ -159,12 +159,13 @@ public class SlotScreen extends ScreenAdapter {
 
 //        background.render(batch, delta);
 
+        ScreenUtils.clear(0.95f, 0.93f, 0.89f, 1f);
         batch.begin();
 //        batch.draw(feltPixel, -3, -3, 15, 26);
-        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
-        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
-        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
-        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
+//        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
+//        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
+//        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
+//        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
         Pencil.I().draw(batch);
         batch.end();
 
@@ -195,8 +196,8 @@ public class SlotScreen extends ScreenAdapter {
 //        }
 //        backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        ItemBag.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        deckUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        ItemBag.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 
         leftClickWasPressed = leftClickPressed;
     }
@@ -207,8 +208,6 @@ public class SlotScreen extends ScreenAdapter {
             if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
-
-            if (RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
             return;
         }
         RoundInfoPanel.I().addSpin();
@@ -339,7 +338,13 @@ public class SlotScreen extends ScreenAdapter {
         }
     }
 
+//    public void onPlayButtonPressed() {
+//        HandUi.I().applySelectedCard();
+//    }
+
     private void onSpinButtonPressed() {
+        if(RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
+
         slotMachine.setAlpha(1f);
 //        buttonBoard.setVisible(false);
 
@@ -349,6 +354,8 @@ public class SlotScreen extends ScreenAdapter {
         for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
             relicWithActionAfterSpin.onSpinButtonPressed();
         }
+
+        Hand.I().drawCard();
     }
 
     public void onNoSpinsLeft() {
@@ -363,7 +370,7 @@ public class SlotScreen extends ScreenAdapter {
         PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
         ScreenManager.I().setScreen(PlayerCombatScreen.class);
         if (DevTools.opponentDefaultValues())
-            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(200);
+            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(Bot.getRoundEndScore());
 
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();

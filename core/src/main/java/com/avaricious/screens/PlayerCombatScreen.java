@@ -1,5 +1,6 @@
 package com.avaricious.screens;
 
+import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.RoundsManager;
 import com.avaricious.WaitingForEnemyWindow;
@@ -8,11 +9,13 @@ import com.avaricious.components.ScreenShake;
 import com.avaricious.components.texts.EnemyText;
 import com.avaricious.components.texts.PlayerText;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Bot;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
 import com.avaricious.utility.playerRun.PlayerRunManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -80,6 +83,9 @@ public class PlayerCombatScreen extends ScreenAdapter {
     @Override
     public void show() {
         enemyDataReceived = false;
+
+        playerScore.setColor(new Color(1f, 1f, 1f, 1f));
+        enemyScore.setColor(new Color(1f, 1f, 1f, 1f));
     }
 
     private void update(float delta) {
@@ -142,7 +148,7 @@ public class PlayerCombatScreen extends ScreenAdapter {
         playerHealth.setValue(RoundsManager.I().getPlayerHealth());
         playerScore.setValue(PlayerRunManager.I().getPlayerRun().getLastRoundEndScore());
 
-        enemyHealth.setValue(RoundsManager.I().getOpponentHealth());
+        enemyHealth.setValue(DevTools.opponentDefaultValues() ? Bot.health : RoundsManager.I().getOpponentHealth());
         enemyScore.setValue(opponentScore);
 
         startAnimation();
@@ -199,15 +205,20 @@ public class PlayerCombatScreen extends ScreenAdapter {
             public void run() {
                 DigitalNumber score = playerScoreIsHigher ? enemyScore : playerScore;
                 DigitalNumber health = playerScoreIsHigher ? enemyHealth : playerHealth;
-                lerpTo(score, health, 0, health.getValue() + score.getValue(), 0.25f);
+
+                float damage = Math.abs(score.getValue()) * 0.1f;
+                lerpTo(score, health, 0, health.getValue() - damage, 0.25f);
             }
         }, 4f);
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
+                if(playerHealth.getValue() <= 0 || enemyHealth.getValue() <= 0) return;
                 RoundsManager.I().setPlayerHealth((int) playerHealth.getValue());
                 ScreenManager.I().setScreen(SlotScreen.class);
+
+                if(DevTools.opponentDefaultValues()) Bot.health = (int) enemyHealth.getValue();
             }
         }, 5.5f);
     }

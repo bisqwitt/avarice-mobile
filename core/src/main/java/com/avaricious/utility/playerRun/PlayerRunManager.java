@@ -1,5 +1,6 @@
 package com.avaricious.utility.playerRun;
 
+import com.avaricious.DevTools;
 import com.avaricious.network.NetworkController;
 import com.avaricious.utility.gameState.GameState;
 import com.badlogic.gdx.Gdx;
@@ -65,7 +66,7 @@ public class PlayerRunManager {
 
     public PlayerRun getEnemyRun() {
         if (enemyRun == null) {
-            if (enemyRunFile.exists())
+            if (enemyRunFile.exists() && !DevTools.rewriteSaveFile())
                 enemyRun = json.fromJson(PlayerRun.class, enemyRunFile.readString());
             else {
                 enemyRun = defaultEnemyRun();

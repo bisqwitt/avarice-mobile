@@ -1,6 +1,7 @@
 package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.CreditScore;
+import com.avaricious.DevTools;
 import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.texts.CreditsText;
@@ -38,7 +39,7 @@ public class RoundInfoPanel extends Observable<Float> {
         new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
 
     private final SpinsText spinsText = new SpinsText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
-    private final DigitalNumber spinsNumber = new DigitalNumber(0, new Color(1f, 1f, 1f, 1f), 1,
+    private final DigitalNumber spinsNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
         new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
 
     private final CreditsText creditsText = new CreditsText(new Vector2(7f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
@@ -150,7 +151,8 @@ public class RoundInfoPanel extends Observable<Float> {
     }
 
     public void setSpins(float value) {
-        spinsNumber.setValue(value);
+        if(!DevTools.unlimitedSpins())
+            spinsNumber.setValue(value);
         notifyChanged(snapshot());
     }
 

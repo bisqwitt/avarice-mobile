@@ -19,4 +19,6 @@ public class SocketEvents {
     // Health
     public static final String HEALTH_UPDATE = "healthUpdate";
     public static final String OPPONENT_HEALTH_CHANGED = "opponentHealthRequest";
+
+    public static final String SCORE_CHANGED = "scoreChanged";
 }

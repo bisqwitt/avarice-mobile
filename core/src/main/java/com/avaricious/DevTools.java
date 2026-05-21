@@ -33,10 +33,14 @@ public class DevTools {
     }
 
     public static boolean opponentDefaultValues() {
-        return active && true;
+        return active && false;
     }
 
     public static boolean rewriteSaveFile() {
+        return active && true;
+    }
+
+    public static boolean unlimitedSpins() {
         return active && true;
     }
 

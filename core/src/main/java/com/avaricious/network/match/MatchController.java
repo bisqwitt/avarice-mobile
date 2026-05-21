@@ -44,4 +44,12 @@ public class MatchController {
         });
     }
 
+    public void onScoreChanged(int round, int score) {
+        socketClient.emitJson(SocketEvents.SCORE_CHANGED, payload -> {
+            payload.put("round", round);
+            payload.put("score", score);
+            payload.put("msSinceRoundStart", 0);
+        });
+    }
+
 }
