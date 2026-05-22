@@ -44,7 +44,7 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = 2.65f;
+    private final float Y = 1.65f;
     private final float CARD_SIZE_DIVISOR = 65;
     private final float CARD_OFFSET = 1.25f;
 

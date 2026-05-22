@@ -41,7 +41,7 @@ public class SlotMachine {
 
     // --- Layout ---
     public static final int cols = 5;
-    public static final int rows = 4;
+    public static final int rows = 5;
     public static final float CELL_W = 1.4f;
     public static final float CELL_H = 1.4f;
     public static final float spacingX = 0.35f;
@@ -71,17 +71,21 @@ public class SlotMachine {
             for (int r = 0; r < rows; r++) {
                 if (r == 0) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
-                    originY + 3 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY)
                 ));
                 if (r == 1) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
-                    originY + 2 * (CELL_H + spacingY)
+                    originY + 3 * (CELL_H + spacingY)
                 ));
                 if (r == 2) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
-                    originY + 1 * (CELL_H + spacingY)
+                    originY + 2 * (CELL_H + spacingY)
                 ));
                 if (r == 3) grid[c][r] = new Body(new Vector2(
+                    originX + c * (CELL_W + spacingX),
+                    originY + 1 * (CELL_H + spacingY)
+                ));
+                if (r == 4) grid[c][r] = new Body(new Vector2(
                     originX + c * (CELL_W + spacingX),
                     originY + 0 * (CELL_H + spacingY)
                 ));
@@ -141,9 +145,9 @@ public class SlotMachine {
 
         Camera cam = app.getViewport().getCamera();
         cam.update();
-        Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
+//        Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
         List<Vector2> symbolsInPatternHit = drawSymbols();
-        Pencil.I().endScissors();
+//        Pencil.I().endScissors();
 
         symbolsInPatternHit.forEach(this::drawSymbol);
 

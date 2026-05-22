@@ -162,10 +162,10 @@ public class SlotScreen extends ScreenAdapter {
         ScreenUtils.clear(0.95f, 0.93f, 0.89f, 1f);
         batch.begin();
 //        batch.draw(feltPixel, -3, -3, 15, 26);
-//        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
-//        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
-//        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
-//        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
+        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
+        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
+        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
+        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
         Pencil.I().draw(batch);
         batch.end();
 

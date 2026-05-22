@@ -30,12 +30,12 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final TextureRegion scoreDisplaySlot = Assets.I().get(AssetKey.SCORE_DISPLAY_SLOT);
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
-    private final float multiplySymbolSize = 11f / 17f;
+    private final float multiplySymbolSize = 11f / 19f;
 
     private final float DIGIT_Y = 15.5f;
-    private final float DIGIT_WIDTH = 7 / 10f;
-    private final float DIGIT_HEIGHT = 11 / 10f;
-    private final float DIGIT_OFFSET = 0.9f;
+    private final float DIGIT_WIDTH = 7 / 11f;
+    private final float DIGIT_HEIGHT = 11 / 11f;
+    private final float DIGIT_OFFSET = 0.7f;
 
     private final DigitalNumber pointsNumber = new DigitalNumber(0, Assets.I().blue(), 3,
         new Rectangle(0.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
