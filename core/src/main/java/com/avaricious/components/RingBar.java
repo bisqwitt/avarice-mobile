@@ -11,6 +11,7 @@ import com.avaricious.items.upgrades.rings.triggerable.multAdditions.MultiPerEmp
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
 import com.avaricious.utility.*;
+import com.avaricious.utility.Observable;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,12 +19,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class RingBar extends Observable<List<? extends AbstractRing>> {
 
@@ -216,7 +212,20 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private List<AbstractRing> getEntriesSortedByX() {
         List<AbstractRing> sorted = new ArrayList<>(rings);
-        sorted.sort(Comparator.comparingDouble(ring -> ring.getBody().getRenderPos(new Vector2()).x));
+        Collections.sort(sorted, new Comparator<AbstractRing>() {
+            private final Vector2 tmpA = new Vector2();
+            private final Vector2 tmpB = new Vector2();
+
+            @Override
+            public int compare(AbstractRing a, AbstractRing b) {
+                float ax = a.getBody().getRenderPos(tmpA).x;
+                float bx = b.getBody().getRenderPos(tmpB).x;
+
+                if (ax < bx) return -1;
+                if (ax > bx) return 1;
+                return 0;
+            }
+        });
         return sorted;
     }
 

@@ -13,10 +13,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class RemoveCardWindow {
 
@@ -167,7 +164,15 @@ public class RemoveCardWindow {
         }
 
         List<RemovableCard> sortedCards = new ArrayList<>(cards);
-        sortedCards.sort(Comparator.comparing(card -> card.card.getClass().getSimpleName()));
+        Collections.sort(sortedCards, new Comparator<RemovableCard>() {
+            @Override
+            public int compare(RemovableCard a, RemovableCard b) {
+                String aName = a.card.getClass().getSimpleName();
+                String bName = b.card.getClass().getSimpleName();
+
+                return aName.compareTo(bName);
+            }
+        });
 
         int i = 0;
         for (RemovableCard card : sortedCards) {

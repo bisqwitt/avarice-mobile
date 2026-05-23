@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
+import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -323,7 +324,17 @@ public class SlotMachine {
             result.add(new PatternHitContext(match.getSymbol(), bodies));
         }
 
-        result.sort(Comparator.comparingInt(o -> o.getSymbol().ordinal()));
+        Collections.sort(result, new Comparator<PatternHitContext>() {
+            @Override
+            public int compare(PatternHitContext a, PatternHitContext b) {
+                int ai = a.getSymbol().ordinal();
+                int bi = b.getSymbol().ordinal();
+
+                if (ai < bi) return -1;
+                if (ai > bi) return 1;
+                return 0;
+            }
+        });
         return result;
     }
 

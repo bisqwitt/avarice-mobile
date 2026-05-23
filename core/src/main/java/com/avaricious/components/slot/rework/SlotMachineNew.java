@@ -21,11 +21,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SlotMachineNew {
 
@@ -325,7 +321,17 @@ public class SlotMachineNew {
             result.add(new PatternHitContext(match.getSymbol(), bodies));
         }
 
-        result.sort(Comparator.comparingInt(o -> o.getSymbol().ordinal()));
+        Collections.sort(result, new Comparator<PatternHitContext>() {
+            @Override
+            public int compare(PatternHitContext a, PatternHitContext b) {
+                int ai = a.getSymbol().ordinal();
+                int bi = b.getSymbol().ordinal();
+
+                if (ai < bi) return -1;
+                if (ai > bi) return 1;
+                return 0;
+            }
+        });
 
         return result;
     }
