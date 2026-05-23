@@ -124,7 +124,9 @@ public class PopupManager {
             popup.update(delta);
             popup.draw();
         });
-        popups.removeIf(IPopup::isFinished);
+        for(int i = 0; i < popups.size(); i++) {
+            if(popups.get(i).isFinished()) popups.remove(i);
+        }
     }
 }
 

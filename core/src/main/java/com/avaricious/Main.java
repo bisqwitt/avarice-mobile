@@ -37,9 +37,7 @@ public class Main extends Game {
             FileHandle file = Gdx.files.local(GameStateManager.GAME_STATE_FILE_NAME);
             if (file.exists()) file.delete();
         }
-        ScreenManager.create(this).setScreen(LoadingScreen.class);
 
-        Assets.I().load();
         SeededRandomizer.setSeed(12345);
 
         batch = new SpriteBatch();
@@ -48,8 +46,7 @@ public class Main extends Game {
 
         GameContext.init(batch, viewport, uiViewport, deviceInfo);
         NetworkController.I().connect();
-
-        ScreenManager.I().setScreen(MainScreen.class);
+        ScreenManager.create(this).setScreen(LoadingScreen.class);
     }
 
     public FitViewport getViewport() {

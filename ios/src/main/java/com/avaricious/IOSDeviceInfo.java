@@ -8,7 +8,8 @@ public class IOSDeviceInfo implements DeviceInfo {
 
     @Override
     public boolean isEmulator() {
-        return isIOS() && isIOSSimulator();
+//        return isIOS() && isIOSSimulator();
+        return false;
     }
 
     private boolean isIOS() {

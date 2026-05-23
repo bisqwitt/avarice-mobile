@@ -273,7 +273,17 @@ public class HandUi {
 
     private List<AbstractCard> getEntriesSortedByX() {
         List<AbstractCard> sorted = new ArrayList<>(getCardsForLayout());
-        sorted.sort(Comparator.comparingDouble(card -> card.getBody().getRenderPos(new Vector2()).x));
+        Collections.sort(sorted, new Comparator<AbstractCard>() {
+            @Override
+            public int compare(AbstractCard a, AbstractCard b) {
+                float ax = a.getBody().getRenderPos(new Vector2()).x;
+                float bx = b.getBody().getRenderPos(new Vector2()).x;
+
+                if (ax < bx) return -1;
+                if (ax > bx) return 1;
+                return 0;
+            }
+        });
         return sorted;
     }
 

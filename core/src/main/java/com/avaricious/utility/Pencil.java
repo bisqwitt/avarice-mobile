@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -48,9 +49,14 @@ public class Pencil {
 
     public void draw(SpriteBatch batch) {
         updateDarkenAnimation(Gdx.graphics.getDeltaTime());
-
         BorderPulseMesh.I().render(batch, Gdx.graphics.getDeltaTime());
-        drawings.sort(Comparator.comparingInt(drawing -> drawing.getZIndex().index()));
+
+        Collections.sort(drawings, new Comparator<Drawing>() {
+            @Override
+            public int compare(Drawing a, Drawing b) {
+                return Integer.compare(a.getZIndex().index(), b.getZIndex().index());
+            }
+        });
         for (Drawing drawing : drawings) {
             drawing.draw(batch);
         }

@@ -147,8 +147,8 @@ public class SlotScreen extends ScreenAdapter {
 //        bossLootWindow.draw(delta);
         PopupManager.I().draw(batch, delta);
 
-        vfxManager.cleanUpBuffers();
-        vfxManager.beginInputCapture();
+//        vfxManager.cleanUpBuffers();
+//        vfxManager.beginInputCapture();
 
 //        feltBackground.render(delta);
 //        slotScreenBackground.render(delta, 0, SlotMachine.originY - 0.2f, 9f, 6.25f);
@@ -164,18 +164,17 @@ public class SlotScreen extends ScreenAdapter {
 //        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
         Pencil.I().draw(batch);
         batch.end();
-
 //        bulbBorderShader.update(delta);
 //        bulbBorderShader.draw(camera.combined, 1.5f, 15.75f, 6f, 1f);
 
-        vfxManager.endInputCapture();
-        vfxManager.applyEffects();
-        vfxManager.renderToScreen(
-            app.getViewport().getScreenX(),
-            app.getViewport().getScreenY(),
-            app.getViewport().getScreenWidth(),
-            app.getViewport().getScreenHeight()
-        );
+//        vfxManager.endInputCapture();
+//        vfxManager.applyEffects();
+//        vfxManager.renderToScreen(
+//            app.getViewport().getScreenX(),
+//            app.getViewport().getScreenY(),
+//            app.getViewport().getScreenWidth(),
+//            app.getViewport().getScreenHeight()
+//        );
     }
 
     private void handleInput(float delta) {

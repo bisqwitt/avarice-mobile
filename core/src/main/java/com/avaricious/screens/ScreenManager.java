@@ -24,15 +24,24 @@ public class ScreenManager {
 
     private ScreenManager(Main app) {
         this.app = app;
-        screens.put(MainScreen.class, new MainScreen(app));
         screens.put(LoadingScreen.class, new LoadingScreen());
-        screens.put(InQueueScreen.class, new InQueueScreen(app));
-        screens.put(SlotScreen.class, new SlotScreen(app));
-        screens.put(PlayerCombatScreen.class, new PlayerCombatScreen(app));
     }
 
     public void setScreen(Class<? extends ScreenAdapter> screenClass) {
-        app.setScreen(screens.get(screenClass));
+        try {
+            if (!screens.containsKey(screenClass)) {
+                ScreenAdapter screen = screenClass
+                    .getConstructor(Main.class)
+                    .newInstance(app);
+
+                screens.put(screenClass, screen);
+            }
+
+            app.setScreen(screens.get(screenClass));
+
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Could not create screen: " + screenClass.getName(), e);
+        }
     }
 
     public <T> T getScreen(Class<T> screenClass) {

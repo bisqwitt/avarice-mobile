@@ -28,6 +28,9 @@ public class Assets {
 
     private final AssetManager manager = new AssetManager();
 
+    private boolean queued = false;
+    private boolean cached = false;
+
     private final Color blue = new Color(0.1647f, 0.5412f, 0.7843f, 1f);
     private final Color red = new Color(0.7922f, 0.3765f, 0.3333f, 1f);
     private final Color green = new Color(0.2980f, 0.7098f, 0.4470f, 1f);
@@ -50,13 +53,50 @@ public class Assets {
     private BitmapFont mediumFont;
     private BitmapFont smallFont;
 
-    public void load() {
-        manager.load("atlases.atlas", TextureAtlas.class);
-        manager.finishLoading();
-        cache(manager.get("atlases.atlas", TextureAtlas.class));
+    public void queueLoading() {
+        if (queued) return;
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        manager.load("atlases.atlas", TextureAtlas.class);
+
+        // Fonts are currently generated synchronously.
+        // This is okay if they are fast enough for your project.
+        loadFonts();
+
+        queued = true;
+    }
+
+    public boolean update() {
+        if (!queued) {
+            queueLoading();
+        }
+
+        if (!manager.update()) {
+            return false;
+        }
+
+        if (!cached) {
+            TextureAtlas atlas = manager.get("atlases.atlas", TextureAtlas.class);
+            cache(atlas);
+            cached = true;
+        }
+
+        return true;
+    }
+
+    public float getProgress() {
+        return manager.getProgress();
+    }
+
+    public boolean isReady() {
+        return cached;
+    }
+
+    private void loadFonts() {
+        FreeTypeFontGenerator generator =
+            new FreeTypeFontGenerator(Gdx.files.internal("fonts/m6x11plus.ttf"));
+
+        FreeTypeFontGenerator.FreeTypeFontParameter param =
+            new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         param.size = 120;
         titleFont = generator.generateFont(param);
@@ -81,11 +121,13 @@ public class Assets {
         generator.dispose();
 
         generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Fabled_Font.ttf"));
-        param.size = 108;
 
+        param.size = 108;
         fabledFont = generator.generateFont(param);
         fabledFont.setUseIntegerPositions(false);
         fabledFont.getData().markupEnabled = true;
+
+        generator.dispose();
     }
 
     private void cache(TextureAtlas atlas) {
@@ -101,6 +143,10 @@ public class Assets {
     }
 
     public TextureRegion get(AssetKey key) {
+        if (!cached) {
+            throw new IllegalStateException("Assets are not ready yet. Did you wait for Assets.I().update()?");
+        }
+
         return cachedTextures.get(key);
     }
 
