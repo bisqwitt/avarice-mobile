@@ -10,15 +10,7 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.FontDrawing;
-import com.avaricious.utility.GameContext;
-import com.avaricious.utility.GameStateLogger;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.UiUtility;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -32,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class HandUi {
 
@@ -152,7 +143,7 @@ public class HandUi {
     }
 
     public void draw(SpriteBatch batch, float delta) {
-        cards.forEach(card -> card.getBody().update(delta));
+        Seq.of(cards).forEach(card -> card.getBody().update(delta));
 
         Vector2 touchingCardCenter = draggingCard != null ? draggingCard.getBody().getCardCenter() : new Vector2();
         cardDestinationUI.draw(batch, delta, touchingCardCenter, draggingCard != null || selectedCard != null);
@@ -328,10 +319,10 @@ public class HandUi {
                 (SlotMachine.windowBounds.contains(draggingCard.getBody().getCardCenter())
                     || DeckUi.I().getFirstCardBounds().contains(draggingCard.getBody().getCardCenter()));
 
-        return cards.stream()
+        return Seq.of(cards)
             .filter(card -> !(touchingOverSlotMachine && card == draggingCard))
             .filter(card -> card != applyingCard)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public void deselectCard(boolean killTooltip) {

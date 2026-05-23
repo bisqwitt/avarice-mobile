@@ -4,11 +4,7 @@ import com.avaricious.Main;
 import com.avaricious.components.texts.InQueueText;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -64,8 +60,8 @@ public class InQueueScreen extends ScreenAdapter {
     }
 
     private void updateLoadingDots(float delta) {
-        floatEffects.forEach(effect -> effect.update(delta));
-        swayEffects.forEach(effect -> effect.update(delta));
+        Seq.of(floatEffects).forEach(effect -> effect.update(delta));
+        Seq.of(swayEffects).forEach(effect -> effect.update(delta));
         loadingTimer += delta;
 
         if (loadingTimer >= dotInterval) {

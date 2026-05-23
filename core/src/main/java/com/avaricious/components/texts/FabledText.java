@@ -2,11 +2,7 @@ package com.avaricious.components.texts;
 
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +35,7 @@ public class FabledText {
         this.spacing = spacing;
         this.zIndex = zIndex;
 
-        letterTextures.forEach(letter -> {
+        Seq.of(letterTextures).forEach(letter -> {
             floatEffects.add(new IdleFloatEffect());
             swayEffects.add(new IdleSwayEffect());
         });
@@ -48,8 +44,8 @@ public class FabledText {
     }
 
     public void draw(float delta) {
-        floatEffects.forEach(effect -> effect.update(delta));
-        swayEffects.forEach(effect -> effect.update(delta));
+        Seq.of(floatEffects).forEach(effect -> effect.update(delta));
+        Seq.of(swayEffects).forEach(effect -> effect.update(delta));
 
         for (int i = 0; i < letterTextures.size(); i++) {
             TextureRegion letter = letterTextures.get(i);

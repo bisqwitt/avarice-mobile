@@ -8,11 +8,7 @@ import com.avaricious.components.texts.PermanentlyRemoveACardText;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class RemoveCardWindow {
 
@@ -109,7 +106,7 @@ public class RemoveCardWindow {
         if (!open) return;
 
         title.draw(delta);
-        cards.forEach(this::drawCard);
+        Seq.of(cards).forEach(this::drawCard);
 
         if (selectedCard != null || touchingCard != null) {
             AbstractCard card = selectedCard == null ? touchingCard : selectedCard;
@@ -157,9 +154,9 @@ public class RemoveCardWindow {
 
         cards.clear();
 
-        Hand.I().getHand().forEach(card -> cards.add(
+        Seq.of(Hand.I().getHand()).forEach(card -> cards.add(
             new RemovableCard(card, CardSource.HAND, card.getBody().getPos())));
-        Deck.I().getDeck().forEach(card -> cards.add(
+        Seq.of(Deck.I().getDeck()).forEach(card -> cards.add(
             new RemovableCard(card, CardSource.DECK, card.getBody().getPos())));
 
         List<Vector2> positions = new ArrayList<>();
@@ -182,15 +179,15 @@ public class RemoveCardWindow {
     }
 
     private void onRemoveButtonPressed() {
-        if (cards.stream()
+        if (Objects.requireNonNull(Seq.of(cards)
             .filter(removableCard -> removableCard.card == selectedCard)
-            .findAny().get().source == CardSource.HAND) {
+            .findAnyOrNull()).source == CardSource.HAND) {
             Hand.I().deleteCard(selectedCard);
         } else {
             Deck.I().removeCard(selectedCard);
         }
 
-        cards.forEach(removableCard -> removableCard.card.getBody().getPos().set(removableCard.position));
+        Seq.of(cards).forEach(removableCard -> removableCard.card.getBody().getPos().set(removableCard.position));
 
         deselectCard(true);
         Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.PACK_OPENING);

@@ -32,11 +32,7 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Bot;
-import com.avaricious.utility.GameContext;
-import com.avaricious.utility.Pencil;
+import com.avaricious.utility.*;
 import com.avaricious.utility.gameState.GameStateManager;
 import com.avaricious.utility.playerRun.PlayerRunManager;
 import com.badlogic.gdx.Gdx;
@@ -262,7 +258,7 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
+            Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
                 .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, false));
 
@@ -322,7 +318,7 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            ringBar.getRingsOfType(AbstractTriggerableRing.class).stream()
+            Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SLOT)
                 .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, true));
 

@@ -2,6 +2,7 @@ package com.avaricious;
 
 import com.avaricious.network.NetworkController;
 import com.avaricious.screens.InQueueScreen;
+import com.avaricious.screens.LoadingScreen;
 import com.avaricious.screens.MainScreen;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.Assets;
@@ -36,6 +37,7 @@ public class Main extends Game {
             FileHandle file = Gdx.files.local(GameStateManager.GAME_STATE_FILE_NAME);
             if (file.exists()) file.delete();
         }
+        ScreenManager.create(this).setScreen(LoadingScreen.class);
 
         Assets.I().load();
         SeededRandomizer.setSeed(12345);
@@ -47,7 +49,7 @@ public class Main extends Game {
         GameContext.init(batch, viewport, uiViewport, deviceInfo);
         NetworkController.I().connect();
 
-        ScreenManager.create(this).setScreen(MainScreen.class);
+        ScreenManager.I().setScreen(MainScreen.class);
     }
 
     public FitViewport getViewport() {

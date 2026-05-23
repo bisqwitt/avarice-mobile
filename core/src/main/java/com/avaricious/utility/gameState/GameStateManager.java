@@ -13,13 +13,12 @@ import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.utility.Listener;
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class GameStateManager {
 
@@ -104,7 +103,7 @@ public class GameStateManager {
     }
 
     private <T> void observeValue(
-        Consumer<Listener<T>> register,
+        Listener<Listener<T>> register,
         Listener<T> setter
     ) {
         register.accept(value -> {
@@ -118,7 +117,7 @@ public class GameStateManager {
         List<String> target
     ) {
         target.clear();
-        source.forEach(item -> target.add(item.getId()));
+        Seq.of(source).forEach(item -> target.add(item.getId()));
         markDirty();
     }
 
@@ -130,9 +129,9 @@ public class GameStateManager {
         List<String> ids,
         Class<T> type
     ) {
-        return ids.stream()
+        return Seq.of(ids)
             .map(id -> AbstractItem.instantiateItem(id, type))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public boolean appliedLoadedState() {

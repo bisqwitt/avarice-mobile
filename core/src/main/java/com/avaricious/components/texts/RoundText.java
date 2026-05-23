@@ -2,6 +2,7 @@ package com.avaricious.components.texts;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Seq;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.math.Vector2;
 
@@ -27,6 +28,6 @@ public class RoundText extends FabledText {
             ),
             startingPos, sizeRatio, spacing, zIndex
         );
-        floatEffects.forEach(effect -> effect.setStrength(0.02f, 1f));
+        Seq.of(floatEffects).forEach(effect -> effect.setStrength(0.02f, 1f));
     }
 }

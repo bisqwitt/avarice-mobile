@@ -2,6 +2,7 @@ package com.avaricious.components.slot.rework;
 
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.utility.SeededRandomizer;
+import com.avaricious.utility.Seq;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ public class ReelStripBuilder {
     public List<Symbol> buildBaseStrip() {
         List<Symbol> baseStrip = new ArrayList<>();
 
-        Arrays.stream(Symbol.values())
+        Seq.of(Arrays.asList(Symbol.values()))
             .forEach(symbol -> {
                 for (int i = 0; i < symbol.poolCount() / 2; i++) {
                     baseStrip.add(symbol);

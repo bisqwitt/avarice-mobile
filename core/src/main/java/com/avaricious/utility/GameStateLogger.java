@@ -31,7 +31,7 @@ public class GameStateLogger {
         playedCardsThisRound.add(card);
 
         if (ItemBag.I().containsItem(PlaySevenCardsInOneSpinQuest.class) && playedCardsThisRound.size() == 7) {
-            ItemBag.I().getItemOfType(PlaySevenCardsInOneSpinQuest.class).stream()
+            Seq.of(ItemBag.I().getItemOfType(PlaySevenCardsInOneSpinQuest.class))
                 .filter(quest -> !quest.isCompleted())
                 .forEach(AbstractQuest::complete);
         }

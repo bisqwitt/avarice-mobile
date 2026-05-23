@@ -1,5 +1,6 @@
 package com.avaricious;
 
+import com.avaricious.utility.DeviceInfo;
 import org.robovm.apple.foundation.NSAutoreleasePool;
 import org.robovm.apple.uikit.UIApplication;
 
@@ -12,7 +13,8 @@ public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration configuration = new IOSApplicationConfiguration();
-        return new IOSApplication(new Main(), configuration);
+        DeviceInfo deviceInfo = new IOSDeviceInfo();
+        return new IOSApplication(new Main(deviceInfo), configuration);
     }
 
     public static void main(String[] argv) {

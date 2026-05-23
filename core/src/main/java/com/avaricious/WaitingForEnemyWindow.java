@@ -3,11 +3,7 @@ package com.avaricious;
 import com.avaricious.components.texts.WaitingForOpponentToFinishTurnText;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import java.util.ArrayList;
@@ -46,8 +42,8 @@ public class WaitingForEnemyWindow {
     }
 
     private void updateLoadingDots(float delta) {
-        floatEffects.forEach(effect -> effect.update(delta));
-        swayEffects.forEach(effect -> effect.update(delta));
+        Seq.of(floatEffects).forEach(effect -> effect.update(delta));
+        Seq.of(swayEffects).forEach(effect -> effect.update(delta));
         loadingTimer += delta;
 
         if (loadingTimer >= dotInterval) {

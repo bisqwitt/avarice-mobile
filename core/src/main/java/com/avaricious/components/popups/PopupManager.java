@@ -1,6 +1,7 @@
 package com.avaricious.components.popups;
 
 import com.avaricious.items.AbstractItem;
+import com.avaricious.utility.Seq;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -119,7 +120,7 @@ public class PopupManager {
     }
 
     private void drawPopups(List<? extends IPopup> popups, float delta) {
-        popups.forEach(popup -> {
+        Seq.of(popups).forEach(popup -> {
             popup.update(delta);
             popup.draw();
         });

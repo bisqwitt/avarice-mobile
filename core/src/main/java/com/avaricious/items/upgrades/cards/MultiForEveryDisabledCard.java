@@ -6,6 +6,7 @@ import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -42,8 +43,8 @@ public class MultiForEveryDisabledCard extends AbstractCard {
     }
 
     private int disabledCardsInHand() {
-        return (int) Hand.I().getHand().stream()
+        return (int) Seq.of(Hand.I().getHand())
             .filter(AbstractCard::isDisabled)
-            .count();
+            .toList().size();
     }
 }

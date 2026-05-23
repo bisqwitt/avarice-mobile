@@ -2,6 +2,7 @@ package com.avaricious.components.texts;
 
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
+import com.avaricious.utility.Seq;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.math.Vector2;
 
@@ -25,6 +26,6 @@ public class ArmorText extends FabledText {
                 Assets.I().get(AssetKey.R_SHADOW)
             ), startingPos, sizeRatio, spacing, zIndex);
         setColor(Assets.I().silver());
-        floatEffects.forEach(effect -> effect.setStrength(0.02f, 1f));
+        Seq.of(floatEffects).forEach(effect -> effect.setStrength(0.02f, 1f));
     }
 }

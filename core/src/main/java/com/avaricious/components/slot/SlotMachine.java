@@ -10,11 +10,7 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.SeededRandomizer;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -100,20 +96,27 @@ public class SlotMachine {
         }
         buildStrip();
 
-        Arrays.stream(grid)
-            .flatMap(Arrays::stream)
-            .filter(Objects::nonNull)
-            .forEach(body -> body.idleSwayEffect.setStrength(2.5f, 0.8f));
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] != null) {
+                    grid[i][j].idleSwayEffect.setStrength(2.5f, 0.8f);
+                }
+            }
+        }
     }
 
     private void update(float delta) {
         for (int c = 0; c < cols; c++) {
             reels.get(c).update(delta);
         }
-        Arrays.stream(grid)
-            .flatMap(Arrays::stream)
-            .filter(Objects::nonNull)
-            .forEach(body -> body.update(delta));
+
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] != null) {
+                    grid[i][j].update(delta);
+                }
+            }
+        }
 
         if (desiredAlpha != alpha) {
             float speed = 10f; // higher = faster convergence
@@ -149,7 +152,7 @@ public class SlotMachine {
         List<Vector2> symbolsInPatternHit = drawSymbols();
         Pencil.I().endScissors();
 
-        symbolsInPatternHit.forEach(this::drawSymbol);
+        Seq.of(symbolsInPatternHit).forEach(this::drawSymbol);
 
         TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
     }
@@ -336,7 +339,7 @@ public class SlotMachine {
     public void buildStrip() {
         List<Symbol> baseStrip = new ArrayList<>();
 
-        Arrays.stream(Symbol.values())
+        Seq.of(Arrays.asList(Symbol.values()))
             .forEach(symbol -> {
                 for (int i = 0; i < symbol.poolCount() / 2; i++) {
                     baseStrip.add(symbol);

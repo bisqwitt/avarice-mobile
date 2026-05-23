@@ -10,12 +10,7 @@ import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
 import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Observable;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -25,7 +20,6 @@ import com.badlogic.gdx.utils.Timer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
@@ -78,7 +72,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
     private final IdleSwayEffect bagSwayEffect = new IdleSwayEffect();
 
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
-        items.forEach(item -> item.getBody().update(delta));
+        Seq.of(items).forEach(item -> item.getBody().update(delta));
         bagFloatEffect.update(delta);
         bagSwayEffect.update(delta);
 
@@ -282,22 +276,22 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
     }
 
     public <T extends AbstractItem> T getItemByClass(Class<T> ringClass) {
-        return items.stream()
+        return Seq.of(items)
             .filter(ringClass::isInstance)
             .map(ringClass::cast)
-            .findFirst().orElse(null);
+            .findFirstOrNull();
     }
 
 
     public <T> List<T> getItemOfType(Class<T> type) {
-        return items.stream()
+        return Seq.of(items)
             .filter(type::isInstance)
             .map(type::cast)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public boolean containsItem(Class<? extends AbstractItem> itemClass) {
-        return items.stream().anyMatch(itemClass::isInstance);
+        return Seq.of(items).anyMatch(itemClass::isInstance);
     }
 
     public void addItem(AbstractItem item) {
@@ -328,7 +322,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
 
     public void setItems(List<? extends AbstractItem> items) {
         this.items.clear();
-        items.forEach(this::addItem);
+        Seq.of(items).forEach(this::addItem);
     }
 
     @Override

@@ -6,12 +6,7 @@ import com.avaricious.components.slot.DragableBody;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.FontDrawing;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -131,7 +126,7 @@ public class DeckUi {
             loadPendingCards();
             pendingCards = null;
         }
-        cards.forEach(card -> card.getBody().update(delta));
+        Seq.of(cards).forEach(card -> card.getBody().update(delta));
     }
 
     public void draw() {
@@ -212,7 +207,7 @@ public class DeckUi {
                 index++;
             }
             unfolded = true;
-            cards.forEach(card -> card.getBody().setIdleEffectsEnabled(true));
+            Seq.of(cards).forEach(card -> card.getBody().setIdleEffectsEnabled(true));
         } else {
             List<AbstractCard> reversed = new ArrayList<>(cards);
             Collections.reverse(reversed);
@@ -231,7 +226,7 @@ public class DeckUi {
                 @Override
                 public void run() {
                     unfolded = false;
-                    cards.forEach(card -> card.getBody().setIdleEffectsEnabled(false));
+                    Seq.of(cards).forEach(card -> card.getBody().setIdleEffectsEnabled(false));
                 }
             }, reversed.size() * 0.025f + 0.25f);
         }

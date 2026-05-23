@@ -10,13 +10,7 @@ import com.avaricious.items.upgrades.rings.DoubleXpRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
-import com.avaricious.utility.AssetKey;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.FontDrawing;
-import com.avaricious.utility.Observable;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,8 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class RingBar extends Observable<List<? extends AbstractRing>> {
 
@@ -68,14 +60,14 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
-        rings.stream().map(AbstractRing::getBody).forEach(ring -> ring.update(delta));
+        Seq.of(rings).map(AbstractRing::getBody).forEach(ring -> ring.update(delta));
 
         if (pressed && !wasPressed) {
-            Optional<AbstractRing> r = rings.stream()
+            AbstractRing r = Seq.of(rings)
                 .filter(ring -> ring.getBody().getBounds().contains(mouse))
-                .findFirst();
+                .findFirstOrNull();
 
-            if (r.isPresent()) onRingTouchDown(r.get(), mouse);
+            if (r != null) onRingTouchDown(r, mouse);
             else deselectRing(true);
 
         }
@@ -134,7 +126,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 //        Pencil.I().addDrawing(new TextureDrawing(ringSlot,
 //            0.1f, firstRingBounds.y - 0.275f, 162 / 25f, 40 / 25f,
 //            ZIndex.RING_BAR, Assets.I().shadowColor()));
-        rings.forEach(this::drawRing);
+        Seq.of(rings).forEach(this::drawRing);
 
         Vector2 ringsHoldingPos = new Vector2(4.9f * 100, 5.9f * 100f);
         ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
@@ -177,22 +169,22 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
     }
 
     public <T extends AbstractRing> T getRingByClass(Class<T> ringClass) {
-        return rings.stream()
+        return Seq.of(rings)
             .filter(ringClass::isInstance)
             .map(ringClass::cast)
-            .findFirst().orElse(null);
+            .findFirstOrNull();
     }
 
 
     public <T> List<T> getRingsOfType(Class<T> type) {
-        return rings.stream()
+        return Seq.of(rings)
             .filter(type::isInstance)
             .map(type::cast)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     public boolean ringOwned(Class<? extends AbstractRing> ringClass) {
-        return rings.stream()
+        return Seq.of(rings)
             .anyMatch(ringClass::isInstance);
     }
 
@@ -205,7 +197,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
     }
 
     private void updateRingIndexes() {
-        rings.forEach(ring -> {
+        Seq.of(rings).forEach(ring -> {
             int newRingIndex = calcRingIndex(ring);
             ringIndex.put(ring, newRingIndex);
 
@@ -216,10 +208,10 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private int calcRingIndex(AbstractRing ring) {
         List<AbstractRing> sorted = getEntriesSortedByX();
-        return IntStream.range(0, sorted.size())
-            .filter(i -> sorted.get(i) == ring)
-            .findFirst()
-            .orElse(-1);
+        for(int i = 0; i < sorted.size() - 1; i++) {
+            if(sorted.get(i) == ring) return i;
+        }
+        return -1;
     }
 
     private List<AbstractRing> getEntriesSortedByX() {
@@ -241,7 +233,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     public void setRings(List<? extends AbstractRing> rings) {
         this.rings.clear();
-        rings.forEach(this::addRing);
+        Seq.of(rings).forEach(this::addRing);
     }
 
     @Override

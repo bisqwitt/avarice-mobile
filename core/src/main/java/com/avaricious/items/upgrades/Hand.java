@@ -6,6 +6,7 @@ import com.avaricious.items.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.items.upgrades.cards.MultiForEveryDisabledCard;
 import com.avaricious.items.upgrades.cards.TriesCard;
 import com.avaricious.utility.Observable;
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.ArrayList;
@@ -129,6 +130,6 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
 
     public void setCards(List<? extends AbstractCard> cards) {
         hand.clear();
-        cards.forEach(this::addCardToHand);
+        Seq.of(cards).forEach(this::addCardToHand);
     }
 }

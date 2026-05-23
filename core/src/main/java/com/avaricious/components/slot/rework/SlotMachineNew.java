@@ -12,10 +12,7 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
-import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
+import com.avaricious.utility.*;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -103,10 +100,13 @@ public class SlotMachineNew {
         }
         buildStrip();
 
-        Arrays.stream(grid)
-            .flatMap(Arrays::stream)
-            .filter(Objects::nonNull)
-            .forEach(body -> body.getIdleSwayEffect().setStrength(2.5f, 0.8f));
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] != null) {
+                    grid[i][j].getIdleSwayEffect().setStrength(2.5f, 0.8f);
+                }
+            }
+        }
     }
 
     private void update(float delta) {
@@ -118,10 +118,13 @@ public class SlotMachineNew {
             reels.get(c).update(delta, spinTime);
         }
 
-        Arrays.stream(grid)
-            .flatMap(Arrays::stream)
-            .filter(Objects::nonNull)
-            .forEach(body -> body.update(delta));
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] != null) {
+                    grid[i][j].update(delta);
+                }
+            }
+        }
 
         if (desiredAlpha != alpha) {
             float speed = 10f;
@@ -176,7 +179,7 @@ public class SlotMachineNew {
         List<Vector2> symbolsInPatternHit = drawSymbols();
         Pencil.I().endScissors();
 
-        symbolsInPatternHit.forEach(this::drawSymbol);
+        Seq.of(symbolsInPatternHit).forEach(this::drawSymbol);
 
         TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
     }

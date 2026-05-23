@@ -1,6 +1,7 @@
 package com.avaricious.components.shop;
 
 import com.avaricious.utility.SeededRandomizer;
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -32,23 +33,23 @@ public class ShopItemBar {
     }
 
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
-        shopItems.forEach(item -> item.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta));
+        Seq.of(shopItems).forEach(item -> item.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta));
     }
 
     public void draw(float delta) {
-        shopItems.forEach(item -> item.draw(delta));
+        Seq.of(shopItems).forEach(item -> item.draw(delta));
     }
 
     public void setY(float y) {
-        shopItems.forEach(item -> item.setY(y));
+        Seq.of(shopItems).forEach(item -> item.setY(y));
     }
 
     public boolean isDragging() {
-        return shopItems.stream().anyMatch(AbstractShopItem::isDragging);
+        return Seq.of(shopItems).anyMatch(AbstractShopItem::isDragging);
     }
 
     public boolean isSelected() {
-        return shopItems.stream().anyMatch(AbstractShopItem::isSelected);
+        return Seq.of(shopItems).anyMatch(AbstractShopItem::isSelected);
     }
 
 }

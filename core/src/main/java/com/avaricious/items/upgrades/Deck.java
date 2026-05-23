@@ -9,6 +9,7 @@ import com.avaricious.items.upgrades.cards.MultiCard;
 import com.avaricious.items.upgrades.cards.PointsCard;
 import com.avaricious.items.upgrades.cards.TriesCard;
 import com.avaricious.utility.Observable;
+import com.avaricious.utility.Seq;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,9 +48,9 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
     }
 
     public AbstractCard drawCard(Class<? extends AbstractCard> cardClass) {
-        return removeCard(deck.indexOf(deck.stream()
+        return removeCard(deck.indexOf(Seq.of(deck)
             .filter(cardClass::isInstance)
-            .findFirst().get()));
+            .findFirstOrNull()));
     }
 
     public void addCardToDeck(AbstractCard upgrade) {
@@ -75,7 +76,7 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
 
     public void setDeck(List<? extends AbstractCard> cardsInDeck) {
         deck.clear();
-        cardsInDeck.forEach(this::addCardToDeck);
+        Seq.of(cardsInDeck).forEach(this::addCardToDeck);
     }
 
     public List<AbstractCard> getDeck() {
