@@ -44,8 +44,8 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = 1.65f;
-    private final float CARD_SIZE_DIVISOR = 65;
+    private final float Y = -0.5f;
+    private final float CARD_SIZE_DIVISOR = 55;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -167,7 +167,7 @@ public class HandUi {
 
         Vector2 cardsHoldingPos = new Vector2(5f * 100f, 2.2f * 100f);
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
-        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
+//        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
 
         if (selectingCardToDiscard) {
             Pencil.I().addDrawing(new FontDrawing(Assets.I().getBigFont(), discardACardTxt, new Vector2(0.9f * 100, 6.75f * 100), ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD));

@@ -48,7 +48,7 @@ public class SlotMachine {
     public static final float spacingY = 0.15f;
 
     public static final float originX = 0.25f;
-    public static final float originY = 8.5f;
+    public static final float originY = 6.5f;
 
     public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.325f, 8.95f, 6.425f);
 
@@ -145,9 +145,9 @@ public class SlotMachine {
 
         Camera cam = app.getViewport().getCamera();
         cam.update();
-//        Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
+        Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
         List<Vector2> symbolsInPatternHit = drawSymbols();
-//        Pencil.I().endScissors();
+        Pencil.I().endScissors();
 
         symbolsInPatternHit.forEach(this::drawSymbol);
 

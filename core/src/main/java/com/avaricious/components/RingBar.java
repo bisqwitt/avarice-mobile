@@ -43,8 +43,8 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private final TextureRegion ringSlot = Assets.I().get(AssetKey.RING_SLOT);
 
-    private final Rectangle firstRingBounds = new Rectangle(0.25f, 6.425f, 1.1f, 1.1f);
-    private final float RING_OFFSET = 1.25f;
+    private final Rectangle firstRingBounds = new Rectangle(0.5f, 4.5f, 1.4f, 1.4f);
+    private final float RING_OFFSET = 1.6f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
     private final Map<AbstractRing, Integer> ringIndex = new HashMap<>();
@@ -131,14 +131,14 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
     }
 
     public void draw() {
-        Pencil.I().addDrawing(new TextureDrawing(ringSlot,
-            0.1f, firstRingBounds.y - 0.275f, 162 / 25f, 40 / 25f,
-            ZIndex.RING_BAR, Assets.I().shadowColor()));
+//        Pencil.I().addDrawing(new TextureDrawing(ringSlot,
+//            0.1f, firstRingBounds.y - 0.275f, 162 / 25f, 40 / 25f,
+//            ZIndex.RING_BAR, Assets.I().shadowColor()));
         rings.forEach(this::drawRing);
 
         Vector2 ringsHoldingPos = new Vector2(4.9f * 100, 5.9f * 100f);
         ringsHoldingTxt.setText(Assets.I().getSmallFont(), rings.size() + " / 5", Color.WHITE, 200f, Align.top | Align.center, true);
-        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
+//        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), ringsHoldingTxt, ringsHoldingPos, ZIndex.RING_BAR));
     }
 
     public void drawRing(AbstractRing ring) {
