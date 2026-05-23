@@ -31,7 +31,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private final TextureRegion ringSlot = Assets.I().get(AssetKey.RING_SLOT);
 
-    private final Rectangle firstRingBounds = new Rectangle(0.5f, 4.5f, 1.4f, 1.4f);
+    private final Rectangle firstRingBounds = new Rectangle(0.5f, 16.25f, 1.4f, 1.4f);
     private final float RING_OFFSET = 1.6f;
 
     private final List<AbstractRing> rings = new ArrayList<>();
@@ -57,33 +57,33 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed, float delta) {
         Seq.of(rings).map(AbstractRing::getBody).forEach(ring -> ring.update(delta));
-
-        if (pressed && !wasPressed) {
-            AbstractRing r = Seq.of(rings)
-                .filter(ring -> ring.getBody().getBounds().contains(mouse))
-                .findFirstOrNull();
-
-            if (r != null) onRingTouchDown(r, mouse);
-            else deselectRing(true);
-
-        }
-
-        if (pressed && touchingRing != null) {
-            onRingTouching(touchingRing, mouse);
-        }
-
-        if (!pressed && wasPressed && touchingRing != null) {
-            onRingTouchReleased(touchingRing, mouse);
-        }
-
-        if (touchingRing != null || selectedRing != null) {
-            AbstractRing ring = touchingRing == null ? selectedRing : touchingRing;
-            Vector2 ringRenderPos = ring.getBody().getRenderPos(new Vector2());
-            PopupManager.I().updateTooltip(
-                new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + ring.getTooltipYOffset()),
-                true
-            );
-        }
+//
+//        if (pressed && !wasPressed) {
+//            AbstractRing r = Seq.of(rings)
+//                .filter(ring -> ring.getBody().getBounds().contains(mouse))
+//                .findFirstOrNull();
+//
+//            if (r != null) onRingTouchDown(r, mouse);
+//            else deselectRing(true);
+//
+//        }
+//
+//        if (pressed && touchingRing != null) {
+//            onRingTouching(touchingRing, mouse);
+//        }
+//
+//        if (!pressed && wasPressed && touchingRing != null) {
+//            onRingTouchReleased(touchingRing, mouse);
+//        }
+//
+//        if (touchingRing != null || selectedRing != null) {
+//            AbstractRing ring = touchingRing == null ? selectedRing : touchingRing;
+//            Vector2 ringRenderPos = ring.getBody().getRenderPos(new Vector2());
+//            PopupManager.I().updateTooltip(
+//                new Vector2(ringRenderPos.x - 2f, ringRenderPos.y + ring.getTooltipYOffset()),
+//                true
+//            );
+//        }
     }
 
     private void onRingTouchDown(AbstractRing ring, Vector2 mouse) {

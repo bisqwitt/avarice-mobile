@@ -18,7 +18,7 @@ public class ButtonBoard {
     }
 
     private final float BOARD_X = 0.75f;
-    private final float BOARD_Y = 0f;
+    private final float BOARD_Y = 0.5f;
 
     private final float BUTTON_W = 79 / 27f;
     private final float BUTTON_H = 25 / 27f;
@@ -48,9 +48,9 @@ public class ButtonBoard {
         return this;
     }
 
-    public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
-        spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-//        cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+    public boolean handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
+        return spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed)
+            || cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 
     public void draw(float delta) {
@@ -60,7 +60,7 @@ public class ButtonBoard {
         cashoutButton.update(delta);
 
         spinAgainButton.draw();
-//        cashoutButton.draw();
+        cashoutButton.draw();
     }
 
     public void moveOut() {

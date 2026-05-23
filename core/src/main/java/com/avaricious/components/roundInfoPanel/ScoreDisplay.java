@@ -32,7 +32,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
     private final float multiplySymbolSize = 11f / 19f;
 
-    private final float DIGIT_Y = 15.5f;
+    private final float DIGIT_Y = 14.5f;
     private final float DIGIT_WIDTH = 7 / 11f;
     private final float DIGIT_HEIGHT = 11 / 11f;
     private final float DIGIT_OFFSET = 0.7f;

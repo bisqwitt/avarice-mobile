@@ -41,7 +41,7 @@ public class Main extends Game {
         SeededRandomizer.setSeed(12345);
 
         batch = new SpriteBatch();
-        viewport = new FitViewport(9, 18);
+        viewport = new FitViewport(9, 20);
         uiViewport = new FitViewport(900, 2000);
 
         GameContext.init(batch, viewport, uiViewport, deviceInfo);

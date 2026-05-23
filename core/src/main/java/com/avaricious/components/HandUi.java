@@ -35,7 +35,7 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = -0.5f;
+    private final float Y = 1.5f;
     private final float CARD_SIZE_DIVISOR = 55;
     private final float CARD_OFFSET = 1.25f;
 
@@ -45,7 +45,6 @@ public class HandUi {
     private final List<AbstractCard> cards = new ArrayList<>();
     private final GlyphLayout cardsHoldingTxt = new GlyphLayout();
 
-    private AbstractCard draggingCard = null;
     private AbstractCard selectedCard = null;
     private AbstractCard applyingCard = null;
 
@@ -81,82 +80,57 @@ public class HandUi {
             deselectCard(true); // deselect if touching somewhere on screen
         }
 
-        if (pressed && draggingCard != null) {
-            onCardTouching(draggingCard, mouse);
+        if (!pressed && wasPressed && selectedCard != null) {
+            onCardTouchReleased(selectedCard, mouse);
         }
 
-        if (!pressed && wasPressed && draggingCard != null) {
-            onCardTouchReleased(draggingCard, mouse);
-        }
-
-        if (draggingCard != null || selectedCard != null) {
-            AbstractCard card = draggingCard == null ? selectedCard : draggingCard;
-            Vector2 cardRenderPos = card.getBody().getRenderPos(new Vector2());
-            boolean hoveringSlotMachine = SlotMachine.windowBounds.contains(card.getBody().getCardCenter());
-            boolean hoveringDeck = DeckUi.I().getHitBox().contains(card.getBody().getCardCenter());
+        if (selectedCard != null) {
+            Vector2 cardRenderPos = selectedCard.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
-                new Vector2(cardRenderPos.x - (hoveringSlotMachine || hoveringDeck ? 0.9f : 2f), cardRenderPos.y + 2.85f),
-                !hoveringSlotMachine,
-                hoveringSlotMachine, false);
+                new Vector2(cardRenderPos.x - 1.5f, cardRenderPos.y + 4.25f), true);
         }
     }
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
-        if (selectedCard != null && card != selectedCard) deselectCard(false);
-        draggingCard = card;
+        if (selectedCard != null && card == selectedCard) {
+            deselectCard(true);
+            return;
+        }
+
+        if(selectedCard != null) deselectCard(true);
+        selectedCard = card;
         card.getBody().targetScale = 1.3f;
         Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
-//        card.getBody().moveTo(new Vector2(renderPos.x, renderPos.y + 0.75f));
+        card.getBody().beginDrag(renderPos.x, renderPos.y, 0);
+        card.getBody().dragTo(renderPos.x, Y + 1f, 0);
         card.getBody().setIdleEffectsEnabled(false);
-        card.getBody().beginDrag(renderPos.x, renderPos.y + 0.75f, 0);
+//        card.getBody().beginDrag(renderPos.x, renderPos.y + 0.75f, 0);
 
         mouseTouchdownLocation.set(mouse);
-        if (selectedCard == null)
-            tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
-    }
-
-    private void onCardTouching(AbstractCard card, Vector2 mouse) {
-        DragableBody body = card.getBody();
-
-        body.dragTo(mouse.x, mouse.y, 0);
-        updateCardBounds();
+        tooltipPopup = PopupManager.I().createTooltip(card, card.getBody().getRenderPos(new Vector2()));
     }
 
     private void onCardTouchReleased(AbstractCard card, Vector2 mouse) {
-        DragableBody body = card.getBody();
-        if (SlotMachine.windowBounds.contains(card.getBody().getCardCenter())
-            && !card.isDisabled() && !selectingCardToDiscard) {
-            applyCard(card);
-        } else {
-            body.endDrag(0);
-            boolean isClick = mouseTouchdownLocation.dst2(mouse) <= 0.2f * 0.2f;
-            if (isClick) {
-                if (selectedCard == card) deselectCard(true);
-                else {
-                    if (selectedCard != null) deselectCard(false);
-                    selectedCard = card;
-                }
-            } else selectedCard = card;
-            updateCardBounds();
-        }
-        draggingCard = null;
+//        boolean isClick = mouseTouchdownLocation.dst2(mouse) <= 0.2f * 0.2f;
+//        if (isClick) {
+//            if (selectedCard == card) deselectCard(true);
+//            else {
+//                if (selectedCard != null) deselectCard(false);
+//                selectedCard = card;
+//            }
+//        } else selectedCard = card;
     }
 
     public void draw(SpriteBatch batch, float delta) {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
 
-        Vector2 touchingCardCenter = draggingCard != null ? draggingCard.getBody().getCardCenter() : new Vector2();
-        cardDestinationUI.draw(batch, delta, touchingCardCenter, draggingCard != null || selectedCard != null);
-
         for (AbstractCard card : getEntriesSortedByX()) {
-            if (draggingCard != card && selectedCard != card && applyingCard != card) drawCard(card);
+            if (selectedCard != card && applyingCard != card) drawCard(card);
         }
 
-        if (draggingCard != null) drawCard(draggingCard);
         if (selectedCard != null) drawCard(selectedCard);
         if (applyingCard != null) drawCard(applyingCard);
 
-        Vector2 cardsHoldingPos = new Vector2(5f * 100f, 2.2f * 100f);
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
 //        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
 
@@ -171,7 +145,7 @@ public class HandUi {
 
         float scale = body.getScale();
         final float rotation = body.getRotation()
-            + (card != draggingCard && card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
+            + (card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
         if ((!selectingCardToDiscard && card.isDisabled())) {
@@ -180,14 +154,14 @@ public class HandUi {
 
         Vector2 position = body.getRenderPos(new Vector2());
         position.y += body.getIdleFloatYOffset();
-        ZIndex zIndex = draggingCard == card || applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
+        ZIndex zIndex = applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
         if (selectingCardToDiscard) zIndex = ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD;
 
         Color shadowColor = Assets.I().shadowColor();
         Vector2 shadowOffset = UiUtility.calcShadowOffset(body.getCardCenter());
         Pencil.I().addDrawing(new TextureDrawing(
             jokerCardShadow,
-            position.x + shadowOffset.x, position.y - (card == draggingCard ? 0.3f : 0.2f),
+            position.x + shadowOffset.x, position.y - 0.2f,
             bounds.width, bounds.height,
             scale, rotation,
             zIndex, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(0.25f, alpha))
@@ -236,9 +210,6 @@ public class HandUi {
 
     private void updateCardBounds() {
         for (AbstractCard card : cards) {
-            if (card == draggingCard
-                && (SlotMachine.windowBounds.contains(card.getBody().getCardCenter())
-                || DeckUi.I().getHitBox().contains(card.getBody().getCardCenter()))) continue;
             card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
         }
     }
@@ -324,21 +295,15 @@ public class HandUi {
     }
 
     private List<AbstractCard> getCardsForLayout() {
-        boolean touchingOverSlotMachine =
-            draggingCard != null &&
-                (SlotMachine.windowBounds.contains(draggingCard.getBody().getCardCenter())
-                    || DeckUi.I().getFirstCardBounds().contains(draggingCard.getBody().getCardCenter()));
-
         return Seq.of(cards)
-            .filter(card -> !(touchingOverSlotMachine && card == draggingCard))
             .filter(card -> card != applyingCard)
             .toList();
     }
 
     public void deselectCard(boolean killTooltip) {
         if (selectedCard == null) return;
-        Vector2 renderPos = selectedCard.getBody().getRenderPos(new Vector2());
-        selectedCard.getBody().moveTo(new Vector2(renderPos.x, renderPos.y - 0.75f));
+//        selectedCard.getBody().moveTo(new Vector2(renderPos.x, renderPos.y - 0.75f));
+        selectedCard.getBody().endDrag(0);
         selectedCard.getBody().targetScale = 1f;
         selectedCard.getBody().setIdleEffectsEnabled(true);
         selectedCard = null;
@@ -349,7 +314,7 @@ public class HandUi {
     }
 
     public void applySelectedCard() {
-        applyCard(draggingCard);
+        applyCard(selectedCard);
     }
 
     public void applyCard(AbstractCard card) {
@@ -373,6 +338,7 @@ public class HandUi {
                 body.startApplyAnimation(0.6f, () -> {
                     Hand.I().removeCardFromHand(card);
                     applyingCard = null;
+                    updateCardBounds();
                 });
             }
         }, 0.5f);
@@ -404,5 +370,9 @@ public class HandUi {
 
     private float getCardHeight() {
         return AbstractCard.HEIGHT / CARD_SIZE_DIVISOR;
+    }
+
+    public boolean cardIsSelected() {
+        return selectedCard != null;
     }
 }

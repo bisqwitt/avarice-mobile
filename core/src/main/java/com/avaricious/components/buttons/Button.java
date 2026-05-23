@@ -53,7 +53,7 @@ public class Button {
         drawAt(buttonRectangle);
     }
 
-    public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
+    public boolean handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
         boolean hovering = buttonRectangle.contains(mouse.x, mouse.y);
         if (hovering && !wasHovered) currentTexture = hoveredButtonTexture;
         else if (!hovering && wasHovered) currentTexture = defaultButtonTexture;
@@ -64,7 +64,9 @@ public class Button {
                 currentTexture = pressedButtonTexture;
         } else if (!pressed && wasPressed) {
             currentTexture = hovering ? hoveredButtonTexture : defaultButtonTexture;
-            if (hovering && pressDownIsOnButton) onButtonPressed();
+            if (hovering && pressDownIsOnButton) {
+                onButtonPressed();
+            }
         }
 
         boolean spacePressed = Gdx.input.isKeyPressed(key);
@@ -76,6 +78,7 @@ public class Button {
 
         wasHovered = hovering;
         spaceWasPressed = spacePressed;
+        return hovering;
     }
 
     protected void drawAt(Rectangle bounds) {

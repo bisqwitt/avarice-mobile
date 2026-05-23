@@ -78,14 +78,14 @@ public abstract class DisablableButton extends Button {
     }
 
     @Override
-    public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
-        if (disabled()) return;
+    public boolean handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
+        if (disabled()) return false;
         // No input unless fully shown (Balatro-style: commit at the end of the animation)
         if (disabled || vis < 0.999f) {
             wasHovered = false;
-            return;
+            return false;
         }
-        super.handleInput(mouse, pressed, wasPressed);
+        return super.handleInput(mouse, pressed, wasPressed);
     }
 
     @Override

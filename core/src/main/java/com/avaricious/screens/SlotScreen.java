@@ -60,7 +60,7 @@ public class SlotScreen extends ScreenAdapter {
 //    private final BackgroundLayer backgroundLayer = new BackgroundLayer();
 
     private final ButtonBoard buttonBoard = ButtonBoard.I()
-        .init(this::onSpinButtonPressed, this::onNoSpinsLeft);
+        .init(this::onSpinButtonPressed, this::onPlayButtonPressed);
     private final HandUi handUi = HandUi.I();
     private final DeckUi deckUi = DeckUi.I();
     private final RingBar ringBar = RingBar.I();
@@ -155,7 +155,7 @@ public class SlotScreen extends ScreenAdapter {
 
 //        background.render(batch, delta);
 
-        ScreenUtils.clear(0.95f, 0.93f, 0.89f, 1f);
+//        ScreenUtils.clear(0.95f, 0.93f, 0.89f, 1f);
         batch.begin();
         batch.draw(charcoalPixel, -3, -3, 15, 26);
 //        batch.draw(charcoalPixel, -3f, 17.75f, 15f, 6f);
@@ -185,9 +185,9 @@ public class SlotScreen extends ScreenAdapter {
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        else if (!bossLootWindow.isShown()) {
         RoundInfoPanel.I().handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        if(!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
+            handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        }
 //        backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -333,9 +333,9 @@ public class SlotScreen extends ScreenAdapter {
         }
     }
 
-//    public void onPlayButtonPressed() {
-//        HandUi.I().applySelectedCard();
-//    }
+    public void onPlayButtonPressed() {
+        HandUi.I().applySelectedCard();
+    }
 
     private void onSpinButtonPressed() {
         if(RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
