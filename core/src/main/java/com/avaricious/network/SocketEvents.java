@@ -20,5 +20,6 @@ public class SocketEvents {
     public static final String HEALTH_UPDATE = "healthUpdate";
     public static final String OPPONENT_HEALTH_CHANGED = "opponentHealthRequest";
 
-    public static final String SCORE_CHANGED = "scoreChanged";
+    public static final String SCORE_UPDATE = "scoreUpdate";
+    public static final String OPPONENT_SCORE_CHANGED = "opponentScoreChanged";
 }

@@ -27,6 +27,11 @@ public class MatchController {
             int opponentHealth = data.getInt("health");
             service.onOpponentHealthChanged(opponentHealth);
         });
+
+        socketClient.onJson(SocketEvents.OPPONENT_SCORE_CHANGED, data -> {
+            int opponentScore = data.getInt("score");
+            service.onOpponentScoreChanged(opponentScore);
+        });
     }
 
     public void sendRoundEndScore(int round, int score) {
@@ -45,10 +50,10 @@ public class MatchController {
     }
 
     public void onScoreChanged(int round, int score) {
-        socketClient.emitJson(SocketEvents.SCORE_CHANGED, payload -> {
-            payload.put("round", round);
+        socketClient.emitJson(SocketEvents.SCORE_UPDATE, payload -> {
+//            payload.put("round", round);
             payload.put("score", score);
-            payload.put("msSinceRoundStart", 0);
+//            payload.put("msSinceRoundStart", 0);
         });
     }
 

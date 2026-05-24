@@ -1,6 +1,7 @@
 package com.avaricious.network.match;
 
 import com.avaricious.RoundsManager;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.screens.PlayerCombatScreen;
 import com.avaricious.screens.ScreenManager;
 import com.badlogic.gdx.Gdx;
@@ -24,6 +25,12 @@ public class MatchService {
     public void onOpponentHealthChanged(int newHealth) {
         Gdx.app.postRunnable(() -> {
             RoundsManager.I().setOpponentHealth(newHealth);
+        });
+    }
+
+    public void onOpponentScoreChanged(int newScore) {
+        Gdx.app.postRunnable(() -> {
+            ScoreDisplay.I().setCurrentEnemyScoreNumber(newScore);
         });
     }
 
