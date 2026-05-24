@@ -25,8 +25,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         return instance == null ? instance = new ScoreDisplay() : instance;
     }
 
-    private final ScoreProgressBar scoreProgressBar = ScoreProgressBar.I();
-
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
     private final float multiplySymbolSize = 11f / 19f;
@@ -120,23 +118,12 @@ public class ScoreDisplay extends Observable<ScoreState> {
         streakNumber.draw(delta);
     }
 
-    public void addScore(int amount) {
-        setScore(scoreProgressBar.getCurrentValue() + amount);
-    }
-
-    public void setScore(float score) {
-        scoreProgressBar.setCurrentValue(score);
-
-        notifyChanged(snapshot());
-    }
-
     public void addPotentialValue(Type type, float amount) {
         setPotentialValue(type, getPotentialValueOf(type) + amount);
     }
 
     public void setPotentialValue(Type type, float value) {
         getNumberOf(type).setValue(value);
-        scoreProgressBar.setPotentialValue(getPotentialValueOf(Type.POINTS) * Math.max(getPotentialValueOf(Type.MULTI), 1) * getPotentialValueOf(Type.STREAK));
 
         updatePotentialScoreXLayout();
 
@@ -161,14 +148,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     public int calcPotentialValue() {
         return Math.round(getPotentialValueOf(ScoreDisplay.Type.POINTS) * getPotentialValueOf(Type.MULTI) * getPotentialValueOf(Type.STREAK));
-    }
-
-    public boolean targetScoreReached() {
-        return scoreProgressBar.getCurrentValue() >= RoundsManager.I().getCurrentTargetScore();
-    }
-
-    public float getScore() {
-        return scoreProgressBar.getCurrentValue();
     }
 
     private DigitalNumber getNumberOf(Type type) {
@@ -211,7 +190,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
     }
 
     public void setScoreState(ScoreState scoreState) {
-        setScore(scoreState.currentScore);
         setPotentialValue(Type.POINTS, scoreState.points);
         setPotentialValue(Type.MULTI, scoreState.multi);
         setPotentialValue(Type.STREAK, scoreState.streak);
@@ -220,7 +198,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
     @Override
     protected ScoreState snapshot() {
         return new ScoreState(
-            scoreProgressBar.getCurrentValue(),
             pointsNumber.getValue(),
             multiNumber.getValue(),
             streakNumber.getValue());

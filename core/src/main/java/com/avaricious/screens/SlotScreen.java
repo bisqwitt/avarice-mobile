@@ -107,7 +107,6 @@ public class SlotScreen extends ScreenAdapter {
         }, 1);
 
         RoundInfoPanel.I().setSpins(1);
-        ScoreDisplay.I().setScore(0);
         RoundTimer.I().startTimer();
 
         if (RoundsManager.I().isShopRound()) shop.show();
@@ -210,6 +209,7 @@ public class SlotScreen extends ScreenAdapter {
             if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
+            if(RoundTimer.I().timerEnded()) onRoundEnd();
             return;
         }
         RoundInfoPanel.I().addSpin();
@@ -363,11 +363,8 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     public void onRoundEnd() {
-        int score = ScoreDisplay.I().calcPotentialValue();
-        ScoreDisplay.I().addScore(score);
-
         isFirstStreakIncrease = true;
-        ScoreDisplay.I().clearPotentialScore();
+//        ScoreDisplay.I().clearPotentialScore();
 
         AudioManager.I().endPayout();
 

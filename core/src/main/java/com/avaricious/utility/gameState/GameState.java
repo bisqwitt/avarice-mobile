@@ -21,7 +21,6 @@ public class GameState {
     public GameState copy() {
         GameState copy = new GameState();
         copy.scoreState = new ScoreState(
-            this.scoreState.currentScore,
             this.scoreState.points,
             this.scoreState.multi,
             this.scoreState.streak
