@@ -18,7 +18,7 @@ public class ButtonBoard {
     }
 
     private final float BOARD_X = 0.75f;
-    private final float BOARD_Y = 0.5f;
+    private final float BOARD_Y = 0.25f;
 
     private final float BUTTON_W = 79 / 27f;
     private final float BUTTON_H = 25 / 27f;

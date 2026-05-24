@@ -41,7 +41,7 @@ public class DevTools {
     }
 
     public static boolean unlimitedSpins() {
-        return active && true;
+        return active && false;
     }
 
 }

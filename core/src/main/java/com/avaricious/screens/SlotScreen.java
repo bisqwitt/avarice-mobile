@@ -363,9 +363,9 @@ public class SlotScreen extends ScreenAdapter {
         AudioManager.I().endPayout();
 
         PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
-        ScreenManager.I().setScreen(PlayerCombatScreen.class);
-        if (DevTools.opponentDefaultValues())
-            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(Bot.getRoundEndScore());
+//        ScreenManager.I().setScreen(PlayerCombatScreen.class);
+//        if (DevTools.opponentDefaultValues())
+//            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(Bot.getRoundEndScore());
 
         RoundsManager.I().nextRound();
         CreditManager.I().roundEnd();

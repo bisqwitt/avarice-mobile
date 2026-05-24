@@ -233,7 +233,7 @@ public class DigitalNumber {
         return swayEffect;
     }
 
-    public IdleScaleEffect getScaleEffect() {
+    public IdleScaleEffect getIdleScaleEffect() {
         return scaleEffect;
     }
 
