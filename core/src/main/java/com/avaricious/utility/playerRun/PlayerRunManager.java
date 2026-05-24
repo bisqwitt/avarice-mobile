@@ -55,11 +55,6 @@ public class PlayerRunManager {
         isDirty = true;
     }
 
-    public void updatePlayerRoundEndScore(int round, int score) {
-        playerRun.roundEndScores.add(new PlayerRoundEndScore(round, score));
-        NetworkController.I().match().sendRoundEndScore(round, score);
-    }
-
     public PlayerRun getPlayerRun() {
         return playerRun;
     }

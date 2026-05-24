@@ -34,9 +34,11 @@ public class RoundInfoPanel extends Observable<Float> {
     private final Rectangle panelBoundsUnfolded = new Rectangle(0f, 9f, 9f, 9f);
     private final Rectangle currentPanelBounds = new Rectangle(panelBoundsFolded);
 
-    private final RoundText roundText = new RoundText(new Vector2(0.475f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
-    private final DigitalNumber currentRoundNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
-        new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+//    private final RoundText roundText = new RoundText(new Vector2(0.475f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+//    private final DigitalNumber currentRoundNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
+//        new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+
+//    private final DigitalNumber roundEndTimer = new DigitalNumber()
 
     private final SpinsText spinsText = new SpinsText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber spinsNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
@@ -56,7 +58,7 @@ public class RoundInfoPanel extends Observable<Float> {
     private float unfoldAmount = 0f;
 
     private RoundInfoPanel() {
-        RoundsManager.I().onChange(currentRoundNumber::setValue);
+//        RoundsManager.I().onChange(currentRoundNumber::setValue);
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
@@ -116,8 +118,8 @@ public class RoundInfoPanel extends Observable<Float> {
 
         spinsText.draw(delta);
         spinsNumber.draw(delta);
-        roundText.draw(delta);
-        currentRoundNumber.draw(delta);
+//        roundText.draw(delta);
+//        currentRoundNumber.draw(delta);
         creditsText.draw(delta);
         creditScore.draw(delta);
 
@@ -137,7 +139,7 @@ public class RoundInfoPanel extends Observable<Float> {
     }
 
     private void centerRoundInfoNumbers() {
-        centerNumberToText(roundText, currentRoundNumber);
+//        centerNumberToText(roundText, currentRoundNumber);
         centerNumberToText(spinsText, spinsNumber);
         centerNumberToText(creditsText, creditScore);
     }

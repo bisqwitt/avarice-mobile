@@ -1,5 +1,6 @@
 package com.avaricious.components.buttons;
 
+import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -18,6 +19,6 @@ public class SpinButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return !SlotMachine.I().isStale();
+        return !SlotMachine.I().isStale() || RoundTimer.I().timerEnded();
     }
 }

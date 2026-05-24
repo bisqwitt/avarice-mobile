@@ -14,15 +14,6 @@ public class MatchController {
     }
 
     public void registerListeners() {
-        socketClient.on(SocketEvents.ROUND_END_WAITING, args -> {
-            service.onRoundEndWaiting();
-        });
-
-        socketClient.onJson(SocketEvents.ROUND_END_RESULT, data -> {
-            int opponentScore = data.getInt("opponentScore");
-            service.onRoundEndResult(opponentScore);
-        });
-
         socketClient.onJson(SocketEvents.OPPONENT_HEALTH_CHANGED, data -> {
             int opponentHealth = data.getInt("health");
             service.onOpponentHealthChanged(opponentHealth);
@@ -32,15 +23,18 @@ public class MatchController {
             int opponentScore = data.getInt("score");
             service.onOpponentScoreChanged(opponentScore);
         });
-    }
 
-    public void sendRoundEndScore(int round, int score) {
-        socketClient.emitJson(SocketEvents.ROUND_SCORE_SUBMIT, payload -> {
-            payload.put("round", round);
-            payload.put("score", score);
+        socketClient.on(SocketEvents.ROUND_END_WAITING, args -> {
+            service.onRoundEndWaiting();
         });
 
-        Gdx.app.log("MATCH", "Sent round end score: " + score);
+        socketClient.on(SocketEvents.BOTH_PLAYERS_ENDED_ROUND, args -> {
+            service.onBothPlayersEndedRound();
+        });
+    }
+
+    public void sendRoundEnded() {
+        socketClient.emit(SocketEvents.ROUND_END);
     }
 
     public void onHealthChanged(int newHealth) {

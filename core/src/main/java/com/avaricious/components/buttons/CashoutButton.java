@@ -1,6 +1,7 @@
 package com.avaricious.components.buttons;
 
 import com.avaricious.components.HandUi;
+import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.AssetKey;
@@ -20,6 +21,6 @@ public class CashoutButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return !HandUi.I().cardIsSelected();
+        return !HandUi.I().cardIsSelected() || RoundTimer.I().timerEnded();
     }
 }

@@ -14,7 +14,10 @@ import com.avaricious.components.HandUi;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.popups.PopupManager;
+import com.avaricious.components.roundInfoPanel.PlayerHealths;
+import com.avaricious.components.roundInfoPanel.PlayerScores;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
+import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.Body;
@@ -28,6 +31,7 @@ import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
+import com.avaricious.network.NetworkController;
 import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
@@ -103,8 +107,8 @@ public class SlotScreen extends ScreenAdapter {
         }, 1);
 
         RoundInfoPanel.I().setSpins(1);
-//        drawStartingHand();
         ScoreDisplay.I().setScore(0);
+        RoundTimer.I().startTimer();
 
         if (RoundsManager.I().isShopRound()) shop.show();
     }
@@ -130,6 +134,9 @@ public class SlotScreen extends ScreenAdapter {
 
         Pencil.I().drawDarkenWindow();
         RoundInfoPanel.I().draw(delta);
+        PlayerScores.I().draw(delta);
+        PlayerHealths.I().draw(delta);
+        RoundTimer.I().draw(delta);
         buttonBoard.draw(delta);
         ringBar.draw();
 
@@ -285,6 +292,8 @@ public class SlotScreen extends ScreenAdapter {
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
+
+            if(RoundTimer.I().timerEnded()) onRoundEnd();
 //            buttonBoard.setVisible(true);
         });
 
@@ -338,7 +347,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onSpinButtonPressed() {
-        if(RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
+//        if(RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
 
         slotMachine.setAlpha(1f);
 //        buttonBoard.setVisible(false);
@@ -353,7 +362,7 @@ public class SlotScreen extends ScreenAdapter {
         Hand.I().drawCard();
     }
 
-    public void onNoSpinsLeft() {
+    public void onRoundEnd() {
         int score = ScoreDisplay.I().calcPotentialValue();
         ScoreDisplay.I().addScore(score);
 
@@ -362,7 +371,8 @@ public class SlotScreen extends ScreenAdapter {
 
         AudioManager.I().endPayout();
 
-        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
+        NetworkController.I().match().sendRoundEnded();
+//        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
 //        ScreenManager.I().setScreen(PlayerCombatScreen.class);
 //        if (DevTools.opponentDefaultValues())
 //            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(Bot.getRoundEndScore());

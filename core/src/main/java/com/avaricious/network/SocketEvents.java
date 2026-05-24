@@ -12,9 +12,9 @@ public class SocketEvents {
     public static final String OPPONENT_LEFT = "opponentLeft";
 
     // Match
-    public static final String ROUND_SCORE_SUBMIT = "roundScoreSubmit";
+    public static final String ROUND_END = "roundEnd";
     public static final String ROUND_END_WAITING = "roundEndWaiting";
-    public static final String ROUND_END_RESULT = "roundEndResult";
+    public static final String BOTH_PLAYERS_ENDED_ROUND = "bothPlayersEndedRound";
 
     // Health
     public static final String HEALTH_UPDATE = "healthUpdate";

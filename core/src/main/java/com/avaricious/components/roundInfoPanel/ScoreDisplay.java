@@ -27,12 +27,11 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
     private final ScoreProgressBar scoreProgressBar = ScoreProgressBar.I();
 
-    private final TextureRegion scoreDisplaySlot = Assets.I().get(AssetKey.SCORE_DISPLAY_SLOT);
     private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
     private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
     private final float multiplySymbolSize = 11f / 19f;
 
-    private final float DIGIT_Y = 15.5f;
+    private final float DIGIT_Y = 14.5f;
     private final float DIGIT_WIDTH = 7 / 11f;
     private final float DIGIT_HEIGHT = 11 / 11f;
     private final float DIGIT_OFFSET = 0.7f;
@@ -46,10 +45,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
 
-    private final DigitalNumber currentScoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 1,
-        new Rectangle(0.25f, DIGIT_Y - 1f, 7 / 14f, 11 / 14f), 0.55f);
-    private final DigitalNumber currentEnemyScoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 1,
-        new Rectangle(6, DIGIT_Y - 1f, 7 / 14f, 11 / 14f), 0.55f);
+
 
     float multiSymbol1X = 0f;
     float multiSymbol2X = 0f;
@@ -63,8 +59,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         pointsNumber.getIdleScaleEffect().setAllowed(false);
         multiNumber.getIdleScaleEffect().setAllowed(false);
         streakNumber.getIdleScaleEffect().setAllowed(false);
-        currentScoreNumber.getIdleScaleEffect().setAllowed(false);
-        currentEnemyScoreNumber.getIdleScaleEffect().setAllowed(false);
     }
 
     public void draw(float delta, float unfoldAmount) {
@@ -80,8 +74,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         pointsNumber.setZIndex(zIndex);
         multiNumber.setZIndex(zIndex);
         streakNumber.setZIndex(zIndex);
-        currentScoreNumber.setZIndex(zIndex);
-        currentEnemyScoreNumber.setZIndex(zIndex);
 
         float digitY = MathUtils.lerp(DIGIT_Y, DIGIT_Y - 1.1f, smoothT);
 
@@ -126,10 +118,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         ));
 
         streakNumber.draw(delta);
-
-        currentScoreNumber.draw(delta);
-        currentEnemyScoreNumber.draw(delta);
-//        scoreProgressBar.draw();
     }
 
     public void addScore(int amount) {
@@ -152,7 +140,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         updatePotentialScoreXLayout();
 
-        updateCurrentScoreNumber();
+        PlayerScores.I().setPlayerScoreNumber(calcPotentialValue());
         NetworkController.I().match().onScoreChanged(RoundsManager.I().getCurrentRound(), calcPotentialValue());
         notifyChanged(snapshot());
     }
@@ -220,14 +208,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         x += symbolWidth + gap;
 
         streakNumber.getFirstDigitBounds().x = x;
-    }
-
-    private void updateCurrentScoreNumber() {
-        currentScoreNumber.setValue(calcPotentialValue());
-    }
-
-    public void setCurrentEnemyScoreNumber(int value) {
-        currentEnemyScoreNumber.setValue(value);
     }
 
     public void setScoreState(ScoreState scoreState) {
