@@ -105,11 +105,15 @@ public class SlotScreen extends ScreenAdapter {
                 buttonBoard.setVisible(true);
             }
         }, 1);
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                onSpinButtonPressed();
+            }
+        }, 1.5f);
 
         RoundInfoPanel.I().setSpins(1);
         RoundTimer.I().startTimer();
-
-        if (RoundsManager.I().isShopRound()) shop.show();
     }
 
     @Override
@@ -209,6 +213,7 @@ public class SlotScreen extends ScreenAdapter {
             if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
+            onSpinButtonPressed();
             if(RoundTimer.I().timerEnded()) onRoundEnd();
             return;
         }
@@ -292,6 +297,7 @@ public class SlotScreen extends ScreenAdapter {
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
+            onSpinButtonPressed();
 
             if(RoundTimer.I().timerEnded()) onRoundEnd();
 //            buttonBoard.setVisible(true);
@@ -347,7 +353,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onSpinButtonPressed() {
-//        if(RoundInfoPanel.I().getSpins() == 0) onNoSpinsLeft();
+        if(RoundInfoPanel.I().getSpins() == 0) return;
 
         slotMachine.setAlpha(1f);
 //        buttonBoard.setVisible(false);
@@ -359,7 +365,7 @@ public class SlotScreen extends ScreenAdapter {
             relicWithActionAfterSpin.onSpinButtonPressed();
         }
 
-        Hand.I().drawCard();
+//        Hand.I().drawCard();
     }
 
     public void onRoundEnd() {

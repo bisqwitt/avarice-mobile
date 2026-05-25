@@ -24,7 +24,7 @@ public class ButtonBoard {
     private final float BUTTON_H = 25 / 27f;
 
     private SpinButton spinAgainButton;
-    private CashoutButton cashoutButton;
+    private CashoutButton playCardButton;
 
     private boolean isMoving = false;
 
@@ -43,24 +43,25 @@ public class ButtonBoard {
         spinAgainButton = new SpinButton(onSpinButtonPressed,
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
-        cashoutButton = new CashoutButton(onCashoutButtonPressed,
+        playCardButton = new CashoutButton(onCashoutButtonPressed,
             new Rectangle(BOARD_X + 0.3f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
         return this;
     }
 
     public boolean handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
-        return spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed)
-            || cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+//        return spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed)
+//            || cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        return playCardButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 
     public void draw(float delta) {
         updateMovement(delta);
 
         spinAgainButton.update(delta);
-        cashoutButton.update(delta);
+        playCardButton.update(delta);
 
-        spinAgainButton.draw();
-        cashoutButton.draw();
+//        spinAgainButton.draw();
+        playCardButton.draw();
     }
 
     public void moveOut() {
@@ -85,17 +86,17 @@ public class ButtonBoard {
         float eased = Interpolation.smooth.apply(progress);
 
         spinAgainButton.getBounds().y = lerp(startY, targetY, eased);
-        cashoutButton.getBounds().y = lerp(startY, targetY, eased);
+        playCardButton.getBounds().y = lerp(startY, targetY, eased);
 
         if (progress >= 1f) {
             spinAgainButton.getBounds().y = targetY;
-            cashoutButton.getBounds().y = targetY;
+            playCardButton.getBounds().y = targetY;
             isMoving = false;
         }
     }
 
     public void setVisible(boolean visible) {
         spinAgainButton.setVisibleAnimated(visible);
-        cashoutButton.setVisibleAnimated(visible);
+        playCardButton.setVisibleAnimated(visible);
     }
 }
