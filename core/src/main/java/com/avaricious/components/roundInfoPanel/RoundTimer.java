@@ -47,7 +47,7 @@ public class RoundTimer {
 
     private void onTimerEnd() {
         timerEnded = true;
-        if(!SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
+        if(SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
     }
 
     public boolean timerEnded() {

@@ -33,20 +33,8 @@ public class MatchController {
         });
     }
 
-//    public void sendRoundEnded() {
-//        socketClient.emit(SocketEvents.ROUND_END);
-//    }
-
     public void sendRoundEnded() {
-        Gdx.app.log("ROUND_END", "sendRoundEnded called from controller=" + this);
-        Gdx.app.log("ROUND_END", "socketClient=" + socketClient);
-        Gdx.app.log("ROUND_END", "socketId=" + socketClient.getSocketId());
-
-        socketClient.emitJson(SocketEvents.ROUND_END, payload -> {
-            payload.put("clientSocketId", socketClient.getSocketId());
-            payload.put("controller", String.valueOf(this));
-            payload.put("socketClient", String.valueOf(socketClient));
-        });
+        socketClient.emit(SocketEvents.ROUND_END);
     }
 
     public void onHealthChanged(int newHealth) {
@@ -56,6 +44,7 @@ public class MatchController {
     }
 
     public void onScoreChanged(int round, int score) {
+        Gdx.app.log("SCORE_CHANGE", "socketId=" + socketClient.getSocketId());
         socketClient.emitJson(SocketEvents.SCORE_UPDATE, payload -> {
 //            payload.put("round", round);
             payload.put("score", score);
