@@ -33,8 +33,20 @@ public class MatchController {
         });
     }
 
+//    public void sendRoundEnded() {
+//        socketClient.emit(SocketEvents.ROUND_END);
+//    }
+
     public void sendRoundEnded() {
-        socketClient.emit(SocketEvents.ROUND_END);
+        Gdx.app.log("ROUND_END", "sendRoundEnded called from controller=" + this);
+        Gdx.app.log("ROUND_END", "socketClient=" + socketClient);
+        Gdx.app.log("ROUND_END", "socketId=" + socketClient.getSocketId());
+
+        socketClient.emitJson(SocketEvents.ROUND_END, payload -> {
+            payload.put("clientSocketId", socketClient.getSocketId());
+            payload.put("controller", String.valueOf(this));
+            payload.put("socketClient", String.valueOf(socketClient));
+        });
     }
 
     public void onHealthChanged(int newHealth) {
