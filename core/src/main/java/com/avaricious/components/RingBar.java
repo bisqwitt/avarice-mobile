@@ -31,7 +31,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private final TextureRegion ringSlot = Assets.I().get(AssetKey.RING_SLOT);
 
-    private final Rectangle firstRingBounds = new Rectangle(0.5f, 16.25f, 1.4f, 1.4f);
+    private final Rectangle firstRingBounds = new Rectangle(0.5f, 4f, 1.4f, 1.4f);
     private final float RING_OFFSET = 1.6f;
 
     private final List<AbstractRing> rings = new ArrayList<>();

@@ -90,7 +90,7 @@ public abstract class DisablableButton extends Button {
 
     @Override
     public void draw() {
-        if (vis <= 0.001f) return;
+        if (vis <= 0.001f || disabled()) return;
 
         // Ease for nicer motion
         float t = Interpolation.pow3Out.apply(vis);

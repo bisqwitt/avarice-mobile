@@ -2,7 +2,7 @@ package com.avaricious.components;
 
 import static com.badlogic.gdx.math.MathUtils.lerp;
 
-import com.avaricious.components.buttons.CashoutButton;
+import com.avaricious.components.buttons.PlayCardButton;
 import com.avaricious.components.buttons.SpinButton;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Interpolation;
@@ -24,7 +24,7 @@ public class ButtonBoard {
     private final float BUTTON_H = 25 / 27f;
 
     private SpinButton spinAgainButton;
-    private CashoutButton playCardButton;
+    private PlayCardButton playCardButton;
 
     private boolean isMoving = false;
 
@@ -43,8 +43,8 @@ public class ButtonBoard {
         spinAgainButton = new SpinButton(onSpinButtonPressed,
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
-        playCardButton = new CashoutButton(onCashoutButtonPressed,
-            new Rectangle(BOARD_X + 0.3f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
+        playCardButton = new PlayCardButton(onCashoutButtonPressed,
+            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
         return this;
     }
 

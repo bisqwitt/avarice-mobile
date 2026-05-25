@@ -13,7 +13,7 @@ public class DevTools {
     }
 
     public static boolean testRings() {
-        return active && false;
+        return active && true;
     }
 
     public static boolean allCardsInDeck() {
