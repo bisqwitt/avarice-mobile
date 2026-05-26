@@ -4,6 +4,8 @@ import com.avaricious.RoundsManager;
 import com.avaricious.components.roundInfoPanel.PlayerHealths;
 import com.avaricious.components.roundInfoPanel.PlayerScores;
 import com.avaricious.components.roundInfoPanel.RoundTimer;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.badlogic.gdx.Gdx;
 
 public class MatchService {
@@ -29,6 +31,7 @@ public class MatchService {
             playerScores.setEnemyScoreNumber(0);
 
             RoundTimer.I().startTimer();
+            ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
         });
     }
 

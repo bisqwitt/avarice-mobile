@@ -352,7 +352,7 @@ public class SlotScreen extends ScreenAdapter {
         HandUi.I().applySelectedCard();
     }
 
-    private void onSpinButtonPressed() {
+    public void onSpinButtonPressed() {
         if(RoundInfoPanel.I().getSpins() == 0) return;
 
         slotMachine.setAlpha(1f);
