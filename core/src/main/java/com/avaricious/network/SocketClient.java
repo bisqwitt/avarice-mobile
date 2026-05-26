@@ -1,6 +1,5 @@
 package com.avaricious.network;
 
-import com.avaricious.utility.GameContext;
 import com.badlogic.gdx.Gdx;
 
 import org.json.JSONException;
@@ -15,9 +14,7 @@ import io.socket.emitter.Emitter;
 public class SocketClient {
 
     private Socket socket;
-    private final String socketUrl = GameContext.I().deviceInfo.isEmulator()
-        ? "http://10.0.2.2:3000"
-        : "http://192.168.20.192:3000";
+    private final String socketUrl = "https://excusably-stoppage-astonish.ngrok-free.dev";
 
     public void connect() {
         try {
