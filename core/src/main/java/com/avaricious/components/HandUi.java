@@ -35,7 +35,7 @@ public class HandUi {
 
     private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
-    private final float Y = -1f;
+    private final float Y = -0.5f;
     private final float CARD_SIZE_DIVISOR = 50;
     private final float CARD_OFFSET = 1.25f;
 
@@ -99,10 +99,10 @@ public class HandUi {
 
         if(selectedCard != null) deselectCard(true);
         selectedCard = card;
-        card.getBody().targetScale = 1.3f;
+//        card.getBody().targetScale = 1.3f;
         Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
         card.getBody().beginDrag(renderPos.x, renderPos.y, 0);
-        card.getBody().dragTo(renderPos.x, Y + 1f, 0);
+        card.getBody().dragTo(renderPos.x, Y + 1.5f, 0);
         card.getBody().setIdleEffectsEnabled(false);
 //        card.getBody().beginDrag(renderPos.x, renderPos.y + 0.75f, 0);
 
@@ -125,10 +125,9 @@ public class HandUi {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
 
         for (AbstractCard card : getEntriesSortedByX()) {
-            if (selectedCard != card && applyingCard != card) drawCard(card);
+            if (applyingCard != card) drawCard(card);
         }
 
-        if (selectedCard != null) drawCard(selectedCard);
         if (applyingCard != null) drawCard(applyingCard);
 
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);

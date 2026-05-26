@@ -44,7 +44,7 @@ public class ButtonBoard {
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
         playCardButton = new PlayCardButton(onCashoutButtonPressed,
-            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
+            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.4f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
         return this;
     }
 
