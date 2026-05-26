@@ -38,8 +38,8 @@ public class DragableBody extends Body {
     private final Vector2 lastMouse = new Vector2();
     private float dragVelX = 0f;
 
-    private float dragFollowSpeed = 28f;     // higher = snappier to cursor
-    private float returnSpeed = 18f;         // higher = snappier return to origin
+    private float dragFollowSpeed = 14f;     // higher = snappier to cursor
+    private float returnSpeed = 14f;         // higher = snappier return to origin
     private float maxTiltDeg = 12f;          // max drag tilt
     private float tiltResponsiveness = 10f;  // smoothing for tilt
     private float dragScaleMul = 1.10f;      // scale while dragging

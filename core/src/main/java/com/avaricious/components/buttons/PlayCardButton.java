@@ -11,9 +11,9 @@ public class PlayCardButton extends DisablableButton {
 
     public PlayCardButton(Runnable onButtonPressedRunnable, Rectangle buttonRectangle, int key) {
         super(onButtonPressedRunnable,
-            Assets.I().get(AssetKey.CASHOUT_BUTTON),
-            Assets.I().get(AssetKey.CASHOUT_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.CASHOUT_BUTTON),
+            Assets.I().get(AssetKey.PLAY_CARD_BUTTON),
+            Assets.I().get(AssetKey.PLAY_CARD_BUTTON_PRESSED),
+            Assets.I().get(AssetKey.PLAY_CARD_BUTTON),
             buttonRectangle, key, ZIndex.BUTTON_BOARD);
     }
 
