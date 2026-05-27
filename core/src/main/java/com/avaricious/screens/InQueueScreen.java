@@ -4,7 +4,12 @@ import com.avaricious.Main;
 import com.avaricious.components.texts.InQueueText;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,7 +59,7 @@ public class InQueueScreen extends ScreenAdapter {
         drawDot(1, 6.7f);
         drawDot(2, 7.25f);
 
-        Pencil.I().draw(batch);
+        Pencil.I().draw(batch, delta);
 
         batch.end();
     }

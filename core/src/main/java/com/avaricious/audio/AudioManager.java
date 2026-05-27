@@ -40,14 +40,4 @@ public class AudioManager {
         hit.play(volume, pitch, 0f);
     }
 
-    public void startPayout() {
-        if (!DevTools.audioMuted()) payout.start();
-        Gdx.app.log("AUDIO", "payout started");
-    }
-
-    public void endPayout() {
-        payout.stop();
-        Gdx.app.log("AUDIO", "payout ended");
-    }
-
 }

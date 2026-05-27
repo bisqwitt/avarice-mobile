@@ -6,7 +6,13 @@ import com.avaricious.components.slot.DragableBody;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -129,7 +135,7 @@ public class DeckUi {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
     }
 
-    public void draw() {
+    public void draw(float delta) {
         Vector2 cardsInDeckPos = new Vector2(7.85f * 100, 2.2f * 100f);
         cardsInDeckCountTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckCountTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));

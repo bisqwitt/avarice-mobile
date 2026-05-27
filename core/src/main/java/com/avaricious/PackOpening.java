@@ -201,7 +201,7 @@ public abstract class PackOpening {
             Vector2 renderPos = body.getRenderPos(new Vector2());
             buyButton.getBounds().x = renderPos.x - 0.5f;
             buyButton.getBounds().y = renderPos.y - 1.5f;
-            buyButton.draw();
+            buyButton.draw(delta);
         }
 
         if (flashActive) {
@@ -210,8 +210,8 @@ public abstract class PackOpening {
         }
 
         if (ripped && !closing) {
-            sellButton.draw();
-            claimButton.draw();
+            sellButton.draw(delta);
+            claimButton.draw(delta);
         }
     }
 

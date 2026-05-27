@@ -89,7 +89,7 @@ public abstract class DisablableButton extends Button {
     }
 
     @Override
-    public void draw() {
+    public void draw(float delta) {
         if (vis <= 0.001f || disabled()) return;
 
         // Ease for nicer motion

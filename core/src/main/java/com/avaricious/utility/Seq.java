@@ -88,4 +88,14 @@ public final class Seq<T> {
 
         return null;
     }
+
+    public IntSeq mapToInt(IntMapperCompat<T> mapper) {
+        ArrayList<Integer> out = new ArrayList<Integer>();
+
+        for (T item : source) {
+            out.add(mapper.applyAsInt(item));
+        }
+
+        return new IntSeq(out);
+    }
 }

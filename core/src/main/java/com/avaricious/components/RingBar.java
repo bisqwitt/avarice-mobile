@@ -10,8 +10,13 @@ import com.avaricious.items.upgrades.rings.DoubleXpRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.MultiPerEmptyRingSlotRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.pattern.ThreeOfAKindMultiAdditionRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker.CherryValueStackRing;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
 import com.avaricious.utility.Observable;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,7 +24,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RingBar extends Observable<List<? extends AbstractRing>> {
 
@@ -118,7 +128,7 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
         touchingRing = null;
     }
 
-    public void draw() {
+    public void draw(float delta) {
 //        Pencil.I().addDrawing(new TextureDrawing(ringSlot,
 //            0.1f, firstRingBounds.y - 0.275f, 162 / 25f, 40 / 25f,
 //            ZIndex.RING_BAR, Assets.I().shadowColor()));
@@ -204,8 +214,8 @@ public class RingBar extends Observable<List<? extends AbstractRing>> {
 
     private int calcRingIndex(AbstractRing ring) {
         List<AbstractRing> sorted = getEntriesSortedByX();
-        for(int i = 0; i < sorted.size() - 1; i++) {
-            if(sorted.get(i) == ring) return i;
+        for (int i = 0; i < sorted.size() - 1; i++) {
+            if (sorted.get(i) == ring) return i;
         }
         return -1;
     }

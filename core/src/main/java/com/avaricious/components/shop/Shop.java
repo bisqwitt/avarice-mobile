@@ -18,7 +18,6 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -117,7 +116,7 @@ public class Shop {
         nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         if (state == State.HIDDEN) return;
 
         updateAnimation(delta);
@@ -155,7 +154,7 @@ public class Shop {
 
 //        rerollButton.draw();
         creditScore.draw(delta);
-        nextRoundButton.draw();
+        nextRoundButton.draw(delta);
     }
 
     public void show() {

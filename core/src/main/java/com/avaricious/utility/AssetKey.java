@@ -142,6 +142,7 @@ public enum AssetKey {
     ARM_TXT_SHADOW("arm-txt-shadow"),
     DOT_SYMBOL("dot"),
     COLON("colon"),
+    COLON_SHADOW("colon-shadow"),
     ROUND_TXT("round-txt"),
     ROUND_TXT_SHADOW("round-txt-shadow"),
     LIGHT_BULB_ON("light-bulb-on"),

@@ -4,7 +4,7 @@ import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.items.upgrades.cards.MultiForEveryDisabledCard;
-import com.avaricious.items.upgrades.cards.TriesCard;
+import com.avaricious.items.upgrades.cards.SpinCard;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Seq;
 import com.badlogic.gdx.utils.Timer;
@@ -27,7 +27,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
         if (DevTools.allCardsInDeck()) {
             addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
             addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
-            addCardToHand(Deck.I().drawCard(TriesCard.class));
+            addCardToHand(Deck.I().drawCard(SpinCard.class));
         }
     }
 

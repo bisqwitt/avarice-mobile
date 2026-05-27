@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 public class PlayerHealths {
 
     private static PlayerHealths instance;
+
     public static PlayerHealths I() {
         return instance == null ? instance = new PlayerHealths() : instance;
     }

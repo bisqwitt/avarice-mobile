@@ -4,7 +4,7 @@ public interface IPopup {
 
     void update(float delta);
 
-    void draw();
+    void draw(float delta);
 
     boolean isFinished();
 }

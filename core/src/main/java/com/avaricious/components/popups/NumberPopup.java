@@ -134,7 +134,7 @@ public class NumberPopup implements IPopup {
     }
 
     @Override
-    public void draw() {
+    public void draw(float delta) {
         if (phase == Phase.FINISHED) return;
 
         float scale = pulseEffect.getScale();

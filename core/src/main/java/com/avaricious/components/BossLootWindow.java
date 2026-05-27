@@ -1,7 +1,6 @@
 package com.avaricious.components;
 
 import com.avaricious.CreditManager;
-import com.avaricious.RoundsManager;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
@@ -13,6 +12,7 @@ import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
@@ -99,8 +99,8 @@ public class BossLootWindow {
         Pencil.I().addDrawing(new TextureDrawing(rewardsTxt,
             1f, 13f, 61f / 15f, 11 / 15f, ZIndex.WINDOW_ON_TOP));
 
-        sellButton.draw();
-        claimButton.draw();
+        sellButton.draw(delta);
+        claimButton.draw(delta);
         drawLoot();
     }
 
@@ -122,7 +122,7 @@ public class BossLootWindow {
 
     public void show() {
         shown = true;
-        loot = RoundsManager.I().getBoss().loot();
+        loot = RunManager.I().getRoundsManager().getBoss().loot();
         float width = getTextureWidth();
         float height = getTextureHeight();
         float x = WINDOW_BOUNDS.x + WINDOW_BOUNDS.width / 2 - width / 2f;

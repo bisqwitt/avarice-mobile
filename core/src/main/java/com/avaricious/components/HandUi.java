@@ -1,19 +1,25 @@
 package com.avaricious.components;
 
-import com.avaricious.RoundsManager;
 import com.avaricious.bosses.DiscardACardAfterEveryPlayedCardBoss;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
-import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.FontDrawing;
+import com.avaricious.utility.GameContext;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.UiUtility;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -32,8 +38,6 @@ public class HandUi {
     public static HandUi I() {
         return instance == null ? instance = new HandUi() : instance;
     }
-
-    private final CardDestinationUI cardDestinationUI = new CardDestinationUI();
 
     private final float Y = -0.5f;
     private final float CARD_SIZE_DIVISOR = 50;
@@ -97,7 +101,7 @@ public class HandUi {
             return;
         }
 
-        if(selectedCard != null) deselectCard(true);
+        if (selectedCard != null) deselectCard(true);
         selectedCard = card;
 //        card.getBody().targetScale = 1.3f;
         Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
@@ -121,7 +125,7 @@ public class HandUi {
 //        } else selectedCard = card;
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
 
         for (AbstractCard card : getEntriesSortedByX()) {
@@ -343,9 +347,9 @@ public class HandUi {
             }
         }, 0.5f);
 
-        GameStateLogger.I().onCardPlayed(card);
+        RunManager.I().getRoundsManager().onCardPlayed(card);
 
-        if (RoundsManager.I().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
+        if (RunManager.I().getRoundsManager().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
             Hand.I().discardRandomCard();
     }
 

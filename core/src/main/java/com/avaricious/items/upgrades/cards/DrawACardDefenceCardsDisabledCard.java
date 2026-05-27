@@ -4,7 +4,7 @@ import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.GameStateLogger;
+import com.avaricious.utility.RunManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -30,7 +30,7 @@ public class DrawACardDefenceCardsDisabledCard extends AbstractCard {
     @Override
     protected void onApply() {
         Hand.I().drawCard();
-        GameStateLogger.I().disableDefenceTypeCards();
+        RunManager.I().getRoundsManager().disableDefenceTypeCards();
     }
 
     @Override

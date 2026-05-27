@@ -1,11 +1,11 @@
 package com.avaricious.effects;
 
+import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -31,10 +31,10 @@ public class TextureEcho {
         glows.add(new TextureEcho(texture, spawnPoint, parentType, 3f));
     }
 
-    public static void draw(SpriteBatch batch, float delta, Type parentType) {
+    public static void draw(float delta) {
         List<TextureEcho> dump = new ArrayList<>();
         for (TextureEcho textureEcho : glows) {
-            if (textureEcho.parentType.equals(parentType)) textureEcho._draw(batch, delta);
+            if (textureEcho.parentType.equals(Type.SLOT)) textureEcho._draw(delta);
             if (textureEcho.dead()) dump.add(textureEcho);
         }
         glows.removeAll(dump);
@@ -47,7 +47,7 @@ public class TextureEcho {
         this.maxGlowScale = maxScale;
     }
 
-    private void _draw(SpriteBatch batch, float delta) {
+    private void _draw(float delta) {
         age += delta;
 
         float t = Math.min(age / duration, 1f); // 0 → 1 over lifetime
@@ -74,8 +74,8 @@ public class TextureEcho {
             texture,
             x, y, drawW, drawH,
             ZIndex.TEXTURE_GLOW, new Color(GLOW_COLOR.r, GLOW_COLOR.g, GLOW_COLOR.b, glowAlpha)
-        ).setBeforeDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
-            .setAfterDrawing(() -> batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
+        ).setBeforeDrawing(() -> GameContext.I().batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE))
+            .setAfterDrawing(() -> GameContext.I().batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA)));
     }
 
 

@@ -17,14 +17,16 @@ public class SpinsText extends FabledText {
                 Assets.I().get(AssetKey.P),
                 Assets.I().get(AssetKey.I),
                 Assets.I().get(AssetKey.N),
-                Assets.I().get(AssetKey.S)
+                Assets.I().get(AssetKey.S),
+                Assets.I().get(AssetKey.COLON)
             ),
             Arrays.asList(
                 Assets.I().get(AssetKey.S_BIG_SHADOW),
                 Assets.I().get(AssetKey.P_SHADOW),
                 Assets.I().get(AssetKey.I_SHADOW),
                 Assets.I().get(AssetKey.N_SHADOW),
-                Assets.I().get(AssetKey.S_SHADOW)
+                Assets.I().get(AssetKey.S_SHADOW),
+                Assets.I().get(AssetKey.COLON_SHADOW)
             ), startingPos, sizeRatio, spacing, zIndex);
         Seq.of(floatEffects).forEach(effect -> effect.setStrength(0.02f, 1f));
     }

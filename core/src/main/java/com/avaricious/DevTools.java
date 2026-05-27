@@ -24,20 +24,12 @@ public class DevTools {
         return active && true;
     }
 
-    public static boolean deleteGameStateSaveFile() {
-        return active && false;
-    }
-
     public static boolean showMouseLocation() {
         return active && false;
     }
 
     public static boolean opponentDefaultValues() {
         return active && false;
-    }
-
-    public static boolean rewriteSaveFile() {
-        return active && true;
     }
 
     public static boolean unlimitedSpins() {

@@ -2,7 +2,6 @@ package com.avaricious.components.shop;
 
 import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.Seq;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;

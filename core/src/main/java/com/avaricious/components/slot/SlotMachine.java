@@ -1,7 +1,5 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.Main;
-import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
@@ -10,7 +8,14 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
-import com.avaricious.utility.*;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
+import com.avaricious.utility.SeededRandomizer;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -19,14 +24,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class SlotMachine {
 
@@ -99,7 +102,7 @@ public class SlotMachine {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if(grid[i][j] != null) {
+                if (grid[i][j] != null) {
                     grid[i][j].idleSwayEffect.setStrength(2.5f, 0.8f);
                 }
             }
@@ -113,7 +116,7 @@ public class SlotMachine {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if(grid[i][j] != null) {
+                if (grid[i][j] != null) {
                     grid[i][j].update(delta);
                 }
             }
@@ -125,8 +128,8 @@ public class SlotMachine {
         }
     }
 
-    public void draw(Main app, float delta) {
-        SpriteBatch batch = app.getBatch();
+    public void draw(float delta) {
+        SpriteBatch batch = GameContext.I().batch;
         // update reel motion
         update(delta);
 
@@ -143,11 +146,11 @@ public class SlotMachine {
 
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
-        area.setY(area.y - 0.35f);
+        area.setY(area.y - 0.1f);
         area.setWidth(area.width + 0.3f);
-        area.setHeight(area.height - 0.05f);
+        area.setHeight(area.height - 0.15f);
 
-        Camera cam = app.getViewport().getCamera();
+        Camera cam = GameContext.I().viewport.getCamera();
         cam.update();
         Pencil.I().startScissors(cam, batch.getTransformMatrix(), area);
         List<Vector2> symbolsInPatternHit = drawSymbols();
@@ -155,7 +158,7 @@ public class SlotMachine {
 
         Seq.of(symbolsInPatternHit).forEach(this::drawSymbol);
 
-        TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
+        TextureEcho.draw(delta);
     }
 
     private List<Vector2> drawSymbols() {
@@ -209,8 +212,8 @@ public class SlotMachine {
 //            alpha *= Math.max(0f, Math.min(1f, t));
 //        }
 
-        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
-            || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
+        if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
+            || RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
             || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
             alpha = 0.5f;
 

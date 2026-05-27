@@ -103,7 +103,7 @@ public abstract class AbstractTextPopup implements IPopup {
     }
 
     @Override
-    public void draw() {
+    public void draw(float delta) {
         if (state == State.FINISHED) return;
 
         float yOffset = 0f;

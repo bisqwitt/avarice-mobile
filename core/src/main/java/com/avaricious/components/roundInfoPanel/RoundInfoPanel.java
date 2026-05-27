@@ -2,12 +2,13 @@ package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.CreditScore;
 import com.avaricious.DevTools;
-import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.texts.CreditsText;
 import com.avaricious.components.texts.FabledText;
-import com.avaricious.components.texts.RoundText;
 import com.avaricious.components.texts.SpinsText;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Observable;
@@ -40,9 +41,9 @@ public class RoundInfoPanel extends Observable<Float> {
 
 //    private final DigitalNumber roundEndTimer = new DigitalNumber()
 
-    private final SpinsText spinsText = new SpinsText(new Vector2(2.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final SpinsText spinsText = new SpinsText(new Vector2(6.75f, 5.65f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber spinsNumber = new DigitalNumber(1, new Color(1f, 1f, 1f, 1f), 1,
-        new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.7f);
+        new Rectangle(8.25f, 5.65f, 7 / 30f, 11 / 30f), 0.7f);
 
     private final CreditsText creditsText = new CreditsText(new Vector2(7f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final CreditScore creditScore = new CreditScore(new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
@@ -54,8 +55,6 @@ public class RoundInfoPanel extends Observable<Float> {
     private float panelYOnMouseTouchdown = -1;
 
     private float targetPanelY = panelBoundsFolded.y;
-
-    private float unfoldAmount = 0f;
 
     private RoundInfoPanel() {
 //        RoundsManager.I().onChange(currentRoundNumber::setValue);
@@ -87,8 +86,6 @@ public class RoundInfoPanel extends Observable<Float> {
     }
 
     public void update(float delta) {
-        updateUnfoldAmount();
-
         if (mouseTouchdownLocation == null) {
             float panelMoveSpeed = 20f;
             currentPanelBounds.y = MathUtils.lerp(
@@ -131,7 +128,7 @@ public class RoundInfoPanel extends Observable<Float> {
 //            unfoldAmount == 0 ? ZIndex.WARP_BACKGROUND : ZIndex.ROUND_INFO_PANEL_UNFOLDED));
 
 //        targetScoreDisplay.draw(delta, unfoldAmount);
-        scoreDisplay.draw(delta, unfoldAmount);
+        scoreDisplay.draw(delta);
 
 //        if(unfoldAmount != 0) {
 //            symbolValueDisplay.draw(delta);
@@ -140,7 +137,7 @@ public class RoundInfoPanel extends Observable<Float> {
 
     private void centerRoundInfoNumbers() {
 //        centerNumberToText(roundText, currentRoundNumber);
-        centerNumberToText(spinsText, spinsNumber);
+//        centerNumberToText(spinsText, spinsNumber);
         centerNumberToText(creditsText, creditScore);
     }
 
@@ -153,8 +150,11 @@ public class RoundInfoPanel extends Observable<Float> {
     }
 
     public void setSpins(float value) {
-        if(!DevTools.unlimitedSpins())
+        if (!DevTools.unlimitedSpins())
             spinsNumber.setValue(value);
+
+        if (value > 0 && SlotMachine.I().isStale())
+            ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
         notifyChanged(snapshot());
     }
 
@@ -168,15 +168,6 @@ public class RoundInfoPanel extends Observable<Float> {
 
     public float getSpins() {
         return spinsNumber.getValue();
-    }
-
-    private void updateUnfoldAmount() {
-        float range = panelBoundsFolded.y - panelBoundsUnfolded.y;
-        unfoldAmount = MathUtils.clamp(
-            (panelBoundsFolded.y - currentPanelBounds.y) / range,
-            0f,
-            1f
-        );
     }
 
     @Override

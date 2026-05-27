@@ -1,7 +1,6 @@
 package com.avaricious.components.slot.rework;
 
 import com.avaricious.Main;
-import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
@@ -12,7 +11,12 @@ import com.avaricious.components.slot.pattern.PatternHitContext;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
-import com.avaricious.utility.*;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -21,7 +25,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class SlotMachineNew {
 
@@ -98,7 +105,7 @@ public class SlotMachineNew {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if(grid[i][j] != null) {
+                if (grid[i][j] != null) {
                     grid[i][j].getIdleSwayEffect().setStrength(2.5f, 0.8f);
                 }
             }
@@ -116,7 +123,7 @@ public class SlotMachineNew {
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if(grid[i][j] != null) {
+                if (grid[i][j] != null) {
                     grid[i][j].update(delta);
                 }
             }
@@ -177,7 +184,7 @@ public class SlotMachineNew {
 
         Seq.of(symbolsInPatternHit).forEach(this::drawSymbol);
 
-        TextureEcho.draw(batch, delta, TextureEcho.Type.SLOT);
+        TextureEcho.draw(delta);
     }
 
     private List<Vector2> drawSymbols() {
@@ -229,8 +236,8 @@ public class SlotMachineNew {
         float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;
 
-        if (RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
-            || RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
+        if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
+            || RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
             || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
             alpha = 0.5f;
 

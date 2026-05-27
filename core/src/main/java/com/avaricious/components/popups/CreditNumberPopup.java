@@ -21,8 +21,8 @@ public class CreditNumberPopup extends NumberPopup {
     }
 
     @Override
-    public void draw() {
-        super.draw();
+    public void draw(float delta) {
+        super.draw(delta);
 
         float scale = pulseEffect.getScale();
         float rotation = pulseEffect.getRotation();

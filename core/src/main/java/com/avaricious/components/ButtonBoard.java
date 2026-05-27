@@ -61,7 +61,7 @@ public class ButtonBoard {
         playCardButton.update(delta);
 
 //        spinAgainButton.draw();
-        playCardButton.draw();
+        playCardButton.draw(delta);
     }
 
     public void moveOut() {

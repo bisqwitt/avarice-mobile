@@ -7,7 +7,7 @@ import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.cards.MultiCard;
 import com.avaricious.items.upgrades.cards.PointsCard;
-import com.avaricious.items.upgrades.cards.TriesCard;
+import com.avaricious.items.upgrades.cards.SpinCard;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Seq;
 
@@ -36,8 +36,8 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             for (int i = 0; i < 3; i++) {
                 addCardToDeck(instantiateItem(MultiCard.class));
             }
-            addCardToDeck(instantiateItem(TriesCard.class));
-            addCardToDeck(instantiateItem(TriesCard.class));
+            addCardToDeck(instantiateItem(SpinCard.class));
+            addCardToDeck(instantiateItem(SpinCard.class));
         }
     }
 

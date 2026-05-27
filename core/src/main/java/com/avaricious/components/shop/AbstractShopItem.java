@@ -124,7 +124,7 @@ public abstract class AbstractShopItem {
             Vector2 renderPos = body.getRenderPos(new Vector2());
             buyButton.getBounds().x = renderPos.x - 0.5f;
             buyButton.getBounds().y = renderPos.y - 1.5f;
-            buyButton.draw();
+            buyButton.draw(delta);
         }
     }
 

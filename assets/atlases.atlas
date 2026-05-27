@@ -1138,6 +1138,13 @@ colon
   orig: 7, 11
   offset: 0, 0
   index: -1
+colon-shadow
+  rotate: false
+  xy: 2684, 7
+  size: 7, 11
+  orig: 7, 11
+  offset: 0, 0
+  index: -1
 combo-txt
   rotate: false
   xy: 1590, 5
@@ -1308,21 +1315,21 @@ discard-txt-box
   index: -1
 dollar
   rotate: false
-  xy: 2684, 7
+  xy: 2693, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 dollar-shadow
   rotate: false
-  xy: 2693, 7
+  xy: 2702, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 dot
   rotate: false
-  xy: 2702, 7
+  xy: 2711, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -1406,14 +1413,14 @@ felt-pixel
   index: -1
 g
   rotate: false
-  xy: 2711, 7
+  xy: 2720, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 g-shadow
   rotate: false
-  xy: 2720, 7
+  xy: 2729, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -1448,7 +1455,7 @@ h-big-shadow
   index: -1
 h-shadow
   rotate: false
-  xy: 2644, 367
+  xy: 2653, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
@@ -1574,14 +1581,14 @@ jokercard-back
   index: -1
 k
   rotate: false
-  xy: 2652, 367
+  xy: 2661, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
   index: -1
 k-shadow
   rotate: false
-  xy: 2660, 367
+  xy: 2669, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
@@ -1791,7 +1798,7 @@ o-shadow
   index: -1
 p
   rotate: false
-  xy: 2668, 367
+  xy: 2677, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
@@ -1812,7 +1819,7 @@ p-big-shadow
   index: -1
 p-shadow
   rotate: false
-  xy: 2676, 367
+  xy: 2685, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
@@ -1889,14 +1896,14 @@ progressbar-yellow-pixel
   index: -1
 q
   rotate: false
-  xy: 2729, 7
+  xy: 2738, 7
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
   index: -1
 q-shadow
   rotate: false
-  xy: 2738, 7
+  xy: 2644, 367
   size: 7, 11
   orig: 7, 11
   offset: 0, 0
@@ -2645,7 +2652,7 @@ streak-potion-shadow
   index: -1
 t
   rotate: false
-  xy: 2700, 367
+  xy: 2709, 367
   size: 5, 11
   orig: 5, 11
   offset: 0, 0
@@ -2666,7 +2673,7 @@ t-big-shadow
   index: -1
 t-shadow
   rotate: false
-  xy: 2707, 367
+  xy: 2716, 367
   size: 5, 11
   orig: 5, 11
   offset: 0, 0
@@ -2806,14 +2813,14 @@ xporb
   index: -1
 y
   rotate: false
-  xy: 2684, 367
+  xy: 2693, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0
   index: -1
 y-shadow
   rotate: false
-  xy: 2692, 367
+  xy: 2701, 367
   size: 6, 11
   orig: 6, 11
   offset: 0, 0

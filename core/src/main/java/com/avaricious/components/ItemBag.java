@@ -10,7 +10,13 @@ import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
 import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.Observable;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -191,13 +197,13 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
                 Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
                 claimButton.getBounds().x = renderPos.x - 0.5f;
                 claimButton.getBounds().y = renderPos.y - 1.5f;
-                claimButton.draw();
+                claimButton.draw(delta);
             }
             if (item instanceof AbstractPotion) {
                 Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
                 useButton.getBounds().x = renderPos.x - 0.5f;
                 useButton.getBounds().y = renderPos.y - 1.5f;
-                useButton.draw();
+                useButton.draw(delta);
             }
         }
     }

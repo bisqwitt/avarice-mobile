@@ -4,7 +4,6 @@ import com.avaricious.items.AbstractItem;
 import com.avaricious.utility.Seq;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -108,13 +107,13 @@ public class PopupManager {
         statisticPopups.add(new StatisticPopup(texture, x, y));
     }
 
-    public void draw(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         drawPopups(numberPopups, delta);
         drawPopups(statisticPopups, delta);
         drawPopups(textPopups, delta);
 
-        if (tooltipPopup != null) tooltipPopup.render(batch, delta);
-        if (killingTooltip != null) killingTooltip.render(batch, delta);
+        if (tooltipPopup != null) tooltipPopup.draw(delta);
+        if (killingTooltip != null) killingTooltip.draw(delta);
         if (applyPopup != null) applyPopup.draw(delta);
         if (discardPopup != null) discardPopup.draw(delta);
     }
@@ -122,10 +121,10 @@ public class PopupManager {
     private void drawPopups(List<? extends IPopup> popups, float delta) {
         Seq.of(popups).forEach(popup -> {
             popup.update(delta);
-            popup.draw();
+            popup.draw(delta);
         });
-        for(int i = 0; i < popups.size(); i++) {
-            if(popups.get(i).isFinished()) popups.remove(i);
+        for (int i = 0; i < popups.size(); i++) {
+            if (popups.get(i).isFinished()) popups.remove(i);
         }
     }
 }

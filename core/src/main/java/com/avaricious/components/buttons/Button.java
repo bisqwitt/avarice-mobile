@@ -49,7 +49,7 @@ public class Button {
         this.layer = layer;
     }
 
-    public void draw() {
+    public void draw(float delta) {
         drawAt(buttonRectangle);
     }
 

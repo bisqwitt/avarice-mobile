@@ -1,13 +1,12 @@
 package com.avaricious.components.slot.pattern;
 
-import com.avaricious.RoundsManager;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
+import com.avaricious.utility.RunManager;
 import com.badlogic.gdx.math.Vector2;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,11 +74,14 @@ public class PatternFinder {
             }
         }
 
-        for(int i = 0; i < matches.size(); i++) {
+        for (int i = 0; i < matches.size(); i++) {
             Symbol symbol = matches.get(i).getSymbol();
-            if(RoundsManager.I().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON) matches.remove(i);
-            if(RoundsManager.I().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY) matches.remove(i);
-            if(RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit()) matches.remove(i);
+            if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
+                matches.remove(i);
+            if (RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
+                matches.remove(i);
+            if (RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
+                matches.remove(i);
         }
 
         return matches;

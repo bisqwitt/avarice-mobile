@@ -6,21 +6,19 @@ import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 
 public class RoundTimer {
-
-    private static RoundTimer instance;
-    public static RoundTimer I() {
-        return instance == null ? instance = new RoundTimer() : instance;
-    }
 
     private final DigitalNumber roundTimer = new DigitalNumber(30, Assets.I().lightColor(), 2,
         new Rectangle(0.75f, 18.35f, 7 / 23f, 11 / 23f), 0.5f);
 
     private boolean timerEnded = false;
+    private long roundStartTime;
 
-    private RoundTimer() {}
+    public RoundTimer() {
+    }
 
     public void draw(float delta) {
         roundTimer.draw(delta);
@@ -29,6 +27,7 @@ public class RoundTimer {
     public void startTimer() {
         timerEnded = false;
         roundTimer.setValue(30);
+        roundStartTime = TimeUtils.millis();
 
         tickTimer();
     }
@@ -39,7 +38,7 @@ public class RoundTimer {
             public void run() {
                 roundTimer.setValue(roundTimer.getValue() - 1);
 
-                if(roundTimer.getValue() == 0) onTimerEnd();
+                if (roundTimer.getValue() == 0) onTimerEnd();
                 else tickTimer();
             }
         }, 1);
@@ -47,11 +46,14 @@ public class RoundTimer {
 
     private void onTimerEnd() {
         timerEnded = true;
-        if(SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
+        if (SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
+    }
+
+    public long msSinceRoundStart() {
+        return TimeUtils.timeSinceMillis(roundStartTime);
     }
 
     public boolean timerEnded() {
         return timerEnded;
     }
-
 }

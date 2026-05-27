@@ -47,7 +47,8 @@ public class Pencil {
 
     private final GlyphLayout mouseLocationTxt = new GlyphLayout();
 
-    public void draw(SpriteBatch batch) {
+    public void draw(SpriteBatch batch, float delta) {
+
         updateDarkenAnimation(Gdx.graphics.getDeltaTime());
         BorderPulseMesh.I().render(batch, Gdx.graphics.getDeltaTime());
 

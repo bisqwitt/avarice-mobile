@@ -8,12 +8,21 @@ import com.avaricious.components.texts.PermanentlyRemoveACardText;
 import com.avaricious.items.upgrades.Deck;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.utility.*;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 public class RemoveCardWindow {
 
@@ -110,7 +119,7 @@ public class RemoveCardWindow {
             Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
             removeButton.getBounds().x = renderPos.x - 0.5f;
             removeButton.getBounds().y = renderPos.y - 1.5f;
-            removeButton.draw();
+            removeButton.draw(delta);
         }
     }
 

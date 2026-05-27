@@ -184,7 +184,7 @@ public class CardRemover {
         if ((selected || dragging) && !bought) {
             buyButton.getBounds().x = pos.x - 0.35f;
             buyButton.getBounds().y = pos.y - 1.5f;
-            buyButton.draw();
+            buyButton.draw(delta);
         }
     }
 

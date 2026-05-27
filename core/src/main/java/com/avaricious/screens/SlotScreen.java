@@ -4,12 +4,10 @@ import com.avaricious.CreditManager;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.Profiler;
-import com.avaricious.RoundsManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.audio.AudioManager;
 import com.avaricious.bosses.OneLessCardBoss;
 import com.avaricious.components.ButtonBoard;
-import com.avaricious.components.DeckUi;
 import com.avaricious.components.HandUi;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
@@ -17,12 +15,12 @@ import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.PlayerHealths;
 import com.avaricious.components.roundInfoPanel.PlayerScores;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
-import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.Body;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.pattern.PatternHitContext;
+import com.avaricious.components.texts.WaitingForOpponentToFinishRoundText;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.effects.particle.ParticleManager;
@@ -36,9 +34,13 @@ import com.avaricious.stats.PlayerStats;
 import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
-import com.avaricious.utility.*;
-import com.avaricious.utility.gameState.GameStateManager;
-import com.avaricious.utility.playerRun.PlayerRunManager;
+import com.avaricious.utility.AssetKey;
+import com.avaricious.utility.Assets;
+import com.avaricious.utility.GameContext;
+import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
+import com.avaricious.utility.Seq;
+import com.avaricious.utility.runData.RunDataFileManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
@@ -57,22 +59,15 @@ import java.util.List;
 public class SlotScreen extends ScreenAdapter {
 
     private final Main app;
-    private final SlotMachine slotMachine = SlotMachine.I();
 
     private final ScreenShake screenShake;
-
-//    private final BackgroundLayer backgroundLayer = new BackgroundLayer();
+    private final Shop shop = new Shop(this::onReturnedFromShop);
 
     private final ButtonBoard buttonBoard = ButtonBoard.I()
         .init(this::onSpinButtonPressed, this::onPlayButtonPressed);
-    private final HandUi handUi = HandUi.I();
-    private final DeckUi deckUi = DeckUi.I();
-    private final RingBar ringBar = RingBar.I();
 
-    private final TextureRegion feltPixel = Assets.I().get(AssetKey.FELT_PIXEL);
     private final TextureRegion charcoalPixel = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
 
-    private final Shop shop = new Shop(this::onReturnedFromShop);
 
     private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
@@ -81,22 +76,26 @@ public class SlotScreen extends ScreenAdapter {
     private int symbolsHitLastSpin = 0;
     private boolean isFirstStreakIncrease = true;
 
+    private final WaitingForOpponentToFinishRoundText waitingForOpponentText = new WaitingForOpponentToFinishRoundText();
+    private boolean showWaitingForOpponentText = false;
+
     public SlotScreen(Main app) {
         this.app = app;
         Pencil.I().setBatch(app.getBatch());
 
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
+        SlotMachine.I().setOnLastReelFinished(this::runResult);
 
         if (DevTools.enableProfiler()) Profiler.start();
     }
 
     @Override
     public void show() {
-//        backgroundLayer.init();
-        slotMachine.setOnLastReelFinished(this::runResult);
+        RunManager.I().newRun();
+        RoundInfoPanel.I().setSpins(3);
 
-        if (!GameStateManager.I().appliedLoadedState() && RoundsManager.I().getCurrentRound() == 1)
+        if (RunManager.I().getRoundsManager().getCurrentRound() == 1)
             drawStartingHand();
 
         Timer.schedule(new Timer.Task() {
@@ -111,15 +110,11 @@ public class SlotScreen extends ScreenAdapter {
                 onSpinButtonPressed();
             }
         }, 1.5f);
-
-        RoundInfoPanel.I().setSpins(1);
-        RoundTimer.I().startTimer();
     }
 
     @Override
     public void render(float delta) {
-        GameStateManager.I().update(delta);
-        PlayerRunManager.I().update(delta);
+        RunDataFileManager.I().update(delta);
 
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ScreenUtils.clear(0f, 0f, 0f, 1f);
@@ -139,23 +134,23 @@ public class SlotScreen extends ScreenAdapter {
         RoundInfoPanel.I().draw(delta);
         PlayerScores.I().draw(delta);
         PlayerHealths.I().draw(delta);
-        RoundTimer.I().draw(delta);
+        RunManager.I().getRoundTimer().draw(delta);
         buttonBoard.draw(delta);
-        ringBar.draw();
+        RingBar.I().draw(delta);
 
 //        deckUi.draw();
 //        ItemBag.I().draw(delta);
 
         ParticleManager.I().draw(batch, delta);
-        slotMachine.draw(app, delta);   // 10
+        SlotMachine.I().draw(delta);   // 10
 
-        handUi.draw(batch, delta);
+        HandUi.I().draw(delta);
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
 
-        shop.draw(batch, delta);
+        shop.draw(delta);
 //        bossLootWindow.draw(delta);
-        PopupManager.I().draw(batch, delta);
+        PopupManager.I().draw(delta);
 
 //        vfxManager.cleanUpBuffers();
 //        vfxManager.beginInputCapture();
@@ -172,7 +167,7 @@ public class SlotScreen extends ScreenAdapter {
 //        batch.draw(charcoalPixel, -3f, SlotMachine.windowBounds.y + SlotMachine.windowBounds.height - 3f, 15f, 6.15f);
 //        batch.draw(charcoalPixel, -3f, -3f, 15f, 13f);
 //        batch.draw(charcoalPixel, -3f, SlotMachine.originY - 0.4f, 15f, 6.5f);
-        Pencil.I().draw(batch);
+        Pencil.I().draw(batch, delta);
         batch.end();
 //        bulbBorderShader.update(delta);
 //        bulbBorderShader.draw(camera.combined, 1.5f, 15.75f, 6f, 1f);
@@ -195,9 +190,9 @@ public class SlotScreen extends ScreenAdapter {
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        else if (!bossLootWindow.isShown()) {
         RoundInfoPanel.I().handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        ringBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        if(!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
-            handUi.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
+            HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        }
 //        backgroundLayer.handleInput();
 //        jokerBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -208,16 +203,18 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void runResult() {
+        SlotMachine slotMachine = SlotMachine.I();
+        RingBar ringBar = RingBar.I();
+
         List<PatternHitContext> matches = slotMachine.findMatches();
         if (matches.isEmpty()) {
             if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
             onSpinButtonPressed();
-            if(RoundTimer.I().timerEnded()) onRoundEnd();
+            if (RunManager.I().getRoundTimer().timerEnded()) onRoundEnd();
             return;
         }
-        RoundInfoPanel.I().addSpin();
 
         TaskScheduler scheduler = TaskScheduler.I();
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
@@ -299,7 +296,7 @@ public class SlotScreen extends ScreenAdapter {
             EffectManager.endStreak();
             onSpinButtonPressed();
 
-            if(RoundTimer.I().timerEnded()) onRoundEnd();
+            if (RunManager.I().getRoundTimer().timerEnded()) onRoundEnd();
 //            buttonBoard.setVisible(true);
         });
 
@@ -332,7 +329,7 @@ public class SlotScreen extends ScreenAdapter {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
+            Seq.of(RingBar.I().getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SLOT)
                 .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, true));
 
@@ -353,35 +350,21 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     public void onSpinButtonPressed() {
-        if(RoundInfoPanel.I().getSpins() == 0) return;
+        if (RoundInfoPanel.I().getSpins() == 0 || !SlotMachine.I().isStale()) return;
 
-        slotMachine.setAlpha(1f);
-//        buttonBoard.setVisible(false);
-
-        slotMachine.spin();
+        SlotMachine.I().setAlpha(1f);
+        SlotMachine.I().spin();
         RoundInfoPanel.I().minusSpin();
 
         for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
             relicWithActionAfterSpin.onSpinButtonPressed();
         }
-
-//        Hand.I().drawCard();
     }
 
     public void onRoundEnd() {
         isFirstStreakIncrease = true;
-//        ScoreDisplay.I().clearPotentialScore();
-
-        AudioManager.I().endPayout();
 
         NetworkController.I().match().sendRoundEnded();
-//        PlayerRunManager.I().updatePlayerRoundEndScore(RoundsManager.I().getCurrentRound(), score);
-//        ScreenManager.I().setScreen(PlayerCombatScreen.class);
-//        if (DevTools.opponentDefaultValues())
-//            ScreenManager.I().getScreen(PlayerCombatScreen.class).onOpponentFinishedRound(Bot.getRoundEndScore());
-
-        RoundsManager.I().nextRound();
-        CreditManager.I().roundEnd();
     }
 
     @Override
@@ -393,7 +376,7 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     private void onReturnedFromShop() {
-
+        RunManager.I().getRoundsManager().nextRound();
     }
 
     private void drawStartingHand() {
@@ -401,7 +384,8 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 int drawAmount = 3;
-                if (RoundsManager.I().getBoss() instanceof OneLessCardBoss) drawAmount--;
+                if (RunManager.I().getRoundsManager().getBoss() instanceof OneLessCardBoss)
+                    drawAmount--;
                 if (RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
                 Hand.I().drawCards(drawAmount);
             }
@@ -412,7 +396,7 @@ public class SlotScreen extends ScreenAdapter {
         return symbolsHitLastSpin;
     }
 
-//    public void openBossLootWindow() {
-//        bossLootWindow.show();
-//    }
+    public void showWaitingForOpponentText() {
+        showWaitingForOpponentText = true;
+    }
 }

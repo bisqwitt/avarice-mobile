@@ -29,7 +29,7 @@ public class StatisticPopup implements IPopup {
     }
 
     @Override
-    public void draw() {
+    public void draw(float delta) {
         float pulseCurve = getPulseCurve();
 
         // Scale

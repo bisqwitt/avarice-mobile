@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class WaitingForOpponentToFinishTurnText {
+public class WaitingForOpponentToFinishRoundText {
 
     private final float SIZE_RATIO = 15f;
     private final float SPACING = 0.1f;

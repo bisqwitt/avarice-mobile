@@ -4,7 +4,7 @@ import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.GameStateLogger;
+import com.avaricious.utility.RunManager;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -40,7 +40,7 @@ public class DrawACardDisabledUntilTwoCardsPlayedCard extends AbstractCard imple
     }
 
     private int cardsPlayedThisRound() {
-        return GameStateLogger.I().getPlayedCardsThisRound().size();
+        return RunManager.I().getRoundsManager().getPlayedCardsThisRound().size();
     }
 
     @Override

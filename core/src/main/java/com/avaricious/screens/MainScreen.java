@@ -2,14 +2,12 @@ package com.avaricious.screens;
 
 import com.avaricious.Main;
 import com.avaricious.components.AvariceText;
-import com.avaricious.components.background.WarpBackground;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.ZIndex;
-import com.avaricious.utility.gameState.GameStateManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
@@ -21,7 +19,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class MainScreen extends ScreenAdapter {
     private final Main app;
 
-//    private final WarpBackground background = new WarpBackground();
     private final AvariceText title = new AvariceText();
 
     private final Button joinQueueButton = new Button(this::onJoinQueueButtonPressed,
@@ -35,12 +32,6 @@ public class MainScreen extends ScreenAdapter {
         Assets.I().get(AssetKey.NEW_RUN_BUTTON_PRESSED),
         Assets.I().get(AssetKey.NEW_RUN_BUTTON),
         new Rectangle(2.5f, 7f, 79 / 20f, 25 / 20f),
-        Input.Keys.ENTER, ZIndex.SLOT_MACHINE);
-    private final Button continueButton = new Button(this::onContinueButtonPressed,
-        Assets.I().get(AssetKey.CONTINUE_BUTTON),
-        Assets.I().get(AssetKey.CONTINUE_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.CONTINUE_BUTTON),
-        new Rectangle(2.5f, 5f, 79 / 20f, 25 / 20f),
         Input.Keys.ENTER, ZIndex.SLOT_MACHINE);
 
     private boolean leftClickWasPressed = false;
@@ -56,7 +47,6 @@ public class MainScreen extends ScreenAdapter {
 
         joinQueueButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         newRunButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        continueButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
 
         leftClickWasPressed = leftClickPressed;
     }
@@ -78,11 +68,10 @@ public class MainScreen extends ScreenAdapter {
         batch.setProjectionMatrix(app.getViewport().getCamera().combined);
         batch.begin();
 
-        joinQueueButton.draw();
-        newRunButton.draw();
-        continueButton.draw();
+        joinQueueButton.draw(delta);
+        newRunButton.draw(delta);
 
-        Pencil.I().draw(batch);
+        Pencil.I().draw(batch, delta);
 
         batch.end();
     }
@@ -92,11 +81,6 @@ public class MainScreen extends ScreenAdapter {
     }
 
     private void onNewRunButtonPressed() {
-        ScreenManager.I().setScreen(SlotScreen.class);
-    }
-
-    private void onContinueButtonPressed() {
-        GameStateManager.I().applyLoadedGameState();
         ScreenManager.I().setScreen(SlotScreen.class);
     }
 }

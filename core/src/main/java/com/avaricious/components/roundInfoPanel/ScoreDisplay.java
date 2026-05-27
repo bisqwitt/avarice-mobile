@@ -1,19 +1,16 @@
 package com.avaricious.components.roundInfoPanel;
 
-import com.avaricious.RoundsManager;
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.components.progressbar.ScoreProgressBar;
 import com.avaricious.components.slot.Body;
 import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.RunManager;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -44,7 +41,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
 
 
-
     float multiSymbol1X = 0f;
     float multiSymbol2X = 0f;
 
@@ -59,25 +55,9 @@ public class ScoreDisplay extends Observable<ScoreState> {
         streakNumber.getIdleScaleEffect().setAllowed(false);
     }
 
-    public void draw(float delta, float unfoldAmount) {
-        float t = MathUtils.clamp(unfoldAmount, 0f, 1f);
-        float smoothT = Interpolation.smoother.apply(t);
+    public void draw(float delta) {
         multiBody1.update(delta);
         multiBody2.update(delta);
-
-        ZIndex zIndex = t == 0f
-            ? ZIndex.PATTERN_DISPLAY
-            : ZIndex.ROUND_INFO_PANEL_UNFOLDED;
-
-        pointsNumber.setZIndex(zIndex);
-        multiNumber.setZIndex(zIndex);
-        streakNumber.setZIndex(zIndex);
-
-        float digitY = MathUtils.lerp(DIGIT_Y, DIGIT_Y - 1.1f, smoothT);
-
-        pointsNumber.getFirstDigitBounds().y = digitY;
-        multiNumber.getFirstDigitBounds().y = digitY;
-        streakNumber.getFirstDigitBounds().y = digitY;
 
 //        Pencil.I().addDrawing(new TextureDrawing(
 //            scoreDisplaySlot,
@@ -87,32 +67,32 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         pointsNumber.draw(delta);
 
-        float multi1Y = digitY + multiBody1.getIdleFloatYOffset();
+        float multi1Y = DIGIT_Y + multiBody1.getIdleFloatYOffset();
         float multi1Sway = multiBody1.getIdleSwayEffect().getValue();
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbolShadow,
             multiSymbol1X, multi1Y, multiplySymbolSize, multiplySymbolSize,
-            1f, multi1Sway, zIndex, Assets.I().shadowColor()
+            1f, multi1Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
             multiSymbol1X, multi1Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            1f, multi1Sway, zIndex
+            1f, multi1Sway, ZIndex.PATTERN_DISPLAY
         ));
 
         multiNumber.draw(delta);
 
-        float multi2Y = digitY + multiBody2.getIdleFloatYOffset();
+        float multi2Y = DIGIT_Y + multiBody2.getIdleFloatYOffset();
         float multi2Sway = multiBody2.getIdleSwayEffect().getValue();
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbolShadow,
             multiSymbol2X, multi2Y, multiplySymbolSize, multiplySymbolSize,
-            1f, multi2Sway, zIndex, Assets.I().shadowColor()
+            1f, multi2Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             multiplySymbol,
             multiSymbol2X, multi2Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            1, multi2Sway, zIndex
+            1, multi2Sway, ZIndex.PATTERN_DISPLAY
         ));
 
         streakNumber.draw(delta);
@@ -128,7 +108,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
         updatePotentialScoreXLayout();
 
         PlayerScores.I().setPlayerScoreNumber(calcPotentialValue());
-        NetworkController.I().match().onScoreChanged(RoundsManager.I().getCurrentRound(), calcPotentialValue());
+        NetworkController.I().match().onScoreChanged(RunManager.I().getRoundsManager().getCurrentRound(), calcPotentialValue());
         notifyChanged(snapshot());
     }
 
@@ -200,7 +180,8 @@ public class ScoreDisplay extends Observable<ScoreState> {
         return new ScoreState(
             pointsNumber.getValue(),
             multiNumber.getValue(),
-            streakNumber.getValue());
+            streakNumber.getValue(),
+            calcPotentialValue());
     }
 
     public enum Type {

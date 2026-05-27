@@ -25,7 +25,7 @@ public class SocketClient {
             });
 
             socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
-                Gdx.app.log("SOCKET", "Connection error: " + args[0]);
+                Gdx.app.error("SOCKET", "Connection error: " + args[0]);
             });
 
             socket.connect();

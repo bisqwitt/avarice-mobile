@@ -13,7 +13,6 @@ import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
@@ -78,7 +77,7 @@ public class TooltipPopup {
         setDescription(item.description());
     }
 
-    public void render(SpriteBatch batch, float delta) {
+    public void draw(float delta) {
         updateAlpha(delta);
         TextureRegion box = boxes.get(calcDescriptionLineAmount());
         float worldWidth = GameContext.I().viewport.getWorldWidth();
