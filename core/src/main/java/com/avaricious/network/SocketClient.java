@@ -25,7 +25,21 @@ public class SocketClient {
             });
 
             socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
-                Gdx.app.error("SOCKET", "Connection error: " + args[0]);
+                for (Object arg : args) {
+                    Gdx.app.error("SOCKET", "arg class: " + arg.getClass().getName());
+                    Gdx.app.error("SOCKET", "arg value: " + arg);
+
+                    if (arg instanceof Throwable) {
+                        Throwable t = (Throwable) arg;
+                        Gdx.app.error("SOCKET", "throwable", t);
+
+                        Throwable cause = t.getCause();
+                        while (cause != null) {
+                            Gdx.app.error("SOCKET", "cause: " + cause.getClass().getName() + ": " + cause.getMessage());
+                            cause = cause.getCause();
+                        }
+                    }
+                }
             });
 
             socket.connect();
