@@ -26,7 +26,7 @@ public abstract class SymbolValueStackRing extends AbstractTriggerableRing imple
 
     @Override
     public boolean condition(List<PatternHitContext> matches, PatternHitContext match) {
-        return match.getSymbol() == getSymbol();
+        return match.getMatch().getSymbol() == getSymbol();
     }
 
     @Override

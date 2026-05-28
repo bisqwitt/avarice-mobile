@@ -104,6 +104,7 @@ public abstract class AbstractCard extends AbstractUpgrade {
         DrawACardDisabledUntilTwoCardsPlayedCard.class,
         DrawCardsEqualToCurrentStreak.class,
         DrawAndDiscardACard.class,
-        ImpersonatorCard.class
+        ImpersonatorCard.class,
+        ShiftSymbolCard.class
     ));
 }

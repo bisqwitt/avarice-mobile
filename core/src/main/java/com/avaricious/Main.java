@@ -9,6 +9,7 @@ import com.avaricious.utility.SeededRandomizer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 
@@ -28,7 +29,7 @@ public class Main extends Game {
 
     @Override
     public void create() {
-        SeededRandomizer.setSeed(12345);
+        SeededRandomizer.setSeed(MathUtils.random(1000, 9999));
 
         batch = new SpriteBatch();
         viewport = new FitViewport(9, 20);

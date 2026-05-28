@@ -324,14 +324,14 @@ public class SlotMachine {
 //                slot.setInPatternHit(true);
                 bodies.add(body);
             }
-            result.add(new PatternHitContext(match.getSymbol(), bodies));
+            result.add(new PatternHitContext(match, bodies));
         }
 
         Collections.sort(result, new Comparator<PatternHitContext>() {
             @Override
             public int compare(PatternHitContext a, PatternHitContext b) {
-                int ai = a.getSymbol().ordinal();
-                int bi = b.getSymbol().ordinal();
+                int ai = a.getMatch().getSymbol().ordinal();
+                int bi = b.getMatch().getSymbol().ordinal();
 
                 if (ai < bi) return -1;
                 if (ai > bi) return 1;
@@ -339,6 +339,46 @@ public class SlotMachine {
             }
         });
         return result;
+    }
+    
+    public void shiftSymbol(int col, int row, String dir) {
+        if (col < 0 || col >= cols || row < 0 || row >= rows) return;
+
+        switch (dir) {
+            case "up":
+                reels.get(col).shiftSymbolUp(row);
+                break;
+
+            case "down":
+                reels.get(col).shiftSymbolDown(row);
+                break;
+
+            case "left":
+                if (col <= 0) return;
+                swapBetweenReels(col, row, col - 1, row);
+                break;
+
+            case "right":
+                if (col >= cols - 1) return;
+                swapBetweenReels(col, row, col + 1, row);
+                break;
+        }
+
+        SlotMachineResultRunner.I().runResult(Seq.of(findMatches())
+            .filter(patternHit -> patternHit.getMatch().getPositions()
+                .contains(new Vector2(col, row))).toList());
+    }
+
+    /**
+     * Swaps the symbols at two arbitrary grid positions (may span different reels).
+     */
+    private void swapBetweenReels(int colA, int rowA, int colB, int rowB) {
+        Reel reelA = reels.get(colA);
+        Reel reelB = reels.get(colB);
+        Symbol symA = reelA.symbolAtRow(rowA);
+        Symbol symB = reelB.symbolAtRow(rowB);
+        reelA.setSymbolAtRow(rowA, symB);   // ← musst du noch public machen (s.u.)
+        reelB.setSymbolAtRow(rowB, symA);
     }
 
     public static Rectangle getBounds() {

@@ -250,7 +250,7 @@ public class Reel {
         return strip.size();
     }
 
-    private void setSymbolAtRow(int row, Symbol symbol) {
+    public void setSymbolAtRow(int row, Symbol symbol) {
         int idx = (int) Math.floor(pos + row);
         strip.set(mod(idx, strip.size()), symbol);
     }
@@ -268,5 +268,31 @@ public class Reel {
     public void setStrip(List<Symbol> strip) {
         this.strip.clear();
         this.strip.addAll(strip);
+    }
+
+    /**
+     * Shifts the symbol at the given visible row one step UP (toward row 0).
+     * Swaps it with the symbol at (row - 1).
+     */
+    public void shiftSymbolUp(int row) {
+        if (row <= 0) return;
+        int idxA = mod((int) Math.floor(pos + row), strip.size());
+        int idxB = mod((int) Math.floor(pos + row - 1), strip.size());
+        Symbol tmp = strip.get(idxA);
+        strip.set(idxA, strip.get(idxB));
+        strip.set(idxB, tmp);
+    }
+
+    /**
+     * Shifts the symbol at the given visible row one step DOWN (toward row max).
+     * Swaps it with the symbol at (row + 1).
+     */
+    public void shiftSymbolDown(int row) {
+        if (row >= visibleRows - 1) return;
+        int idxA = mod((int) Math.floor(pos + row), strip.size());
+        int idxB = mod((int) Math.floor(pos + row + 1), strip.size());
+        Symbol tmp = strip.get(idxA);
+        strip.set(idxA, strip.get(idxB));
+        strip.set(idxB, tmp);
     }
 }

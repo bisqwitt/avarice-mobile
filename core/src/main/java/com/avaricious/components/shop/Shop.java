@@ -134,7 +134,7 @@ public class Shop {
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             shopSlot,
-            WINDOW_X + 1.75f, currentWindowY + 5.75f, 110 / 15f, 60 / 15f,
+            WINDOW_X + 1.75f, currentWindowY + 7.75f, 110 / 15f, 60 / 15f,
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(

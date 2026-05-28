@@ -325,14 +325,14 @@ public class SlotMachineNew {
                 bodies.add(body);
             }
 
-            result.add(new PatternHitContext(match.getSymbol(), bodies));
+            result.add(new PatternHitContext(match, bodies));
         }
 
         Collections.sort(result, new Comparator<PatternHitContext>() {
             @Override
             public int compare(PatternHitContext a, PatternHitContext b) {
-                int ai = a.getSymbol().ordinal();
-                int bi = b.getSymbol().ordinal();
+                int ai = a.getMatch().getSymbol().ordinal();
+                int bi = b.getMatch().getSymbol().ordinal();
 
                 if (ai < bi) return -1;
                 if (ai > bi) return 1;

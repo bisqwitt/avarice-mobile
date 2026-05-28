@@ -1,22 +1,21 @@
 package com.avaricious.components.slot.pattern;
 
 import com.avaricious.components.slot.Body;
-import com.avaricious.components.slot.Symbol;
 
 import java.util.List;
 
 public class PatternHitContext {
 
-    private final Symbol symbol;
+    private final PatternMatch match;
     private final List<Body> bodies;
 
-    public PatternHitContext(Symbol symbol, List<Body> slots) {
-        this.symbol = symbol;
+    public PatternHitContext(PatternMatch match, List<Body> slots) {
+        this.match = match;
         this.bodies = slots;
     }
 
-    public Symbol getSymbol() {
-        return symbol;
+    public PatternMatch getMatch() {
+        return match;
     }
 
     public List<Body> getSlots() {
