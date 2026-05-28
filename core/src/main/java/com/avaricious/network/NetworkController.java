@@ -23,7 +23,7 @@ public class NetworkController {
 
     public void connect() {
         socketClient.connect();
-        
+
         matchmakingController.registerListeners();
         matchController.registerListeners();
     }
@@ -40,4 +40,7 @@ public class NetworkController {
         return matchController;
     }
 
+    public SocketClient getSocketClient() {
+        return socketClient;
+    }
 }

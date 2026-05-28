@@ -93,7 +93,6 @@ public class SlotScreen extends ScreenAdapter {
     @Override
     public void show() {
         RunManager.I().newRun();
-        RoundInfoPanel.I().setSpins(3);
 
         if (RunManager.I().getRoundsManager().getCurrentRound() == 1)
             drawStartingHand();
@@ -104,12 +103,12 @@ public class SlotScreen extends ScreenAdapter {
                 buttonBoard.setVisible(true);
             }
         }, 1);
-        Timer.schedule(new Timer.Task() {
-            @Override
-            public void run() {
-                onSpinButtonPressed();
-            }
-        }, 1.5f);
+//        Timer.schedule(new Timer.Task() {
+//            @Override
+//            public void run() {
+//                onSpinButtonPressed();
+//            }
+//        }, 1.5f);
     }
 
     @Override
@@ -134,7 +133,8 @@ public class SlotScreen extends ScreenAdapter {
         RoundInfoPanel.I().draw(delta);
         PlayerScores.I().draw(delta);
         PlayerHealths.I().draw(delta);
-        RunManager.I().getRoundTimer().draw(delta);
+        ScoreDisplay.I().draw(delta);
+        RunManager.I().getRoundsManager().getRoundTimer().draw(delta);
         buttonBoard.draw(delta);
         RingBar.I().draw(delta);
 
@@ -189,7 +189,6 @@ public class SlotScreen extends ScreenAdapter {
 //        bossLootWindow.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (shop.isShowing()) shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        else if (!bossLootWindow.isShown()) {
-        RoundInfoPanel.I().handleInput(mouse, leftClickPressed, leftClickWasPressed);
         RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
             HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -212,7 +211,7 @@ public class SlotScreen extends ScreenAdapter {
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
             onSpinButtonPressed();
-            if (RunManager.I().getRoundTimer().timerEnded()) onRoundEnd();
+            if (RunManager.I().getRoundsManager().getRoundTimer().timerEnded()) onRoundEnd();
             return;
         }
 
@@ -296,7 +295,7 @@ public class SlotScreen extends ScreenAdapter {
             EffectManager.endStreak();
             onSpinButtonPressed();
 
-            if (RunManager.I().getRoundTimer().timerEnded()) onRoundEnd();
+            if (RunManager.I().getRoundsManager().getRoundTimer().timerEnded()) onRoundEnd();
 //            buttonBoard.setVisible(true);
         });
 
@@ -364,7 +363,30 @@ public class SlotScreen extends ScreenAdapter {
     public void onRoundEnd() {
         isFirstStreakIncrease = true;
 
-        NetworkController.I().match().sendRoundEnded();
+        if (NetworkController.I().getSocketClient().isConnected())
+            NetworkController.I().match().sendRoundEnded();
+        else onBothPlayersEndedRound();
+    }
+
+    public void onBothPlayersEndedRound() {
+        PlayerScores playerScores = PlayerScores.I();
+        PlayerHealths playerHealths = PlayerHealths.I();
+
+        if (playerScores.getPlayerScore() > playerScores.getEnemyScore()) {
+            playerHealths.setEnemyHealth((int) playerHealths.getEnemyHealth() - 20);
+        } else {
+            playerHealths.setPlayerHealth((int) playerHealths.getPlayerHealth() - 20);
+        }
+
+        playerScores.setPlayerScoreNumber(0);
+        playerScores.setEnemyScoreNumber(0);
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                shop.show();
+            }
+        }, 1);
     }
 
     @Override
@@ -377,6 +399,7 @@ public class SlotScreen extends ScreenAdapter {
 
     private void onReturnedFromShop() {
         RunManager.I().getRoundsManager().nextRound();
+        ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
     }
 
     private void drawStartingHand() {

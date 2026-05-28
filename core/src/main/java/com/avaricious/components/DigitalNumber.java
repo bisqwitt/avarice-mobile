@@ -217,8 +217,9 @@ public class DigitalNumber {
         return zIndex;
     }
 
-    public void setZIndex(ZIndex zIndex) {
+    public DigitalNumber setZIndex(ZIndex zIndex) {
         this.zIndex = zIndex;
+        return this;
     }
 
     public void setColor(Color color) {

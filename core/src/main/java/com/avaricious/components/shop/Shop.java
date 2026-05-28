@@ -4,14 +4,11 @@ import static com.badlogic.gdx.math.MathUtils.lerp;
 
 import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
-import com.avaricious.SymbolSpawnChancePack;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.NextRoundButton;
 import com.avaricious.components.texts.ShopText;
-import com.avaricious.items.upgrades.cards.CardPack;
-import com.avaricious.items.upgrades.rings.RingPack;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -26,9 +23,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Shop {
 
     private static final float WINDOW_X = -1f;
-    private static final float WINDOW_Y = 2f;
+    private static final float WINDOW_Y = 0f;
     private static final float WINDOW_WIDTH = 375 / 35f;
-    public static final float WINDOW_HEIGHT = 650 / 35f;
+    public static final float WINDOW_HEIGHT = 800 / 35f;
 
     // fully above the screen
     private static final float OFFSCREEN_TOP_Y = WINDOW_Y + WINDOW_HEIGHT + 2f;
@@ -46,11 +43,12 @@ public class Shop {
 
     private final CreditScore creditScore;
 
-    private ShopItemBar shopItemBar = new ShopItemBar();
-    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack();
-    private CardPack cardPack = new CardPack();
-    private RingPack ringPack = new RingPack();
-    private CardRemover cardRemover = new CardRemover(new Vector2(2f, 4f));
+    private final ShopItemBar shopItemBar = new ShopItemBar();
+    private final ShopItemBar shopItemBar2 = new ShopItemBar();
+    //    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack();
+//    private CardPack cardPack = new CardPack();
+//    private RingPack ringPack = new RingPack();
+    private final CardRemover cardRemover = new CardRemover(new Vector2(2f, 4f));
 
     private final Runnable onReturnedFromShop;
 
@@ -90,6 +88,7 @@ public class Shop {
         rerollButton = new Button(() -> {
             if (CreditManager.I().enoughCredit(3)) {
                 shopItemBar.load();
+                shopItemBar2.load();
                 CreditManager.I().pay(3);
             } else {
                 CreditManager.I().pulse();
@@ -130,7 +129,7 @@ public class Shop {
 
         Pencil.I().addDrawing(new TextureDrawing(
             shopSlot,
-            WINDOW_X + 1.75f, currentWindowY + 10.25f, 110 / 15f, 60 / 15f,
+            WINDOW_X + 1.75f, currentWindowY + 12.25f, 110 / 15f, 60 / 15f,
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
         Pencil.I().addDrawing(new TextureDrawing(
@@ -140,16 +139,17 @@ public class Shop {
         ));
         Pencil.I().addDrawing(new TextureDrawing(
             deckEditShopSlot,
-            WINDOW_X + 2.45f, currentWindowY + 1.2f, 90 / 15f, 60 / 15f,
+            WINDOW_X + 2.45f, currentWindowY + 3.2f, 90 / 15f, 60 / 15f,
             ZIndex.SHOP, Assets.I().shadowColor()
         ));
 
         shopText.draw(delta);
 
         shopItemBar.draw(delta);
-        symbolSpawnChancePack.draw(delta);
-        cardPack.draw(delta);
-        ringPack.draw(delta);
+        shopItemBar2.draw(delta);
+//        symbolSpawnChancePack.draw(delta);
+//        cardPack.draw(delta);
+//        ringPack.draw(delta);
         cardRemover.draw(delta);
 
 //        rerollButton.draw();
@@ -159,9 +159,10 @@ public class Shop {
 
     public void show() {
         shopItemBar.load();
-        symbolSpawnChancePack = new SymbolSpawnChancePack();
-        cardPack = new CardPack();
-        ringPack = new RingPack();
+        shopItemBar2.load();
+//        symbolSpawnChancePack = new SymbolSpawnChancePack();
+//        cardPack = new CardPack();
+//        ringPack = new RingPack();
 
         currentWindowY = OFFSCREEN_TOP_Y;
         windowVelocityY = 0f;
@@ -214,13 +215,16 @@ public class Shop {
 
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
-            shopText.getStartingPos().y = currentWindowY + 15f;
-            shopItemBar.setY(currentWindowY + 11.55f);
-            rerollButton.getBounds().setY(currentWindowY + 10.05f);
-            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 7.35f;
-            cardPack.getBody().getPos().y = currentWindowY + 7f;
-            ringPack.getBody().getPos().y = currentWindowY + 7.45f;
-            cardRemover.getBody().getPos().y = currentWindowY + 2.45f;
+            shopText.getStartingPos().y = currentWindowY + 17f;
+            shopItemBar.setY(currentWindowY + 13.55f);
+            shopItemBar2.setY(currentWindowY + 9f);
+            rerollButton.getBounds().setY(currentWindowY + 12.05f);
+//            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 9.35f;
+//            cardPack.getBody().getPos().y = currentWindowY + 9f;
+//            ringPack.getBody().getPos().y = currentWindowY + 9.45f;
+            cardRemover.getBody().getPos().y = currentWindowY + 4.45f;
+            nextRoundButton.getBounds().setY(currentWindowY + 0.5f);
+            creditScore.getFirstDigitBounds().setY(currentWindowY + 0.7f);
         }
     }
 
@@ -276,9 +280,10 @@ public class Shop {
         }
 
         shopItemBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        symbolSpawnChancePack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        shopItemBar2.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        symbolSpawnChancePack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//        ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);

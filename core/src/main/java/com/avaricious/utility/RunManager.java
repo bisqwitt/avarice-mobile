@@ -1,7 +1,8 @@
 package com.avaricious.utility;
 
 import com.avaricious.RoundsManager;
-import com.avaricious.components.roundInfoPanel.RoundTimer;
+import com.avaricious.utility.runData.RunData;
+import com.avaricious.utility.runData.RunDataFileManager;
 
 import java.util.UUID;
 
@@ -14,17 +15,18 @@ public class RunManager {
     }
 
     private final RoundsManager roundsManager = new RoundsManager();
-    private final RoundTimer roundTimer = new RoundTimer();
 
     private String runId;
+
+    private RunData opponentsRun;
 
     private RunManager() {
     }
 
     public void newRun() {
         runId = UUID.randomUUID().toString();
+        opponentsRun = RunDataFileManager.I().findOpponentsRun();
 
-        roundTimer.startTimer();
         roundsManager.nextRound();
     }
 
@@ -32,11 +34,11 @@ public class RunManager {
         return roundsManager;
     }
 
-    public RoundTimer getRoundTimer() {
-        return roundTimer;
-    }
-
     public String getRunId() {
         return runId;
+    }
+
+    public RunData getOpponentsRun() {
+        return opponentsRun;
     }
 }

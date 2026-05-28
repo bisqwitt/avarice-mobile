@@ -35,7 +35,7 @@ public class RunDataFileManager {
             onScoreChange(
                 RunManager.I().getRoundsManager().getCurrentRound(),
                 scoreState.sum,
-                RunManager.I().getRoundTimer().msSinceRoundStart()));
+                RunManager.I().getRoundsManager().getRoundTimer().msSinceRoundStart()));
         loadRuns();
     }
 
@@ -52,9 +52,7 @@ public class RunDataFileManager {
     }
 
     public void onScoreChange(int round, float newScore, long msSinceRoundStart) {
-        RunData currentRun = Seq.of(runs)
-            .filter(runData -> runData.runId.equals(RunManager.I().getRunId()))
-            .findAnyOrNull();
+        RunData currentRun = getCurrentRun();
 
         if (currentRun == null) {
             currentRun = new RunData().setRunId(RunManager.I().getRunId());
@@ -63,6 +61,14 @@ public class RunDataFileManager {
 
         currentRun.scoreChangeData.add(new ScoreChangeData(round, newScore, msSinceRoundStart));
         isDirty = true;
+    }
+
+    public RunData findOpponentsRun() {
+        RunData opponentsRun = Seq.of(runs)
+            .filter(run -> !run.runId.equals(RunManager.I().getRunId()))
+            .findAnyOrNull();
+
+        return opponentsRun == null ? RunData.defaultRun() : opponentsRun;
     }
 
     private void loadRuns() {
@@ -75,6 +81,12 @@ public class RunDataFileManager {
         clearUnfinishedRuns();
     }
 
+    private RunData getCurrentRun() {
+        return Seq.of(runs)
+            .filter(runData -> runData.runId.equals(RunManager.I().getRunId()))
+            .findAnyOrNull();
+    }
+
     private void saveRunData() {
         file.writeString(json.toJson(runs), false);
     }
@@ -85,7 +97,7 @@ public class RunDataFileManager {
                 .mapToInt(scoreChange -> scoreChange.round)
                 .maxOrDefault(0);
 
-            return highestRound > 5;
+            return highestRound > 15;
         }).toList();
 
         isDirty = true;

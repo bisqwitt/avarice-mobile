@@ -2,6 +2,10 @@ package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.ItemBag;
+import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
+import com.avaricious.components.roundInfoPanel.RoundTimer;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.items.upgrades.quests.PlaySevenCardsInOneSpinQuest;
@@ -13,6 +17,7 @@ import java.util.List;
 
 public class RoundsManager extends Observable<Integer> {
 
+    private final RoundTimer roundTimer = new RoundTimer();
     private Integer currentRound = 0;
 
     private final List<AbstractCard> playedCardsThisRound = new ArrayList<>();
@@ -21,10 +26,11 @@ public class RoundsManager extends Observable<Integer> {
     public void nextRound() {
         setCurrentRound(currentRound + 1);
         CreditManager.I().roundEnd();
-    }
+        ScoreDisplay.I().clearPotentialScore();
+        RoundInfoPanel.I().setSpins(3);
+        Hand.I().drawCard();
 
-    public boolean isShopRound() {
-        return currentRound % 3 == 1 && currentRound != 1;
+        roundTimer.startTimer();
     }
 
     public Integer getCurrentRound() {
@@ -63,6 +69,10 @@ public class RoundsManager extends Observable<Integer> {
 
     public boolean defenceTypeCardsDisabled() {
         return defenceTypeCardsDisabled;
+    }
+
+    public RoundTimer getRoundTimer() {
+        return roundTimer;
     }
 
     @Override

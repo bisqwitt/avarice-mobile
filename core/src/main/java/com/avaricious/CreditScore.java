@@ -11,4 +11,9 @@ public class CreditScore extends CreditNumber {
         CreditManager.I().onChange(this::setValue);
         setZIndex(ZIndex.CREDIT_SCORE);
     }
+
+    @Override
+    public CreditScore setZIndex(ZIndex zIndex) {
+        return (CreditScore) super.setZIndex(zIndex);
+    }
 }

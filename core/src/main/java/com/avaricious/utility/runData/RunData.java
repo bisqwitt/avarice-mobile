@@ -13,4 +13,14 @@ public class RunData {
         return this;
     }
 
+    public static RunData defaultRun() {
+        RunData defaultRun = new RunData();
+        defaultRun.runId = "DEFAULT";
+        for (int i = 0; i < 10; i++) {
+            defaultRun.scoreChangeData.add(new ScoreChangeData(i, i * 700, 5000));
+        }
+
+        return defaultRun;
+    }
+
 }

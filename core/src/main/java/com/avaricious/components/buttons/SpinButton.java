@@ -19,6 +19,6 @@ public class SpinButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return !SlotMachine.I().isStale() || RunManager.I().getRoundTimer().timerEnded();
+        return !SlotMachine.I().isStale() || RunManager.I().getRoundsManager().getRoundTimer().timerEnded();
     }
 }
