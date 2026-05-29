@@ -50,10 +50,9 @@ public class SlotMachine {
     public static final float originX = 0.25f;
     public static final float originY = 6.5f;
 
-    public static final Rectangle windowBounds = new Rectangle(originX - 0.23f, originY - 0.325f, 8.95f, 6.425f);
-
     private final List<Reel> reels = new ArrayList<>();
-    private final Body[][] grid = new Body[cols][rows];
+    private final DragableBody[][] grid = new DragableBody[cols][rows];
+    private ZIndex zIndex = ZIndex.SLOT_MACHINE;
     private final GlyphLayout bossDescription = new GlyphLayout();
 
     private boolean runningResults = false;
@@ -62,32 +61,45 @@ public class SlotMachine {
 
     private Runnable onLastReelFinished;
     private int spinningReels = 0;
-
     private boolean stale = true;
+
+    private boolean shiftingSymbol = false;
+    private DragableBody draggingBody = null;
+    private Vector2 draggingBodyGridPos = null;
+    private Vector2 draggingNeighbourGridPos = null;
+    private Vector2 draggingBodyTouchdownLocation = null;
+    private DragDirection dragDirection = DragDirection.NONE;
+    private final float dragLockThreshold = 0.1f;
+    private final float maxDraggingDistance = 1.4f + 0.25f;
 
     private SlotMachine() {
         // build visual cells
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
-                if (r == 0) grid[c][r] = new Body(new Vector2(
+                if (r == 0) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
-                    originY + 4 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY),
+                    CELL_W, CELL_H
                 ));
-                if (r == 1) grid[c][r] = new Body(new Vector2(
+                if (r == 1) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
-                    originY + 3 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY),
+                    CELL_W, CELL_H
                 ));
-                if (r == 2) grid[c][r] = new Body(new Vector2(
+                if (r == 2) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
-                    originY + 2 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY),
+                    CELL_W, CELL_H
                 ));
-                if (r == 3) grid[c][r] = new Body(new Vector2(
+                if (r == 3) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
-                    originY + 1 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY),
+                    CELL_W, CELL_H
                 ));
-                if (r == 4) grid[c][r] = new Body(new Vector2(
+                if (r == 4) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
-                    originY + 0 * (CELL_H + spacingY)
+                    originY + 4 * (CELL_H + spacingY),
+                    CELL_W, CELL_H
                 ));
             }
         }
@@ -105,6 +117,76 @@ public class SlotMachine {
                 if (grid[i][j] != null) {
                     grid[i][j].idleSwayEffect.setStrength(2.5f, 0.8f);
                 }
+            }
+        }
+    }
+
+    public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
+        if (shiftingSymbol) {
+            if (touching && !wasTouching) {
+                for (int r = 0; r < grid.length; r++) {
+                    for (int c = 0; c < grid[r].length; c++) {
+                        DragableBody body = grid[r][c];
+                        if (body.getBounds().contains(mouse)) {
+                            body.targetScale = 1.15f;
+                            body.beginDrag(mouse.x, mouse.y, 0);
+                            draggingBody = body;
+                            draggingBodyTouchdownLocation = new Vector2(mouse);
+                            draggingBodyGridPos = new Vector2(r, c);
+                        }
+                    }
+                }
+            }
+
+            if (touching && draggingBody != null) {
+                float dx = mouse.x - draggingBodyTouchdownLocation.x;
+                float dy = mouse.y - draggingBodyTouchdownLocation.y;
+
+                if (dragDirection == DragDirection.NONE) {
+                    if (Math.abs(dx) > dragLockThreshold || Math.abs(dy) > dragLockThreshold) {
+                        if (Math.abs(dx) > Math.abs(dy)) {
+                            dragDirection = DragDirection.HORIZONTAL;
+                        } else {
+                            dragDirection = DragDirection.VERTICAL;
+                        }
+                    }
+                }
+
+                if (dragDirection == DragDirection.HORIZONTAL) {
+                    float clampedDx = MathUtils.clamp(dx, -maxDraggingDistance, maxDraggingDistance);
+                    draggingBody.dragTo(draggingBodyTouchdownLocation.x + clampedDx, draggingBodyTouchdownLocation.y, 0);
+
+                    draggingNeighbourGridPos = new Vector2(draggingBodyGridPos.x + (dx > 0 ? 1 : -1), draggingBodyGridPos.y);
+                    DragableBody neighbour = grid[(int) draggingNeighbourGridPos.x][(int) draggingNeighbourGridPos.y];
+                    Vector2 neighbourDragPos = new Vector2(neighbour.getBounds().x - clampedDx, neighbour.getBounds().y);
+                    if (!neighbour.isDragging())
+                        neighbour.beginDrag(neighbourDragPos.x, neighbourDragPos.y, 0);
+                    else neighbour.dragTo(neighbourDragPos.x, neighbourDragPos.y, 0);
+                } else if (dragDirection == DragDirection.VERTICAL) {
+                    float clampedDy = MathUtils.clamp(dy, -maxDraggingDistance, maxDraggingDistance);
+                    draggingBody.dragTo(draggingBodyTouchdownLocation.x, draggingBodyTouchdownLocation.y + clampedDy, 0);
+
+                    draggingNeighbourGridPos = new Vector2(draggingBodyGridPos.x, draggingBodyGridPos.y + (dy > 0 ? -1 : 1));
+                    DragableBody neighbour = grid[(int) draggingNeighbourGridPos.x][(int) draggingNeighbourGridPos.y];
+                    Vector2 neighbourDragPos = new Vector2(neighbour.getBounds().x, neighbour.getBounds().y - clampedDy);
+                    if (!neighbour.isDragging())
+                        neighbour.beginDrag(neighbourDragPos.x, neighbourDragPos.y, 0);
+                    else
+                        neighbour.dragTo(neighbour.getBounds().x, neighbour.getBounds().y - clampedDy, 0);
+                }
+            }
+
+            if (!touching && wasTouching) {
+                shiftSymbol(draggingBodyGridPos.x, draggingBodyGridPos.y, draggingNeighbourGridPos.x, draggingNeighbourGridPos.y);
+
+                draggingBody.targetScale = 1;
+                draggingBody.endDrag(0);
+                grid[(int) draggingNeighbourGridPos.x][(int) draggingNeighbourGridPos.y].endDrag(0);
+
+                dragDirection = DragDirection.NONE;
+                draggingBody = null;
+                draggingBodyGridPos = null;
+                draggingNeighbourGridPos = null;
             }
         }
     }
@@ -133,17 +215,6 @@ public class SlotMachine {
         // update reel motion
         update(delta);
 
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            0, originY + 6.13f, 9, 0.05f, ZIndex.SLOT_MACHINE));
-//        Pencil.I().addDrawing(new TextureDrawing(Assets.I().get(AssetKey.WHITE_PIXEL),
-//            0, originY - 0.4f, 9, 0.05f, ZIndex.SLOT_MACHINE));
-
-//        if (RoundsManager.I().isBossRound()) {
-//            bossDescription.setText(Assets.I().getSmallFont(), "Boss Round! " + RoundsManager.I().getBoss().description());
-//            Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), bossDescription,
-//                new Vector2(0.5f * 100, 14.5f * 100), ZIndex.SLOT_MACHINE));
-//        }
-
         Rectangle area = getBounds(); // world-space
         area.setX(area.x - 0.3f);
         area.setY(area.y - 0.1f);
@@ -163,6 +234,7 @@ public class SlotMachine {
 
     private List<Vector2> drawSymbols() {
         List<Vector2> symbolsInPatternHit = new ArrayList<>();
+        Vector2 draggingSymbol = null;
         for (int c = 0; c < cols; c++) {
             int drawFrom = -1;
             int drawTo = rows - 1;
@@ -173,9 +245,14 @@ public class SlotMachine {
                     symbolsInPatternHit.add(pos);
                     continue;
                 }
+                if (isInGrid(pos) && draggingBody == grid[c][k]) {
+                    draggingSymbol = pos;
+                    continue;
+                }
                 drawSymbol(pos);
             }
         }
+        if (draggingSymbol != null) drawSymbol(draggingSymbol);
         return symbolsInPatternHit;
     }
 
@@ -198,9 +275,11 @@ public class SlotMachine {
         float adjY = drawY - 0.08f - (drawH - CELL_H) / 2f;
         float alpha = this.alpha;
 
+        Vector2 renderPos = new Vector2(adjX, adjY);
         if (isInGrid) {
-            Body body = grid[(int) gridPos.x][(int) gridPos.y];
-            adjY += body.getIdleFloatYOffset();
+            DragableBody body = grid[(int) gridPos.x][(int) gridPos.y];
+            body.getPos().set(adjX, adjY);
+            body.getRenderPos(renderPos);
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
 
@@ -223,53 +302,16 @@ public class SlotMachine {
         Color shadowColor = Assets.I().shadowColor();
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().get(symbol.shadowKey()),
-            adjX, adjY - 0.1f, drawW, drawH,
-            scale, rotation, ZIndex.SLOT_MACHINE, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
+            renderPos.x, renderPos.y - 0.1f, drawW, drawH,
+            scale, rotation, zIndex, new Color(shadowColor.r, shadowColor.g, shadowColor.b, Math.min(shadowColor.a, alpha))
         ));
 
         Pencil.I().addDrawing(new TextureDrawing(
             Assets.I().getSymbol(symbol),
-            adjX, adjY, drawW, drawH,
-            scale, rotation, ZIndex.SLOT_MACHINE, new Color(1f, 1f, 1f, alpha)
+            renderPos.x, renderPos.y, drawW, drawH,
+            scale, rotation, zIndex, new Color(1f, 1f, 1f, alpha)
         ));
     }
-
-    // --- spin control (organic staggered start/stop, aligned to center row) ---
-//    public void spin() {
-//        spinningReels = cols;
-//        stale = false;
-//
-//        float startSpeed = 16f;
-//        float startStagger = 0.1f;
-//        float stopStagger = 0.25f;
-//
-//        for (int c = 0; c < cols; c++) {
-//            final int col = c;
-//
-//            float startDelay = col * startStagger;
-//            float stopDelay = 0.5f + col * stopStagger;
-//
-//            float reelSpeed = startSpeed + SeededRandomizer.nextFloat(-0.7f, 0.7f);
-//
-//            Reel reel = reels.get(col);
-//            int targetIndex = SeededRandomizer.nextInt(0, reel.stripSize() - 1);
-//
-//            Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    reels.get(col).start(reelSpeed);
-//                }
-//            }, startDelay);
-//
-//            Timer.schedule(new Timer.Task() {
-//                @Override
-//                public void run() {
-//                    int minDistance = 8 + col * 4;
-//                    reels.get(col).requestStopAtIndex(targetIndex, minDistance);
-//                }
-//            }, 0.6f + col * 0.12f);
-//        }
-//    }
 
     public void spin() {
         spinningReels = cols;
@@ -340,33 +382,30 @@ public class SlotMachine {
         });
         return result;
     }
-    
-    public void shiftSymbol(int col, int row, String dir) {
-        if (col < 0 || col >= cols || row < 0 || row >= rows) return;
 
-        switch (dir) {
-            case "up":
-                reels.get(col).shiftSymbolUp(row);
-                break;
-
-            case "down":
-                reels.get(col).shiftSymbolDown(row);
-                break;
-
-            case "left":
-                if (col <= 0) return;
-                swapBetweenReels(col, row, col - 1, row);
-                break;
-
-            case "right":
-                if (col >= cols - 1) return;
-                swapBetweenReels(col, row, col + 1, row);
-                break;
+    public void shiftSymbol() {
+        shiftingSymbol = true;
+        zIndex = ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD;
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD);
+        for (Body[] row : grid) {
+            for (Body body : row) {
+                body.pulse();
+            }
         }
+    }
 
+    private void shiftSymbol(float col, float row, float neighbourCol, float neighbourRow) {
+        swapBetweenReels((int) col, (int) row, (int) neighbourCol, (int) neighbourRow);
+
+        Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD);
+        zIndex = ZIndex.SLOT_MACHINE;
+        shiftingSymbol = false;
         SlotMachineResultRunner.I().runResult(Seq.of(findMatches())
             .filter(patternHit -> patternHit.getMatch().getPositions()
-                .contains(new Vector2(col, row))).toList());
+                .contains(new Vector2(neighbourCol, neighbourRow))
+                || patternHit.getMatch().getPositions()
+                .contains(new Vector2(col, row)))
+            .toList());
     }
 
     /**
@@ -440,5 +479,9 @@ public class SlotMachine {
 
     public boolean isStale() {
         return stale;
+    }
+
+    private enum DragDirection {
+        NONE, HORIZONTAL, VERTICAL
     }
 }

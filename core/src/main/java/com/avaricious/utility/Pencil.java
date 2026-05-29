@@ -104,8 +104,7 @@ public class Pencil {
             -1f, -1f,
             GameContext.I().viewport.getWorldWidth() + 2,
             GameContext.I().viewport.getWorldHeight() + 2
-            ,
-            dimLayer
+            , dimLayer, Assets.I().shadowColor()
         ));
     }
 

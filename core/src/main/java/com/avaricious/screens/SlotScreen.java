@@ -172,6 +172,7 @@ public class SlotScreen extends ScreenAdapter {
             shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
             return;
         }
+        SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
             HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);

@@ -23,7 +23,7 @@ public class ShiftSymbolCard extends AbstractCard {
 
     @Override
     protected void onApply() {
-        SlotMachine.I().shiftSymbol(2, 3, "left");
+        SlotMachine.I().shiftSymbol();
     }
 
     @Override

@@ -266,4 +266,8 @@ public class DragableBody extends Body {
     public float getRotation() {
         return super.getRotation() + getDragTiltDeg();
     }
+
+    public boolean isDragging() {
+        return dragging;
+    }
 }
