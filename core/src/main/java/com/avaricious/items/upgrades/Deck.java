@@ -5,9 +5,13 @@ import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateItem;
 
 import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.items.upgrades.cards.PointsCard;
-import com.avaricious.items.upgrades.cards.ShiftSymbolCard;
-import com.avaricious.items.upgrades.cards.SpinCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.BellTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CherryTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CloverTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.DiamondTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.IronTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.LemonTriggerCard;
+import com.avaricious.items.upgrades.cards.SymbolTriggerCard.SevenTriggerCard;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Seq;
 
@@ -30,14 +34,13 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
                 addCardToDeck(instantiateItem(cardClass));
             }
         } else {
-            for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateItem(PointsCard.class));
-            }
-            for (int i = 0; i < 3; i++) {
-                addCardToDeck(instantiateItem(ShiftSymbolCard.class));
-            }
-            addCardToDeck(instantiateItem(SpinCard.class));
-            addCardToDeck(instantiateItem(SpinCard.class));
+            addCardToDeck(instantiateItem(LemonTriggerCard.class));
+            addCardToDeck(instantiateItem(CherryTriggerCard.class));
+            addCardToDeck(instantiateItem(CloverTriggerCard.class));
+            addCardToDeck(instantiateItem(BellTriggerCard.class));
+            addCardToDeck(instantiateItem(IronTriggerCard.class));
+            addCardToDeck(instantiateItem(DiamondTriggerCard.class));
+            addCardToDeck(instantiateItem(SevenTriggerCard.class));
         }
     }
 

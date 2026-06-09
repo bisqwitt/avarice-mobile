@@ -1,6 +1,6 @@
 package com.avaricious.items.upgrades.rings.triggerable.multAdditions.pattern;
 
-import com.avaricious.components.slot.pattern.PatternHitContext;
+import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.items.upgrades.rings.triggerable.ITriggerableOnConditionRing;
 import com.avaricious.items.upgrades.rings.triggerable.multAdditions.AbstractMultiAdditionRing;
 import com.avaricious.utility.Assets;
@@ -17,7 +17,7 @@ public abstract class PatternMultiAdditionRing extends AbstractMultiAdditionRing
     }
 
     @Override
-    public boolean condition(List<PatternHitContext> matches, PatternHitContext match) {
+    public boolean condition(List<PatternMatch> matches, PatternMatch match) {
         return match.getSlots().size() == patternType;
     }
 

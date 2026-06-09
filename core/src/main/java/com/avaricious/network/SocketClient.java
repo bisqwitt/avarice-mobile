@@ -6,10 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import okhttp3.OkHttpClient;
 
 public class SocketClient {
 
@@ -18,7 +25,12 @@ public class SocketClient {
 
     public void connect() {
         try {
-            socket = IO.socket(socketUrl);
+            IO.Options opts = new IO.Options();
+            OkHttpClient client = createTrustedClient();
+            opts.callFactory = client;
+            opts.webSocketFactory = client;
+
+            socket = IO.socket(socketUrl, opts);
 
             socket.on(Socket.EVENT_CONNECT, args -> {
                 Gdx.app.log("SOCKET", "Connected: " + socket.id());
@@ -126,6 +138,36 @@ public class SocketClient {
     @FunctionalInterface
     public interface JsonPayloadBuilder {
         void build(JSONObject payload) throws JSONException;
+    }
+
+    private static OkHttpClient createTrustedClient() {
+        try {
+            // Trust all certificates - dev only!
+            TrustManager[] trustAll = new TrustManager[]{
+                new X509TrustManager() {
+                    public void checkClientTrusted(X509Certificate[] chain, String authType) {
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] chain, String authType) {
+                    }
+
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                }
+            };
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustAll, new SecureRandom());
+
+            return new OkHttpClient.Builder()
+                .hostnameVerifier((hostname, session) -> true)
+                .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAll[0])
+                .build();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

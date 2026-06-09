@@ -37,12 +37,12 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final DigitalNumber multiNumber = new DigitalNumber(0, Assets.I().red(), 3,
         new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
-    private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
-        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
+//    private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
+//        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
 
 
     float multiSymbol1X = 0f;
-    float multiSymbol2X = 0f;
+//    float multiSymbol2X = 0f;
 
     private final Body multiBody1 = new Body(new Vector2(0, 0));
     private final Body multiBody2 = new Body(new Vector2(0, 0));
@@ -52,7 +52,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         pointsNumber.getIdleScaleEffect().setAllowed(false);
         multiNumber.getIdleScaleEffect().setAllowed(false);
-        streakNumber.getIdleScaleEffect().setAllowed(false);
+//        streakNumber.getIdleScaleEffect().setAllowed(false);
     }
 
     public void draw(float delta) {
@@ -82,20 +82,20 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         multiNumber.draw(delta);
 
-        float multi2Y = DIGIT_Y + multiBody2.getIdleFloatYOffset();
-        float multi2Sway = multiBody2.getIdleSwayEffect().getValue();
-        Pencil.I().addDrawing(new TextureDrawing(
-            multiplySymbolShadow,
-            multiSymbol2X, multi2Y, multiplySymbolSize, multiplySymbolSize,
-            1f, multi2Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
-        ));
-        Pencil.I().addDrawing(new TextureDrawing(
-            multiplySymbol,
-            multiSymbol2X, multi2Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            1, multi2Sway, ZIndex.PATTERN_DISPLAY
-        ));
-
-        streakNumber.draw(delta);
+//        float multi2Y = DIGIT_Y + multiBody2.getIdleFloatYOffset();
+//        float multi2Sway = multiBody2.getIdleSwayEffect().getValue();
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            multiplySymbolShadow,
+//            multiSymbol2X, multi2Y, multiplySymbolSize, multiplySymbolSize,
+//            1f, multi2Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
+//        ));
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            multiplySymbol,
+//            multiSymbol2X, multi2Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
+//            1, multi2Sway, ZIndex.PATTERN_DISPLAY
+//        ));
+//
+//        streakNumber.draw(delta);
     }
 
     public void addPotentialValue(Type type, float amount) {
@@ -131,8 +131,9 @@ public class ScoreDisplay extends Observable<ScoreState> {
     }
 
     private DigitalNumber getNumberOf(Type type) {
-        return type == Type.POINTS ? pointsNumber :
-            type == Type.MULTI ? multiNumber : streakNumber;
+//        return type == Type.POINTS ? pointsNumber :
+//            type == Type.MULTI ? multiNumber : streakNumber;
+        return type == Type.POINTS ? pointsNumber : multiNumber;
     }
 
     private void updatePotentialScoreXLayout() {
@@ -141,16 +142,21 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         float pointsWidth = pointsNumber.getWidth();
         float multiWidth = multiNumber.getWidth();
-        float streakWidth = streakNumber.getWidth();
+//        float streakWidth = streakNumber.getWidth();
 
         float symbolWidth = multiplySymbolSize;
+
+//        float totalWidth =
+//            pointsWidth +
+//                gap + symbolWidth +
+//                gap + multiWidth +
+//                gap + symbolWidth +
+//                gap + streakWidth;
 
         float totalWidth =
             pointsWidth +
                 gap + symbolWidth +
-                gap + multiWidth +
-                gap + symbolWidth +
-                gap + streakWidth;
+                gap + multiWidth;
 
         float x = centerX - totalWidth / 2f;
 
@@ -161,12 +167,12 @@ public class ScoreDisplay extends Observable<ScoreState> {
         x += symbolWidth + gap;
 
         multiNumber.getFirstDigitBounds().x = x;
-        x += multiWidth + gap;
+//        x += multiWidth + gap;
 
-        multiSymbol2X = x;
-        x += symbolWidth + gap;
+//        multiSymbol2X = x;
+//        x += symbolWidth + gap;
 
-        streakNumber.getFirstDigitBounds().x = x;
+//        streakNumber.getFirstDigitBounds().x = x;
     }
 
     public void setScoreState(ScoreState scoreState) {
@@ -180,7 +186,8 @@ public class ScoreDisplay extends Observable<ScoreState> {
         return new ScoreState(
             pointsNumber.getValue(),
             multiNumber.getValue(),
-            streakNumber.getValue(),
+//            streakNumber.getValue(),
+            1,
             calcPotentialValue());
     }
 

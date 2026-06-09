@@ -1,6 +1,7 @@
 package com.avaricious.utility;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class Seq<T> {
     private final Iterable<T> source;
@@ -11,6 +12,20 @@ public final class Seq<T> {
 
     public static <T> Seq<T> of(Iterable<T> source) {
         return new Seq<T>(source);
+    }
+
+    public static <T> Seq<T> ofArray(final T[] array) {
+        return new Seq<T>(Arrays.asList(array));
+    }
+
+    public static <T> Seq<T> of2DArray(final T[][] array) {
+        ArrayList<T> out = new ArrayList<T>();
+
+        for (T[] ts : array) {
+            out.addAll(Arrays.asList(ts));
+        }
+
+        return new Seq<T>(out);
     }
 
     public void forEach(ActionCompat<T> action) {

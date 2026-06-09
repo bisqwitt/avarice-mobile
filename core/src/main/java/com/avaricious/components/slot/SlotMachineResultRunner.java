@@ -8,7 +8,7 @@ import com.avaricious.components.ScreenShake;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
-import com.avaricious.components.slot.pattern.PatternHitContext;
+import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
@@ -24,6 +24,8 @@ import com.avaricious.utility.RunManager;
 import com.avaricious.utility.Seq;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SlotMachineResultRunner {
@@ -39,7 +41,11 @@ public class SlotMachineResultRunner {
     private SlotMachineResultRunner() {
     }
 
-    public void runResult(List<PatternHitContext> matches) {
+    public void runResult(PatternMatch match) {
+        runResult(Arrays.asList(match));
+    }
+
+    public void runResult(List<PatternMatch> matches) {
         SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
         SlotMachine slotMachine = SlotMachine.I();
         RingBar ringBar = RingBar.I();
@@ -56,9 +62,11 @@ public class SlotMachineResultRunner {
 
         TaskScheduler scheduler = TaskScheduler.I();
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
+        List<Body> slots = new ArrayList<>();
+        Seq.of(matches)
+            .forEach(match -> slots.addAll(match.getSlots()));
 
-        for (PatternHitContext patternHitContext : matches) {
-            List<Body> slots = patternHitContext.getSlots();
+        for (PatternMatch patternMatch : matches) {
             Body middleBody = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleNoDelay(() -> {
@@ -70,11 +78,11 @@ public class SlotMachineResultRunner {
                 }
             });
 
-            triggerSeparateSlots(matches, patternHitContext, scheduler);
+            triggerSeparateSlots(matches, patternMatch, slots, scheduler);
             if (PlayerStats.I().rollChance(DoubleHitChance.class)) {
                 scheduler.schedule(() -> PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(DoubleHitChance.class).getTexture(),
                     middleBody.getPos().x + 1f, middleBody.getPos().y + 1f));
-                triggerSeparateSlots(matches, patternHitContext, scheduler);
+                triggerSeparateSlots(matches, patternMatch, slots, scheduler);
             }
 
             scheduler.schedule(() -> {
@@ -83,7 +91,7 @@ public class SlotMachineResultRunner {
                 for (Body body : slots) {
                     body.pulse();
 
-                    EffectManager.create(Assets.I().getSymbol(patternHitContext.getMatch().getSymbol()),
+                    EffectManager.create(Assets.I().getSymbol(patternMatch.getSymbol()),
                         new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                         TextureEcho.Type.SLOT);
                 }
@@ -106,10 +114,10 @@ public class SlotMachineResultRunner {
 
             Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
-                .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, false));
+                .forEach(ring -> ring.scheduleTrigger(matches, patternMatch, false));
 
             scheduler.schedule(() -> {
-                if (matches.indexOf(patternHitContext) != matches.size() - 1)
+                if (matches.indexOf(patternMatch) != matches.size() - 1)
                     EffectManager.increaseStreak();
                 for (Body body : slots) {
                     body.endPatternHit();
@@ -142,10 +150,10 @@ public class SlotMachineResultRunner {
         scheduler.runTasks();
     }
 
-    private void triggerSeparateSlots(List<PatternHitContext> matches, PatternHitContext patternHitContext, TaskScheduler scheduler) {
+    private void triggerSeparateSlots(List<PatternMatch> matches, PatternMatch match, List<Body> slots, TaskScheduler scheduler) {
         SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
         slotScreen.setSymbolsHitLastSpin(0);
-        for (Body body : patternHitContext.getSlots()) {
+        for (Body body : slots) {
             scheduler.schedule(() -> {
                 slotScreen.addSymbolsHitLastSpin();
 
@@ -153,7 +161,7 @@ public class SlotMachineResultRunner {
                 ScreenShake.I().addTrauma(0.2f);
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int points = criticalHit ? patternHitContext.getMatch().getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : patternHitContext.getMatch().getSymbol().baseValue();
+                int points = criticalHit ? match.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : match.getSymbol().baseValue();
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
                     body.getPos().x + 1.5f, body.getPos().y + 1f, true);
@@ -162,7 +170,7 @@ public class SlotMachineResultRunner {
                         body.getPos().x + 1.5f, body.getPos().y + 2f);
                 ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
 
-                EffectManager.create(Assets.I().getSymbol(patternHitContext.getMatch().getSymbol()),
+                EffectManager.create(Assets.I().getSymbol(match.getSymbol()),
                     new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                     TextureEcho.Type.SLOT);
 
@@ -171,7 +179,7 @@ public class SlotMachineResultRunner {
 
             Seq.of(RingBar.I().getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SLOT)
-                .forEach(ring -> ring.scheduleTrigger(matches, patternHitContext, true));
+                .forEach(ring -> ring.scheduleTrigger(matches, match, true));
 
             if (PlayerStats.I().rollChance(CreditSpawnChance.class)) {
                 scheduler.schedule(() -> {

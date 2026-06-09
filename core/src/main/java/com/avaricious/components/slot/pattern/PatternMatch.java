@@ -2,7 +2,10 @@
 
 package com.avaricious.components.slot.pattern;
 
+import com.avaricious.components.slot.Body;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.Symbol;
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
@@ -12,13 +15,11 @@ public class PatternMatch {
     private final Symbol symbol;
     private final int length;
     private final List<Vector2> positions;
-    private final PatternDirection direction;
 
-    public PatternMatch(Symbol symbol, int length, List<Vector2> positions, PatternDirection direction) {
+    public PatternMatch(Symbol symbol, int length, List<Vector2> positions) {
         this.symbol = symbol;
         this.length = length;
         this.positions = positions;
-        this.direction = direction;
     }
 
     public Symbol getSymbol() {
@@ -33,7 +34,10 @@ public class PatternMatch {
         return positions;
     }
 
-    public PatternDirection getDirection() {
-        return direction;
+    public List<Body> getSlots() {
+        Body[][] slotMachineGrid = SlotMachine.I().getGrid();
+        return Seq.of(positions)
+            .map(pos -> slotMachineGrid[(int) pos.x][(int) pos.y])
+            .toList();
     }
 }

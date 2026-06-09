@@ -15,6 +15,7 @@ import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.SlotMachine;
+import com.avaricious.components.slot.SlotMachineMatchFinder;
 import com.avaricious.components.slot.SlotMachineResultRunner;
 import com.avaricious.components.texts.WaitingForOpponentToFinishRoundText;
 import com.avaricious.effects.particle.ParticleManager;
@@ -67,7 +68,7 @@ public class SlotScreen extends ScreenAdapter {
 
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
-        SlotMachine.I().setOnLastReelFinished(() -> SlotMachineResultRunner.I().runResult(SlotMachine.I().findMatches()));
+        SlotMachine.I().setOnLastReelFinished(() -> SlotMachineResultRunner.I().runResult(SlotMachineMatchFinder.I().findMatches()));
 
         if (DevTools.enableProfiler()) Profiler.start();
     }

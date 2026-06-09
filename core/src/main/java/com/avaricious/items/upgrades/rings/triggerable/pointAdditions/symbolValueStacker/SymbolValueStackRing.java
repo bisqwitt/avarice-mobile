@@ -1,7 +1,7 @@
 package com.avaricious.items.upgrades.rings.triggerable.pointAdditions.symbolValueStacker;
 
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.components.slot.pattern.PatternHitContext;
+import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.ITriggerableOnConditionRing;
 import com.avaricious.utility.Assets;
@@ -25,8 +25,8 @@ public abstract class SymbolValueStackRing extends AbstractTriggerableRing imple
     }
 
     @Override
-    public boolean condition(List<PatternHitContext> matches, PatternHitContext match) {
-        return match.getMatch().getSymbol() == getSymbol();
+    public boolean condition(List<PatternMatch> matches, PatternMatch match) {
+        return match.getSymbol() == getSymbol();
     }
 
     @Override

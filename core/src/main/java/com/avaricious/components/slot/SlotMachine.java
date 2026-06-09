@@ -3,9 +3,6 @@ package com.avaricious.components.slot;
 import com.avaricious.bosses.CherryDebuffBoss;
 import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
-import com.avaricious.components.slot.pattern.PatternFinder;
-import com.avaricious.components.slot.pattern.PatternHitContext;
-import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.Assets;
@@ -28,7 +25,6 @@ import com.badlogic.gdx.utils.Timer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SlotMachine {
@@ -40,8 +36,8 @@ public class SlotMachine {
     }
 
     // --- Layout ---
-    public static final int cols = 5;
-    public static final int rows = 5;
+    public static final int colCount = 5;
+    public static final int rowCount = 5;
     public static final float CELL_W = 1.4f;
     public static final float CELL_H = 1.4f;
     public static final float spacingX = 0.35f;
@@ -51,7 +47,7 @@ public class SlotMachine {
     public static final float originY = 6.5f;
 
     private final List<Reel> reels = new ArrayList<>();
-    private final DragableBody[][] grid = new DragableBody[cols][rows];
+    private final DragableBody[][] grid = new DragableBody[colCount][rowCount];
     private ZIndex zIndex = ZIndex.SLOT_MACHINE;
     private final GlyphLayout bossDescription = new GlyphLayout();
 
@@ -74,8 +70,8 @@ public class SlotMachine {
 
     private SlotMachine() {
         // build visual cells
-        for (int c = 0; c < cols; c++) {
-            for (int r = 0; r < rows; r++) {
+        for (int c = 0; c < colCount; c++) {
+            for (int r = 0; r < rowCount; r++) {
                 if (r == 0) grid[c][r] = new DragableBody(new Rectangle(
                     originX + c * (CELL_W + spacingX),
                     originY + 4 * (CELL_H + spacingY),
@@ -104,8 +100,8 @@ public class SlotMachine {
             }
         }
 
-        for (int c = 0; c < cols; c++) {
-            reels.add(new Reel(rows, () -> {
+        for (int c = 0; c < colCount; c++) {
+            reels.add(new Reel(rowCount, () -> {
                 spinningReels--;
                 if (spinningReels == 0) onLastReelFinished.run();
             }));
@@ -192,7 +188,7 @@ public class SlotMachine {
     }
 
     private void update(float delta) {
-        for (int c = 0; c < cols; c++) {
+        for (int c = 0; c < colCount; c++) {
             reels.get(c).update(delta);
         }
 
@@ -235,9 +231,9 @@ public class SlotMachine {
     private List<Vector2> drawSymbols() {
         List<Vector2> symbolsInPatternHit = new ArrayList<>();
         Vector2 draggingSymbol = null;
-        for (int c = 0; c < cols; c++) {
+        for (int c = 0; c < colCount; c++) {
             int drawFrom = -1;
-            int drawTo = rows - 1;
+            int drawTo = rowCount - 1;
 
             for (int k = drawFrom; k <= drawTo; k++) {
                 Vector2 pos = new Vector2(c, k);
@@ -266,7 +262,7 @@ public class SlotMachine {
         boolean isInGrid = isInGrid(gridPos);
 
         final float stepY = (CELL_H + spacingY);
-        final float topY = originY + (rows - 1) * stepY;
+        final float topY = originY + (rowCount - 1) * stepY;
         float drawY = topY - (gridPos.y + reel.frac()) * stepY;
 
         float drawW = CELL_W;
@@ -314,17 +310,17 @@ public class SlotMachine {
     }
 
     public void spin() {
-        spinningReels = cols;
+        spinningReels = colCount;
         stale = false;
 
         float startSpeed = 16f;
         float startStagger = 0.1f;
         float stopStagger = 0.5f;
 
-        for (int c = 0; c < cols; c++) {
+        for (int c = 0; c < colCount; c++) {
             final int col = c;
             float startDelay = c * startStagger;
-            float stopDelay = cols * startStagger + c * stopStagger;
+            float stopDelay = colCount * startStagger + c * stopStagger;
 
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -340,47 +336,6 @@ public class SlotMachine {
                 }
             }, 1f + stopDelay);
         }
-    }
-
-    // Returns each matching line as a List<Slot>
-    public List<PatternHitContext> findMatches() {
-        Symbol[][] symbolMap = new Symbol[cols][rows];
-
-        for (int c = 0; c < reels.size(); c++) {
-            for (int row = 0; row < rows; row++) {
-                symbolMap[c][row] = reels.get(c).symbolAtRow(row);
-            }
-        }
-
-        // Raw matches (symbol + positions)
-        List<PatternMatch> matches = PatternFinder.findMatches(symbolMap);
-
-        // Build final slot-based matches
-        List<PatternHitContext> result = new ArrayList<>();
-
-        for (PatternMatch match : matches) {
-
-            List<Body> bodies = new ArrayList<>();
-            for (Vector2 pos : match.getPositions()) {
-                Body body = grid[(int) pos.x][(int) pos.y];
-//                slot.setInPatternHit(true);
-                bodies.add(body);
-            }
-            result.add(new PatternHitContext(match, bodies));
-        }
-
-        Collections.sort(result, new Comparator<PatternHitContext>() {
-            @Override
-            public int compare(PatternHitContext a, PatternHitContext b) {
-                int ai = a.getMatch().getSymbol().ordinal();
-                int bi = b.getMatch().getSymbol().ordinal();
-
-                if (ai < bi) return -1;
-                if (ai > bi) return 1;
-                return 0;
-            }
-        });
-        return result;
     }
 
     public void shiftSymbol() {
@@ -400,10 +355,10 @@ public class SlotMachine {
         Pencil.I().toggleDarkenEverythingBehindLayer(ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD);
         zIndex = ZIndex.SLOT_MACHINE;
         shiftingSymbol = false;
-        SlotMachineResultRunner.I().runResult(Seq.of(findMatches())
-            .filter(patternHit -> patternHit.getMatch().getPositions()
+        SlotMachineResultRunner.I().runResult(Seq.of(SlotMachineMatchFinder.I().findMatches())
+            .filter(patternHit -> patternHit.getPositions()
                 .contains(new Vector2(neighbourCol, neighbourRow))
-                || patternHit.getMatch().getPositions()
+                || patternHit.getPositions()
                 .contains(new Vector2(col, row)))
             .toList());
     }
@@ -424,8 +379,8 @@ public class SlotMachine {
         return new Rectangle(
             originX,
             originY,
-            cols * (CELL_W + spacingX),
-            rows * (CELL_H + spacingY)
+            colCount * (CELL_W + spacingX),
+            rowCount * (CELL_H + spacingY)
         );
     }
 
@@ -448,7 +403,7 @@ public class SlotMachine {
     }
 
     private boolean isInGrid(Vector2 pos) {
-        return pos.y >= 0 && pos.y < rows;
+        return pos.y >= 0 && pos.y < rowCount;
     }
 
     public void setAlpha(float value) {
@@ -464,9 +419,9 @@ public class SlotMachine {
     }
 
     public Symbol[][] getSymbolMap() {
-        Symbol[][] symbolMap = new Symbol[cols][rows];
+        Symbol[][] symbolMap = new Symbol[colCount][rowCount];
         for (int c = 0; c < reels.size(); c++) {
-            for (int row = 0; row < rows; row++) {
+            for (int row = 0; row < rowCount; row++) {
                 symbolMap[c][row] = reels.get(c).symbolAtRow(row);
             }
         }
@@ -483,5 +438,13 @@ public class SlotMachine {
 
     private enum DragDirection {
         NONE, HORIZONTAL, VERTICAL
+    }
+
+    public List<Reel> getReels() {
+        return reels;
+    }
+
+    public DragableBody[][] getGrid() {
+        return grid;
     }
 }

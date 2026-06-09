@@ -32,7 +32,6 @@ public class PatternFinder {
             {1, 1}, // diagonal down
             {1, -1}  // diagonal up
         };
-        PatternDirection[] dirEnums = PatternDirection.values();
 
         for (int x = 0; x < cols; x++) {
             for (int y = 0; y < rows; y++) {
@@ -68,7 +67,7 @@ public class PatternFinder {
                     if (length >= 3) {
                         if (positions.get(0).y > positions.get(1).y) Collections.reverse(positions);
 
-                        matches.add(new PatternMatch(symbol, length, positions, dirEnums[d]));
+                        matches.add(new PatternMatch(symbol, length, positions));
                     }
                 }
             }

@@ -6,9 +6,6 @@ import com.avaricious.bosses.LemonDebuffBoss;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.slot.Body;
 import com.avaricious.components.slot.Symbol;
-import com.avaricious.components.slot.pattern.PatternFinder;
-import com.avaricious.components.slot.pattern.PatternHitContext;
-import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.Assets;
@@ -26,8 +23,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SlotMachineNew {
@@ -307,40 +302,6 @@ public class SlotMachineNew {
 
             reel.play(plan, null);
         }
-    }
-
-    // Returns each matching line as a List<Slot>
-    public List<PatternHitContext> findMatches() {
-        Symbol[][] symbolMap = getSymbolMap();
-
-        List<PatternMatch> matches = PatternFinder.findMatches(symbolMap);
-
-        List<PatternHitContext> result = new ArrayList<>();
-
-        for (PatternMatch match : matches) {
-            List<Body> bodies = new ArrayList<>();
-
-            for (Vector2 pos : match.getPositions()) {
-                Body body = grid[(int) pos.x][(int) pos.y];
-                bodies.add(body);
-            }
-
-            result.add(new PatternHitContext(match, bodies));
-        }
-
-        Collections.sort(result, new Comparator<PatternHitContext>() {
-            @Override
-            public int compare(PatternHitContext a, PatternHitContext b) {
-                int ai = a.getMatch().getSymbol().ordinal();
-                int bi = b.getMatch().getSymbol().ordinal();
-
-                if (ai < bi) return -1;
-                if (ai > bi) return 1;
-                return 0;
-            }
-        });
-
-        return result;
     }
 
     public static Rectangle getBounds() {

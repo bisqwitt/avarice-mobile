@@ -1,7 +1,7 @@
 package com.avaricious.items.upgrades.rings.triggerable;
 
 import com.avaricious.TaskScheduler;
-import com.avaricious.components.slot.pattern.PatternHitContext;
+import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.rings.AbstractRing;
 import com.avaricious.items.upgrades.rings.RingType;
@@ -19,7 +19,7 @@ public abstract class AbstractTriggerableRing extends AbstractRing {
         return RingType.ACTIVE;
     }
 
-    public void scheduleTrigger(List<PatternHitContext> matches, PatternHitContext match, boolean scheduleWithoutDelay) {
+    public void scheduleTrigger(List<PatternMatch> matches, PatternMatch match, boolean scheduleWithoutDelay) {
         if (!(this instanceof ITriggerableOnConditionRing)
             || ((ITriggerableOnConditionRing) this).condition(matches, match)) {
 
