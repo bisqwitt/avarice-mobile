@@ -53,6 +53,16 @@ public class SlotMachineMatchFinder {
                 positions.add(new Vector2(col, row));
             }
         }
+
+        Collections.sort(positions, new Comparator<Vector2>() {
+            @Override
+            public int compare(Vector2 o1, Vector2 o2) {
+                int rowCompare = Integer.compare((int) o1.y, (int) o2.y);
+                if (rowCompare != 0) return rowCompare;
+
+                return Integer.compare((int) o1.x, (int) o2.x);
+            }
+        });
         return new PatternMatch(targetSymbol, positions.size(), positions);
     }
 

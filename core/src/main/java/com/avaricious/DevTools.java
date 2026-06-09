@@ -28,10 +28,6 @@ public class DevTools {
         return active && false;
     }
 
-    public static boolean opponentDefaultValues() {
-        return active && false;
-    }
-
     public static boolean unlimitedSpins() {
         return active && false;
     }

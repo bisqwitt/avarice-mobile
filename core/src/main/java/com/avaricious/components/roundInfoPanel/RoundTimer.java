@@ -1,7 +1,10 @@
 package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.components.DigitalNumber;
+import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.texts.TimeText;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RunManager;
 import com.avaricious.utility.Seq;
@@ -65,8 +68,8 @@ public class RoundTimer {
     }
 
     private void onTimerEnd() {
-//        timerEnded = true;
-//        if (SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
+        timerEnded = true;
+        if (SlotMachine.I().isStale()) ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
     }
 
     public long msSinceRoundStart() {
