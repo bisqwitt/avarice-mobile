@@ -84,6 +84,7 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 buttonBoard.setVisible(true);
+//                shop.show();
             }
         }, 1);
 //        Timer.schedule(new Timer.Task() {
@@ -171,13 +172,12 @@ public class SlotScreen extends ScreenAdapter {
         boolean leftClickPressed = Gdx.input.isTouched();
         if (shop.isShowing()) {
             shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-            return;
+        } else {
+            SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
+                HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         }
-        SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
-            HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-
         leftClickWasPressed = leftClickPressed;
     }
 
