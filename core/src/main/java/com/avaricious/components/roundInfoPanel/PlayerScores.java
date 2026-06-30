@@ -26,8 +26,8 @@ public class PlayerScores {
     }
 
     public void draw(float delta) {
-        playerScoreNumber.draw(delta);
-        enemyScoreNumber.draw(delta);
+//        playerScoreNumber.draw(delta);
+//        enemyScoreNumber.draw(delta);
     }
 
     public void setPlayerScoreNumber(int value) {

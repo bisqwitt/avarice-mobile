@@ -26,8 +26,8 @@ public class PlayerHealths {
     }
 
     public void draw(float delta) {
-        playerHealth.draw(delta);
-        enemyHealth.draw(delta);
+//        playerHealth.draw(delta);
+//        enemyHealth.draw(delta);
     }
 
     public void setPlayerHealth(int value) {

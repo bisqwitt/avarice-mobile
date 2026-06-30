@@ -11,6 +11,7 @@ import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
+import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.screens.ScreenManager;
@@ -150,6 +151,19 @@ public class SlotMachineResultRunner {
         scheduler.runTasks();
     }
 
+    private int nextCard = 3;
+    private int hitCount = 0;
+
+    private void onHit() {
+        hitCount++;
+
+        if(hitCount == nextCard) {
+            Hand.I().drawCard();
+            hitCount = 0;
+            nextCard = nextCard + 2;
+        }
+    }
+
     private void triggerSeparateSlots(List<PatternMatch> matches, PatternMatch match, List<Body> slots, TaskScheduler scheduler) {
         SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
         slotScreen.setSymbolsHitLastSpin(0);
@@ -175,6 +189,8 @@ public class SlotMachineResultRunner {
                     TextureEcho.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
+
+                onHit();
             });
 
             Seq.of(RingBar.I().getRingsOfType(AbstractTriggerableRing.class))

@@ -6,6 +6,7 @@ import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.texts.CreditsText;
 import com.avaricious.components.texts.FabledText;
+import com.avaricious.components.texts.ReachText;
 import com.avaricious.components.texts.SpinsText;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
@@ -35,6 +36,9 @@ public class RoundInfoPanel extends Observable<Float> {
     private final CreditsText creditsText = new CreditsText(new Vector2(6.75f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final CreditScore creditScore = new CreditScore(new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
+    private final ReachText reachText = new ReachText(new Vector2(0.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final DigitalNumber reachNumber = new DigitalNumber(300, Assets.I().lightColor(), new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
+
     private final TextureRegion black = Assets.I().get(AssetKey.BLACK_PIXEL);
     private final TextureRegion white = Assets.I().get(AssetKey.WHITE_PIXEL);
 
@@ -48,11 +52,14 @@ public class RoundInfoPanel extends Observable<Float> {
 
     public void draw(float delta) {
         update(delta);
-        Pencil.I().addDrawing(new TextureDrawing(black,
-            0, 18f, 9f, 5f, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
+//        Pencil.I().addDrawing(new TextureDrawing(black,
+//            0, 18f, 9f, 5f, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()));
 
         spinsText.draw(delta);
         spinsNumber.draw(delta);
+
+        reachText.draw(delta);
+        reachNumber.draw(delta);
 
         creditsText.draw(delta);
         creditScore.draw(delta);
@@ -63,6 +70,7 @@ public class RoundInfoPanel extends Observable<Float> {
 
     private void centerRoundInfoNumbers() {
         centerNumberToText(creditsText, creditScore);
+        centerNumberToText(reachText, reachNumber);
     }
 
     private void centerNumberToText(FabledText text, DigitalNumber number) {
