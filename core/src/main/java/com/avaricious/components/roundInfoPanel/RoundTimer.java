@@ -28,8 +28,8 @@ public class RoundTimer {
     }
 
     public void draw(float delta) {
-        timeText.draw(delta);
-        roundTimer.draw(delta);
+//        timeText.draw(delta);
+//        roundTimer.draw(delta);
     }
 
     public void startTimer() {

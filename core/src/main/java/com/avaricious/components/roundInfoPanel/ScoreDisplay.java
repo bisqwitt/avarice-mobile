@@ -37,6 +37,9 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final DigitalNumber multiNumber = new DigitalNumber(0, Assets.I().red(), 3,
         new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
+    private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 3,
+        new Rectangle(3f, DIGIT_Y + 1.75f, 7 / 9f, 11 / 9f), 0.8f);
+
 //    private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
 //        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
 
@@ -52,6 +55,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         pointsNumber.getIdleScaleEffect().setAllowed(false);
         multiNumber.getIdleScaleEffect().setAllowed(false);
+        scoreNumber.getIdleScaleEffect().setAllowed(false);
 //        streakNumber.getIdleScaleEffect().setAllowed(false);
     }
 
@@ -82,6 +86,8 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         multiNumber.draw(delta);
 
+        scoreNumber.draw(delta);
+
 //        float multi2Y = DIGIT_Y + multiBody2.getIdleFloatYOffset();
 //        float multi2Sway = multiBody2.getIdleSwayEffect().getValue();
 //        Pencil.I().addDrawing(new TextureDrawing(
@@ -110,6 +116,13 @@ public class ScoreDisplay extends Observable<ScoreState> {
         PlayerScores.I().setPlayerScoreNumber(calcPotentialValue());
         NetworkController.I().match().onScoreChanged(RunManager.I().getRoundsManager().getCurrentRound(), calcPotentialValue());
         notifyChanged(snapshot());
+
+        updateScoreNumber();
+    }
+
+    private void updateScoreNumber() {
+        scoreNumber.setValue(getNumberOf(Type.POINTS).getValue() * getNumberOf(Type.MULTI).getValue());
+        updateScoreXLayout();
     }
 
     public float getPotentialValueOf(Type type) {
@@ -173,6 +186,11 @@ public class ScoreDisplay extends Observable<ScoreState> {
 //        x += symbolWidth + gap;
 
 //        streakNumber.getFirstDigitBounds().x = x;
+    }
+
+    private void updateScoreXLayout() {
+        float screenCenterX = 4.5f;
+        scoreNumber.getFirstDigitBounds().x = screenCenterX - scoreNumber.getWidth() / 2f;
     }
 
     public void setScoreState(ScoreState scoreState) {
