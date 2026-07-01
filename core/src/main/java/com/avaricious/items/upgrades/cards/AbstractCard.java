@@ -2,6 +2,9 @@ package com.avaricious.items.upgrades.cards;
 
 import com.avaricious.components.popups.NumberPopup;
 import com.avaricious.items.upgrades.AbstractUpgrade;
+import com.avaricious.items.upgrades.cards.PatternTriggerCard.FiveInARowTriggerCard;
+import com.avaricious.items.upgrades.cards.PatternTriggerCard.FourInARowTriggerCard;
+import com.avaricious.items.upgrades.cards.PatternTriggerCard.ThreeInARowTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.BellTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CherryTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CloverTriggerCard;
@@ -119,6 +122,9 @@ public abstract class AbstractCard extends AbstractUpgrade {
         BellTriggerCard.class,
         IronTriggerCard.class,
         DiamondTriggerCard.class,
-        SevenTriggerCard.class
+        SevenTriggerCard.class,
+        ThreeInARowTriggerCard.class,
+        FourInARowTriggerCard.class,
+        FiveInARowTriggerCard.class
     ));
 }

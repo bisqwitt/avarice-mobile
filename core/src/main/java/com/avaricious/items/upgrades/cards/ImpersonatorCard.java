@@ -29,6 +29,6 @@ public class ImpersonatorCard extends AbstractCard {
 
     @Override
     public IUpgradeType type() {
-        return null;
+        return CardType.UNKNOWN;
     }
 }
