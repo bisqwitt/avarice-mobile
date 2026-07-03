@@ -1,6 +1,5 @@
 package com.avaricious.items.upgrades.cards;
 
-import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.utility.AssetKey;
@@ -8,7 +7,7 @@ import com.avaricious.utility.Assets;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public class DrawTwoCardsMinusOneTry extends AbstractCard implements IConditionalApplyCard {
+public class DrawTwoCardsMinusOneTry extends AbstractCard {
 
     private final TextureRegion texture = Assets.I().get(AssetKey.MIME_CARD);
 
@@ -19,7 +18,7 @@ public class DrawTwoCardsMinusOneTry extends AbstractCard implements IConditiona
 
     @Override
     protected void onApply() {
-        RoundInfoPanel.I().minusSpin();
+//        RoundInfoPanel.I().minusSpin();
         Hand.I().drawCards(2);
     }
 
@@ -37,10 +36,5 @@ public class DrawTwoCardsMinusOneTry extends AbstractCard implements IConditiona
     public Runnable createPopupRunnable(Vector2 pos) {
         return () -> {
         };
-    }
-
-    @Override
-    public boolean condition() {
-        return RoundInfoPanel.I().getSpins() >= 1;
     }
 }

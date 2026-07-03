@@ -193,6 +193,10 @@ public class ScoreDisplay extends Observable<ScoreState> {
         scoreNumber.getFirstDigitBounds().x = screenCenterX - scoreNumber.getWidth() / 2f;
     }
 
+    public boolean reachedRoundGoal() {
+        return scoreNumber.getValue() >= RoundInfoPanel.I().getReachNumber().getValue();
+    }
+
     public void setScoreState(ScoreState scoreState) {
         setPotentialValue(Type.POINTS, scoreState.points);
         setPotentialValue(Type.MULTI, scoreState.multi);

@@ -6,12 +6,10 @@ import com.avaricious.audio.AudioManager;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.popups.PopupManager;
-import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
-import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.screens.ScreenManager;
@@ -21,7 +19,6 @@ import com.avaricious.stats.statupgrades.CreditSpawnChance;
 import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.RunManager;
 import com.avaricious.utility.Seq;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -37,7 +34,9 @@ public class SlotMachineResultRunner {
         return instance == null ? instance = new SlotMachineResultRunner() : instance;
     }
 
-    private boolean isFirstStreakIncrease = true;
+    private final SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
+    private final SlotMachine slotMachine = SlotMachine.I();
+    private final RingBar ringBar = RingBar.I();
 
     private SlotMachineResultRunner() {
     }
@@ -47,17 +46,9 @@ public class SlotMachineResultRunner {
     }
 
     public void runResult(List<PatternMatch> matches) {
-        SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
-        SlotMachine slotMachine = SlotMachine.I();
-        RingBar ringBar = RingBar.I();
-
         if (matches.isEmpty()) {
-            if (RoundInfoPanel.I().getSpins() < 0) isFirstStreakIncrease = true;
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
-            slotScreen.onSpinButtonPressed();
-            if (RunManager.I().getRoundsManager().getRoundTimer().timerEnded())
-                slotScreen.onRoundEnd();
             return;
         }
 
@@ -135,16 +126,11 @@ public class SlotMachineResultRunner {
         }
 
         scheduler.schedule(() -> {
-            if (isFirstStreakIncrease) isFirstStreakIncrease = false;
-            else
-                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.STREAK, 0.25f);
             slotMachine.setRunningResults(false);
             slotMachine.setStale(true);
             EffectManager.endStreak();
-            slotScreen.onSpinButtonPressed();
-
-            if (RunManager.I().getRoundsManager().getRoundTimer().timerEnded())
-                slotScreen.onRoundEnd();
+            if (ScoreDisplay.I().reachedRoundGoal())
+                ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
 //            buttonBoard.setVisible(true);
         });
 
@@ -157,8 +143,8 @@ public class SlotMachineResultRunner {
     private void onHit() {
         hitCount++;
 
-        if(hitCount == nextCard) {
-            Hand.I().drawCard();
+        if (hitCount == nextCard) {
+//            Hand.I().drawCard();
             hitCount = 0;
             nextCard = nextCard + 2;
         }
@@ -207,10 +193,6 @@ public class SlotMachineResultRunner {
                 });
             }
         }
-    }
-
-    public void setIsFirstStreakIncrease() {
-        isFirstStreakIncrease = true;
     }
 
 }

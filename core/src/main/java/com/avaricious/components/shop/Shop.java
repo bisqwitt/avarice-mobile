@@ -158,22 +158,22 @@ public class Shop {
     }
 
     public void show() {
-//        shopItemBar.load();
-//        shopItemBar2.load();
-////        symbolSpawnChancePack = new SymbolSpawnChancePack();
-////        cardPack = new CardPack();
-////        ringPack = new RingPack();
-//
-//        currentWindowY = OFFSCREEN_TOP_Y;
-//        windowVelocityY = 0f;
-//        state = State.ENTERING;
-//
-//        // keep them out while entering
-//        creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
-//        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
-//
-//        ButtonBoard.I().moveOut();
-//        moveInUi();
+        shopItemBar.load();
+        shopItemBar2.load();
+//        symbolSpawnChancePack = new SymbolSpawnChancePack();
+//        cardPack = new CardPack();
+//        ringPack = new RingPack();
+
+        currentWindowY = OFFSCREEN_TOP_Y;
+        windowVelocityY = 0f;
+        state = State.ENTERING;
+
+        // keep them out while entering
+        creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
+        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
+
+        ButtonBoard.I().moveOut();
+        moveInUi();
     }
 
     private void updateAnimation(float delta) {

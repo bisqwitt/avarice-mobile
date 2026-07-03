@@ -5,9 +5,6 @@ import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateItem;
 
 import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.items.upgrades.cards.PatternTriggerCard.FiveInARowTriggerCard;
-import com.avaricious.items.upgrades.cards.PatternTriggerCard.FourInARowTriggerCard;
-import com.avaricious.items.upgrades.cards.PatternTriggerCard.ThreeInARowTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.BellTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CherryTriggerCard;
 import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CloverTriggerCard;
@@ -44,9 +41,9 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
             addCardToDeck(instantiateItem(IronTriggerCard.class));
             addCardToDeck(instantiateItem(DiamondTriggerCard.class));
             addCardToDeck(instantiateItem(SevenTriggerCard.class));
-            addCardToDeck(instantiateItem(ThreeInARowTriggerCard.class));
-            addCardToDeck(instantiateItem(FourInARowTriggerCard.class));
-            addCardToDeck(instantiateItem(FiveInARowTriggerCard.class));
+//            addCardToDeck(instantiateItem(ThreeInARowTriggerCard.class));
+//            addCardToDeck(instantiateItem(FourInARowTriggerCard.class));
+//            addCardToDeck(instantiateItem(FiveInARowTriggerCard.class));
         }
     }
 

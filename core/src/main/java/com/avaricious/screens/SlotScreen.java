@@ -15,11 +15,10 @@ import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.SlotMachine;
-import com.avaricious.components.slot.SlotMachineMatchFinder;
-import com.avaricious.components.slot.SlotMachineResultRunner;
 import com.avaricious.components.texts.WaitingForOpponentToFinishRoundText;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.items.upgrades.Hand;
+import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
@@ -68,7 +67,7 @@ public class SlotScreen extends ScreenAdapter {
 
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
-        SlotMachine.I().setOnLastReelFinished(() -> SlotMachineResultRunner.I().runResult(SlotMachineMatchFinder.I().findMatches()));
+//        SlotMachine.I().setOnLastReelFinished(() -> SlotMachineResultRunner.I().runResult(SlotMachineMatchFinder.I().findMatches()));
 
         if (DevTools.enableProfiler()) Profiler.start();
     }
@@ -186,20 +185,15 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     public void onSpinButtonPressed() {
-//        if (RoundInfoPanel.I().getSpins() == 0 || !SlotMachine.I().isStale()) return;
-//
-//        SlotMachine.I().setAlpha(1f);
-//        SlotMachine.I().spin();
-//        RoundInfoPanel.I().minusSpin();
-//
-//        for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
-//            relicWithActionAfterSpin.onSpinButtonPressed();
-//        }
+        SlotMachine.I().setAlpha(1f);
+        SlotMachine.I().spin();
+ 
+        for (IUpgradeWithActionOnSpinButtonPressed relicWithActionAfterSpin : Hand.I().getUpgradesOfClass(IUpgradeWithActionOnSpinButtonPressed.class)) {
+            relicWithActionAfterSpin.onSpinButtonPressed();
+        }
     }
 
     public void onRoundEnd() {
-        SlotMachineResultRunner.I().setIsFirstStreakIncrease();
-
         if (NetworkController.I().getSocketClient().isConnected())
             NetworkController.I().match().sendRoundEnded();
         else onBothPlayersEndedRound();

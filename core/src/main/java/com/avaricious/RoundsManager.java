@@ -2,7 +2,6 @@ package com.avaricious;
 
 import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.ItemBag;
-import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.items.upgrades.Hand;
@@ -27,7 +26,6 @@ public class RoundsManager extends Observable<Integer> {
         setCurrentRound(currentRound + 1);
         CreditManager.I().roundEnd();
         ScoreDisplay.I().clearPotentialScore();
-        RoundInfoPanel.I().setSpins(3);
         Hand.I().drawCard();
 
         roundTimer.startTimer();
