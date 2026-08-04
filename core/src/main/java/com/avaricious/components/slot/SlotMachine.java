@@ -44,7 +44,7 @@ public class SlotMachine {
     public static final float spacingY = 0.15f;
 
     public static final float originX = 0.25f;
-    public static final float originY = 6.5f;
+    public static final float originY = 6.75f;
 
     private final List<Reel> reels = new ArrayList<>();
     private final DragableBody[][] grid = new DragableBody[colCount][rowCount];
@@ -103,7 +103,7 @@ public class SlotMachine {
         for (int c = 0; c < colCount; c++) {
             reels.add(new Reel(rowCount, () -> {
                 spinningReels--;
-                if (spinningReels == 0) onLastReelFinished.run();
+                if (spinningReels == 0 && onLastReelFinished != null) onLastReelFinished.run();
             }));
         }
         buildStrip();
@@ -111,7 +111,7 @@ public class SlotMachine {
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] != null) {
-                    grid[i][j].idleSwayEffect.setStrength(2.5f, 0.8f);
+                    grid[i][j].idleSwayEffect.setStrength(3f, 0.8f);
                 }
             }
         }

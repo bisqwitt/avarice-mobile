@@ -7,8 +7,6 @@ import com.avaricious.components.texts.FabledText;
 import com.avaricious.components.texts.ReachText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.Pencil;
-import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -40,16 +38,16 @@ public class RoundInfoPanel {
     }
 
     public void draw(float delta) {
-        update(delta);
-
-        reachText.draw(delta);
-        reachNumber.draw(delta);
-
-        creditsText.draw(delta);
-        creditScore.draw(delta);
-
-        Pencil.I().addDrawing(new TextureDrawing(white,
-            0, 18f, 9f, 0.05f, ZIndex.PATTERN_DISPLAY));
+//        update(delta);
+//
+//        reachText.draw(delta);
+//        reachNumber.draw(delta);
+//
+//        creditsText.draw(delta);
+//        creditScore.draw(delta);
+//
+//        Pencil.I().addDrawing(new TextureDrawing(white,
+//            0, 18f, 9f, 0.05f, ZIndex.PATTERN_DISPLAY));
     }
 
     private void centerRoundInfoNumbers() {

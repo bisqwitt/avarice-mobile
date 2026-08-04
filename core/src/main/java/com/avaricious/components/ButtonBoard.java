@@ -2,8 +2,16 @@ package com.avaricious.components;
 
 import static com.badlogic.gdx.math.MathUtils.lerp;
 
-import com.avaricious.components.buttons.PlayCardButton;
+import com.avaricious.components.buttons.BuySpinButton;
+import com.avaricious.components.buttons.DisablableButton;
+import com.avaricious.components.buttons.DrawCardButton;
 import com.avaricious.components.buttons.SpinButton;
+import com.avaricious.components.roundInfoPanel.AutoSpinDisplay;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.components.slot.SlotMachine;
+import com.avaricious.items.upgrades.Hand;
+import com.avaricious.screens.ScreenManager;
+import com.avaricious.screens.SlotScreen;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,7 +32,9 @@ public class ButtonBoard {
     private final float BUTTON_H = 25 / 27f;
 
     private SpinButton spinAgainButton;
-    private PlayCardButton playCardButton;
+    private BuySpinButton buySpinButton;
+    private DrawCardButton openShopButton;
+    private DisablableButton spinButton;
 
     private boolean isMoving = false;
 
@@ -41,27 +51,38 @@ public class ButtonBoard {
 
     public ButtonBoard init(Runnable onSpinButtonPressed, Runnable onCashoutButtonPressed) {
         spinAgainButton = new SpinButton(onSpinButtonPressed,
-            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.6f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
+            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 1f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
+        buySpinButton = new BuySpinButton(() -> {
+            AutoSpinDisplay.I().addSpin();
+            ScoreDisplay.I().setScoreNumber(ScoreDisplay.I().getScoreNumber() - 50);
+            if (AutoSpinDisplay.I().getSpins() == 1 && SlotMachine.I().isStale())
+                ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
+        },
+            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 1f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
 
-        playCardButton = new PlayCardButton(onCashoutButtonPressed,
-            new Rectangle(BOARD_X + 4.35f, BOARD_Y + 0.4f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
+        openShopButton = new DrawCardButton(() -> {
+            Hand.I().drawCard();
+            ScoreDisplay.I().setScoreNumber(ScoreDisplay.I().getScoreNumber() - 25);
+        },
+            new Rectangle(BOARD_X + 0.2f, BOARD_Y + 1f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
+
+        spinButton = spinAgainButton;
         return this;
     }
 
-    public boolean handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
-//        return spinAgainButton.handleInput(mouse, leftClickPressed, leftClickWasPressed)
-//            || cashoutButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        return playCardButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+    public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed) {
+        spinButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        openShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 
     public void draw(float delta) {
         updateMovement(delta);
 
-        spinAgainButton.update(delta);
-        playCardButton.update(delta);
+        spinButton.update(delta);
+        openShopButton.update(delta);
 
-//        spinAgainButton.draw();
-        playCardButton.draw(delta);
+        spinButton.draw(delta);
+        openShopButton.draw(delta);
     }
 
     public void moveOut() {
@@ -85,18 +106,24 @@ public class ButtonBoard {
         float progress = Math.min(moveTime / moveDuration, 1f);
         float eased = Interpolation.smooth.apply(progress);
 
-        spinAgainButton.getBounds().y = lerp(startY, targetY, eased);
-        playCardButton.getBounds().y = lerp(startY, targetY, eased);
+        spinButton.getBounds().y = lerp(startY, targetY, eased);
+        openShopButton.getBounds().y = lerp(startY, targetY, eased);
 
         if (progress >= 1f) {
-            spinAgainButton.getBounds().y = targetY;
-            playCardButton.getBounds().y = targetY;
+            spinButton.getBounds().y = targetY;
+            openShopButton.getBounds().y = targetY;
             isMoving = false;
         }
     }
 
+    public void activateAutoSpin() {
+        buySpinButton.setVisibleAnimated(true);
+        spinButton = buySpinButton;
+    }
+
     public void setVisible(boolean visible) {
         spinAgainButton.setVisibleAnimated(visible);
-        playCardButton.setVisibleAnimated(visible);
+        buySpinButton.setVisibleAnimated(visible);
+        openShopButton.setVisibleAnimated(visible);
     }
 }

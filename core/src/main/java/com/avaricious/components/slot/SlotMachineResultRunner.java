@@ -3,13 +3,17 @@ package com.avaricious.components.slot;
 import com.avaricious.CreditManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.audio.AudioManager;
+import com.avaricious.components.HandUi;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
+import com.avaricious.components.automations.Automations;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
+import com.avaricious.items.upgrades.Hand;
+import com.avaricious.items.upgrades.cards.newgen.ITriggerableCard;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.screens.ScreenManager;
@@ -49,16 +53,16 @@ public class SlotMachineResultRunner {
         if (matches.isEmpty()) {
 //            buttonBoard.setVisible(true);
             slotMachine.setStale(true);
+            if (Automations.I().getAutoSpin().isActive())
+                ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
             return;
         }
 
         TaskScheduler scheduler = TaskScheduler.I();
         scheduler.schedule(() -> slotMachine.setRunningResults(true), 0f);
-        List<Body> slots = new ArrayList<>();
-        Seq.of(matches)
-            .forEach(match -> slots.addAll(match.getSlots()));
 
         for (PatternMatch patternMatch : matches) {
+            List<Body> slots = new ArrayList<>(patternMatch.getSlots());
             Body middleBody = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleNoDelay(() -> {
@@ -104,6 +108,11 @@ public class SlotMachineResultRunner {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
+            Seq.of(Hand.I().getHand())
+                .filter(card -> card instanceof ITriggerableCard
+                    && ((ITriggerableCard) card).triggerable(matches, patternMatch))
+                .forEach(card -> scheduler.schedule(() -> HandUi.I().applyCard(card)));
+
             Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
                 .forEach(ring -> ring.scheduleTrigger(matches, patternMatch, false));
@@ -111,7 +120,7 @@ public class SlotMachineResultRunner {
             scheduler.schedule(() -> {
                 if (matches.indexOf(patternMatch) != matches.size() - 1)
                     EffectManager.increaseStreak();
-                for (Body body : slots) {
+                for (Body body : patternMatch.getSlots()) {
                     body.endPatternHit();
                     PopupManager.I().releaseHoldingNumbers();
                 }
@@ -132,6 +141,9 @@ public class SlotMachineResultRunner {
             if (ScoreDisplay.I().reachedRoundGoal())
                 ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
 //            buttonBoard.setVisible(true);
+            ScoreDisplay.I().updateScoreNumber();
+            if (Automations.I().getAutoSpin().isActive())
+                ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
         });
 
         scheduler.runTasks();

@@ -39,8 +39,8 @@ public class HandUi {
         return instance == null ? instance = new HandUi() : instance;
     }
 
-    private final float Y = -0.5f;
-    private final float CARD_SIZE_DIVISOR = 50;
+    private final float Y = 3f;
+    private final float CARD_SIZE_DIVISOR = 75;
     private final float CARD_OFFSET = 1.25f;
 
     private final TextureRegion jokerCard = Assets.I().get(AssetKey.JOKER_CARD);
@@ -106,7 +106,7 @@ public class HandUi {
 //        card.getBody().targetScale = 1.3f;
         Vector2 renderPos = card.getBody().getRenderPos(new Vector2());
         card.getBody().beginDrag(renderPos.x, renderPos.y, 0);
-        card.getBody().dragTo(renderPos.x, Y + 1.5f, 0);
+        card.getBody().dragTo(renderPos.x, Y + 0.75f, 0);
         card.getBody().setIdleEffectsEnabled(false);
 //        card.getBody().beginDrag(renderPos.x, renderPos.y + 0.75f, 0);
 

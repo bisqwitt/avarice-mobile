@@ -26,7 +26,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
     private final float multiplySymbolSize = 11f / 19f;
 
-    private final float DIGIT_Y = 14.5f;
+    private final float DIGIT_Y = 15f;
     private final float DIGIT_WIDTH = 7 / 11f;
     private final float DIGIT_HEIGHT = 11 / 11f;
     private final float DIGIT_OFFSET = 0.7f;
@@ -38,11 +38,10 @@ public class ScoreDisplay extends Observable<ScoreState> {
         new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
     private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 3,
-        new Rectangle(3f, DIGIT_Y + 1.75f, 7 / 9f, 11 / 9f), 0.8f);
+        new Rectangle(3f, DIGIT_Y + 1.75f, 7 / 9f, 11 / 9f), 0.9f);
 
 //    private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,
 //        new Rectangle(6.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET).setAsDecimal();
-
 
     float multiSymbol1X = 0f;
 //    float multiSymbol2X = 0f;
@@ -57,6 +56,9 @@ public class ScoreDisplay extends Observable<ScoreState> {
         multiNumber.getIdleScaleEffect().setAllowed(false);
         scoreNumber.getIdleScaleEffect().setAllowed(false);
 //        streakNumber.getIdleScaleEffect().setAllowed(false);
+
+        setPotentialValue(Type.POINTS, 0);
+        setScoreNumber(300);
     }
 
     public void draw(float delta) {
@@ -116,13 +118,22 @@ public class ScoreDisplay extends Observable<ScoreState> {
         PlayerScores.I().setPlayerScoreNumber(calcPotentialValue());
         NetworkController.I().match().onScoreChanged(RunManager.I().getRoundsManager().getCurrentRound(), calcPotentialValue());
         notifyChanged(snapshot());
-
-        updateScoreNumber();
     }
 
-    private void updateScoreNumber() {
-        scoreNumber.setValue(getNumberOf(Type.POINTS).getValue() * getNumberOf(Type.MULTI).getValue());
+    public void updateScoreNumber() {
+        setScoreNumber(scoreNumber.getValue() + getNumberOf(Type.POINTS).getValue() * getNumberOf(Type.MULTI).getValue());
+
+        setPotentialValue(Type.POINTS, 0);
+        setPotentialValue(Type.MULTI, 0);
+    }
+
+    public void setScoreNumber(float value) {
+        scoreNumber.setValue(value);
         updateScoreXLayout();
+    }
+
+    public float getScoreNumber() {
+        return scoreNumber.getValue();
     }
 
     public float getPotentialValueOf(Type type) {

@@ -5,13 +5,13 @@ import static com.avaricious.items.upgrades.cards.AbstractCard.instantiateItem;
 
 import com.avaricious.DevTools;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.BellTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CherryTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.CloverTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.DiamondTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.IronTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.LemonTriggerCard;
-import com.avaricious.items.upgrades.cards.SymbolTriggerCard.SevenTriggerCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnBellCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnCherryCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnCloverCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnDiamondCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnIronCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnLemonCard;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnSevenCard;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Seq;
 
@@ -34,16 +34,23 @@ public class Deck extends Observable<List<? extends AbstractCard>> {
                 addCardToDeck(instantiateItem(cardClass));
             }
         } else {
-            addCardToDeck(instantiateItem(LemonTriggerCard.class));
-            addCardToDeck(instantiateItem(CherryTriggerCard.class));
-            addCardToDeck(instantiateItem(CloverTriggerCard.class));
-            addCardToDeck(instantiateItem(BellTriggerCard.class));
-            addCardToDeck(instantiateItem(IronTriggerCard.class));
-            addCardToDeck(instantiateItem(DiamondTriggerCard.class));
-            addCardToDeck(instantiateItem(SevenTriggerCard.class));
+//            addCardToDeck(instantiateItem(LemonTriggerCard.class));
+//            addCardToDeck(instantiateItem(CherryTriggerCard.class));
+//            addCardToDeck(instantiateItem(CloverTriggerCard.class));
+//            addCardToDeck(instantiateItem(BellTriggerCard.class));
+//            addCardToDeck(instantiateItem(IronTriggerCard.class));
+//            addCardToDeck(instantiateItem(DiamondTriggerCard.class));
+//            addCardToDeck(instantiateItem(SevenTriggerCard.class));
 //            addCardToDeck(instantiateItem(ThreeInARowTriggerCard.class));
 //            addCardToDeck(instantiateItem(FourInARowTriggerCard.class));
 //            addCardToDeck(instantiateItem(FiveInARowTriggerCard.class));
+            addCardToDeck(instantiateItem(PointsOnLemonCard.class));
+            addCardToDeck(instantiateItem(PointsOnCherryCard.class));
+            addCardToDeck(instantiateItem(PointsOnCloverCard.class));
+            addCardToDeck(instantiateItem(PointsOnBellCard.class));
+            addCardToDeck(instantiateItem(PointsOnIronCard.class));
+            addCardToDeck(instantiateItem(PointsOnDiamondCard.class));
+            addCardToDeck(instantiateItem(PointsOnSevenCard.class));
         }
     }
 

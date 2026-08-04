@@ -135,7 +135,7 @@ public class DeckUi {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
     }
 
-    public void draw(float delta) {
+    public void draw() {
         Vector2 cardsInDeckPos = new Vector2(7.85f * 100, 2.2f * 100f);
         cardsInDeckCountTxt.setText(Assets.I().getSmallFont(), cards.size() + " / " + (cards.size() + Hand.I().cardsHeldInHand()));
         Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsInDeckCountTxt, cardsInDeckPos, ZIndex.DECK_UI_CARD));

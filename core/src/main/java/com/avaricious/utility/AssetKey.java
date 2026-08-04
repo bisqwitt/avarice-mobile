@@ -88,9 +88,6 @@ public enum AssetKey {
     STATUS_UPGRADE_WINDOW("UpgradeWindow"),
     STATUS_UPGRADE_WINDOW_SHADOW("UpgradeWindow-shadow"),
     LEVEL_UP_TEXT("levelup"),
-    SHOP_BUTTON("shop"),
-    SHOP_BUTTON_HOVERED("shop-hovered"),
-    SHOP_BUTTON_PRESSED("shop-pressed"),
     XP_PIXEL("xp-pixel"),
     EMPTY_PIXEL("empty-pixel"),
     JOKER_CARD("Joker"),
@@ -376,7 +373,13 @@ public enum AssetKey {
     T_BIG("t-big"),
     T_BIG_SHADOW("t-big-shadow"),
     PLAY_CARD_BUTTON("play-card-button"),
-    PLAY_CARD_BUTTON_PRESSED("play-card-button-pressed");
+    PLAY_CARD_BUTTON_PRESSED("play-card-button-pressed"),
+    BUY_SPIN_BUTTON("buy-spin-button"),
+    BUY_SPIN_BUTTON_PRESSED("buy-spin-button-pressed"),
+    SHOP_BUTTON("shop-button"),
+    SHOP_BUTTON_PRESSED("shop-button-pressed"),
+    DRAW_CARD_BUTTON("draw-card-button"),
+    DRAW_CARD_BUTTON_PRESSED("draw-card-button-pressed");
 
     private final String path;
 
