@@ -1,12 +1,11 @@
 package com.avaricious.components.shop;
 
-import com.avaricious.CreditManager;
 import com.avaricious.CreditScore;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.automations.Automations;
 import com.avaricious.components.buttons.Button;
-import com.avaricious.components.buttons.NextRoundButton;
+import com.avaricious.components.buttons.ExitShopButton;
 import com.avaricious.components.texts.ShopText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -32,10 +31,9 @@ public class Shop {
 
     private final ShopText shopText = new ShopText(new Vector2(WINDOW_X + 3.5f, currentWindowY + 14.65f),
         8f, 0.25f, ZIndex.SHOP);
-    private final TextureRegion window = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
+    private final TextureRegion window = Assets.I().get(AssetKey.CHARCOAL_PIXEL_DARKER);
 
-    private final Button nextRoundButton;
-    private final Button rerollButton;
+    private final Button exitShopButton;
 
     private final CreditScore creditScore;
 
@@ -80,33 +78,29 @@ public class Shop {
             0.9f
         );
 
-        rerollButton = new Button(() -> {
-            if (CreditManager.I().enoughCredit(3)) {
-//                shopItemBar.load();
-//                shopItemBar2.load();
-                CreditManager.I().pay(3);
-            } else {
-                CreditManager.I().pulse();
-            }
-        },
-            Assets.I().get(AssetKey.REROLL_BUTTON),
-            Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.REROLL_BUTTON),
-            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 30f, 25 / 30f),
-            Input.Keys.SPACE,
-            ZIndex.SHOP
-        );
-        rerollButton.setShowShadow(false);
+//        rerollButton = new Button(() -> {
+//            if (CreditManager.I().enoughCredit(3)) {
+////                shopItemBar.load();
+////                shopItemBar2.load();
+//                CreditManager.I().pay(3);
+//            } else {
+//                CreditManager.I().pulse();
+//            }
+//        },
+//            Assets.I().get(AssetKey.REROLL_BUTTON),
+//            Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED),
+//            Assets.I().get(AssetKey.REROLL_BUTTON),
+//            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 27f, 25 / 27f),
+//            Input.Keys.SPACE,
+//            ZIndex.SHOP
+//        );
+//        rerollButton.setShowShadow(false);
 
-        nextRoundButton = new NextRoundButton(() -> {
-            state = State.EXITING;
-            windowVelocityY = 0f;
-            ButtonBoard.I().moveIn();
-        }, new Rectangle(6f, baseNextRoundButtonY, 75 / 33f, 43 / 33f), Input.Keys.ENTER, ZIndex.SHOP);
+        exitShopButton = new ExitShopButton(new Rectangle(5.1f, 1.25f, 79 / 27f, 25 / 27f));
 
         // start hidden below like HealthUi.moveOut() result
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
-        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
+        exitShopButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
     }
 
     public void draw(float delta) {
@@ -147,7 +141,7 @@ public class Shop {
 
 //        rerollButton.draw();
         creditScore.draw(delta);
-        nextRoundButton.draw(delta);
+        exitShopButton.draw(delta);
 
         if (!Automations.I().getAutoSpin().isActive()) {
             buyAutoSpinUpgrade.draw(delta);
@@ -167,9 +161,15 @@ public class Shop {
 
         // keep them out while entering
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
-        nextRoundButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
+        exitShopButton.getBounds().y = baseNextRoundButtonY - uiMoveDistance;
 
         ButtonBoard.I().moveOut();
+    }
+
+    public void exit() {
+        state = State.EXITING;
+        windowVelocityY = 0f;
+        ButtonBoard.I().moveIn();
     }
 
     private void updateAnimation(float delta) {
@@ -214,12 +214,11 @@ public class Shop {
             shopText.getStartingPos().y = currentWindowY + 17f;
 //            shopItemBar.setY(currentWindowY + 13.55f);
 //            shopItemBar2.setY(currentWindowY + 9f);
-            rerollButton.getBounds().setY(currentWindowY + 12.05f);
 //            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 9.35f;
 //            cardPack.getBody().getPos().y = currentWindowY + 9f;
 //            ringPack.getBody().getPos().y = currentWindowY + 9.45f;
 //            cardRemover.getBody().getPos().y = currentWindowY + 4.45f;
-            nextRoundButton.getBounds().setY(currentWindowY + 0.5f);
+            exitShopButton.getBounds().setY(currentWindowY + 1.25f);
             creditScore.getFirstDigitBounds().setY(currentWindowY + 0.7f);
         }
     }
@@ -242,8 +241,7 @@ public class Shop {
 //        cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
 //        cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-        nextRoundButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        rerollButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        exitShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         if (!Automations.I().getAutoSpin().isActive())
             buyAutoSpinUpgrade.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }

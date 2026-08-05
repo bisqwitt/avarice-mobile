@@ -5,21 +5,29 @@ import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.Symbol;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.items.upgrades.IUpgradeType;
-import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.cards.CardType;
-import com.avaricious.items.upgrades.cards.newgen.ITriggerableCard;
+import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
 import com.avaricious.utility.Assets;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
 
-public abstract class AbstractPointsOnSymbolCard extends AbstractCard implements ITriggerableCard {
+public abstract class AbstractPointsOnSymbolCard extends AbstractQuestCard {
+
+    private final TextureRegion texture;
+    private final TextureRegion completedTexture;
+
+    public AbstractPointsOnSymbolCard(TextureRegion texture, TextureRegion completedTexture) {
+        this.texture = texture;
+        this.completedTexture = completedTexture;
+    }
 
     abstract Symbol symbol();
 
     @Override
     public String description() {
-        return Assets.I().blueText("+5 Points") + "\nTriggers on Pattern including " + symbol().toString();
+        return Assets.I().blueText("+5 Points") + "\nTrigger a Pattern including " + symbol().toString();
     }
 
     @Override
@@ -39,10 +47,12 @@ public abstract class AbstractPointsOnSymbolCard extends AbstractCard implements
     }
 
     @Override
-    public boolean triggerable(List<PatternMatch> matches, PatternMatch patternMatch) {
-        int matchIndex = matches.indexOf(patternMatch);
-        boolean isLastMatchOfSymbol = matches.size() - 1 == matchIndex || matches.get(matches.indexOf(patternMatch)).getSymbol() != patternMatch.getSymbol();
-        return isLastMatchOfSymbol && patternMatch.getSymbol() == symbol();
+    public boolean condition(List<PatternMatch> matches, PatternMatch match) {
+        return !isCompleted() && match.getSymbol() == symbol();
     }
 
+    @Override
+    public TextureRegion texture() {
+        return isCompleted() ? completedTexture : texture;
+    }
 }

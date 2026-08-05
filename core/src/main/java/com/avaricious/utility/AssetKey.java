@@ -325,6 +325,7 @@ public enum AssetKey {
     CONTINUE_BUTTON("continue-button"),
     CONTINUE_BUTTON_PRESSED("continue-button-pressed"),
     CHARCOAL_PIXEL("charcoal-pixel"),
+    CHARCOAL_PIXEL_DARKER("charcoal-pixel-darker"),
     BUY_BUTTON("buy-button"),
     BUY_BUTTON_PRESSED("buy-button-pressed"),
     REMOVE_CARD("remove-card"),
@@ -379,7 +380,25 @@ public enum AssetKey {
     SHOP_BUTTON("shop-button"),
     SHOP_BUTTON_PRESSED("shop-button-pressed"),
     DRAW_CARD_BUTTON("draw-card-button"),
-    DRAW_CARD_BUTTON_PRESSED("draw-card-button-pressed");
+    DRAW_CARD_BUTTON_PRESSED("draw-card-button-pressed"),
+    SHOPPING_CART("shopping-cart"),
+    EXIT_SHOP_BUTTON("exit-shop-button"),
+    EXIT_SHOP_BUTTON_PRESSED("exit-shop-button-pressed"),
+    LEMON_CARD("lemon-card"),
+    LEMON_CARD_COMPLETED("lemon-card-completed"),
+    CHERRY_CARD("cherry-card"),
+    CHERRY_CARD_COMPLETED("cherry-card-completed"),
+    CLOVER_CARD("clover-card"),
+    CLOVER_CARD_COMPLETED("clover-card-completed"),
+    BELL_CARD("bell-card"),
+    BELL_CARD_COMPLETED("bell-card-completed"),
+    IRON_CARD("iron-card"),
+    IRON_CARD_COMPLETED("iron-card-completed"),
+    DIAMOND_CARD("diamond-card"),
+    DIAMOND_CARD_COMPLETED("diamond-card-completed"),
+    SEVEN_CARD("seven-card"),
+    SEVEN_CARD_COMPLETED("seven-card-completed"),
+    ;
 
     private final String path;
 

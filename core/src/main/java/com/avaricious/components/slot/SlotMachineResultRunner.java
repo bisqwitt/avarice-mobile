@@ -3,7 +3,6 @@ package com.avaricious.components.slot;
 import com.avaricious.CreditManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.audio.AudioManager;
-import com.avaricious.components.HandUi;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.automations.Automations;
@@ -13,7 +12,7 @@ import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.Hand;
-import com.avaricious.items.upgrades.cards.newgen.ITriggerableCard;
+import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
 import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
 import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.screens.ScreenManager;
@@ -108,11 +107,6 @@ public class SlotMachineResultRunner {
                 AudioManager.I().playHit(EffectManager.streak);
             });
 
-            Seq.of(Hand.I().getHand())
-                .filter(card -> card instanceof ITriggerableCard
-                    && ((ITriggerableCard) card).triggerable(matches, patternMatch))
-                .forEach(card -> scheduler.schedule(() -> HandUi.I().applyCard(card)));
-
             Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
                 .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
                 .forEach(ring -> ring.scheduleTrigger(matches, patternMatch, false));
@@ -187,6 +181,11 @@ public class SlotMachineResultRunner {
                     TextureEcho.Type.SLOT);
 
                 AudioManager.I().playHit(EffectManager.streak);
+
+                Seq.of(Hand.I().getHand())
+                    .filter(card -> card instanceof AbstractQuestCard
+                        && ((AbstractQuestCard) card).condition(matches, match))
+                    .forEach(card -> ((AbstractQuestCard) card).complete());
 
                 onHit();
             });

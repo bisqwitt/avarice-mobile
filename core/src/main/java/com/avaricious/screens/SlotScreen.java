@@ -9,6 +9,7 @@ import com.avaricious.components.HandUi;
 import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.automations.Automations;
+import com.avaricious.components.buttons.OpenShopButton;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.AutoSpinDisplay;
 import com.avaricious.components.roundInfoPanel.PlayerHealths;
@@ -19,7 +20,6 @@ import com.avaricious.components.shop.Shop;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.SlotMachineMatchFinder;
 import com.avaricious.components.slot.SlotMachineResultRunner;
-import com.avaricious.components.texts.WaitingForOpponentToFinishRoundText;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
@@ -31,11 +31,13 @@ import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RunManager;
 import com.avaricious.utility.runData.RunDataFileManager;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
@@ -49,20 +51,20 @@ public class SlotScreen extends ScreenAdapter {
     private final ScreenShake screenShake;
     private final Shop shop = new Shop(this::onReturnedFromShop);
 
+    private final OpenShopButton openShopButton = new OpenShopButton(
+        new Rectangle(7f, 18f, 17 / 15f, 17 / 15f), Input.Keys.SPACE
+    );
+
     private final ButtonBoard buttonBoard = ButtonBoard.I()
         .init(this::onSpinButtonPressed, this::onPlayButtonPressed);
 
     private final TextureRegion charcoalPixel = Assets.I().get(AssetKey.CHARCOAL_PIXEL);
-
 
     private final VfxManager vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
     private final Vector2 mouse = new Vector2();
     private boolean leftClickWasPressed = false;
     private int symbolsHitLastSpin = 0;
-
-    private final WaitingForOpponentToFinishRoundText waitingForOpponentText = new WaitingForOpponentToFinishRoundText();
-    private boolean showWaitingForOpponentText = false;
 
     public SlotScreen(Main app) {
         this.app = app;
@@ -71,6 +73,8 @@ public class SlotScreen extends ScreenAdapter {
         screenShake = ScreenShake.I().setCameras(app.getViewport().getCamera(), app.getUiViewport().getCamera());
         vfxManager.addEffect(new OldTvEffect());
         SlotMachine.I().setOnLastReelFinished(() -> SlotMachineResultRunner.I().runResult(SlotMachineMatchFinder.I().findMatches()));
+
+        openShopButton.setVisibleAnimated(true);
 
         if (DevTools.enableProfiler()) Profiler.start();
     }
@@ -124,6 +128,9 @@ public class SlotScreen extends ScreenAdapter {
         buttonBoard.draw(delta);
         RingBar.I().draw(delta);
         AutoSpinDisplay.I().draw(delta);
+
+        openShopButton.update(delta);
+        openShopButton.draw(delta);
 
 //        DeckUi.I().draw();
 //        ItemBag.I().draw(delta);
@@ -181,6 +188,7 @@ public class SlotScreen extends ScreenAdapter {
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
 //            if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
             HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            openShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         }
         leftClickWasPressed = leftClickPressed;
     }
@@ -248,7 +256,7 @@ public class SlotScreen extends ScreenAdapter {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                int drawAmount = 2;
+                int drawAmount = 3;
                 if (RunManager.I().getRoundsManager().getBoss() instanceof OneLessCardBoss)
                     drawAmount--;
                 if (RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
@@ -262,7 +270,6 @@ public class SlotScreen extends ScreenAdapter {
     }
 
     public void showWaitingForOpponentText() {
-        showWaitingForOpponentText = true;
     }
 
     public void setSymbolsHitLastSpin(int symbolsHitLastSpin) {

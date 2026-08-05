@@ -11,9 +11,9 @@ public class OpenShopButton extends DisablableButton {
 
     public OpenShopButton(Rectangle buttonRectangle, int key) {
         super(() -> ScreenManager.I().getScreen(SlotScreen.class).getShop().show(),
-            Assets.I().get(AssetKey.SHOP_BUTTON),
-            Assets.I().get(AssetKey.SHOP_BUTTON_PRESSED),
-            Assets.I().get(AssetKey.SHOP_BUTTON),
+            Assets.I().get(AssetKey.SHOPPING_CART),
+            Assets.I().get(AssetKey.SHOPPING_CART),
+            Assets.I().get(AssetKey.SHOPPING_CART),
             buttonRectangle, key, ZIndex.BUTTON_BOARD);
     }
 

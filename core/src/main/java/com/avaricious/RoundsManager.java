@@ -4,7 +4,6 @@ import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.ItemBag;
 import com.avaricious.components.roundInfoPanel.RoundTimer;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
-import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.items.upgrades.quests.PlaySevenCardsInOneSpinQuest;
@@ -26,7 +25,7 @@ public class RoundsManager extends Observable<Integer> {
         setCurrentRound(currentRound + 1);
         CreditManager.I().roundEnd();
         ScoreDisplay.I().clearPotentialScore();
-        Hand.I().drawCard();
+//        Hand.I().drawCard();
 
         roundTimer.startTimer();
     }
