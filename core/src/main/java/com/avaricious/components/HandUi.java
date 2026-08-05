@@ -8,6 +8,7 @@ import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.AbstractCard;
+import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.FontDrawing;
@@ -50,7 +51,7 @@ public class HandUi {
     private final GlyphLayout cardsHoldingTxt = new GlyphLayout();
 
     private AbstractCard selectedCard = null;
-    private AbstractCard applyingCard = null;
+    private List<AbstractCard> applyingCards = new ArrayList<>();
 
     private List<? extends AbstractCard> pendingHand;
     private TooltipPopup tooltipPopup;
@@ -91,13 +92,17 @@ public class HandUi {
         if (selectedCard != null) {
             Vector2 cardRenderPos = selectedCard.getBody().getRenderPos(new Vector2());
             PopupManager.I().updateTooltip(
-                new Vector2(cardRenderPos.x - 1.5f, cardRenderPos.y + 4.25f), true);
+                new Vector2(cardRenderPos.x - 1.5f, cardRenderPos.y + 3.25f), true);
         }
     }
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
         if (selectedCard != null && card == selectedCard) {
-            deselectCard(true);
+            if(((AbstractQuestCard) card).isCompleted()) {
+                applyCard(card);
+            } else {
+                deselectCard(true);
+            }
             return;
         }
 
@@ -128,11 +133,11 @@ public class HandUi {
     public void draw(float delta) {
         Seq.of(cards).forEach(card -> card.getBody().update(delta));
 
-        for (AbstractCard card : getEntriesSortedByX()) {
-            if (applyingCard != card) drawCard(card);
-        }
+        Seq.of(getEntriesSortedByX())
+            .filter(card -> !applyingCards.contains(card))
+            .forEach(this::drawCard);
 
-        if (applyingCard != null) drawCard(applyingCard);
+        Seq.of(applyingCards).forEach(this::drawCard);
 
         cardsHoldingTxt.setText(Assets.I().getSmallFont(), cards.size() + " / 7", Color.WHITE, 200f, Align.top | Align.center, true);
 //        Pencil.I().addDrawing(new FontDrawing(Assets.I().getSmallFont(), cardsHoldingTxt, cardsHoldingPos, ZIndex.HAND_UI_CARD));
@@ -148,7 +153,7 @@ public class HandUi {
 
         float scale = body.getScale();
         final float rotation = body.getRotation()
-            + (card != selectedCard && card != applyingCard ? getHandRotation(card) : 0);
+            + (card != selectedCard && !applyingCards.contains(card) ? getHandRotation(card) : 0);
 
         float alpha = body.getAlpha();
         if ((!selectingCardToDiscard && card.isDisabled())) {
@@ -157,7 +162,7 @@ public class HandUi {
 
         Vector2 position = body.getRenderPos(new Vector2());
         position.y += body.getIdleFloatYOffset();
-        ZIndex zIndex = applyingCard == card ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
+        ZIndex zIndex = applyingCards.contains(card) ? ZIndex.HAND_UI_CARD_DRAGGING : ZIndex.HAND_UI_CARD;
         if (selectingCardToDiscard) zIndex = ZIndex.HAND_UI_SELECTING_CARD_TO_DISCARD;
 
         Color shadowColor = Assets.I().shadowColor();
@@ -212,9 +217,9 @@ public class HandUi {
     }
 
     private void updateCardBounds() {
-        for (AbstractCard card : cards) {
-            card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card)));
-        }
+        Seq.of(cards)
+            .filter(card -> !applyingCards.contains(card))
+            .forEach(card -> card.getBody().moveTo(new Vector2(calcCardX(card), Y + getHandYOffset(card))));
     }
 
     private float calcCardX(AbstractCard card) {
@@ -299,7 +304,7 @@ public class HandUi {
 
     private List<AbstractCard> getCardsForLayout() {
         return Seq.of(cards)
-            .filter(card -> card != applyingCard)
+            .filter(card -> !applyingCards.contains(card))
             .toList();
     }
 
@@ -323,7 +328,7 @@ public class HandUi {
     public void applyCard(AbstractCard card) {
         selectedCard = null;
         card.apply();
-        applyingCard = card;
+        applyingCards.add(card);
 
         DragableBody body = card.getBody();
         body.pulse();
@@ -335,14 +340,14 @@ public class HandUi {
         pos.y += 1.8f;
         card.createPopupRunnable(pos).run();
         PopupManager.I().killTooltip(tooltipPopup);
+        updateCardBounds();
 
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 body.startApplyAnimation(0.6f, () -> {
                     Hand.I().removeCardFromHand(card);
-                    applyingCard = null;
-                    updateCardBounds();
+                    applyingCards.remove(card);
                 });
             }
         }, 0.5f);

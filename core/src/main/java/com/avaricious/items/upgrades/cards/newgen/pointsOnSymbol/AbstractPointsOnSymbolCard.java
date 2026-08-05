@@ -27,18 +27,19 @@ public abstract class AbstractPointsOnSymbolCard extends AbstractQuestCard {
 
     @Override
     public String description() {
-        return Assets.I().blueText("+5 Points") + "\nTrigger a Pattern including " + symbol().toString();
+        return "+50\n" + "Trigger a Pattern including " + symbol().toString();
     }
 
     @Override
     protected void onApply() {
         body.pulse();
-        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, 5);
+//        ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, 5);
+        ScoreDisplay.I().addToScore(50);
     }
 
     @Override
     public Runnable createPopupRunnable(Vector2 pos) {
-        return () -> PopupManager.I().spawnNumber(createNumberPopup(5, pos, Assets.I().blue()));
+        return () -> PopupManager.I().spawnNumber(createNumberPopup(50, pos, Assets.I().lightColor()));
     }
 
     @Override

@@ -19,4 +19,13 @@ public abstract class AbstractQuestCard extends AbstractCard {
     public boolean isCompleted() {
         return completed;
     }
+
+    @Override
+    public void apply() {
+        super.apply();
+    }
+
+    public void reset() {
+        completed = false;
+    }
 }

@@ -94,6 +94,7 @@ public class SlotMachineResultRunner {
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
                 int multi = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
+                multi *= 10;
 
                 PopupManager.I().spawnNumber(multi, Assets.I().red(),
                     middleBody.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleBody.getPos().y + 1f,
@@ -102,7 +103,8 @@ public class SlotMachineResultRunner {
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         middleBody.getPos().x + 2.5f, middleBody.getPos().y + 1f);
 
-                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
+//                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
+                ScoreDisplay.I().addToScore(multi);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
@@ -135,7 +137,7 @@ public class SlotMachineResultRunner {
             if (ScoreDisplay.I().reachedRoundGoal())
                 ScreenManager.I().getScreen(SlotScreen.class).onRoundEnd();
 //            buttonBoard.setVisible(true);
-            ScoreDisplay.I().updateScoreNumber();
+//            ScoreDisplay.I().updateScoreNumber();
             if (Automations.I().getAutoSpin().isActive())
                 ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
         });
@@ -174,7 +176,8 @@ public class SlotMachineResultRunner {
                 if (criticalHit)
                     PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
                         body.getPos().x + 1.5f, body.getPos().y + 2f);
-                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
+//                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
+                ScoreDisplay.I().addToScore(points);
 
                 EffectManager.create(Assets.I().getSymbol(match.getSymbol()),
                     new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),

@@ -71,22 +71,22 @@ public class ScoreDisplay extends Observable<ScoreState> {
 //            ZIndex.SCORE_DISPLAY, Assets.I().shadowColor()
 //        ));
 
-        pointsNumber.draw(delta);
-
-        float multi1Y = DIGIT_Y + multiBody1.getIdleFloatYOffset();
-        float multi1Sway = multiBody1.getIdleSwayEffect().getValue();
-        Pencil.I().addDrawing(new TextureDrawing(
-            multiplySymbolShadow,
-            multiSymbol1X, multi1Y, multiplySymbolSize, multiplySymbolSize,
-            1f, multi1Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
-        ));
-        Pencil.I().addDrawing(new TextureDrawing(
-            multiplySymbol,
-            multiSymbol1X, multi1Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
-            1f, multi1Sway, ZIndex.PATTERN_DISPLAY
-        ));
-
-        multiNumber.draw(delta);
+//        pointsNumber.draw(delta);
+//
+//        float multi1Y = DIGIT_Y + multiBody1.getIdleFloatYOffset();
+//        float multi1Sway = multiBody1.getIdleSwayEffect().getValue();
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            multiplySymbolShadow,
+//            multiSymbol1X, multi1Y, multiplySymbolSize, multiplySymbolSize,
+//            1f, multi1Sway, ZIndex.PATTERN_DISPLAY, Assets.I().shadowColor()
+//        ));
+//        Pencil.I().addDrawing(new TextureDrawing(
+//            multiplySymbol,
+//            multiSymbol1X, multi1Y + 0.1f, multiplySymbolSize, multiplySymbolSize,
+//            1f, multi1Sway, ZIndex.PATTERN_DISPLAY
+//        ));
+//
+//        multiNumber.draw(delta);
 
         scoreNumber.draw(delta);
 
@@ -125,6 +125,10 @@ public class ScoreDisplay extends Observable<ScoreState> {
 
         setPotentialValue(Type.POINTS, 0);
         setPotentialValue(Type.MULTI, 0);
+    }
+
+    public void addToScore(float value) {
+        setScoreNumber(getScoreNumber() + value);
     }
 
     public void setScoreNumber(float value) {
