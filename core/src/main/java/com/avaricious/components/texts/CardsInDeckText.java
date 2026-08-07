@@ -13,7 +13,7 @@ public class CardsInDeckText {
     private final float SPACING = 0.1f;
     private final ZIndex Z_INDEX = ZIndex.UNFOLDED_DECK_CARD;
 
-    private final FabledText cardsText = new FabledText(
+    private final FabledWord cardsText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.C_BIG),
             Assets.I().get(AssetKey.A),
@@ -30,7 +30,7 @@ public class CardsInDeckText {
         ), new Vector2(), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText inText = new FabledText(
+    private final FabledWord inText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.I),
             Assets.I().get(AssetKey.N)
@@ -41,7 +41,7 @@ public class CardsInDeckText {
         ), new Vector2(), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText deckText = new FabledText(
+    private final FabledWord deckText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.D),
             Assets.I().get(AssetKey.E),

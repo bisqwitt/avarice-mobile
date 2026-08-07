@@ -1,5 +1,7 @@
 package com.avaricious.components.buttons;
 
+import com.avaricious.components.automations.Automations;
+import com.avaricious.components.roundInfoPanel.AutoSpinDisplay;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -18,6 +20,6 @@ public class BuySpinButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return ScoreDisplay.I().getScoreNumber() < 50;
+        return ScoreDisplay.I().getScoreNumber() < 50 || AutoSpinDisplay.I().getSpins() == Automations.I().getAutoSpinCapacity().getCapacity();
     }
 }

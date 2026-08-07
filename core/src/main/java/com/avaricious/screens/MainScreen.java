@@ -1,7 +1,7 @@
 package com.avaricious.screens;
 
 import com.avaricious.Main;
-import com.avaricious.components.AvariceText;
+import com.avaricious.components.AvariceWord;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.network.NetworkController;
 import com.avaricious.utility.AssetKey;
@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class MainScreen extends ScreenAdapter {
     private final Main app;
 
-    private final AvariceText title = new AvariceText();
+    private final AvariceWord title = new AvariceWord();
 
     private final Button joinQueueButton = new Button(this::onJoinQueueButtonPressed,
         Assets.I().get(AssetKey.JOIN_QUEUE_BUTTON),

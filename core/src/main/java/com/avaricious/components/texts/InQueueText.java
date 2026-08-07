@@ -13,7 +13,7 @@ public class InQueueText {
     private final float SPACING = 0.1f;
     private final ZIndex Z_INDEX = ZIndex.PACK_OPENING;
 
-    private final FabledText inText = new FabledText(
+    private final FabledWord inText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.I_BIG),
             Assets.I().get(AssetKey.N)
@@ -24,7 +24,7 @@ public class InQueueText {
         ), new Vector2(1.75f, 15f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText queueText = new FabledText(
+    private final FabledWord queueText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.Q),
             Assets.I().get(AssetKey.U),

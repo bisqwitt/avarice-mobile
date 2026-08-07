@@ -4,7 +4,7 @@ import com.avaricious.components.buttons.Button;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
-import com.avaricious.components.texts.ItemsText;
+import com.avaricious.components.texts.ItemsWord;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
@@ -52,7 +52,7 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
     private AbstractItem selectedItem = null;
     private TooltipPopup tooltipPopup = null;
 
-    private final ItemsText itemsText = new ItemsText(new Vector2(3.25f, 17f), 10f, 0.15f, ZIndex.UNFOLDED_DECK_CARD);
+    private final ItemsWord itemsText = new ItemsWord(new Vector2(3.25f, 17f), 10f, 0.15f, ZIndex.UNFOLDED_DECK_CARD);
     private final Button claimButton = new Button(() -> {
         AbstractQuest quest = (AbstractQuest) selectedItem;
         quest.claim();

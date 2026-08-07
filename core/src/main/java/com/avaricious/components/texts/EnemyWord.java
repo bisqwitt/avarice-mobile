@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class EnemyText extends FabledText {
-    public EnemyText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+public class EnemyWord extends FabledWord {
+    public EnemyWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.E_BIG),

@@ -14,7 +14,7 @@ public class PermanentlyRemoveACardText {
     private final float SPACING = 0.1f;
     private final ZIndex Z_INDEX = ZIndex.PACK_OPENING;
 
-    private final FabledText chooseText = new FabledText(
+    private final FabledWord chooseText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.C_BIG),
             Assets.I().get(AssetKey.H),
@@ -33,13 +33,13 @@ public class PermanentlyRemoveACardText {
         ), new Vector2(0.65f, 17.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText aText = new FabledText(
+    private final FabledWord aText = new FabledWord(
         Collections.singletonList(Assets.I().get(AssetKey.A)),
         Collections.singletonList(Assets.I().get(AssetKey.A_SHADOW)),
         new Vector2(4.15f, 17.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText cardText = new FabledText(
+    private final FabledWord cardText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.C),
             Assets.I().get(AssetKey.A),
@@ -54,7 +54,7 @@ public class PermanentlyRemoveACardText {
         ), new Vector2(4.95f, 17.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText toText = new FabledText(
+    private final FabledWord toText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.T),
             Assets.I().get(AssetKey.O)
@@ -65,7 +65,7 @@ public class PermanentlyRemoveACardText {
         ), new Vector2(7.2f, 17.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText permanentlyText = new FabledText(
+    private final FabledWord permanentlyText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.P),
             Assets.I().get(AssetKey.E),
@@ -94,7 +94,7 @@ public class PermanentlyRemoveACardText {
         ), new Vector2(0.35f, 16.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText removeText = new FabledText(
+    private final FabledWord removeText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.R),
             Assets.I().get(AssetKey.E),

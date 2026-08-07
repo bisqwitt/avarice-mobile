@@ -129,7 +129,6 @@ public class SlotScreen extends ScreenAdapter {
         RingBar.I().draw(delta);
         AutoSpinDisplay.I().draw(delta);
 
-        openShopButton.update(delta);
         openShopButton.draw(delta);
 
 //        DeckUi.I().draw();

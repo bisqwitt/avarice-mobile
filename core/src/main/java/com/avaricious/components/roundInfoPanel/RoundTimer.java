@@ -1,7 +1,7 @@
 package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.components.texts.TimeText;
+import com.avaricious.components.texts.TimeWord;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.RunManager;
 import com.avaricious.utility.Seq;
@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Timer;
 
 public class RoundTimer {
 
-    private final TimeText timeText = new TimeText(new Vector2(0.75f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final TimeWord timeText = new TimeWord(new Vector2(0.75f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber roundTimer = new DigitalNumber(30, Assets.I().lightColor(), 2,
         new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.4f).setZIndex(ZIndex.PATTERN_DISPLAY);
 

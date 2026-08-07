@@ -78,9 +78,6 @@ public class ButtonBoard {
     public void draw(float delta) {
         updateMovement(delta);
 
-        spinButton.update(delta);
-        openShopButton.update(delta);
-
         spinButton.draw(delta);
         openShopButton.draw(delta);
     }

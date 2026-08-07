@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class RoundText extends FabledText {
+public class RoundWord extends FabledWord {
 
-    public RoundText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+    public RoundWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.R_BIG),

@@ -1,5 +1,8 @@
 package com.avaricious.components.buttons;
 
+import com.avaricious.components.automations.Automations;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
+import com.avaricious.items.upgrades.Hand;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
@@ -17,6 +20,6 @@ public class DrawCardButton extends DisablableButton {
 
     @Override
     boolean disabled() {
-        return false;
+        return ScoreDisplay.I().getScoreNumber() < 25 || Automations.I().getHandCapacity().getCapacity() == Hand.I().getHand().size();
     }
 }

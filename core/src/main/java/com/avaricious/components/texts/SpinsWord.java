@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class SpinsText extends FabledText {
+public class SpinsWord extends FabledWord {
 
-    public SpinsText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+    public SpinsWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.S_BIG),

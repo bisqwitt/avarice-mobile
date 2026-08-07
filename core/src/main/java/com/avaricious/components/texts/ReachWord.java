@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class ReachText extends FabledText {
-    public ReachText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+public class ReachWord extends FabledWord {
+    public ReachWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.R_BIG),

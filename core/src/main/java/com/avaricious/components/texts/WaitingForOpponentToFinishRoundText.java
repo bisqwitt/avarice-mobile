@@ -13,7 +13,7 @@ public class WaitingForOpponentToFinishRoundText {
     private final float SPACING = 0.1f;
     private final ZIndex Z_INDEX = ZIndex.PACK_OPENING;
 
-    private final FabledText waitingText = new FabledText(
+    private final FabledWord waitingText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.W_BIG),
             Assets.I().get(AssetKey.A),
@@ -34,7 +34,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(1.95f, 15f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText forText = new FabledText(
+    private final FabledWord forText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.F),
             Assets.I().get(AssetKey.O),
@@ -47,7 +47,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(5.7f, 15f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText opponentText = new FabledText(
+    private final FabledWord opponentText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.O),
             Assets.I().get(AssetKey.P),
@@ -70,7 +70,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(0.35f, 13.75f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText toText = new FabledText(
+    private final FabledWord toText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.T),
             Assets.I().get(AssetKey.O)
@@ -81,7 +81,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(4.6f, 13.75f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText finishText = new FabledText(
+    private final FabledWord finishText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.F),
             Assets.I().get(AssetKey.I),
@@ -100,7 +100,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(5.85f, 13.75f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText theirText = new FabledText(
+    private final FabledWord theirText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.T),
             Assets.I().get(AssetKey.H),
@@ -117,7 +117,7 @@ public class WaitingForOpponentToFinishRoundText {
         ), new Vector2(1.25f, 12.5f), SIZE_RATIO, SPACING, Z_INDEX
     );
 
-    private final FabledText roundText = new FabledText(
+    private final FabledWord roundText = new FabledWord(
         Arrays.asList(
             Assets.I().get(AssetKey.R),
             Assets.I().get(AssetKey.O),

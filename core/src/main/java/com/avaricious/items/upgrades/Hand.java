@@ -1,6 +1,7 @@
 package com.avaricious.items.upgrades;
 
 import com.avaricious.DevTools;
+import com.avaricious.components.automations.Automations;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.cards.DrawAndDiscardACard;
 import com.avaricious.items.upgrades.cards.MultiForEveryDisabledCard;
@@ -43,7 +44,7 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
     }
 
     public void drawCard() {
-        if (hand.size() == 7) return;
+        if (hand.size() == Automations.I().getHandCapacity().getCapacity()) return;
         AbstractCard upgrade = Deck.I().drawRandomCard();
         if (upgrade == null) return;
 

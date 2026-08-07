@@ -398,7 +398,15 @@ public enum AssetKey {
     DIAMOND_CARD_COMPLETED("diamond-card-completed"),
     SEVEN_CARD("seven-card"),
     SEVEN_CARD_COMPLETED("seven-card-completed"),
-    ;
+    B_BIG("b-big"),
+    B_BIG_SHADOW("b-big-shadow"),
+    B("b"),
+    B_SHADOW("b-shadow"),
+    BOUGHT_BUTTON("bought-button"),
+    ARROW_LETTER("arrow-letter"),
+    ARROW_LETTER_SHADOW("arrow-letter-shadow"),
+    UPGRADE_BUTTON("upgrade-button"),
+    UPGRADE_BUTTON_PRESSED("upgrade-button-pressed");
 
     private final String path;
 

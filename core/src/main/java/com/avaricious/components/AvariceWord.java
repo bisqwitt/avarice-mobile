@@ -1,6 +1,6 @@
 package com.avaricious.components;
 
-import com.avaricious.components.texts.FabledText;
+import com.avaricious.components.texts.FabledWord;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
@@ -8,9 +8,9 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class AvariceText extends FabledText {
+public class AvariceWord extends FabledWord {
 
-    public AvariceText() {
+    public AvariceWord() {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.A_BIG),

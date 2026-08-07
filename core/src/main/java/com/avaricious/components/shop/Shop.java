@@ -3,16 +3,14 @@ package com.avaricious.components.shop;
 import com.avaricious.CreditScore;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.ScreenShake;
-import com.avaricious.components.automations.Automations;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.ExitShopButton;
-import com.avaricious.components.texts.ShopText;
+import com.avaricious.components.texts.ShopWord;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -29,27 +27,25 @@ public class Shop {
 
     private float currentWindowY = OFFSCREEN_TOP_Y;
 
-    private final ShopText shopText = new ShopText(new Vector2(WINDOW_X + 3.5f, currentWindowY + 14.65f),
+    private final ShopWord shopText = new ShopWord(new Vector2(WINDOW_X + 3.5f, currentWindowY + 14.65f),
         8f, 0.25f, ZIndex.SHOP);
     private final TextureRegion window = Assets.I().get(AssetKey.CHARCOAL_PIXEL_DARKER);
 
     private final Button exitShopButton;
-
     private final CreditScore creditScore;
 
-//    private final ShopItemBar shopItemBar = new ShopItemBar();
-//    private final ShopItemBar shopItemBar2 = new ShopItemBar();
-    //    private SymbolSpawnChancePack symbolSpawnChancePack = new SymbolSpawnChancePack();
-//    private CardPack cardPack = new CardPack();
-//    private RingPack ringPack = new RingPack();
-//    private final CardRemover cardRemover = new CardRemover(new Vector2(2f, 4f));
+    private final AutomationShopList automationShopList = new AutomationShopList(new Rectangle(
+        WINDOW_X + 1.5f,
+        4f,
+        WINDOW_WIDTH - 3f,
+        12f
+    ));
 
     private final Runnable onReturnedFromShop;
 
     private enum State {HIDDEN, ENTERING, SHOWN, EXITING}
 
     private State state = State.HIDDEN;
-
     private static final float GRAVITY_ENTER = -55f;
     private static final float GRAVITY_EXIT = 70f;
     private static final float BOUNCE_DAMPING = 0.28f;
@@ -61,14 +57,6 @@ public class Shop {
     private final float baseCreditScoreY = 0.5f;
     private final float baseNextRoundButtonY = 0.25f;
 
-    private final Button buyAutoSpinUpgrade = new Button(
-        () -> Automations.I().getAutoSpin().activate(),
-        Assets.I().get(AssetKey.SPIN_BUTTON),
-        Assets.I().get(AssetKey.SPIN_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.SPIN_BUTTON),
-        new Rectangle(1f, 10f, 79 / 27f, 25 / 27f),
-        Input.Keys.SPACE, ZIndex.SHOP
-    );
 
     public Shop(Runnable onReturnedFromShop) {
         this.onReturnedFromShop = onReturnedFromShop;
@@ -113,48 +101,12 @@ public class Shop {
             WINDOW_X, currentWindowY, WINDOW_WIDTH, WINDOW_HEIGHT,
             ZIndex.SHOP
         ));
-
-//        Pencil.I().addDrawing(new TextureDrawing(
-//            shopSlot,
-//            WINDOW_X + 1.75f, currentWindowY + 12.25f, 110 / 15f, 60 / 15f,
-//            ZIndex.SHOP, Assets.I().shadowColor()
-//        ));
-//        Pencil.I().addDrawing(new TextureDrawing(
-//            shopSlot,
-//            WINDOW_X + 1.75f, currentWindowY + 7.75f, 110 / 15f, 60 / 15f,
-//            ZIndex.SHOP, Assets.I().shadowColor()
-//        ));
-//        Pencil.I().addDrawing(new TextureDrawing(
-//            deckEditShopSlot,
-//            WINDOW_X + 2.45f, currentWindowY + 3.2f, 90 / 15f, 60 / 15f,
-//            ZIndex.SHOP, Assets.I().shadowColor()
-//        ));
-
         shopText.draw(delta);
-
-//        shopItemBar.draw(delta);
-//        shopItemBar2.draw(delta);
-////        symbolSpawnChancePack.draw(delta);
-////        cardPack.draw(delta);
-////        ringPack.draw(delta);
-//        cardRemover.draw(delta);
-
-//        rerollButton.draw();
-        creditScore.draw(delta);
+        automationShopList.draw(delta);
         exitShopButton.draw(delta);
-
-        if (!Automations.I().getAutoSpin().isActive()) {
-            buyAutoSpinUpgrade.draw(delta);
-        }
     }
 
     public void show() {
-//        shopItemBar.load();
-//        shopItemBar2.load();
-//        symbolSpawnChancePack = new SymbolSpawnChancePack();
-//        cardPack = new CardPack();
-//        ringPack = new RingPack();
-
         currentWindowY = OFFSCREEN_TOP_Y;
         windowVelocityY = 0f;
         state = State.ENTERING;
@@ -212,12 +164,7 @@ public class Shop {
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
             shopText.getStartingPos().y = currentWindowY + 17f;
-//            shopItemBar.setY(currentWindowY + 13.55f);
-//            shopItemBar2.setY(currentWindowY + 9f);
-//            symbolSpawnChancePack.getBody().getPos().y = currentWindowY + 9.35f;
-//            cardPack.getBody().getPos().y = currentWindowY + 9f;
-//            ringPack.getBody().getPos().y = currentWindowY + 9.45f;
-//            cardRemover.getBody().getPos().y = currentWindowY + 4.45f;
+            automationShopList.setY(currentWindowY + 4f);
             exitShopButton.getBounds().setY(currentWindowY + 1.25f);
             creditScore.getFirstDigitBounds().setY(currentWindowY + 0.7f);
         }
@@ -230,19 +177,7 @@ public class Shop {
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         if (state != State.SHOWN) return;
 
-//        if (cardRemover.getRemoveCardWindow().isOpen()) {
-//            cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//            return;
-//        }
-//
-//        shopItemBar.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//        shopItemBar2.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//        symbolSpawnChancePack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//        cardPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//        ringPack.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-//        cardRemover.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+        automationShopList.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         exitShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-        if (!Automations.I().getAutoSpin().isActive())
-            buyAutoSpinUpgrade.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 }

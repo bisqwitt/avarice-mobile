@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class CreditText extends FabledText {
-    public CreditText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+public class CreditWord extends FabledWord {
+    public CreditWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.C_BIG),

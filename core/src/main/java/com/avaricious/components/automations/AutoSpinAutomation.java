@@ -7,6 +7,7 @@ public class AutoSpinAutomation extends AbstractAutomation {
 
     @Override
     protected void onActivate() {
+        Automations.I().getAutoSpinCapacity().activate();
         ButtonBoard.I().activateAutoSpin();
         AutoSpinDisplay.I().show();
     }

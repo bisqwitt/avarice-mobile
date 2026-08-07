@@ -15,4 +15,9 @@ public abstract class AbstractAutomation {
         return active;
     }
 
+    public boolean isBuyable() {
+        return !isActive();
+    }
+
+
 }

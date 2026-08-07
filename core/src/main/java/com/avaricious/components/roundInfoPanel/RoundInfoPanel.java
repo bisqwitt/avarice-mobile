@@ -2,9 +2,9 @@ package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.CreditScore;
 import com.avaricious.components.DigitalNumber;
-import com.avaricious.components.texts.CreditsText;
-import com.avaricious.components.texts.FabledText;
-import com.avaricious.components.texts.ReachText;
+import com.avaricious.components.texts.CreditsWord;
+import com.avaricious.components.texts.FabledWord;
+import com.avaricious.components.texts.ReachWord;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
@@ -20,10 +20,10 @@ public class RoundInfoPanel {
         return instance == null ? instance = new RoundInfoPanel() : instance;
     }
 
-    private final CreditsText creditsText = new CreditsText(new Vector2(6.75f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final CreditsWord creditsText = new CreditsWord(new Vector2(6.75f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final CreditScore creditScore = new CreditScore(new Rectangle(0f, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
-    private final ReachText reachText = new ReachText(new Vector2(0.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
+    private final ReachWord reachText = new ReachWord(new Vector2(0.5f, 19.1f), 30f, 0.05f, ZIndex.PATTERN_DISPLAY);
     private final DigitalNumber reachNumber = new DigitalNumber(300, Assets.I().lightColor(), new Rectangle(0, 18.35f, 7 / 23f, 11 / 23f), 0.4f);
 
     private final TextureRegion black = Assets.I().get(AssetKey.BLACK_PIXEL);
@@ -55,7 +55,7 @@ public class RoundInfoPanel {
         centerNumberToText(reachText, reachNumber);
     }
 
-    private void centerNumberToText(FabledText text, DigitalNumber number) {
+    private void centerNumberToText(FabledWord text, DigitalNumber number) {
         float textX = text.getStartingPos().x;
         float textWidth = text.getWidth();
         float numberWidth = number.getWidth();

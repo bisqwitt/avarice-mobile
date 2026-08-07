@@ -1,16 +1,12 @@
 package com.avaricious.components.roundInfoPanel;
 
+import com.avaricious.CreditNumber;
 import com.avaricious.components.DigitalNumber;
 import com.avaricious.components.slot.Body;
 import com.avaricious.network.NetworkController;
-import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Observable;
-import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RunManager;
-import com.avaricious.utility.TextureDrawing;
-import com.avaricious.utility.ZIndex;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
@@ -22,8 +18,6 @@ public class ScoreDisplay extends Observable<ScoreState> {
         return instance == null ? instance = new ScoreDisplay() : instance;
     }
 
-    private final TextureRegion multiplySymbol = Assets.I().get(AssetKey.MULT_SYMBOL);
-    private final TextureRegion multiplySymbolShadow = Assets.I().get(AssetKey.MULT_SYMBOL_SHADOW);
     private final float multiplySymbolSize = 11f / 19f;
 
     private final float DIGIT_Y = 15f;
@@ -37,7 +31,7 @@ public class ScoreDisplay extends Observable<ScoreState> {
     private final DigitalNumber multiNumber = new DigitalNumber(0, Assets.I().red(), 3,
         new Rectangle(3.85f, DIGIT_Y, DIGIT_WIDTH, DIGIT_HEIGHT), DIGIT_OFFSET);
 
-    private final DigitalNumber scoreNumber = new DigitalNumber(0, Assets.I().lightColor(), 3,
+    private final DigitalNumber scoreNumber = new CreditNumber(0,
         new Rectangle(3f, DIGIT_Y + 1.75f, 7 / 9f, 11 / 9f), 0.9f);
 
 //    private final DigitalNumber streakNumber = new DigitalNumber(1, Assets.I().red(), 2,

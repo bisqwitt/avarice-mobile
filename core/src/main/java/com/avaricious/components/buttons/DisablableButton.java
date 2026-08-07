@@ -26,8 +26,7 @@ public abstract class DisablableButton extends Button {
     private float overshootScale = 1.06f;    // Balatro-ish pop
 
     private final TextureRegion buttonShadow = Assets.I().get(AssetKey.BUTTON_SHADOW);
-
-    private boolean disableOnEmptyPattern = false;
+    private TextureRegion disabledTexture = null;
 
     public DisablableButton(
         Runnable onButtonPressedRunnable,
@@ -66,7 +65,7 @@ public abstract class DisablableButton extends Button {
     /**
      * Update should be called once per frame before draw/input.
      */
-    public void update(float delta) {
+    private void update(float delta) {
         // Smoothly move vis toward target
         float step = animSpeed * delta;
         if (vis < visTarget) vis = Math.min(visTarget, vis + step);
@@ -90,7 +89,8 @@ public abstract class DisablableButton extends Button {
 
     @Override
     public void draw(float delta) {
-        if (vis <= 0.001f || disabled()) return;
+        update(delta);
+        if (vis <= 0.001f) return;
 
         // Ease for nicer motion
         float t = Interpolation.pow3Out.apply(vis);
@@ -132,10 +132,14 @@ public abstract class DisablableButton extends Button {
             ));
         }
         Pencil.I().addDrawing(new TextureDrawing(
-            currentTexture,
+            disabled() && disabledTexture != null ? disabledTexture : currentTexture,
             bounds.x, bounds.y, bounds.width, bounds.height,
             layer, new Color(1f, 1f, 1f, alpha)
         ));
+    }
+
+    public void setDisabledTexture(TextureRegion disabledTexture) {
+        this.disabledTexture = disabledTexture;
     }
 
     abstract boolean disabled();

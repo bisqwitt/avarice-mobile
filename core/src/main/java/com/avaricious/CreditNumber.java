@@ -5,6 +5,7 @@ import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.TextureDrawing;
+import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -46,5 +47,10 @@ public class CreditNumber extends DigitalNumber {
     @Override
     public float getWidth() {
         return super.getWidth() + 0.05f + firstDigitBounds.width;
+    }
+
+    @Override
+    public CreditNumber setZIndex(ZIndex zIndex) {
+        return (CreditNumber) super.setZIndex(zIndex);
     }
 }

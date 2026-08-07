@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class ArmorText extends FabledText {
-    public ArmorText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+public class ArmorWord extends FabledWord {
+    public ArmorWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.A_BIG),

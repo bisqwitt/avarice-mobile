@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Arrays;
 
-public class HealthText extends FabledText {
-    public HealthText(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+public class HealthWord extends FabledWord {
+    public HealthWord(Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         super(
             Arrays.asList(
                 Assets.I().get(AssetKey.H_BIG),

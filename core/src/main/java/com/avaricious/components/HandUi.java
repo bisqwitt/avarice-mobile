@@ -40,7 +40,7 @@ public class HandUi {
         return instance == null ? instance = new HandUi() : instance;
     }
 
-    private final float Y = 3f;
+    private final float Y = 3.5f;
     private final float CARD_SIZE_DIVISOR = 75;
     private final float CARD_OFFSET = 1.5f;
 
@@ -98,7 +98,7 @@ public class HandUi {
 
     private void onCardTouchDown(AbstractCard card, Vector2 mouse) {
         if (selectedCard != null && card == selectedCard) {
-            if(((AbstractQuestCard) card).isCompleted()) {
+            if (((AbstractQuestCard) card).isCompleted()) {
                 applyCard(card);
             } else {
                 deselectCard(true);
