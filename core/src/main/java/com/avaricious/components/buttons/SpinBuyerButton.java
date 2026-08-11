@@ -20,7 +20,7 @@ public class SpinBuyerButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
         return Automations.I().getSpinBuyer().isActive();
     }
 }

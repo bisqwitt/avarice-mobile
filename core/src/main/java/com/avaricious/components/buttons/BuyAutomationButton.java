@@ -2,6 +2,7 @@ package com.avaricious.components.buttons;
 
 import com.avaricious.components.automations.AbstractAutomation;
 import com.avaricious.components.automations.AbstractAutomationUpgrade;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.ZIndex;
@@ -13,7 +14,10 @@ public class BuyAutomationButton extends DisablableButton {
     private final AbstractAutomation automation;
 
     public BuyAutomationButton(AbstractAutomation automation) {
-        super(automation::activate,
+        super(() -> {
+                ScoreDisplay.I().removeFromScore(automation.price());
+                automation.activate();
+            },
             Assets.I().get(AssetKey.BUY_BUTTON),
             Assets.I().get(AssetKey.BUY_BUTTON_PRESSED),
             Assets.I().get(AssetKey.BUY_BUTTON),
@@ -26,7 +30,10 @@ public class BuyAutomationButton extends DisablableButton {
     }
 
     public BuyAutomationButton(AbstractAutomationUpgrade automationUpgrade) {
-        super(automationUpgrade::upgrade,
+        super(() -> {
+                ScoreDisplay.I().removeFromScore(automationUpgrade.price());
+                automationUpgrade.upgrade();
+            },
             Assets.I().get(AssetKey.UPGRADE_BUTTON),
             Assets.I().get(AssetKey.UPGRADE_BUTTON_PRESSED),
             Assets.I().get(AssetKey.UPGRADE_BUTTON),
@@ -38,7 +45,7 @@ public class BuyAutomationButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
         return !automation.isBuyable();
     }
 }

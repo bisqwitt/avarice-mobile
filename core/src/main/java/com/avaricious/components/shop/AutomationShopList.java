@@ -16,25 +16,25 @@ public class AutomationShopList extends ShopList {
         super(bounds);
         items.add(new ShopItem(
             new AutoSpinText(),
-            3, Automations.I().getAutoSpin()));
+            Automations.I().getAutoSpin()));
         items.add(new ShopItem(
             new AutoSpinCapacityText(),
             new AutoSpinCapacityDescriptionText(),
-            3, Automations.I().getAutoSpinCapacity()));
+            Automations.I().getAutoSpinCapacity()));
         items.add(new ShopItem(
             new SpinBuyerText(),
-            3, Automations.I().getSpinBuyer()
+            Automations.I().getSpinBuyer()
         ));
         items.add(new ShopItem(
             new SpinBuyerSpeedText(),
-            3, Automations.I().getSpinBuyerSpeed()
+            Automations.I().getSpinBuyerSpeed()
         ));
 
 
         items.add(new ShopItem(
             new HandCapacityText(),
             new HandCapacityDescriptionText(),
-            3, Automations.I().getHandCapacity()));
+            Automations.I().getHandCapacity()));
 
         updateItemPositions();
     }

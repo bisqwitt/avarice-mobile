@@ -1,7 +1,5 @@
 package com.avaricious;
 
-import com.avaricious.components.RingBar;
-import com.avaricious.items.upgrades.rings.DeptRing;
 import com.avaricious.utility.Observable;
 
 public class CreditManager extends Observable<Integer> {
@@ -45,8 +43,7 @@ public class CreditManager extends Observable<Integer> {
     }
 
     public boolean enoughCredit(int value) {
-        int base = RingBar.I().ringOwned(DeptRing.class) ? -20 : 0;
-        return credits - value >= base;
+        return credits - value >= 0;
     }
 
     @Override

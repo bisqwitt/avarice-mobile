@@ -17,7 +17,7 @@ public class PlayCardButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
 //        return !HandUi.I().cardIsSelected() || RunManager.I().getRoundsManager().getRoundTimer().timerEnded();
         return !HandUi.I().cardIsSelected();
     }

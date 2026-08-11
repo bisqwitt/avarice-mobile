@@ -1,11 +1,7 @@
 package com.avaricious.items.upgrades;
 
-import com.avaricious.DevTools;
 import com.avaricious.components.automations.Automations;
 import com.avaricious.items.upgrades.cards.AbstractCard;
-import com.avaricious.items.upgrades.cards.DrawAndDiscardACard;
-import com.avaricious.items.upgrades.cards.MultiForEveryDisabledCard;
-import com.avaricious.items.upgrades.cards.SpinCard;
 import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
 import com.avaricious.utility.Observable;
 import com.avaricious.utility.Seq;
@@ -26,11 +22,6 @@ public class Hand extends Observable<List<? extends AbstractCard>> {
 
     private Hand() {
         notifyChanged(snapshot());
-        if (DevTools.allCardsInDeck()) {
-            addCardToHand(Deck.I().drawCard(DrawAndDiscardACard.class));
-            addCardToHand(Deck.I().drawCard(MultiForEveryDisabledCard.class));
-            addCardToHand(Deck.I().drawCard(SpinCard.class));
-        }
     }
 
     private final List<AbstractCard> hand = new ArrayList<>();

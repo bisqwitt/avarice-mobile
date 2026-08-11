@@ -12,6 +12,7 @@ import com.avaricious.components.texts.SymbolDescriptionText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.SymbolValues;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -29,31 +30,40 @@ public class ShopItem {
 
     private float y;
 
-    public ShopItem(FabledText title, int price, AbstractAutomation automation) {
-        this.title = title;
-        this.description = null;
-        this.price = new CreditNumber(price,
-            new Rectangle(1.25f, 0, 7 / 24f, 11 / 24f), 0.5f)
-            .setZIndex(ZIndex.SHOP_CARD);
-        this.buyButton = new BuyAutomationButton(automation);
+    public ShopItem(FabledText title, AbstractAutomation automation) {
+        this(title, null,
+            automation.price(),
+            new BuyAutomationButton(automation));
     }
 
-    public ShopItem(FabledText title, FabledText description, int price, AbstractAutomationUpgrade automationUpgrade) {
+    public ShopItem(FabledText title, FabledText description, AbstractAutomationUpgrade automationUpgrade) {
+        this(title, description,
+            automationUpgrade.price(),
+            new BuyAutomationButton(automationUpgrade));
+
+        automationUpgrade.addPriceChangeListener(evt -> {
+            updatePrice((int) evt.getNewValue());
+        });
+    }
+
+    public ShopItem(FabledText title, Symbol symbol) {
+        this(title, new SymbolDescriptionText(symbol),
+            SymbolValues.I().getPrice(symbol),
+            new UpgradeSymbolButton(symbol));
+
+        SymbolValues.I().addPriceChangeListener(evt -> {
+            if (evt.getPropertyName().equals(symbol.toString()))
+                updatePrice((int) evt.getNewValue());
+        });
+    }
+
+    private ShopItem(FabledText title, FabledText description, int initialPrice, DisablableButton buyButton) {
         this.title = title;
         this.description = description;
-        this.price = new CreditNumber(price,
-            new Rectangle(1.25f, 0, 7 / 24f, 11 / 24f), 0.5f)
+        this.price = new CreditNumber(initialPrice,
+            new Rectangle(1.25f, 0, 7 / 24f, 11 / 24f), 0.4f)
             .setZIndex(ZIndex.SHOP_CARD);
-        this.buyButton = new BuyAutomationButton(automationUpgrade);
-    }
-
-    public ShopItem(FabledText title, int price, Symbol symbol) {
-        this.title = title;
-        this.description = new SymbolDescriptionText(symbol);
-        this.price = new CreditNumber(price,
-            new Rectangle(1.25f, 0, 7 / 24f, 11 / 24f), 0.5f)
-            .setZIndex(ZIndex.SHOP_CARD);
-        this.buyButton = new UpgradeSymbolButton(symbol);
+        this.buyButton = buyButton;
     }
 
     public void draw(float delta) {
@@ -64,6 +74,10 @@ public class ShopItem {
         title.draw(delta);
         if (description != null) description.draw(delta);
         price.draw(delta);
+
+        if (buyButton.disabled()) Pencil.I().addDrawing(new TextureDrawing(
+            background, 0.75f, y, 7.5f, getHeight(), ZIndex.SHOP_CARD, Assets.I().shadowColor()
+        ));
         buyButton.draw(delta);
     }
 
@@ -81,6 +95,10 @@ public class ShopItem {
         if (description != null) description.setY(y + 1.4f);
         price.getFirstDigitBounds().setY(y + 0.4f);
         buyButton.getBounds().setY(y + 0.3f);
+    }
+
+    private void updatePrice(int newPrice) {
+        price.setValue(newPrice);
     }
 
 }

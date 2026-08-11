@@ -8,7 +8,6 @@ import com.avaricious.components.texts.ItemsWord;
 import com.avaricious.effects.IdleFloatEffect;
 import com.avaricious.effects.IdleSwayEffect;
 import com.avaricious.items.AbstractItem;
-import com.avaricious.items.potions.AbstractPotion;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -63,16 +62,6 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
         Assets.I().get(AssetKey.CLAIM_BUTTON),
         new Rectangle(0f, 0f, 79 / 30f, 25 / 30f),
         Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
-    private final Button useButton = new Button(() -> {
-        AbstractPotion potion = (AbstractPotion) selectedItem;
-        potion.use();
-        deselectItem(true);
-    },
-        Assets.I().get(AssetKey.USE_BUTTON),
-        Assets.I().get(AssetKey.USE_BUTTON_PRESSED),
-        Assets.I().get(AssetKey.USE_BUTTON),
-        new Rectangle(0f, 0f, 79 / 30f, 25 / 30f),
-        Input.Keys.ENTER, ZIndex.UNFOLDED_DECK_CARD);
 
     private final IdleFloatEffect bagFloatEffect = new IdleFloatEffect();
     private final IdleSwayEffect bagSwayEffect = new IdleSwayEffect();
@@ -96,12 +85,6 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
                 && ((AbstractQuest) selectedItem).isCompleted()
                 && (claimButton.getBounds().contains(mouse) || claimButton.getBounds().contains(mouseTouchdownLocation))) {
                 claimButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-                return;
-            }
-            if (selectedItem != null
-                && selectedItem instanceof AbstractPotion
-                && (useButton.getBounds().contains(mouse) || useButton.getBounds().contains(mouseTouchdownLocation))) {
-                useButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
                 return;
             }
 
@@ -198,12 +181,6 @@ public class ItemBag extends Observable<List<? extends AbstractItem>> {
                 claimButton.getBounds().x = renderPos.x - 0.5f;
                 claimButton.getBounds().y = renderPos.y - 1.5f;
                 claimButton.draw(delta);
-            }
-            if (item instanceof AbstractPotion) {
-                Vector2 renderPos = item.getBody().getRenderPos(new Vector2());
-                useButton.getBounds().x = renderPos.x - 0.5f;
-                useButton.getBounds().y = renderPos.y - 1.5f;
-                useButton.draw(delta);
             }
         }
     }

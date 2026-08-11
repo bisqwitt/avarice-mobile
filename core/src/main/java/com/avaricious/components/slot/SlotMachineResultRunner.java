@@ -1,9 +1,7 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.CreditManager;
 import com.avaricious.TaskScheduler;
 import com.avaricious.audio.AudioManager;
-import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.automations.Automations;
 import com.avaricious.components.popups.PopupManager;
@@ -13,14 +11,8 @@ import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
-import com.avaricious.items.upgrades.rings.triggerable.AbstractTriggerableRing;
-import com.avaricious.items.upgrades.rings.triggerable.pointAdditions.PointsPerPatternHit;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
-import com.avaricious.stats.PlayerStats;
-import com.avaricious.stats.statupgrades.CreditSpawnChance;
-import com.avaricious.stats.statupgrades.CriticalHitChance;
-import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Seq;
 import com.avaricious.utility.SymbolValues;
@@ -38,9 +30,7 @@ public class SlotMachineResultRunner {
         return instance == null ? instance = new SlotMachineResultRunner() : instance;
     }
 
-    private final SlotScreen slotScreen = ScreenManager.I().getScreen(SlotScreen.class);
     private final SlotMachine slotMachine = SlotMachine.I();
-    private final RingBar ringBar = RingBar.I();
 
     private SlotMachineResultRunner() {
     }
@@ -66,20 +56,12 @@ public class SlotMachineResultRunner {
             Body middleBody = slots.get(slots.size() / 2 - (slots.size() % 2 == 0 ? 1 : 0));
 
             scheduler.scheduleNoDelay(() -> {
-                if (ringBar.ringOwned(PointsPerPatternHit.class))
-                    ringBar.getRingByClass(PointsPerPatternHit.class).onPatternHit();
-
                 for (Body body : slots) {
                     body.beginPatternHit();
                 }
             });
 
             triggerSeparateSlots(matches, patternMatch, slots, scheduler);
-            if (PlayerStats.I().rollChance(DoubleHitChance.class)) {
-                scheduler.schedule(() -> PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(DoubleHitChance.class).getTexture(),
-                    middleBody.getPos().x + 1f, middleBody.getPos().y + 1f));
-                triggerSeparateSlots(matches, patternMatch, slots, scheduler);
-            }
 
             scheduler.schedule(() -> {
                 PopupManager.I().releaseHoldingNumbers();
@@ -93,26 +75,16 @@ public class SlotMachineResultRunner {
                 }
                 ScreenShake.I().addTrauma(0.3f);
 
-                boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int multi = criticalHit ? slots.size() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : slots.size();
-                multi *= 10;
+                int multi = slots.size() * 10;
 
                 PopupManager.I().spawnNumber(multi, Assets.I().red(),
                     middleBody.getPos().x + ((slots.size() % 2 == 0) ? 2f : 1.5f), middleBody.getPos().y + 1f,
                     true);
-                if (criticalHit)
-                    PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
-                        middleBody.getPos().x + 2.5f, middleBody.getPos().y + 1f);
 
-//                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.MULTI, multi);
                 ScoreDisplay.I().addToScore(multi);
 
                 AudioManager.I().playHit(EffectManager.streak);
             });
-
-            Seq.of(ringBar.getRingsOfType(AbstractTriggerableRing.class))
-                .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.PATTERN)
-                .forEach(ring -> ring.scheduleTrigger(matches, patternMatch, false));
 
             scheduler.schedule(() -> {
                 if (matches.indexOf(patternMatch) != matches.size() - 1)
@@ -122,13 +94,6 @@ public class SlotMachineResultRunner {
                     PopupManager.I().releaseHoldingNumbers();
                 }
             });
-        }
-
-        int index = 0;
-        for (AbstractTriggerableRing triggerableRing : ringBar.getRingsOfType(AbstractTriggerableRing.class)) {
-            if (triggerableRing.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SPIN)
-                triggerableRing.scheduleTrigger(matches, null, index == 0);
-            index++;
         }
 
         scheduler.schedule(() -> {
@@ -169,15 +134,10 @@ public class SlotMachineResultRunner {
                 body.pulse();
                 ScreenShake.I().addTrauma(0.2f);
 
-                boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int points = criticalHit ? SymbolValues.I().getValue(match.getSymbol()) * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : SymbolValues.I().getValue(match.getSymbol());
+                int points = SymbolValues.I().getValue(match.getSymbol());
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
                     body.getPos().x + 1.5f, body.getPos().y + 1f, true);
-                if (criticalHit)
-                    PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CriticalHitChance.class).getTexture(),
-                        body.getPos().x + 1.5f, body.getPos().y + 2f);
-//                ScoreDisplay.I().addPotentialValue(ScoreDisplay.Type.POINTS, points);
                 ScoreDisplay.I().addToScore(points);
 
                 EffectManager.create(Assets.I().getSymbol(match.getSymbol()),
@@ -194,19 +154,6 @@ public class SlotMachineResultRunner {
                 onHit();
             });
 
-            Seq.of(RingBar.I().getRingsOfType(AbstractTriggerableRing.class))
-                .filter(ring -> ring.triggerableOn() == AbstractTriggerableRing.TriggerablePer.SLOT)
-                .forEach(ring -> ring.scheduleTrigger(matches, match, true));
-
-            if (PlayerStats.I().rollChance(CreditSpawnChance.class)) {
-                scheduler.schedule(() -> {
-                    float x = body.getPos().x + 1f;
-                    float y = body.getPos().y + 1f;
-                    PopupManager.I().spawnNumber(1, Assets.I().yellow(), x, y, false);
-                    PopupManager.I().spawnStatisticHit(PlayerStats.I().getStat(CreditSpawnChance.class).getTexture(), x + 1f, y);
-                    CreditManager.I().gain(1);
-                });
-            }
         }
     }
 

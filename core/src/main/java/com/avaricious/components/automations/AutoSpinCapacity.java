@@ -9,6 +9,10 @@ public class AutoSpinCapacity extends AbstractAutomationUpgrade {
 
     private int capacity = 3;
 
+    public AutoSpinCapacity() {
+        super(200);
+    }
+
     @Override
     void onUpgrade() {
         int old = capacity;
@@ -32,4 +36,5 @@ public class AutoSpinCapacity extends AbstractAutomationUpgrade {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
+
 }

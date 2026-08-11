@@ -10,6 +10,7 @@ public class HandCapacity extends AbstractAutomationUpgrade {
     private int capacity = 1;
 
     public HandCapacity() {
+        super(50);
         activate();
     }
 
@@ -36,4 +37,5 @@ public class HandCapacity extends AbstractAutomationUpgrade {
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
+
 }

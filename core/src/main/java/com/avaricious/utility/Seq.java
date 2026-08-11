@@ -14,11 +14,11 @@ public final class Seq<T> {
         return new Seq<T>(source);
     }
 
-    public static <T> Seq<T> ofArray(final T[] array) {
+    public static <T> Seq<T> of(final T[] array) {
         return new Seq<T>(Arrays.asList(array));
     }
 
-    public static <T> Seq<T> of2DArray(final T[][] array) {
+    public static <T> Seq<T> of(final T[][] array) {
         ArrayList<T> out = new ArrayList<T>();
 
         for (T[] ts : array) {

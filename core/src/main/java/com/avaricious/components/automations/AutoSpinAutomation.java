@@ -12,4 +12,9 @@ public class AutoSpinAutomation extends AbstractAutomation {
         AutoSpinDisplay.I().show();
     }
 
+    @Override
+    public int price() {
+        return 150;
+    }
+
 }

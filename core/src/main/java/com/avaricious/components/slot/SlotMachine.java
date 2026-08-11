@@ -1,14 +1,9 @@
 package com.avaricious.components.slot;
 
-import com.avaricious.bosses.CherryDebuffBoss;
-import com.avaricious.bosses.LemonDebuffBoss;
-import com.avaricious.components.RingBar;
 import com.avaricious.effects.TextureEcho;
-import com.avaricious.items.upgrades.rings.DoubleSymbolValueDisableFruits;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
-import com.avaricious.utility.RunManager;
 import com.avaricious.utility.SeededRandomizer;
 import com.avaricious.utility.Seq;
 import com.avaricious.utility.TextureDrawing;
@@ -278,19 +273,6 @@ public class SlotMachine {
             body.getRenderPos(renderPos);
             if (runningResults && !body.isInPatternHit()) alpha = 0.5f;
         }
-
-//        if (adjY > 13.55f) {
-//            float t = 1f - ((adjY - 13.55f) / 0.5f);
-//            alpha *= Math.max(0f, Math.min(1f, t));
-//        } else if (adjY < 8.45f) {
-//            float t = 1f - ((8.45f - adjY) / 0.5f);
-//            alpha *= Math.max(0f, Math.min(1f, t));
-//        }
-
-        if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON
-            || RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY
-            || RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
-            alpha = 0.5f;
 
         float scale = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getScale() : 1f;
         float rotation = isInGrid ? grid[(int) gridPos.x][(int) gridPos.y].getRotation() : 0f;

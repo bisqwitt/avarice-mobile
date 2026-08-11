@@ -3,10 +3,8 @@ package com.avaricious.screens;
 import com.avaricious.DevTools;
 import com.avaricious.Main;
 import com.avaricious.Profiler;
-import com.avaricious.bosses.OneLessCardBoss;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.HandUi;
-import com.avaricious.components.RingBar;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.automations.Automations;
 import com.avaricious.components.buttons.OpenShopButton;
@@ -23,7 +21,6 @@ import com.avaricious.components.slot.SlotMachineResultRunner;
 import com.avaricious.effects.particle.ParticleManager;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
-import com.avaricious.items.upgrades.rings.OneMoreCardAtStartOfRoundRing;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.GameContext;
@@ -126,7 +123,6 @@ public class SlotScreen extends ScreenAdapter {
         ScoreDisplay.I().draw(delta);
         RunManager.I().getRoundsManager().getRoundTimer().draw(delta);
         buttonBoard.draw(delta);
-        RingBar.I().draw(delta);
         AutoSpinDisplay.I().draw(delta);
 
         openShopButton.draw(delta);
@@ -183,7 +179,6 @@ public class SlotScreen extends ScreenAdapter {
             shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         } else {
             SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
-            RingBar.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
 //            if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
             HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
@@ -206,7 +201,7 @@ public class SlotScreen extends ScreenAdapter {
         }
 
         if (!Automations.I().getAutoSpin().isActive())
-            ScoreDisplay.I().setScoreNumber(ScoreDisplay.I().getScoreNumber() - 50);
+            ScoreDisplay.I().removeFromScore(50);
         else AutoSpinDisplay.I().removeSpin();
     }
 
@@ -256,9 +251,6 @@ public class SlotScreen extends ScreenAdapter {
             @Override
             public void run() {
                 int drawAmount = 3;
-                if (RunManager.I().getRoundsManager().getBoss() instanceof OneLessCardBoss)
-                    drawAmount--;
-                if (RingBar.I().ringOwned(OneMoreCardAtStartOfRoundRing.class)) drawAmount++;
                 Hand.I().drawCards(drawAmount);
             }
         }, 0.25f);

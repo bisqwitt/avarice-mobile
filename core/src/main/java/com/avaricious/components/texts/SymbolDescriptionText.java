@@ -12,7 +12,7 @@ import java.util.Arrays;
 public class SymbolDescriptionText extends FabledText {
 
     public SymbolDescriptionText(Symbol symbol) {
-        SymbolValues.I().addPropertyChangeListener(evt -> {
+        SymbolValues.I().addValueChangeListener(evt -> {
             if (evt.getPropertyName().equals(symbol.toString())) {
                 int newValue = (int) evt.getNewValue();
                 updateDescription(newValue, newValue + 1);

@@ -1,9 +1,7 @@
 package com.avaricious;
 
-import com.avaricious.bosses.AbstractBoss;
 import com.avaricious.components.ItemBag;
 import com.avaricious.components.roundInfoPanel.RoundTimer;
-import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.items.upgrades.cards.AbstractCard;
 import com.avaricious.items.upgrades.quests.AbstractQuest;
 import com.avaricious.items.upgrades.quests.PlaySevenCardsInOneSpinQuest;
@@ -24,7 +22,6 @@ public class RoundsManager extends Observable<Integer> {
     public void nextRound() {
         setCurrentRound(currentRound + 1);
         CreditManager.I().roundEnd();
-        ScoreDisplay.I().clearPotentialScore();
 //        Hand.I().drawCard();
 
         roundTimer.startTimer();
@@ -40,10 +37,6 @@ public class RoundsManager extends Observable<Integer> {
         playedCardsThisRound.clear();
         defenceTypeCardsDisabled = false;
         notifyChanged(snapshot());
-    }
-
-    public AbstractBoss getBoss() {
-        return null;
     }
 
     public void onCardPlayed(AbstractCard card) {

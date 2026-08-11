@@ -142,5 +142,5 @@ public abstract class DisablableButton extends Button {
         this.disabledTexture = disabledTexture;
     }
 
-    abstract boolean disabled();
+    public abstract boolean disabled();
 }

@@ -54,7 +54,7 @@ public class ButtonBoard {
             new Rectangle(BOARD_X + 4.35f, BOARD_Y + 1f, BUTTON_W, BUTTON_H), Input.Keys.SPACE);
         buySpinButton = new BuySpinButton(() -> {
             AutoSpinDisplay.I().addSpin();
-            ScoreDisplay.I().setScoreNumber(ScoreDisplay.I().getScoreNumber() - 50);
+            ScoreDisplay.I().removeFromScore(50);
             if (AutoSpinDisplay.I().getSpins() == 1 && SlotMachine.I().isStale())
                 ScreenManager.I().getScreen(SlotScreen.class).onSpinButtonPressed();
         },
@@ -62,7 +62,7 @@ public class ButtonBoard {
 
         openShopButton = new DrawCardButton(() -> {
             Hand.I().drawCard();
-            ScoreDisplay.I().setScoreNumber(ScoreDisplay.I().getScoreNumber() - 25);
+            ScoreDisplay.I().removeFromScore(25);
         },
             new Rectangle(BOARD_X + 0.2f, BOARD_Y + 1f, BUTTON_W, BUTTON_H), Input.Keys.ENTER);
 

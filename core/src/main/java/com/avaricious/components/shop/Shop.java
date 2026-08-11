@@ -1,11 +1,12 @@
 package com.avaricious.components.shop;
 
-import com.avaricious.CreditScore;
+import com.avaricious.CreditNumber;
 import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.ExitShopButton;
 import com.avaricious.components.buttons.ShopListToggleBoard;
+import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.texts.ShopWord;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -33,7 +34,7 @@ public class Shop {
     private final TextureRegion window = Assets.I().get(AssetKey.CHARCOAL_PIXEL_DARKER);
 
     private final Button exitShopButton;
-    private final CreditScore creditScore;
+    private final CreditNumber creditScore;
 
     private final SymbolShopList symbolShopList = new SymbolShopList(new Rectangle(
         WINDOW_X + 1.5f,
@@ -70,12 +71,13 @@ public class Shop {
     public Shop(Runnable onReturnedFromShop) {
         this.onReturnedFromShop = onReturnedFromShop;
 
-        creditScore = new CreditScore(
-            new Rectangle(0.75f, baseCreditScoreY, 7 / 12f, 11 / 12f),
-            0.9f
-        );
+        creditScore = new CreditNumber((int) ScoreDisplay.I().getScoreNumber(),
+            new Rectangle(0.75f, baseCreditScoreY, 7 / 15f, 11 / 15f),
+            0.7f
+        ).setZIndex(ZIndex.SHOP_CARD);
+        ScoreDisplay.I().addScoreChangeListener(evt -> creditScore.setValue((Float) evt.getNewValue()));
 
-        exitShopButton = new ExitShopButton(new Rectangle(5.1f, 0.75f, 79 / 27f, 25 / 27f));
+        exitShopButton = new ExitShopButton(new Rectangle(5.1f, 0.5f, 79 / 27f, 25 / 27f));
 
         // start hidden below like HealthUi.moveOut() result
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
@@ -95,6 +97,8 @@ public class Shop {
         shopText.draw(delta);
         if (shopListToggleBoard.automationButtonIsToggeled()) automationShopList.draw(delta);
         if (shopListToggleBoard.symbolButtonIsToggeled()) symbolShopList.draw(delta);
+
+        creditScore.draw(delta);
         exitShopButton.draw(delta);
         shopListToggleBoard.draw(delta);
     }
@@ -159,8 +163,8 @@ public class Shop {
             shopText.getStartingPos().y = currentWindowY + 17f;
             symbolShopList.setY(currentWindowY + 2.5f);
             automationShopList.setY(currentWindowY + 2.5f);
-            exitShopButton.getBounds().setY(currentWindowY + 1.25f);
-            creditScore.getFirstDigitBounds().setY(currentWindowY + 0.7f);
+            exitShopButton.getBounds().setY(currentWindowY + 0.75f);
+            creditScore.getFirstDigitBounds().setY(currentWindowY + 0.9f);
             shopListToggleBoard.setY(currentWindowY + 15.5f);
         }
     }

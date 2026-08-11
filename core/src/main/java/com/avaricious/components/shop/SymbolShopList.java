@@ -16,31 +16,31 @@ public class SymbolShopList extends ShopList {
         super(bounds);
         items.add(new ShopItem(
             new LemonValueText(),
-            3, Symbol.LEMON
+            Symbol.LEMON
         ));
         items.add(new ShopItem(
             new CherryValueText(),
-            3, Symbol.CHERRY
+            Symbol.CHERRY
         ));
         items.add(new ShopItem(
             new CloverValueText(),
-            3, Symbol.CLOVER
+            Symbol.CLOVER
         ));
         items.add(new ShopItem(
             new BellValueText(),
-            3, Symbol.BELL
+            Symbol.BELL
         ));
         items.add(new ShopItem(
             new IronValueText(),
-            3, Symbol.IRON
+            Symbol.IRON
         ));
         items.add(new ShopItem(
             new DiamondValueText(),
-            3, Symbol.DIAMOND
+            Symbol.DIAMOND
         ));
         items.add(new ShopItem(
             new SevenValueText(),
-            3, Symbol.SEVEN
+            Symbol.SEVEN
         ));
 
         updateItemPositions();

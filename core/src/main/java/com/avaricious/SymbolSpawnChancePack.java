@@ -10,7 +10,6 @@ import com.avaricious.items.upgrades.AbstractUpgrade;
 import com.avaricious.items.upgrades.IUpgradeType;
 import com.avaricious.items.upgrades.UpgradeRarity;
 import com.avaricious.items.upgrades.cards.CardType;
-import com.avaricious.items.upgrades.rings.RingType;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.SeededRandomizer;
@@ -125,7 +124,7 @@ public class SymbolSpawnChancePack extends PackOpening {
 
             @Override
             public IUpgradeType type() {
-                return RingType.PASSIVE;
+                return CardType.UNKNOWN;
             }
 
             @Override

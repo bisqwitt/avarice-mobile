@@ -1,6 +1,5 @@
 package com.avaricious.components;
 
-import com.avaricious.bosses.DiscardACardAfterEveryPlayedCardBoss;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.popups.TooltipPopup;
 import com.avaricious.components.slot.DragableBody;
@@ -353,9 +352,6 @@ public class HandUi {
         }, 0.5f);
 
         RunManager.I().getRoundsManager().onCardPlayed(card);
-
-        if (RunManager.I().getRoundsManager().getBoss() instanceof DiscardACardAfterEveryPlayedCardBoss)
-            Hand.I().discardRandomCard();
     }
 
     public void selectCardToDiscard() {

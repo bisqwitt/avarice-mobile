@@ -4,6 +4,8 @@ import com.avaricious.components.slot.Symbol;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SymbolValues {
 
@@ -13,78 +15,51 @@ public class SymbolValues {
         return instance == null ? instance = new SymbolValues() : instance;
     }
 
-    private int lemonValue = 2;
-    private int cherryValue = 2;
-    private int cloverValue = 3;
-    private int bellValue = 3;
-    private int ironValue = 5;
-    private int diamondValue = 5;
-    private int sevenValue = 7;
+    private final Map<Symbol, Integer> symbolValueMap = new HashMap<>();
+    private final Map<Symbol, Integer> symbolPriceMap = new HashMap<>();
 
     private final PropertyChangeSupport symbolValueChangeSupport = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport symbolPriceChangeSupport = new PropertyChangeSupport(this);
 
     private SymbolValues() {
+        symbolValueMap.put(Symbol.LEMON, 2);
+        symbolValueMap.put(Symbol.CHERRY, 2);
+        symbolValueMap.put(Symbol.CLOVER, 3);
+        symbolValueMap.put(Symbol.BELL, 3);
+        symbolValueMap.put(Symbol.IRON, 5);
+        symbolValueMap.put(Symbol.DIAMOND, 5);
+        symbolValueMap.put(Symbol.SEVEN, 7);
+
+        Seq.of(Symbol.values()).forEach(symbol -> symbolPriceMap.put(symbol, 50));
     }
 
     public int getValue(Symbol symbol) {
-        switch (symbol) {
-            case LEMON:
-                return lemonValue;
-            case CHERRY:
-                return cherryValue;
-            case CLOVER:
-                return cloverValue;
-            case BELL:
-                return bellValue;
-            case IRON:
-                return ironValue;
-            case DIAMOND:
-                return diamondValue;
-        }
-        return sevenValue;
+        return symbolValueMap.get(symbol);
     }
 
     public void increaseValue(Symbol symbol) {
-        switch (symbol) {
-            case LEMON:
-                lemonValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.LEMON.toString(), lemonValue - 1, lemonValue);
-                break;
-
-            case CHERRY:
-                cherryValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.CHERRY.toString(), cherryValue - 1, cherryValue);
-                break;
-
-            case CLOVER:
-                cloverValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.CLOVER.toString(), cloverValue - 1, cloverValue);
-                break;
-
-            case BELL:
-                bellValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.BELL.toString(), bellValue - 1, bellValue);
-                break;
-
-            case IRON:
-                ironValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.IRON.toString(), ironValue - 1, ironValue);
-                break;
-
-            case DIAMOND:
-                diamondValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.DIAMOND.toString(), diamondValue - 1, diamondValue);
-                break;
-
-            case SEVEN:
-                sevenValue++;
-                symbolValueChangeSupport.firePropertyChange(Symbol.SEVEN.toString(), sevenValue - 1, sevenValue);
-                break;
-        }
+        int oldValue = symbolValueMap.get(symbol);
+        symbolValueMap.put(symbol, oldValue + 1);
+        symbolValueChangeSupport.firePropertyChange(symbol.toString(), oldValue, (int) symbolValueMap.get(symbol));
+        increasePrice(symbol);
     }
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
+    public int getPrice(Symbol symbol) {
+        return symbolPriceMap.get(symbol);
+    }
+
+    private void increasePrice(Symbol symbol) {
+        int oldPrice = symbolPriceMap.get(symbol);
+        symbolPriceMap.put(symbol, (int) Math.ceil(oldPrice * 1.5));
+        symbolPriceChangeSupport.firePropertyChange(symbol.toString(), oldPrice, (int) symbolPriceMap.get(symbol));
+    }
+
+    public void addValueChangeListener(PropertyChangeListener listener) {
         symbolValueChangeSupport.addPropertyChangeListener(listener);
+    }
+
+    public void addPriceChangeListener(PropertyChangeListener listener) {
+        symbolPriceChangeSupport.addPropertyChangeListener(listener);
     }
 
 }

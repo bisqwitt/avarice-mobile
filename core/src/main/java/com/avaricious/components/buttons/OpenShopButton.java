@@ -18,7 +18,7 @@ public class OpenShopButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
         return false;
     }
 }

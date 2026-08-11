@@ -42,7 +42,6 @@ public class AutomationToggleButton extends AbstractToggleButton {
 
     public AutomationToggleButton(Runnable onToggled, Runnable onUntoggled) {
         super(new Rectangle(4.5f, 15.5f, 3.25f, 0.9f), onToggled, onUntoggled);
-        toggled = true;
     }
 
     @Override

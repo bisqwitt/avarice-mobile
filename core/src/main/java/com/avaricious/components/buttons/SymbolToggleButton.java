@@ -35,6 +35,7 @@ public class SymbolToggleButton extends AbstractToggleButton {
 
     public SymbolToggleButton(Runnable onToggled, Runnable onUntoggled) {
         super(new Rectangle(1f, 15.5f, 3.25f, 0.9f), onToggled, onUntoggled);
+        toggled = true;
     }
 
     @Override

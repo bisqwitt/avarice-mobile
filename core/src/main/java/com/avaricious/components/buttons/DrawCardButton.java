@@ -19,7 +19,7 @@ public class DrawCardButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
         return ScoreDisplay.I().getScoreNumber() < 25 || Automations.I().getHandCapacity().getCapacity() == Hand.I().getHand().size();
     }
 }

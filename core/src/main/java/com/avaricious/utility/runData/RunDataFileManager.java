@@ -1,6 +1,5 @@
 package com.avaricious.utility.runData;
 
-import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.utility.Listener;
 import com.avaricious.utility.RunManager;
 import com.avaricious.utility.Seq;
@@ -31,11 +30,11 @@ public class RunDataFileManager {
         file = Gdx.files.local("runs.json");
         json.setOutputType(JsonWriter.OutputType.json);
 
-        observeValue(ScoreDisplay.I()::onChange, scoreState ->
-            onScoreChange(
-                RunManager.I().getRoundsManager().getCurrentRound(),
-                scoreState.sum,
-                RunManager.I().getRoundsManager().getRoundTimer().msSinceRoundStart()));
+//        observeValue(ScoreDisplay.I()::onChange, scoreState ->
+//            onScoreChange(
+//                RunManager.I().getRoundsManager().getCurrentRound(),
+//                scoreState.sum,
+//                RunManager.I().getRoundsManager().getRoundTimer().msSinceRoundStart()));
         loadRuns();
     }
 

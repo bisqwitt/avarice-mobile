@@ -19,7 +19,7 @@ public class BuySpinButton extends DisablableButton {
     }
 
     @Override
-    boolean disabled() {
+    public boolean disabled() {
         return ScoreDisplay.I().getScoreNumber() < 50 || AutoSpinDisplay.I().getSpins() == Automations.I().getAutoSpinCapacity().getCapacity();
     }
 }
