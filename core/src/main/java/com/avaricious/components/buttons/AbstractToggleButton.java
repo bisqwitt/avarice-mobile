@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class AbstractToggleButton {
 
+    private final Rectangle bounds;
+
     private final Runnable onToggled;
     private final Runnable onUntoggled;
 
@@ -19,7 +21,8 @@ public abstract class AbstractToggleButton {
 
     private boolean pressDownIsOnButton = false;
 
-    public AbstractToggleButton(Runnable onToggled, Runnable onUntoggled) {
+    public AbstractToggleButton(Rectangle bounds, Runnable onToggled, Runnable onUntoggled) {
+        this.bounds = bounds;
         this.onToggled = onToggled;
         this.onUntoggled = onUntoggled;
     }
@@ -27,22 +30,22 @@ public abstract class AbstractToggleButton {
     public void draw(float delta) {
         Pencil.I().addDrawing(new TextureDrawing(
             toggled ? toggledTexture() : untoggledTexture(),
-            bounds().x, bounds().y, bounds().width, bounds().height,
+            bounds.x, bounds.y, bounds.width, bounds.height,
             ZIndex.SHOP_CARD
         ));
         title().draw(delta);
         if (!toggled)
             Pencil.I().addDrawing(new TextureDrawing(
                 Assets.I().get(AssetKey.BLACK_PIXEL),
-                bounds().x, bounds().y, bounds().width, bounds().height,
+                bounds.x, bounds.y, bounds.width, bounds.height,
                 ZIndex.SHOP_CARD, Assets.I().shadowColor()
             ));
     }
 
     public void handleInput(Vector2 mouse, boolean pressed, boolean wasPressed) {
         if (pressed && !wasPressed) {
-            pressDownIsOnButton = bounds().contains(mouse);
-        } else if (!pressed && wasPressed && pressDownIsOnButton && bounds().contains(mouse)) {
+            pressDownIsOnButton = bounds.contains(mouse);
+        } else if (!pressed && wasPressed && pressDownIsOnButton && bounds.contains(mouse)) {
             onButtonPressed();
         }
     }
@@ -59,14 +62,12 @@ public abstract class AbstractToggleButton {
 
     abstract FabledWord title();
 
-    abstract Rectangle bounds();
-
     abstract TextureRegion toggledTexture();
 
     abstract TextureRegion untoggledTexture();
 
     public void setY(float y) {
-        bounds().setY(y);
+        bounds.setY(y);
         title().getStartingPos().y = y + 0.25f;
     }
 

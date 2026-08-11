@@ -41,18 +41,13 @@ public class AutomationToggleButton extends AbstractToggleButton {
         ), new Vector2(4.75f, 15.75f), 30f, 0.05f, ZIndex.SHOP_CARD);
 
     public AutomationToggleButton(Runnable onToggled, Runnable onUntoggled) {
-        super(onToggled, onUntoggled);
+        super(new Rectangle(4.5f, 15.5f, 3.25f, 0.9f), onToggled, onUntoggled);
         toggled = true;
     }
 
     @Override
     FabledWord title() {
         return title;
-    }
-
-    @Override
-    Rectangle bounds() {
-        return new Rectangle(4.5f, 15.5f, 3.25f, 0.9f);
     }
 
     @Override
