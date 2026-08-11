@@ -5,6 +5,7 @@ import com.avaricious.components.ButtonBoard;
 import com.avaricious.components.ScreenShake;
 import com.avaricious.components.buttons.Button;
 import com.avaricious.components.buttons.ExitShopButton;
+import com.avaricious.components.buttons.ShopListToggleBoard;
 import com.avaricious.components.texts.ShopWord;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
@@ -34,12 +35,20 @@ public class Shop {
     private final Button exitShopButton;
     private final CreditScore creditScore;
 
+    private final SymbolShopList symbolShopList = new SymbolShopList(new Rectangle(
+        WINDOW_X + 1.5f,
+        0f,
+        WINDOW_WIDTH - 3f,
+        12.5f
+    ));
     private final AutomationShopList automationShopList = new AutomationShopList(new Rectangle(
         WINDOW_X + 1.5f,
-        4f,
+        0f,
         WINDOW_WIDTH - 3f,
-        12f
+        12.5f
     ));
+
+    private final ShopListToggleBoard shopListToggleBoard = new ShopListToggleBoard();
 
     private final Runnable onReturnedFromShop;
 
@@ -66,25 +75,7 @@ public class Shop {
             0.9f
         );
 
-//        rerollButton = new Button(() -> {
-//            if (CreditManager.I().enoughCredit(3)) {
-////                shopItemBar.load();
-////                shopItemBar2.load();
-//                CreditManager.I().pay(3);
-//            } else {
-//                CreditManager.I().pulse();
-//            }
-//        },
-//            Assets.I().get(AssetKey.REROLL_BUTTON),
-//            Assets.I().get(AssetKey.REROLL_BUTTON_PRESSED),
-//            Assets.I().get(AssetKey.REROLL_BUTTON),
-//            new Rectangle(WINDOW_X + 5.75f, 12, 79 / 27f, 25 / 27f),
-//            Input.Keys.SPACE,
-//            ZIndex.SHOP
-//        );
-//        rerollButton.setShowShadow(false);
-
-        exitShopButton = new ExitShopButton(new Rectangle(5.1f, 1.25f, 79 / 27f, 25 / 27f));
+        exitShopButton = new ExitShopButton(new Rectangle(5.1f, 0.75f, 79 / 27f, 25 / 27f));
 
         // start hidden below like HealthUi.moveOut() result
         creditScore.getFirstDigitBounds().y = baseCreditScoreY - uiMoveDistance;
@@ -102,8 +93,10 @@ public class Shop {
             ZIndex.SHOP
         ));
         shopText.draw(delta);
-        automationShopList.draw(delta);
+        if (shopListToggleBoard.automationButtonIsToggeled()) automationShopList.draw(delta);
+        if (shopListToggleBoard.symbolButtonIsToggeled()) symbolShopList.draw(delta);
         exitShopButton.draw(delta);
+        shopListToggleBoard.draw(delta);
     }
 
     public void show() {
@@ -164,9 +157,11 @@ public class Shop {
         // keep child UI synced with the window position
         if (state == State.ENTERING || state == State.EXITING) {
             shopText.getStartingPos().y = currentWindowY + 17f;
-            automationShopList.setY(currentWindowY + 4f);
+            symbolShopList.setY(currentWindowY + 2.5f);
+            automationShopList.setY(currentWindowY + 2.5f);
             exitShopButton.getBounds().setY(currentWindowY + 1.25f);
             creditScore.getFirstDigitBounds().setY(currentWindowY + 0.7f);
+            shopListToggleBoard.setY(currentWindowY + 15.5f);
         }
     }
 
@@ -177,7 +172,11 @@ public class Shop {
     public void handleInput(Vector2 mouse, boolean leftClickPressed, boolean leftClickWasPressed, float delta) {
         if (state != State.SHOWN) return;
 
-        automationShopList.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        shopListToggleBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        if (shopListToggleBoard.symbolButtonIsToggeled())
+            symbolShopList.handleInput(mouse, leftClickPressed, leftClickWasPressed);
+        if (shopListToggleBoard.automationButtonIsToggeled())
+            automationShopList.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         exitShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
     }
 }

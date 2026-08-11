@@ -4,7 +4,11 @@ import com.avaricious.CreditNumber;
 import com.avaricious.components.automations.AbstractAutomation;
 import com.avaricious.components.automations.AbstractAutomationUpgrade;
 import com.avaricious.components.buttons.BuyAutomationButton;
+import com.avaricious.components.buttons.DisablableButton;
+import com.avaricious.components.buttons.UpgradeSymbolButton;
+import com.avaricious.components.slot.Symbol;
 import com.avaricious.components.texts.FabledText;
+import com.avaricious.components.texts.SymbolDescriptionText;
 import com.avaricious.utility.AssetKey;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Pencil;
@@ -14,18 +18,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-public class AutomationShopItem {
+public class ShopItem {
 
     private final TextureRegion background = Assets.I().get(AssetKey.BLACK_PIXEL);
 
     private final FabledText title;
     private final FabledText description;
     private final CreditNumber price;
-    private final BuyAutomationButton buyButton;
+    private final DisablableButton buyButton;
 
     private float y;
 
-    public AutomationShopItem(FabledText title, int price, AbstractAutomation automation) {
+    public ShopItem(FabledText title, int price, AbstractAutomation automation) {
         this.title = title;
         this.description = null;
         this.price = new CreditNumber(price,
@@ -34,7 +38,7 @@ public class AutomationShopItem {
         this.buyButton = new BuyAutomationButton(automation);
     }
 
-    public AutomationShopItem(FabledText title, FabledText description, int price, AbstractAutomationUpgrade automationUpgrade) {
+    public ShopItem(FabledText title, FabledText description, int price, AbstractAutomationUpgrade automationUpgrade) {
         this.title = title;
         this.description = description;
         this.price = new CreditNumber(price,
@@ -43,9 +47,18 @@ public class AutomationShopItem {
         this.buyButton = new BuyAutomationButton(automationUpgrade);
     }
 
+    public ShopItem(FabledText title, int price, Symbol symbol) {
+        this.title = title;
+        this.description = new SymbolDescriptionText(symbol);
+        this.price = new CreditNumber(price,
+            new Rectangle(1.25f, 0, 7 / 24f, 11 / 24f), 0.5f)
+            .setZIndex(ZIndex.SHOP_CARD);
+        this.buyButton = new UpgradeSymbolButton(symbol);
+    }
+
     public void draw(float delta) {
         Pencil.I().addDrawing(new TextureDrawing(
-            background, 0.75f, y, 7.5f, description != null ? 3f : 2.5f, ZIndex.SHOP_CARD, Assets.I().shadowColor()
+            background, 0.75f, y, 7.5f, getHeight(), ZIndex.SHOP_CARD, Assets.I().shadowColor()
         ));
 
         title.draw(delta);
@@ -56,6 +69,10 @@ public class AutomationShopItem {
 
     public void handleInput(Vector2 mouse, boolean touching, boolean touched) {
         buyButton.handleInput(mouse, touching, touched);
+    }
+
+    public float getHeight() {
+        return description != null ? 3f : 2.5f;
     }
 
     public void setY(float y) {

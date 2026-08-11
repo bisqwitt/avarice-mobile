@@ -23,6 +23,7 @@ import com.avaricious.stats.statupgrades.CriticalHitChance;
 import com.avaricious.stats.statupgrades.DoubleHitChance;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.Seq;
+import com.avaricious.utility.SymbolValues;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
@@ -169,7 +170,7 @@ public class SlotMachineResultRunner {
                 ScreenShake.I().addTrauma(0.2f);
 
                 boolean criticalHit = PlayerStats.I().rollChance(CriticalHitChance.class);
-                int points = criticalHit ? match.getSymbol().baseValue() * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : match.getSymbol().baseValue();
+                int points = criticalHit ? SymbolValues.I().getValue(match.getSymbol()) * PlayerStats.I().getStat(CriticalHitChance.class).criticalHitMultiplier() : SymbolValues.I().getValue(match.getSymbol());
 
                 PopupManager.I().spawnNumber(points, Assets.I().blue(),
                     body.getPos().x + 1.5f, body.getPos().y + 1f, true);

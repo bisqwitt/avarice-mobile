@@ -31,8 +31,8 @@ public class FabledWord {
     protected final List<IdleFloatEffect> floatEffects = new ArrayList<>();
     protected final List<IdleSwayEffect> swayEffects = new ArrayList<>();
 
-    protected FabledWord(List<TextureRegion> letterTextures, List<TextureRegion> letterShadowTextures,
-                         Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
+    public FabledWord(List<TextureRegion> letterTextures, List<TextureRegion> letterShadowTextures,
+                      Vector2 startingPos, float sizeRatio, float spacing, ZIndex zIndex) {
         this.letterTextures.addAll(letterTextures);
         this.letterShadowTextures.addAll(letterShadowTextures);
         this.startingPos = startingPos;

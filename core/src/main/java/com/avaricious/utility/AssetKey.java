@@ -406,7 +406,13 @@ public enum AssetKey {
     ARROW_LETTER("arrow-letter"),
     ARROW_LETTER_SHADOW("arrow-letter-shadow"),
     UPGRADE_BUTTON("upgrade-button"),
-    UPGRADE_BUTTON_PRESSED("upgrade-button-pressed");
+    UPGRADE_BUTTON_PRESSED("upgrade-button-pressed"),
+    L_BIG("l-big"),
+    L_BIG_SHADOW("l-big-shadow"),
+    V_BIG("v-big"),
+    V_BIG_SHADOW("v-big-shadow"),
+    D_BIG("d-big"),
+    D_BIG_SHADOW("d-big-shadow");
 
     private final String path;
 

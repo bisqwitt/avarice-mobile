@@ -10,10 +10,10 @@ public class Automations {
 
     private final AutoSpinAutomation autoSpin = new AutoSpinAutomation();
     private final AutoSpinCapacity autoSpinCapacity = new AutoSpinCapacity();
+    private final SpinBuyerAutomation spinBuyer = new SpinBuyerAutomation();
+    private final SpinBuyerSpeed spinBuyerSpeed = new SpinBuyerSpeed();
 
     private final HandCapacity handCapacity = new HandCapacity();
-
-    private final SpinBuyerAutomation spinBuyer = new SpinBuyerAutomation();
 
     public AutoSpinAutomation getAutoSpin() {
         return autoSpin;
@@ -25,6 +25,10 @@ public class Automations {
 
     public SpinBuyerAutomation getSpinBuyer() {
         return spinBuyer;
+    }
+
+    public SpinBuyerSpeed getSpinBuyerSpeed() {
+        return spinBuyerSpeed;
     }
 
     public HandCapacity getHandCapacity() {
