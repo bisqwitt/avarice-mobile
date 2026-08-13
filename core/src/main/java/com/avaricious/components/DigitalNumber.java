@@ -226,6 +226,10 @@ public class DigitalNumber {
         this.color = color;
     }
 
+    public PulseEffect getPulseEffect() {
+        return pulseEffect;
+    }
+
     public IdleFloatEffect getFloatEffect() {
         return floatEffect;
     }

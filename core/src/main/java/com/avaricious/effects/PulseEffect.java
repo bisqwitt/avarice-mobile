@@ -5,32 +5,15 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class PulseEffect {
 
-    //    private static final float[] DEFAULT_SCALE_VALUES = {
-//        1.0f,
-//        1.175f,
-//        0.825f,
-//        1.075f,
-//        0.95f,
-//        1.0f
-//    };
     private static final float[] SCALE_VALUES = {
         1.0f,
         1.175f * 1.3f,
         0.825f * 1.25f,
         1.075f * 1.2f,
         0.95f * 1.15f,
-        1 * 1.1f,
+        1f * 1.1f,
         1.0f
     };
-
-//    private static final float[] DEFAULT_ROTATION_VALUES = {
-//        0f,
-//        5f,
-//        -5f,
-//        2f,
-//        -1f,
-//        0f
-//    };
 
     private static final float[] ROTATION_VALUES = {
         0f,
@@ -42,7 +25,7 @@ public class PulseEffect {
         0f
     };
 
-    private final float segmentDuration = 0.1f;
+    private float segmentDuration = 0.1f;
     private final Interpolation interpolation = Interpolation.sine;
 
     private int currentSegment;
@@ -55,8 +38,7 @@ public class PulseEffect {
     private float currentRotation = 0f;
 
     private float rotationDirection = 1f;
-
-//    private
+    private float strength = 1f;
 
     public void update(float delta) {
         if (!active || finished) {
@@ -81,13 +63,21 @@ public class PulseEffect {
 
         float progress = timer / segmentDuration;
 
-        float scaleFrom = SCALE_VALUES[currentSegment];
-        float scaleTo = SCALE_VALUES[currentSegment + 1];
+        float scaleFrom = applyScaleStrength(SCALE_VALUES[currentSegment]);
+        float scaleTo = applyScaleStrength(SCALE_VALUES[currentSegment + 1]);
+
         currentScale = interpolation.apply(scaleFrom, scaleTo, progress);
 
-        float rotationFrom = ROTATION_VALUES[currentSegment] * rotationDirection;
-        float rotationTo = ROTATION_VALUES[currentSegment + 1] * rotationDirection;
+        float rotationFrom =
+            ROTATION_VALUES[currentSegment] * rotationDirection * strength;
+        float rotationTo =
+            ROTATION_VALUES[currentSegment + 1] * rotationDirection * strength;
+
         currentRotation = interpolation.apply(rotationFrom, rotationTo, progress);
+    }
+
+    private float applyScaleStrength(float scale) {
+        return 1f + (scale - 1f) * strength;
     }
 
     public void pulse() {
@@ -117,7 +107,11 @@ public class PulseEffect {
         return finished;
     }
 
-    public enum PulseStrength {
-        DEFAULT, HARD
+    public void setStrength(float strength) {
+        this.strength = strength;
+    }
+
+    public void setSpeed(float segmentDuration) {
+        this.segmentDuration = segmentDuration;
     }
 }

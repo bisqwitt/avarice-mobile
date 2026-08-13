@@ -133,7 +133,7 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().draw(batch, delta);
         SlotMachine.I().draw(delta);   // 10
 
-        HandUi.I().draw(delta);
+//        HandUi.I().draw(delta);
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
 
@@ -181,7 +181,7 @@ public class SlotScreen extends ScreenAdapter {
             SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
 //            if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
-            HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+//            HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
             openShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         }
         leftClickWasPressed = leftClickPressed;

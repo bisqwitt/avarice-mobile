@@ -24,6 +24,8 @@ public class ScoreDisplay {
 
     private ScoreDisplay() {
         scoreNumber.getIdleScaleEffect().setAllowed(false);
+//        scoreNumber.getPulseEffect().setStrength(0.5f);
+        scoreNumber.getPulseEffect().setSpeed(0.2f);
         setScoreNumber(300);
     }
 
