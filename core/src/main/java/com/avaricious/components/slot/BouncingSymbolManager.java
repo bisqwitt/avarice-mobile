@@ -1,5 +1,6 @@
 package com.avaricious.components.slot;
 
+import com.avaricious.utility.Seq;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -19,18 +20,29 @@ public class BouncingSymbolManager {
     private BouncingSymbolManager() {
     }
 
-    public void createFallingSymbol(Symbol symobl, float x, float y) {
-        bouncingSymbols.add(new BouncingSymbol(symobl, x, y));
+    public void createFallingSymbol(Symbol symbol, float x, float y) {
+        bouncingSymbols.add(
+            new BouncingSymbol(symbol, x, y)
+        );
     }
 
-    public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
+    public void handleInput(
+        Vector2 mouse,
+        boolean touching,
+        boolean wasTouching
+    ) {
         for (BouncingSymbol symbol : bouncingSymbols) {
-            symbol.handleInput(mouse, touching, wasTouching);
+            symbol.handleInput(
+                mouse,
+                touching,
+                wasTouching
+            );
         }
     }
 
     public void drawFallingSymbols(float delta) {
         updateFallingSymbols(delta);
+
         for (BouncingSymbol symbol : bouncingSymbols) {
             symbol.draw();
         }
@@ -41,16 +53,36 @@ public class BouncingSymbolManager {
             symbol.update(delta);
         }
 
+        /*
+         * Dynamic symbols against each other.
+         */
         handleSymbolCollisions();
-        bouncingSymbols.removeIf(BouncingSymbol::isFinished);
+
+        /*
+         * Dynamic symbols against the currently
+         * highlighted/hitting slot-machine symbols.
+         */
+        handlePatternHitCollisions();
+
+        bouncingSymbols.removeIf(
+            BouncingSymbol::isFinished
+        );
     }
+
+    /*
+     * ---------------------------------------------------------
+     * BOUNCING SYMBOL <-> BOUNCING SYMBOL
+     * ---------------------------------------------------------
+     */
 
     private void handleSymbolCollisions() {
         for (int i = 0; i < bouncingSymbols.size(); i++) {
             BouncingSymbol a = bouncingSymbols.get(i);
 
             for (int j = i + 1; j < bouncingSymbols.size(); j++) {
-                BouncingSymbol b = bouncingSymbols.get(j);
+                BouncingSymbol b =
+                    bouncingSymbols.get(j);
+
                 resolveCollision(a, b);
             }
         }
@@ -60,24 +92,30 @@ public class BouncingSymbolManager {
         BouncingSymbol a,
         BouncingSymbol b
     ) {
+        float dx =
+            b.getCenterX() - a.getCenterX();
 
-        float dx = b.getCenterX() - a.getCenterX();
-        float dy = b.getCenterY() - a.getCenterY();
+        float dy =
+            b.getCenterY() - a.getCenterY();
 
-        float distanceSquared = dx * dx + dy * dy;
+        float distanceSquared =
+            dx * dx + dy * dy;
 
         float minDistance =
             a.getRadius() + b.getRadius();
 
-        if (distanceSquared >= minDistance * minDistance) {
+        if (
+            distanceSquared
+                >= minDistance * minDistance
+        ) {
             return;
         }
 
-        float distance = (float) Math.sqrt(distanceSquared);
+        float distance =
+            (float) Math.sqrt(distanceSquared);
 
         /*
          * Exact same position.
-         * Prevent division by zero.
          */
         if (distance < 0.001f) {
             dx = MathUtils.random(-1f, 1f);
@@ -118,29 +156,24 @@ public class BouncingSymbolManager {
          * Relative velocity.
          */
         float relativeVelocityX =
-            b.getVelocityX() - a.getVelocityX();
+            b.getVelocityX()
+                - a.getVelocityX();
 
         float relativeVelocityY =
-            b.getVelocityY() - a.getVelocityY();
+            b.getVelocityY()
+                - a.getVelocityY();
 
-        /*
-         * Velocity along collision normal.
-         */
         float velocityAlongNormal =
             relativeVelocityX * normalX
                 + relativeVelocityY * normalY;
 
         /*
-         * They're already separating.
+         * Already moving apart.
          */
         if (velocityAlongNormal > 0f) {
             return;
         }
 
-        /*
-         * Slightly randomized elasticity makes collisions
-         * feel less mechanically perfect.
-         */
         float restitution =
             MathUtils.random(0.55f, 0.8f);
 
@@ -175,7 +208,7 @@ public class BouncingSymbolManager {
         );
 
         /*
-         * Tangential interaction creates tumbling.
+         * Tangential collision -> tumbling.
          */
         float tangentX = -normalY;
         float tangentY = normalX;
@@ -191,10 +224,6 @@ public class BouncingSymbolManager {
         a.addRotationVelocity(-spin);
         b.addRotationVelocity(spin);
 
-        /*
-         * Tiny random spin variation prevents
-         * identical-looking collisions.
-         */
         a.addRotationVelocity(
             MathUtils.random(-25f, 25f)
         );
@@ -204,4 +233,266 @@ public class BouncingSymbolManager {
         );
     }
 
+    /*
+     * ---------------------------------------------------------
+     * BOUNCING SYMBOL <-> SLOT MACHINE HIT BODY
+     * ---------------------------------------------------------
+     */
+
+    private void handlePatternHitCollisions() {
+
+        Seq.of(SlotMachine.I().getGrid())
+            .filter(Body::isInPatternHit)
+            .forEach(body -> {
+
+                for (
+                    BouncingSymbol symbol :
+                    bouncingSymbols
+                ) {
+                    resolveBodyCollision(
+                        symbol,
+                        body
+                    );
+                }
+            });
+    }
+
+    /*
+     * Treat the BouncingSymbol as a circle and the Body
+     * as an axis-aligned rectangle.
+     */
+    private void resolveBodyCollision(
+        BouncingSymbol symbol,
+        Body body
+    ) {
+
+        float circleX =
+            symbol.getCenterX();
+
+        float circleY =
+            symbol.getCenterY();
+
+        float radius =
+            symbol.getRadius();
+
+        /*
+         * Slot body rectangle.
+         */
+        float bodyLeft =
+            body.getPos().x;
+
+        float bodyRight =
+            bodyLeft + SlotMachine.CELL_W;
+
+        float bodyBottom =
+            body.getPos().y;
+
+        float bodyTop =
+            bodyBottom + SlotMachine.CELL_H;
+
+        /*
+         * Find the closest point on the rectangle
+         * to the bouncing symbol.
+         */
+        float closestX =
+            MathUtils.clamp(
+                circleX,
+                bodyLeft,
+                bodyRight
+            );
+
+        float closestY =
+            MathUtils.clamp(
+                circleY,
+                bodyBottom,
+                bodyTop
+            );
+
+        float dx =
+            circleX - closestX;
+
+        float dy =
+            circleY - closestY;
+
+        float distanceSquared =
+            dx * dx + dy * dy;
+
+        /*
+         * No collision.
+         */
+        if (
+            distanceSquared
+                >= radius * radius
+        ) {
+            return;
+        }
+
+        float normalX;
+        float normalY;
+        float penetration;
+
+        /*
+         * Normal case:
+         *
+         * Circle center is outside the rectangle,
+         * so closest point gives us the collision normal.
+         */
+        if (distanceSquared > 0.000001f) {
+
+            float distance =
+                (float) Math.sqrt(
+                    distanceSquared
+                );
+
+            normalX =
+                dx / distance;
+
+            normalY =
+                dy / distance;
+
+            penetration =
+                radius - distance;
+        }
+
+        /*
+         * Special case:
+         *
+         * The circle center itself is inside the Body.
+         *
+         * Push it towards the nearest edge.
+         */
+        else {
+
+            float distanceLeft =
+                circleX - bodyLeft;
+
+            float distanceRight =
+                bodyRight - circleX;
+
+            float distanceBottom =
+                circleY - bodyBottom;
+
+            float distanceTop =
+                bodyTop - circleY;
+
+            float minimum =
+                Math.min(
+                    Math.min(
+                        distanceLeft,
+                        distanceRight
+                    ),
+                    Math.min(
+                        distanceBottom,
+                        distanceTop
+                    )
+                );
+
+            if (minimum == distanceLeft) {
+
+                normalX = -1f;
+                normalY = 0f;
+
+                penetration =
+                    radius + distanceLeft;
+
+            } else if (minimum == distanceRight) {
+
+                normalX = 1f;
+                normalY = 0f;
+
+                penetration =
+                    radius + distanceRight;
+
+            } else if (minimum == distanceBottom) {
+
+                normalX = 0f;
+                normalY = -1f;
+
+                penetration =
+                    radius + distanceBottom;
+
+            } else {
+
+                normalX = 0f;
+                normalY = 1f;
+
+                penetration =
+                    radius + distanceTop;
+            }
+        }
+
+        /*
+         * First move the bouncing symbol outside the
+         * slot Body so it doesn't remain overlapping.
+         */
+        symbol.move(
+            normalX * penetration,
+            normalY * penetration
+        );
+
+        /*
+         * Current velocity projected onto
+         * the collision normal.
+         */
+        float velocityAlongNormal =
+            symbol.getVelocityX() * normalX
+                + symbol.getVelocityY() * normalY;
+
+        /*
+         * If it's already traveling away from the
+         * Body, separation was enough.
+         */
+        if (velocityAlongNormal >= 0f) {
+            return;
+        }
+
+        /*
+         * Slightly stronger bounce than symbol-to-symbol
+         * collisions because the slot Body is static.
+         */
+        float restitution =
+            MathUtils.random(0.8f, 0.95f);
+
+        /*
+         * Reflect velocity along the surface normal.
+         *
+         * v' = v - (1 + e)(v · n)n
+         */
+        float impulse =
+            -(1f + restitution)
+                * velocityAlongNormal;
+
+        symbol.setVelocityX(
+            symbol.getVelocityX()
+                + impulse * normalX
+        );
+
+        symbol.setVelocityY(
+            symbol.getVelocityY()
+                + impulse * normalY
+        );
+
+        /*
+         * A little extra spin depending on the surface
+         * direction makes the collision look less rigid.
+         */
+        float tangentX =
+            -normalY;
+
+        float tangentY =
+            normalX;
+
+        float tangentialVelocity =
+            symbol.getVelocityX() * tangentX
+                + symbol.getVelocityY() * tangentY;
+
+        symbol.addRotationVelocity(
+            tangentialVelocity
+                * MathUtils.random(5f, 12f)
+        );
+
+        symbol.addRotationVelocity(
+            MathUtils.random(-35f, 35f)
+        );
+    }
 }

@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 public class BouncingSymbol {
 
     private final TextureRegion texture;
-    private final TextureRegion blackTexture;
+    private final TextureRegion whiteTexture;
 
     private final PulseEffect pulseEffect = new PulseEffect();
 
@@ -55,7 +55,7 @@ public class BouncingSymbol {
 
     public BouncingSymbol(Symbol symbol, float x, float y) {
         this.texture = Assets.I().getSymbol(symbol);
-        this.blackTexture = Assets.I().get(symbol.shadowKey());
+        this.whiteTexture = Assets.I().get(symbol.whiteKey());
 
         this.x = x;
         this.y = y;
@@ -336,12 +336,38 @@ public class BouncingSymbol {
         float width = getWidth();
         float height = getHeight();
 
-        float drawX =
-            x - (width - SlotMachine.CELL_W) / 2f;
+        float centerX = x + SlotMachine.CELL_W / 2f;
+        float centerY = y + SlotMachine.CELL_H / 2f;
 
-        float drawY =
-            y - (height - SlotMachine.CELL_H) / 2f;
+        float drawX = centerX - width / 2f;
+        float drawY = centerY - height / 2f;
 
+        float glowScale = 3f;
+
+        float glowWidth = width * glowScale;
+        float glowHeight = height * glowScale;
+
+        float glowX = centerX - glowWidth / 2f;
+        float glowY = centerY - glowHeight / 2f;
+
+        float finalRotation =
+            rotation + pulseEffect.getRotation();
+
+        // White silhouette / glow
+        Pencil.I().addDrawing(
+            new TextureDrawing(
+                whiteTexture,
+                glowX,
+                glowY,
+                glowWidth,
+                glowHeight,
+                0.35f,
+                finalRotation,
+                ZIndex.SLOT_MACHINE
+            )
+        );
+
+        // Actual symbol
         Pencil.I().addDrawing(
             new TextureDrawing(
                 texture,
@@ -350,7 +376,7 @@ public class BouncingSymbol {
                 width,
                 height,
                 1f,
-                rotation + pulseEffect.getRotation(),
+                finalRotation,
                 ZIndex.SLOT_MACHINE
             )
         );
