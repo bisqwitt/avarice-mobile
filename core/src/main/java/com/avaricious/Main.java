@@ -1,6 +1,5 @@
 package com.avaricious;
 
-import com.avaricious.network.NetworkController;
 import com.avaricious.screens.LoadingScreen;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.utility.DeviceInfo;
@@ -36,7 +35,6 @@ public class Main extends Game {
         uiViewport = new FitViewport(900, 2000);
 
         GameContext.init(batch, viewport, uiViewport, deviceInfo);
-        NetworkController.I().connect();
         ScreenManager.create(this).setScreen(LoadingScreen.class);
     }
 
