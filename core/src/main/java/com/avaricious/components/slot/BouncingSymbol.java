@@ -32,7 +32,13 @@ public class BouncingSymbol {
 
     private float scale = 1f;
 
-    private float lifeTime = 0f;
+    /*
+     * Only used for the disappearance animation
+     * after the symbol has been clicked.
+     */
+    private float disappearTime = 0f;
+
+    private boolean claimed = false;
     private boolean finished = false;
 
     /*
@@ -44,16 +50,17 @@ public class BouncingSymbol {
     private static final float MIN_BOUNCE = 0.85f;
     private static final float MAX_BOUNCE = 0.97f;
 
-    private static final float MAX_LIFETIME = 8f;
-    private static final float FADE_DURATION = 0.5f;
+    /*
+     * How long the symbol takes to shrink away
+     * after being clicked.
+     */
+    private static final float DISAPPEAR_DURATION = 0.5f;
 
     /*
      * Organic movement
      */
     private final float wobbleSpeed;
     private final float wobbleStrength;
-
-    private boolean claimed = false;
 
     public BouncingSymbol(Symbol symbol, float x, float y) {
         this.texture = Assets.I().getSymbol(symbol);
@@ -65,56 +72,108 @@ public class BouncingSymbol {
         /*
          * Launch in a random direction.
          */
-        float angle = MathUtils.random(0f, MathUtils.PI2);
-        float speed = MathUtils.random(6f, 12f);
+        float angle = MathUtils.random(
+            0f,
+            MathUtils.PI2
+        );
 
-        velocityX = MathUtils.cos(angle) * speed;
-        velocityY = MathUtils.sin(angle) * speed;
+        float speed = MathUtils.random(
+            6f,
+            12f
+        );
+
+        velocityX =
+            MathUtils.cos(angle) * speed;
+
+        velocityY =
+            MathUtils.sin(angle) * speed;
 
         /*
          * Initial rotation.
          */
-        rotation = MathUtils.random(-10f, 10f);
-        rotationVelocity = MathUtils.random(-180f, 180f);
+        rotation =
+            MathUtils.random(
+                -10f,
+                10f
+            );
+
+        rotationVelocity =
+            MathUtils.random(
+                -180f,
+                180f
+            );
 
         /*
          * Slightly different wobble for every symbol.
          */
-        wobbleSpeed = MathUtils.random(7f, 12f);
-        wobbleStrength = MathUtils.random(4f, 10f);
+        wobbleSpeed =
+            MathUtils.random(
+                7f,
+                12f
+            );
+
+        wobbleStrength =
+            MathUtils.random(
+                4f,
+                10f
+            );
 
         /*
-         * Falling symbol pulse settings.
+         * Bouncing symbol pulse settings.
          */
         pulseEffect.setStrength(3.25f);
         pulseEffect.setSpeed(0.125f);
     }
 
     public void update(float delta) {
-        lifeTime += delta;
 
+        /*
+         * The symbol continues moving even after being
+         * clicked while its disappearance animation plays.
+         */
         updatePhysics(delta);
+
         pulseEffect.update(delta);
 
         handleHorizontalCollisions();
         handleVerticalCollisions();
 
+        /*
+         * Before being clicked there is NO lifetime.
+         * It will keep bouncing indefinitely.
+         */
+        if (!claimed) {
+            return;
+        }
+
+        /*
+         * Once clicked, start the disappearance timer.
+         */
+        disappearTime += delta;
+
         updateScale();
 
-        if (lifeTime >= MAX_LIFETIME) {
+        if (disappearTime >= DISAPPEAR_DURATION) {
             finished = true;
         }
     }
 
     private void updatePhysics(float delta) {
+
         float movementDrag =
-            (float) Math.pow(AIR_DRAG, delta * 60f);
+            (float) Math.pow(
+                AIR_DRAG,
+                delta * 60f
+            );
 
         velocityX *= movementDrag;
         velocityY *= movementDrag;
 
         rotationVelocity *=
-            (float) Math.pow(ROTATION_DRAG, delta * 60f);
+            (float) Math.pow(
+                ROTATION_DRAG,
+                delta * 60f
+            );
 
         /*
          * Movement
@@ -125,31 +184,64 @@ public class BouncingSymbol {
         /*
          * Rotation
          */
-        rotation += rotationVelocity * delta;
+        rotation +=
+            rotationVelocity * delta;
 
         /*
          * Small organic wobble.
          */
         rotation +=
-            MathUtils.sin(lifeTime * wobbleSpeed)
+            MathUtils.sin(
+                disappearTime * wobbleSpeed
+            )
                 * wobbleStrength
                 * delta;
     }
 
-    public boolean handleInput(Vector2 mouse, boolean touching, boolean wasTouching) {
+    public boolean handleInput(
+        Vector2 mouse,
+        boolean touching,
+        boolean wasTouching
+    ) {
         if (!contains(mouse) || claimed) {
             return false;
         }
 
+        /*
+         * Start pulse and disappearance.
+         */
         pulseEffect.pulse();
-        lifeTime = MAX_LIFETIME - FADE_DURATION;
 
-        ParticleManager.I().create(x, y, ParticleType.WHITE, 0.02f, 50f, ZIndex.SLOT_MACHINE);
-        PopupManager.I().spawnNumber(1, Assets.I().blue(),
-            x, y, false);
-        ScoreDisplay.I().addToScore(1);
-
+        disappearTime = 0f;
         claimed = true;
+
+        /*
+         * Click particle.
+         */
+        ParticleManager.I().create(
+            x,
+            y,
+            ParticleType.WHITE,
+            0.02f,
+            50f,
+            ZIndex.SLOT_MACHINE
+        );
+
+        /*
+         * Point popup.
+         */
+        PopupManager.I().spawnNumber(
+            1,
+            Assets.I().blue(),
+            x + getWidth(),
+            y + getHeight(),
+            false
+        );
+
+        /*
+         * Add point.
+         */
+        ScoreDisplay.I().addToScore(1);
 
         return true;
     }
@@ -157,18 +249,32 @@ public class BouncingSymbol {
     public boolean contains(Vector2 mouse) {
         float mouseX = mouse.x;
         float mouseY = mouse.y;
+
         /*
          * Deliberately ignore PulseEffect scale here.
          * The hitbox therefore doesn't grow when pulsing.
          */
-        float width = SlotMachine.CELL_W * scale;
-        float height = SlotMachine.CELL_H * scale;
+        float width =
+            SlotMachine.CELL_W
+                * 0.75f
+                * scale;
+
+        float height =
+            SlotMachine.CELL_H
+                * 0.75f
+                * scale;
+
+        float centerX =
+            x + SlotMachine.CELL_W / 2f;
+
+        float centerY =
+            y + SlotMachine.CELL_H / 2f;
 
         float drawX =
-            x - (width - SlotMachine.CELL_W) / 2f;
+            centerX - width / 2f;
 
         float drawY =
-            y - (height - SlotMachine.CELL_H) / 2f;
+            centerY - height / 2f;
 
         return mouseX >= drawX
             && mouseX <= drawX + width
@@ -177,18 +283,34 @@ public class BouncingSymbol {
     }
 
     private void handleHorizontalCollisions() {
+
         float width = getWidth();
 
         float screenLeft =
-            GameContext.I().viewport.getCamera().position.x
-                - GameContext.I().viewport.getWorldWidth() / 2f;
+            GameContext.I()
+                .viewport
+                .getCamera()
+                .position.x
+                - GameContext.I()
+                .viewport
+                .getWorldWidth()
+                / 2f;
 
         float screenRight =
-            GameContext.I().viewport.getCamera().position.x
-                + GameContext.I().viewport.getWorldWidth() / 2f;
+            GameContext.I()
+                .viewport
+                .getCamera()
+                .position.x
+                + GameContext.I()
+                .viewport
+                .getWorldWidth()
+                / 2f;
+
+        float centerX =
+            x + SlotMachine.CELL_W / 2f;
 
         float drawX =
-            x - (width - SlotMachine.CELL_W) / 2f;
+            centerX - width / 2f;
 
         float left = drawX;
         float right = drawX + width;
@@ -197,7 +319,9 @@ public class BouncingSymbol {
          * LEFT WALL
          */
         if (left < screenLeft) {
-            float overlap = screenLeft - left;
+
+            float overlap =
+                screenLeft - left;
 
             x += overlap;
 
@@ -206,14 +330,19 @@ public class BouncingSymbol {
                     * randomBounce();
 
             rotationVelocity +=
-                MathUtils.random(-90f, 90f);
+                MathUtils.random(
+                    -90f,
+                    90f
+                );
         }
 
         /*
          * RIGHT WALL
          */
         if (right > screenRight) {
-            float overlap = right - screenRight;
+
+            float overlap =
+                right - screenRight;
 
             x -= overlap;
 
@@ -222,23 +351,42 @@ public class BouncingSymbol {
                     * randomBounce();
 
             rotationVelocity +=
-                MathUtils.random(-90f, 90f);
+                MathUtils.random(
+                    -90f,
+                    90f
+                );
         }
     }
 
     private void handleVerticalCollisions() {
+
         float height = getHeight();
 
         float screenBottom =
-            GameContext.I().viewport.getCamera().position.y
-                - GameContext.I().viewport.getWorldHeight() / 2f;
+            GameContext.I()
+                .viewport
+                .getCamera()
+                .position.y
+                - GameContext.I()
+                .viewport
+                .getWorldHeight()
+                / 2f;
 
         float screenTop =
-            GameContext.I().viewport.getCamera().position.y
-                + GameContext.I().viewport.getWorldHeight() / 2f;
+            GameContext.I()
+                .viewport
+                .getCamera()
+                .position.y
+                + GameContext.I()
+                .viewport
+                .getWorldHeight()
+                / 2f;
+
+        float centerY =
+            y + SlotMachine.CELL_H / 2f;
 
         float drawY =
-            y - (height - SlotMachine.CELL_H) / 2f;
+            centerY - height / 2f;
 
         float bottom = drawY;
         float top = drawY + height;
@@ -247,7 +395,9 @@ public class BouncingSymbol {
          * BOTTOM WALL
          */
         if (bottom < screenBottom) {
-            float overlap = screenBottom - bottom;
+
+            float overlap =
+                screenBottom - bottom;
 
             y += overlap;
 
@@ -256,14 +406,19 @@ public class BouncingSymbol {
                     * randomBounce();
 
             rotationVelocity +=
-                MathUtils.random(-90f, 90f);
+                MathUtils.random(
+                    -90f,
+                    90f
+                );
         }
 
         /*
          * TOP WALL
          */
         if (top > screenTop) {
-            float overlap = top - screenTop;
+
+            float overlap =
+                top - screenTop;
 
             y -= overlap;
 
@@ -272,48 +427,31 @@ public class BouncingSymbol {
                     * randomBounce();
 
             rotationVelocity +=
-                MathUtils.random(-90f, 90f);
+                MathUtils.random(
+                    -90f,
+                    90f
+                );
         }
     }
 
+    /*
+     * Only called after the symbol has been claimed.
+     */
     private void updateScale() {
-        /*
-         * Small spawn pop.
-         */
-        if (lifeTime < 0.12f) {
-            float progress =
-                lifeTime / 0.12f;
 
-            scale =
-                MathUtils.lerp(
-                    1.15f,
-                    1f,
-                    progress
-                );
-
-            return;
-        }
-
-        /*
-         * Normal size for most of the lifetime.
-         */
-        if (lifeTime < MAX_LIFETIME - FADE_DURATION) {
-            scale = 1f;
-            return;
-        }
-
-        /*
-         * Shrink before disappearing.
-         */
-        float fadeProgress =
-            (lifeTime - (MAX_LIFETIME - FADE_DURATION))
-                / FADE_DURATION;
+        float progress =
+            MathUtils.clamp(
+                disappearTime
+                    / DISAPPEAR_DURATION,
+                0f,
+                1f
+            );
 
         scale =
             MathUtils.lerp(
                 1f,
                 0f,
-                fadeProgress
+                progress
             );
     }
 
@@ -339,27 +477,46 @@ public class BouncingSymbol {
     }
 
     public void draw() {
+
         float width = getWidth();
         float height = getHeight();
 
-        float centerX = x + SlotMachine.CELL_W / 2f;
-        float centerY = y + SlotMachine.CELL_H / 2f;
+        float centerX =
+            x + SlotMachine.CELL_W / 2f;
 
-        float drawX = centerX - width / 2f;
-        float drawY = centerY - height / 2f;
+        float centerY =
+            y + SlotMachine.CELL_H / 2f;
 
+        float drawX =
+            centerX - width / 2f;
+
+        float drawY =
+            centerY - height / 2f;
+
+        /*
+         * White glow.
+         */
         float glowScale = 3f;
 
-        float glowWidth = width * glowScale;
-        float glowHeight = height * glowScale;
+        float glowWidth =
+            width * glowScale;
 
-        float glowX = centerX - glowWidth / 2f;
-        float glowY = centerY - glowHeight / 2f;
+        float glowHeight =
+            height * glowScale;
+
+        float glowX =
+            centerX - glowWidth / 2f;
+
+        float glowY =
+            centerY - glowHeight / 2f;
 
         float finalRotation =
-            rotation + pulseEffect.getRotation();
+            rotation
+                + pulseEffect.getRotation();
 
-        // White silhouette / glow
+        /*
+         * White silhouette / glow.
+         */
         Pencil.I().addDrawing(
             new TextureDrawing(
                 whiteTexture,
@@ -373,7 +530,9 @@ public class BouncingSymbol {
             )
         );
 
-        // Actual symbol
+        /*
+         * Actual symbol.
+         */
         Pencil.I().addDrawing(
             new TextureDrawing(
                 texture,
@@ -397,11 +556,13 @@ public class BouncingSymbol {
      */
 
     public float getCenterX() {
-        return x + SlotMachine.CELL_W / 2f;
+        return x
+            + SlotMachine.CELL_W / 2f;
     }
 
     public float getCenterY() {
-        return y + SlotMachine.CELL_H / 2f;
+        return y
+            + SlotMachine.CELL_H / 2f;
     }
 
     public float getRadius() {
@@ -419,20 +580,29 @@ public class BouncingSymbol {
         return velocityY;
     }
 
-    public void setVelocityX(float velocityX) {
+    public void setVelocityX(
+        float velocityX
+    ) {
         this.velocityX = velocityX;
     }
 
-    public void setVelocityY(float velocityY) {
+    public void setVelocityY(
+        float velocityY
+    ) {
         this.velocityY = velocityY;
     }
 
-    public void move(float x, float y) {
+    public void move(
+        float x,
+        float y
+    ) {
         this.x += x;
         this.y += y;
     }
 
-    public void addRotationVelocity(float amount) {
+    public void addRotationVelocity(
+        float amount
+    ) {
         rotationVelocity += amount;
     }
 }
