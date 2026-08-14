@@ -44,7 +44,7 @@ public class BouncingSymbol {
     private static final float MIN_BOUNCE = 0.85f;
     private static final float MAX_BOUNCE = 0.97f;
 
-    private static final float MAX_LIFETIME = 6f;
+    private static final float MAX_LIFETIME = 8f;
     private static final float FADE_DURATION = 0.5f;
 
     /*
@@ -86,7 +86,8 @@ public class BouncingSymbol {
         /*
          * Falling symbol pulse settings.
          */
-        pulseEffect.setStrength(1.5f);
+        pulseEffect.setStrength(3.25f);
+        pulseEffect.setSpeed(0.125f);
     }
 
     public void update(float delta) {
@@ -143,7 +144,7 @@ public class BouncingSymbol {
         pulseEffect.pulse();
         lifeTime = MAX_LIFETIME - FADE_DURATION;
 
-        ParticleManager.I().create(x, y, ParticleType.RAINBOW, 0.01f, 50f, ZIndex.SLOT_MACHINE);
+        ParticleManager.I().create(x, y, ParticleType.WHITE, 0.02f, 50f, ZIndex.SLOT_MACHINE);
         PopupManager.I().spawnNumber(1, Assets.I().blue(),
             x, y, false);
         ScoreDisplay.I().addToScore(1);
