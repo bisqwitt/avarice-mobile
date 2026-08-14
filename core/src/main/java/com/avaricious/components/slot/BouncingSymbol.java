@@ -3,6 +3,8 @@ package com.avaricious.components.slot;
 import com.avaricious.components.popups.PopupManager;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.effects.PulseEffect;
+import com.avaricious.effects.particle.ParticleManager;
+import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
@@ -141,6 +143,7 @@ public class BouncingSymbol {
         pulseEffect.pulse();
         lifeTime = MAX_LIFETIME - FADE_DURATION;
 
+        ParticleManager.I().create(x, y, ParticleType.RAINBOW, 0.01f, 50f, ZIndex.SLOT_MACHINE);
         PopupManager.I().spawnNumber(1, Assets.I().blue(),
             x, y, false);
         ScoreDisplay.I().addToScore(1);
