@@ -9,12 +9,9 @@ import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.slot.pattern.PatternMatch;
 import com.avaricious.effects.EffectManager;
 import com.avaricious.effects.TextureEcho;
-import com.avaricious.items.upgrades.Hand;
-import com.avaricious.items.upgrades.cards.newgen.AbstractQuestCard;
 import com.avaricious.screens.ScreenManager;
 import com.avaricious.screens.SlotScreen;
 import com.avaricious.utility.Assets;
-import com.avaricious.utility.Seq;
 import com.avaricious.utility.SymbolValues;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -72,6 +69,12 @@ public class SlotMachineResultRunner {
                     EffectManager.create(Assets.I().getSymbol(patternMatch.getSymbol()),
                         new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                         TextureEcho.Type.SLOT);
+
+                    BouncingSymbolManager.I().createFallingSymbol(
+                        patternMatch.getSymbol(),
+                        body.getPos().x,
+                        body.getPos().y
+                    );
                 }
                 ScreenShake.I().addTrauma(0.3f);
 
@@ -144,12 +147,18 @@ public class SlotMachineResultRunner {
                     new Rectangle(body.getPos().x, body.getPos().y, SlotMachine.CELL_W, SlotMachine.CELL_H),
                     TextureEcho.Type.SLOT);
 
+                BouncingSymbolManager.I().createFallingSymbol(
+                    match.getSymbol(),
+                    body.getPos().x,
+                    body.getPos().y
+                );
+
                 AudioManager.I().playHit(EffectManager.streak);
 
-                Seq.of(Hand.I().getHand())
-                    .filter(card -> card instanceof AbstractQuestCard
-                        && ((AbstractQuestCard) card).condition(matches, match))
-                    .forEach(card -> ((AbstractQuestCard) card).complete());
+//                Seq.of(Hand.I().getHand())
+//                    .filter(card -> card instanceof AbstractQuestCard
+//                        && ((AbstractQuestCard) card).condition(matches, match))
+//                    .forEach(card -> ((AbstractQuestCard) card).complete());
 
                 onHit();
             });

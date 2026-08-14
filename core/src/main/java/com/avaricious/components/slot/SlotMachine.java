@@ -39,7 +39,7 @@ public class SlotMachine {
     public static final float spacingY = 0.15f;
 
     public static final float originX = 0.25f;
-    public static final float originY = 8f;
+    public static final float originY = 6.5f;
 
     private final List<Reel> reels = new ArrayList<>();
     private final DragableBody[][] grid = new DragableBody[colCount][rowCount];

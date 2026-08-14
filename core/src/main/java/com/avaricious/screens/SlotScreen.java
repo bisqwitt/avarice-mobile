@@ -15,10 +15,12 @@ import com.avaricious.components.roundInfoPanel.PlayerScores;
 import com.avaricious.components.roundInfoPanel.RoundInfoPanel;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 import com.avaricious.components.shop.Shop;
+import com.avaricious.components.slot.BouncingSymbolManager;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.components.slot.SlotMachineMatchFinder;
 import com.avaricious.components.slot.SlotMachineResultRunner;
 import com.avaricious.effects.particle.ParticleManager;
+import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.items.upgrades.Hand;
 import com.avaricious.items.upgrades.IUpgradeWithActionOnSpinButtonPressed;
 import com.avaricious.utility.AssetKey;
@@ -26,6 +28,7 @@ import com.avaricious.utility.Assets;
 import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RunManager;
+import com.avaricious.utility.ZIndex;
 import com.avaricious.utility.runData.RunDataFileManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -133,6 +136,8 @@ public class SlotScreen extends ScreenAdapter {
         ParticleManager.I().draw(batch, delta);
         SlotMachine.I().draw(delta);   // 10
 
+        BouncingSymbolManager.I().drawFallingSymbols(delta);
+
 //        HandUi.I().draw(delta);
 
 //        TextureGlow.draw(batch, delta, TextureGlow.Type.NUMBER);
@@ -175,13 +180,23 @@ public class SlotScreen extends ScreenAdapter {
         mouse.set(Gdx.input.getX(), Gdx.input.getY());
         app.getViewport().unproject(mouse);
         boolean leftClickPressed = Gdx.input.isTouched();
+
+        if (leftClickPressed && !leftClickWasPressed)
+            ParticleManager.I().startTrail(mouse.x, mouse.y, ParticleType.TRAIL, 0.02f, ZIndex.UNFOLDED_DECK_CARD);
+
+        if (leftClickPressed && leftClickWasPressed)
+            ParticleManager.I().moveTrail(mouse.x, mouse.y);
+
+        if (!leftClickPressed && leftClickWasPressed)
+            ParticleManager.I().stopTrail();
+
+
         if (shop.isShowing()) {
             shop.handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
         } else {
             SlotMachine.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
+            BouncingSymbolManager.I().handleInput(mouse, leftClickPressed, leftClickWasPressed);
             buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed);
-//            if (!buttonBoard.handleInput(mouse, leftClickPressed, leftClickWasPressed))
-//            HandUi.I().handleInput(mouse, leftClickPressed, leftClickWasPressed, delta);
             openShopButton.handleInput(mouse, leftClickPressed, leftClickWasPressed);
         }
         leftClickWasPressed = leftClickPressed;
