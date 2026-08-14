@@ -326,12 +326,14 @@ public class BouncingSymbol {
 
     private float getWidth() {
         return SlotMachine.CELL_W
+            * 0.75f
             * scale
             * pulseEffect.getScale();
     }
 
     private float getHeight() {
         return SlotMachine.CELL_H
+            * 0.75f
             * scale
             * pulseEffect.getScale();
     }

@@ -3,6 +3,7 @@ package com.avaricious.effects.particle;
 import com.avaricious.components.slot.SlotMachine;
 import com.avaricious.utility.Pencil;
 import com.avaricious.utility.RunnableDrawing;
+import com.avaricious.utility.Seq;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -186,6 +187,8 @@ public class ParticleManager {
         );
 
         touchTrail.scaleEffect(scale);
+        Seq.of(touchTrail.getEmitters())
+            .forEach(emitter -> emitter.getEmission().setHigh(75));
 
         touchTrail.setPosition(x, y);
 
