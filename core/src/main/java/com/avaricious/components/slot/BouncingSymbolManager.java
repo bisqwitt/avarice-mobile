@@ -64,9 +64,11 @@ public class BouncingSymbolManager {
          */
         handlePatternHitCollisions();
 
-        bouncingSymbols.removeIf(
-            BouncingSymbol::isFinished
-        );
+        for (int i = bouncingSymbols.size() - 1; i >= 0; i--) {
+            if (bouncingSymbols.get(i).isFinished()) {
+                bouncingSymbols.remove(i);
+            }
+        }
     }
 
     /*
