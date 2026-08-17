@@ -1,7 +1,7 @@
 package com.avaricious.bosses;
 
 import com.avaricious.items.upgrades.AbstractUpgrade;
-import com.avaricious.items.upgrades.cards.MultiForEveryCardDiscarded;
+import com.avaricious.items.upgrades.cards.PatternTriggerCard.FiveInARowTriggerCard;
 
 public class DiscardACardAfterEveryPlayedCardBoss extends AbstractBoss {
     @Override
@@ -11,6 +11,6 @@ public class DiscardACardAfterEveryPlayedCardBoss extends AbstractBoss {
 
     @Override
     public AbstractUpgrade loot() {
-        return new MultiForEveryCardDiscarded();
+        return new FiveInARowTriggerCard();
     }
 }

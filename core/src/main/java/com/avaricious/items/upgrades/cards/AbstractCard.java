@@ -63,8 +63,6 @@ public abstract class AbstractCard extends AbstractUpgrade {
     }
 
     public boolean isDisabled() {
-        if (this instanceof IConditionalApplyCard && !((IConditionalApplyCard) this).condition())
-            return true;
         if (RunManager.I().getRoundsManager().defenceTypeCardsDisabled() && this.type() == CardType.DEFENCE)
             return true;
 
@@ -97,25 +95,6 @@ public abstract class AbstractCard extends AbstractUpgrade {
     }
 
     public static final List<Class<? extends AbstractCard>> allCardClasses = Collections.unmodifiableList(Arrays.asList(
-//        PointsCard.class,
-//        MultiCard.class,
-        SpinCard.class,
-//        OneDollarCard.class,
-//        PointsForEachCardInHandCard.class,
-//        DrawACardIfLastCard.class,
-//        MultiForEveryCardDiscarded.class,
-//        DrawTwoCardsMinusOneTry.class,
-//        PointsForEverySymbolHit.class,
-//        PointsForEveryFruitCard.class,
-//        EitherDoublePointsOrHalveMulti.class,
-//        MultiForEveryAttackInHandCard.class,
-//        DrawACardDefenceCardsDisabledCard.class,
-//        MultiForEveryDisabledCard.class,
-//        DrawACardDisabledUntilTwoCardsPlayedCard.class,
-//        DrawCardsEqualToCurrentStreak.class,
-//        DrawAndDiscardACard.class,
-//        ImpersonatorCard.class,
-//        ShiftSymbolCard.class,
         LemonTriggerCard.class,
         CherryTriggerCard.class,
         CloverTriggerCard.class,

@@ -73,17 +73,16 @@ public class PatternFinder {
             }
         }
 
+        ArrayList<PatternMatch> matchesFiltered = new ArrayList<>();
+
         for (int i = 0; i < matches.size(); i++) {
             Symbol symbol = matches.get(i).getSymbol();
-            if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON)
-                matches.remove(i);
-            if (RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY)
-                matches.remove(i);
-            if (RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit())
-                matches.remove(i);
+            if (RunManager.I().getRoundsManager().getBoss() instanceof LemonDebuffBoss && symbol == Symbol.LEMON) continue;
+            else if (RunManager.I().getRoundsManager().getBoss() instanceof CherryDebuffBoss && symbol == Symbol.CHERRY) continue;
+            else if (RingBar.I().ringOwned(DoubleSymbolValueDisableFruits.class) && symbol.isFruit()) continue;
+            matchesFiltered.add(matches.get(i));
         }
-
-        return matches;
+        return matchesFiltered;
     }
 
     private static boolean inBounds(int x, int y, int cols, int rows) {

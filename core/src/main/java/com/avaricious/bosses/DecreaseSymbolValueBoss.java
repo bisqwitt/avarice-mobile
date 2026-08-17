@@ -1,7 +1,7 @@
 package com.avaricious.bosses;
 
 import com.avaricious.items.upgrades.AbstractUpgrade;
-import com.avaricious.items.upgrades.cards.EitherDoublePointsOrHalveMulti;
+import com.avaricious.items.upgrades.cards.newgen.pointsOnSymbol.PointsOnSevenCard;
 
 public class DecreaseSymbolValueBoss extends AbstractBoss {
     @Override
@@ -11,6 +11,6 @@ public class DecreaseSymbolValueBoss extends AbstractBoss {
 
     @Override
     public AbstractUpgrade loot() {
-        return new EitherDoublePointsOrHalveMulti();
+        return new PointsOnSevenCard();
     }
 }
