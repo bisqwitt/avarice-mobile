@@ -1,5 +1,6 @@
 package com.avaricious.components.automations;
 
+import com.avaricious.DevTools;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 
 public abstract class AbstractAutomation {
@@ -20,7 +21,8 @@ public abstract class AbstractAutomation {
     }
 
     public boolean isBuyable() {
-        return ScoreDisplay.I().getScoreNumber() >= price() && !isActive();
+        return (ScoreDisplay.I().getScoreNumber() >= price()
+            || DevTools.unlimitedMoney()) && !isActive();
     }
 
 

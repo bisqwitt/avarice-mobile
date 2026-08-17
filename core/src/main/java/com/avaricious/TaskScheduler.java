@@ -6,17 +6,11 @@ import java.util.LinkedList;
 
 public class TaskScheduler {
 
-    private static TaskScheduler instance;
-
-    public static TaskScheduler I() {
-        return instance == null ? instance = new TaskScheduler() : instance;
-    }
-
-    //    private final Map<Runnable, Float> tasks = new LinkedHashMap<>();
     private final LinkedList<ScheduledTask> tasks = new LinkedList<>();
-    private final float defaultDelay = 0.4f;
+    private final float defaultDelay;
 
-    private TaskScheduler() {
+    public TaskScheduler(float defaultDelay) {
+        this.defaultDelay = defaultDelay;
     }
 
     public void schedule(Runnable r) {

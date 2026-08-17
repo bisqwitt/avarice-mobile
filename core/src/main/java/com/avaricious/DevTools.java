@@ -12,10 +12,6 @@ public class DevTools {
         return active && false;
     }
 
-    public static boolean testRings() {
-        return active && false;
-    }
-
     public static boolean allCardsInDeck() {
         return active && false;
     }
@@ -25,10 +21,6 @@ public class DevTools {
     }
 
     public static boolean showMouseLocation() {
-        return active && false;
-    }
-
-    public static boolean unlimitedSpins() {
         return active && false;
     }
 
