@@ -1,5 +1,6 @@
 package com.avaricious.components.automations;
 
+import com.avaricious.DevTools;
 import com.avaricious.components.roundInfoPanel.ScoreDisplay;
 
 import java.beans.PropertyChangeListener;
@@ -29,7 +30,8 @@ public abstract class AbstractAutomationUpgrade extends AbstractAutomation {
 
     @Override
     public boolean isBuyable() {
-        return ScoreDisplay.I().getScoreNumber() >= price() && !isMaxed() && isActive();
+        return (ScoreDisplay.I().getScoreNumber() >= price()
+            || DevTools.unlimitedMoney()) && isActive() && !isMaxed();
     }
 
     private void updatePrice() {

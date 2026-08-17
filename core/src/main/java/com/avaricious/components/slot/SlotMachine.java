@@ -41,6 +41,9 @@ public class SlotMachine {
     public static final float originX = 0.25f;
     public static final float originY = 6.5f;
 
+    private float reelStartStagger = 0.1f;
+    private float reelStopStagger = 0.5f;
+
     private final List<Reel> reels = new ArrayList<>();
     private final DragableBody[][] grid = new DragableBody[colCount][rowCount];
     private ZIndex zIndex = ZIndex.SLOT_MACHINE;
@@ -110,6 +113,8 @@ public class SlotMachine {
                 }
             }
         }
+
+        Seq.of(reels).forEach(reel -> reel.setSpeed(8));
     }
 
     public void handleInput(Vector2 mouse, boolean touching, boolean wasTouching, float delta) {
@@ -296,13 +301,11 @@ public class SlotMachine {
         stale = false;
 
         float startSpeed = 16f;
-        float startStagger = 0.1f;
-        float stopStagger = 0.5f;
 
         for (int c = 0; c < colCount; c++) {
             final int col = c;
-            float startDelay = c * startStagger;
-            float stopDelay = colCount * startStagger + c * stopStagger;
+            float startDelay = c * reelStartStagger;
+            float stopDelay = colCount * reelStartStagger + c * reelStopStagger;
 
             Timer.schedule(new Timer.Task() {
                 @Override
@@ -428,5 +431,21 @@ public class SlotMachine {
 
     public DragableBody[][] getGrid() {
         return grid;
+    }
+
+    public float getReelStartStagger() {
+        return reelStartStagger;
+    }
+
+    public void setReelStartStagger(float reelStartStagger) {
+        this.reelStartStagger = reelStartStagger;
+    }
+
+    public float getReelStopStagger() {
+        return reelStopStagger;
+    }
+
+    public void setReelStopStagger(float reelStopStagger) {
+        this.reelStopStagger = reelStopStagger;
     }
 }

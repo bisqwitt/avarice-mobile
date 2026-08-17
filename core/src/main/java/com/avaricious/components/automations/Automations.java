@@ -13,6 +13,8 @@ public class Automations {
     private final SpinBuyerAutomation spinBuyer = new SpinBuyerAutomation();
     private final SpinBuyerSpeed spinBuyerSpeed = new SpinBuyerSpeed();
 
+    private final SlotMachineSpeed slotMachineSpeed = new SlotMachineSpeed();
+
     private final HandCapacity handCapacity = new HandCapacity();
 
     public AutoSpinAutomation getAutoSpin() {
@@ -29,6 +31,10 @@ public class Automations {
 
     public SpinBuyerSpeed getSpinBuyerSpeed() {
         return spinBuyerSpeed;
+    }
+
+    public SlotMachineSpeed getSlotMachineSpeed() {
+        return slotMachineSpeed;
     }
 
     public HandCapacity getHandCapacity() {

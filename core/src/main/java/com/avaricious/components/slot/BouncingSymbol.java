@@ -8,14 +8,17 @@ import com.avaricious.effects.particle.ParticleType;
 import com.avaricious.utility.Assets;
 import com.avaricious.utility.GameContext;
 import com.avaricious.utility.Pencil;
+import com.avaricious.utility.SymbolValues;
 import com.avaricious.utility.TextureDrawing;
 import com.avaricious.utility.ZIndex;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class BouncingSymbol {
 
+    private final Symbol symbol;
     private final TextureRegion texture;
     private final TextureRegion whiteTexture;
 
@@ -63,6 +66,7 @@ public class BouncingSymbol {
     private final float wobbleStrength;
 
     public BouncingSymbol(Symbol symbol, float x, float y) {
+        this.symbol = symbol;
         this.texture = Assets.I().getSymbol(symbol);
         this.whiteTexture = Assets.I().get(symbol.whiteKey());
 
@@ -203,83 +207,51 @@ public class BouncingSymbol {
         boolean touching,
         boolean wasTouching
     ) {
-        if (!contains(mouse) || claimed) {
+
+        if (!touching || !getHitbox().contains(mouse) || claimed) {
             return false;
         }
 
-        /*
-         * Start pulse and disappearance.
-         */
         pulseEffect.pulse();
 
         disappearTime = 0f;
         claimed = true;
 
-        /*
-         * Click particle.
-         */
         ParticleManager.I().create(
-            x,
-            y,
+            x, y,
             ParticleType.WHITE,
             0.02f,
             50f,
             ZIndex.SLOT_MACHINE
         );
 
-        /*
-         * Point popup.
-         */
         PopupManager.I().spawnNumber(
-            1,
+            SymbolValues.I().getValue(symbol),
             Assets.I().blue(),
             x + getWidth(),
             y + getHeight(),
             false
         );
-
-        /*
-         * Add point.
-         */
-        ScoreDisplay.I().addToScore(1);
+        ScoreDisplay.I().addToScore(SymbolValues.I().getValue(symbol));
 
         return true;
     }
 
-    public boolean contains(Vector2 mouse) {
-        float mouseX = mouse.x;
-        float mouseY = mouse.y;
-
-        /*
-         * Deliberately ignore PulseEffect scale here.
-         * The hitbox therefore doesn't grow when pulsing.
-         */
-        float width =
-            SlotMachine.CELL_W
-                * 0.75f
-                * scale;
-
-        float height =
-            SlotMachine.CELL_H
-                * 0.75f
-                * scale;
+    private Rectangle getHitbox() {
+        float width = getWidth() * 2f;
+        float height = getHeight() * 2f;
 
         float centerX =
             x + SlotMachine.CELL_W / 2f;
-
         float centerY =
             y + SlotMachine.CELL_H / 2f;
 
         float drawX =
             centerX - width / 2f;
-
         float drawY =
             centerY - height / 2f;
 
-        return mouseX >= drawX
-            && mouseX <= drawX + width
-            && mouseY >= drawY
-            && mouseY <= drawY + height;
+        return new Rectangle(drawX, drawY, width, height);
     }
 
     private void handleHorizontalCollisions() {

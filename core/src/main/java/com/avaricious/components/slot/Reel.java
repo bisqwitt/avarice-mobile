@@ -295,4 +295,12 @@ public class Reel {
         strip.set(idxA, strip.get(idxB));
         strip.set(idxB, tmp);
     }
+
+    public void setSpeed(float speed) {
+        this.cruiseVel = speed;
+    }
+
+    public float getSpeed() {
+        return cruiseVel;
+    }
 }

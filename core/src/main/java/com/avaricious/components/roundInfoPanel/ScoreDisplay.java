@@ -1,6 +1,7 @@
 package com.avaricious.components.roundInfoPanel;
 
 import com.avaricious.CreditNumber;
+import com.avaricious.DevTools;
 import com.avaricious.components.DigitalNumber;
 import com.badlogic.gdx.math.Rectangle;
 
@@ -38,6 +39,7 @@ public class ScoreDisplay {
     }
 
     public void removeFromScore(float value) {
+        if (DevTools.unlimitedMoney()) return;
         setScoreNumber(getScoreNumber() - value);
     }
 
